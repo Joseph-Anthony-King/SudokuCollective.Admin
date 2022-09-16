@@ -1,6 +1,15 @@
 <template>
-  <v-container>
-    <v-card elevation="6" class="mx-16">
+  <v-container fluid>
+    <div class="d-flex ma-12 pa-12 justify-center" v-if="missionStatement === ''">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+        class="progress-circular"
+      ></v-progress-circular>
+    </div>
+    <v-card elevation="6" class="mx-16" v-show="missionStatement !== ''">
       <v-row class="text-center home-banner">
         <v-col cols="12">
           <h1 class="text-center centered-welcome-message text-padding">
@@ -27,16 +36,16 @@
   </v-container>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref, watch } from "vue";
-  import { useStore } from "vuex"
+<script lang='ts'>
+  import { defineComponent, ref, watch } from 'vue';
+  import store from '@/store';
+
   export default defineComponent({
-    name: "HomePage",
+    name: 'HomePage',
     setup() {
-      const store = useStore();
-      const missionStatement = ref("");
-      watch(() => store.getters.getMissionStatement, function() {
-        missionStatement.value = store.getters.getMissionStatement;
+      const missionStatement = ref(store.getters['valuesModule/getMissionStatement']);
+      watch(() => store.getters['valuesModule/getMissionStatement'], function() {
+        missionStatement.value = store.getters['valuesModule/getMissionStatement'];
       });
       return {
         missionStatement,
@@ -45,7 +54,13 @@
   }); 
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
+  .v-card {
+    @media (max-width: 600px) {
+      padding: 0 0 0 0 !important;
+      margin: 0 0 0 0 !important;
+    }
+  }
   .text-padding {
     padding: 35px 70px 0 70px;
   }
@@ -55,7 +70,7 @@
     border: 0;
     border-color: transparent;
     min-height: 500px;
-    background-image: url("../assets/banner.jpg");
+    background-image: url('../assets/banner.jpg');
     background-size: cover;
     background-repeat:   no-repeat;
     background-position: center center;
@@ -70,10 +85,15 @@
   }
   .centered-logo {
     position: absolute;
-    top: 40%;
     left: 0;
     width: 100%;
     filter: drop-shadow(2px 2px 2px var(--v-secondary));
+    @media (max-width: 600px) {
+      top: 55%;
+    }
+    @media (min-width: 601px) {
+      top: 40%;
+    }
   }
   .motto {
     margin: auto;

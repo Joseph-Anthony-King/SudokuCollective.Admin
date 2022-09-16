@@ -7,16 +7,16 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      "/api": {
-        target: "https://localhost:5001",
+      '/api': {
+        target: 'https://localhost:5001',
         changeOrigin: true,
       },
     }
   },
   chainWebpack: (config) => {
-    config.plugin("html").tap((args) => {
+    config.plugin('html').tap((args) => {
       args[0].title = `${process.env.VUE_APP_TITLE}`;
       return args;
     });
-  }
+  },
 }

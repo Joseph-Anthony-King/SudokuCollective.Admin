@@ -1,4 +1,4 @@
-import { IDifficulty } from "../interfaces/IDifficulty";
+import { IDifficulty } from '@/interfaces/domain/IDifficulty';
 
 export class Difficulty implements IDifficulty {
   id: number;
@@ -8,8 +8,8 @@ export class Difficulty implements IDifficulty {
 
   constructor(id?: number, name?: string, displayName?: string, difficultyLevel?: number) {
     this.id = id ? id : 0;
-    this.name = name ? name : "";
-    this.displayName = displayName ? displayName : "";
+    this.name = name ? name : '';
+    this.displayName = displayName ? displayName : '';
     this.difficultyLevel = difficultyLevel ? difficultyLevel : 0;
   }
 }
