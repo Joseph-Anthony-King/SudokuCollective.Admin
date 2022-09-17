@@ -1,6 +1,9 @@
 import express from 'express';
+import history from 'connect-history-api-fallback';
 
 const app = express();
+
+app.use(history({index: '/index.html'}));
 
 app.use('/', express.static('app/dist', {index: 'index.html'}));
 

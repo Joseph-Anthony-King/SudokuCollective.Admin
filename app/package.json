@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve-kestrel": "vue-cli-service serve --mode kestrel",
+    "serve-iis": "vue-cli-service serve --mode iisexpress",
     "build": "vue-cli-service build",
-    "build-kestrel": "vue-cli-service build --mode kestrel",
+    "build-dev": "vue-cli-service build --mode development",
+    "build-iis": "vue-cli-service build --mode iisexpress",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },

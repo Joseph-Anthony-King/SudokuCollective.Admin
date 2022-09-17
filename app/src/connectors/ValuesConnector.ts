@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-let getValuesEndpoint = 'api/v1/values';
-
-if (process.env.NODE_ENV !== 'development') {
-  getValuesEndpoint = `${process.env.VUE_APP_API_URL}${getValuesEndpoint}`;
-}
+const getValuesEndpoint = `${process.env.VUE_APP_API_URL}api/v1/values`;
 
 export class ValuesConnector {
   // eslint-disable-next-line
