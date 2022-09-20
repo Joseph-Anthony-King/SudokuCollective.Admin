@@ -26,7 +26,7 @@ export class ValuesService {
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
           '/swagger/index.html',
-          `${process.env.VUE_APP_API_URL}/swagger/index.html`
+          `${process.env.VUE_APP_API_URL}swagger/index.html`
         );
       }
 
