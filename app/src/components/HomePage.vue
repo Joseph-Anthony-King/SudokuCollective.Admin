@@ -1,6 +1,9 @@
 <template>
   <v-container fluid>
-    <div class="d-flex ma-12 pa-12 justify-center" v-if="missionStatement === ''">
+    <div
+      class="d-flex ma-12 pa-12 justify-center"
+      v-if="missionStatement === ''"
+    >
       <v-progress-circular
         indeterminate
         color="primary"
@@ -28,8 +31,10 @@
           <p class="motto text-center text-padding">
             Code... Create... Inspire...
           </p>
-          <p class="description text-center text-padding" v-html="missionStatement">
-          </p>
+          <p
+            class="description text-center text-padding"
+            v-html="missionStatement"
+          ></p>
         </v-col>
       </v-row>
     </v-card>
@@ -37,73 +42,82 @@
 </template>
 
 <script lang='ts'>
-  import { defineComponent, ref, watch } from 'vue';
-  import store from '@/store';
+import { defineComponent, ref, watch } from 'vue';
+import store from '@/store';
 
-  export default defineComponent({
-    name: 'HomePage',
-    setup() {
-      const missionStatement = ref(store.getters['valuesModule/getMissionStatement']);
-      watch(() => store.getters['valuesModule/getMissionStatement'], function() {
-        missionStatement.value = store.getters['valuesModule/getMissionStatement'];
-      });
-      return {
-        missionStatement,
+export default defineComponent({
+  name: 'HomePage',
+  setup() {
+    const missionStatement = ref(
+      store.getters['valuesModule/getMissionStatement']
+    );
+    watch(
+      () => store.getters['valuesModule/getMissionStatement'],
+      function () {
+        missionStatement.value =
+          store.getters['valuesModule/getMissionStatement'];
       }
-    }
-  }); 
+    );
+    return {
+      missionStatement,
+    };
+  },
+});
 </script>
 
 <style lang='scss' scoped>
-  .v-card {
-    @media (max-width: 600px) {
-      padding: 0 0 0 0 !important;
-      margin: 0 0 0 0 !important;
-    }
+.v-card {
+  @media (max-width: 600px) {
+    padding: 0 0 0 0 !important;
+    margin: 0 0 0 0 !important;
   }
-  .text-padding {
-    padding: 35px 70px 0 70px;
+}
+.text-padding {
+  padding: 35px 70px 0 70px;
+}
+.home-banner {
+  position: relative;
+  margin-bottom: 0;
+  border: 0;
+  border-color: transparent;
+  min-height: 500px;
+  background-image: url('../assets/banner.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.centered-welcome-message {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  color: white;
+  text-shadow: 2px 2px var(--v-secondary);
+}
+.centered-logo {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  filter: drop-shadow(2px 2px 2px var(--v-secondary));
+  @media (max-width: 600px) {
+    top: 55%;
   }
-  .home-banner {
-    position: relative;
-    margin-bottom: 0;
-    border: 0;
-    border-color: transparent;
-    min-height: 500px;
-    background-image: url('../assets/banner.jpg');
-    background-size: cover;
-    background-repeat:   no-repeat;
-    background-position: center center;
+  @media (min-width: 601px) {
+    top: 40%;
   }
-  .centered-welcome-message {
-    position: absolute;
-    top: 10%;
-    left: 0;
-    width: 100%;
-    color: white;
-    text-shadow: 2px 2px var(--v-secondary);
-  }
-  .centered-logo {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    filter: drop-shadow(2px 2px 2px var(--v-secondary));
-    @media (max-width: 600px) {
-      top: 55%;
-    }
-    @media (min-width: 601px) {
-      top: 40%;
-    }
-  }
-  .motto {
-    margin: auto;
-    font-style: italic;
-    color: var(--v-secondary);
-    font-size: 2em;
-  }
-  .description {
-    color: var(--v-secondary);
-    font-size: 1em;
-    padding-bottom: 50px;
-  }
+}
+.motto {
+  margin: auto;
+  font-style: italic;
+  color: var(--v-secondary);
+  font-size: 2.5em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+.description {
+  color: var(--v-secondary);
+  font-size: 1em;
+  padding-bottom: 50px;
+}
 </style>

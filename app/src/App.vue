@@ -6,6 +6,11 @@
         <router-view />
       </v-main>
     </div>
+    <div>
+      <v-footer>
+        <FooterNav />
+      </v-footer>
+    </div>
   </v-app>
 </template>
 
@@ -14,6 +19,7 @@ import { defineComponent, provide, ref } from 'vue';
 import { onMounted, onBeforeMount } from '@vue/runtime-core';
 import store from '@/store';
 import AppBar from '@/components/navigation/AppBar.vue';
+import FooterNav from '@/components/navigation/Footer.vue';
 import { IndexConnector } from '@/connectors/IndexConnector';
 import { ValuesConnector } from '@/connectors/ValuesConnector';
 import { ValuesService } from '@/services/ValuesService';
@@ -21,7 +27,7 @@ import { StaticUtilities } from '@/utilities/StaticUtilities';
 
 export default defineComponent({
   name: 'App',
-  components: { AppBar },
+  components: { AppBar, FooterNav },
   setup() {
     const indexConnector = ref(new IndexConnector());
     const valuesConnector = ref(new ValuesConnector());
