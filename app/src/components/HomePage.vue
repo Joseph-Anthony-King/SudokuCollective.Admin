@@ -111,6 +111,7 @@ export default defineComponent({
   font-style: italic;
   color: var(--v-secondary);
   font-size: 2.5em;
+  font-weight: 500;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
