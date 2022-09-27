@@ -1,4 +1,4 @@
-import { IDifficulty } from '@/interfaces/domain/IDifficulty';
+import { IDifficulty } from '@/interfaces/domain/iDifficulty';
 
 export class Difficulty implements IDifficulty {
   id: number;

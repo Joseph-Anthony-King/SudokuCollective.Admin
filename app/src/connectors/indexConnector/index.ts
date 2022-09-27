@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const getIndexEndpoint = `${process.env.VUE_APP_API_URL}api/index`;
+import { Endpoints } from '@/connectors/indexConnector/endpoints';
 
 export class IndexConnector {
   // eslint-disable-next-line
@@ -8,7 +7,7 @@ export class IndexConnector {
     try {
       const config = {
         method: 'get',
-        url: `${getIndexEndpoint}`,
+        url: Endpoints.getIndexEndpoint,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
