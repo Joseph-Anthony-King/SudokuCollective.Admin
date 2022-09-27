@@ -7,11 +7,11 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue'
+  import { defineComponent } from 'vue'
 
-export default defineComponent({
-  name: 'AboutView',
-})
+  export default defineComponent({
+    name: 'AboutView',
+  })
 </script>
 
 <style lang='scss' scoped>

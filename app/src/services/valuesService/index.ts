@@ -1,9 +1,9 @@
-import { IndexConnector } from '@/connectors/IndexConnector';
-import { ValuesConnector } from '@/connectors/ValuesConnector';
-import { Difficulty } from '@/models/domain/Difficulty';
-import { GalleryApp } from '@/models/domain/GalleryApp';
-import { DropdownItem } from '@/models/infrastructure/DropdownItem';
-import { IServicePayload } from '@/interfaces/infrastructure/IServicePayload';
+import { IndexConnector } from '@/connectors/indexConnector';
+import { ValuesConnector } from '@/connectors/valuesConnector';
+import { Difficulty } from '@/models/domain/difficulty';
+import { GalleryApp } from '@/models/domain/galleryApp';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 
 export class ValuesService {
   indexConnector: IndexConnector;

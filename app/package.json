@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "serve-iis": "vue-cli-service serve --mode iisexpress",
     "serve-staging": "vue-cli-service serve --mode staging",
+    "serve-prod": "vue-cli-service serve --mode production",
     "build": "vue-cli-service build",
     "build-dev": "vue-cli-service build --mode development",
     "build-iis": "vue-cli-service build --mode iisexpress",

@@ -1,0 +1,16 @@
+export enum MutationTypes {
+    INITIALIZEPUZZLE = 'initializePuzzle',
+    UPDATEPUZZLE = 'updatePuzzle',
+    REMOVEPUZZLE = 'removePuzzle',
+    INITIALIZEGAME = 'initializeGame',
+    UPDATEGAME = 'updateGame',
+    REMOVEGAME = 'removeGame',
+    INITIALIZEINITIALGAME = 'initializeInitialGame',
+    UPDATEINITIALGAME = 'updateInitialGame',
+    REMOVEINITIALGAME = 'removeInitialGame',
+    UPDATEDIFFICULTIES = 'updateDifficulties',
+    REMOVEDIFFICULTIES = 'removeDifficulties',
+    UPDATEPLAYGAME = 'updatePlayGame',
+    UPDATESELECTEDDIFFICULTY = 'updateSelectedDifficulty',
+    REMOVESELECTEDDIFFICULTY = 'removeSelectedDifficulty',
+}

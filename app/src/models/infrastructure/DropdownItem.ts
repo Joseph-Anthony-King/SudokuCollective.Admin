@@ -1,4 +1,4 @@
-import { IDropdownItem } from '@/interfaces/infrastructure/IDropdownItem';
+import { IDropdownItem } from '@/interfaces/infrastructure/iDropdownItem';
 
 export class DropdownItem implements IDropdownItem {
   label: string;

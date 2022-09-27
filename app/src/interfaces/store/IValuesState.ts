@@ -1,6 +1,6 @@
-import { IDropdownItem } from '@/interfaces/infrastructure/IDropdownItem'
-import { IDifficulty } from '@/interfaces/domain/IDifficulty'
-import { IGalleryApp } from '@/interfaces/domain/IGalleryApp'
+import { IDropdownItem } from '@/interfaces/infrastructure/iDropdownItem'
+import { IDifficulty } from '@/interfaces/domain/iDifficulty'
+import { IGalleryApp } from '@/interfaces/domain/iGalleryApp'
 
 export interface IValuesState {
     difficulties: Array<IDifficulty>,
