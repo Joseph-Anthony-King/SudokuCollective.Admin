@@ -1,6 +1,8 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import valuesModule from '@/store/modules/valuesModule/valuesModule';
+import { MutationTypes } from '@/store/mutationTypes';
+import valuesModule from '@/store/modules/valuesModule';
+import sudokuModule from '@/store/modules/sudokuModule';
 
 export default createStore({
   state: {
@@ -16,10 +18,10 @@ export default createStore({
     }
   },
   mutations: {
-    updateLicense(state, license: string) {
+    [MutationTypes.UPDATELICENSE](state, license: string) {
       state.license = license;
     },
-    updateExpirationDate(state) {
+    [MutationTypes.UPDATEEXPIRATIONDATE](state) {
       const currentDate = new Date();
       state.expirationDate.setDate(currentDate.getDate() + 1);
     },
@@ -28,13 +30,14 @@ export default createStore({
     addLicense({ commit, state }, license: string) {
     
       if (new Date() > state.expirationDate && license !== '') {
-        commit('updateLicense', license);
-        commit('updateExpirationDate');
+        commit(MutationTypes.UPDATELICENSE, license);
+        commit(MutationTypes.UPDATEEXPIRATIONDATE);
       }
     }
   },
   modules: {
     valuesModule,
+    sudokuModule,
   },
   plugins: [createPersistedState()],
 })

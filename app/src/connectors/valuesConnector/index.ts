@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const getValuesEndpoint = `${process.env.VUE_APP_API_URL}api/v1/values`;
+import { Endpoints } from '@/connectors/valuesConnector/endpoints';
 
 export class ValuesConnector {
   // eslint-disable-next-line
@@ -8,7 +7,7 @@ export class ValuesConnector {
     try {
       const config = {
         method: 'post',
-        url: `${getValuesEndpoint}`,
+        url: Endpoints.getValuesEndpoint,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',

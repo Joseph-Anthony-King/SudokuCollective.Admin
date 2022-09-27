@@ -1,4 +1,4 @@
-import { IGalleryApp } from '@/interfaces/domain/IGalleryApp';
+import { IGalleryApp } from '@/interfaces/domain/iGalleryApp';
 
 export class GalleryApp implements IGalleryApp {
   id: number;
