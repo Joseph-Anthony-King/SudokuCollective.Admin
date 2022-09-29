@@ -1,5 +1,5 @@
 <template>
-  <v-footer>
+  <v-footer class="app-viewport">
     <v-card
       elevation="0"
       rounded="0"
