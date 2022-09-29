@@ -1,5 +1,5 @@
 <template>
-  <v-footer>
+  <v-footer class="app-viewport">
     <v-card
       elevation="0"
       rounded="0"
@@ -7,7 +7,7 @@
       class="text-center"
     >
 
-      <v-divider class="app-viewport"></v-divider>
+      <v-divider></v-divider>
 
       <v-card-text>
         © Copyright {{ getCopyrightYear }}:
