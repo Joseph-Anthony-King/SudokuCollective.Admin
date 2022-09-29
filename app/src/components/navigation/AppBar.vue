@@ -30,15 +30,69 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  <router-link to="/about" class="menu-item">
-                    About
-                  </router-link>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <div v-for="(link, index) in interiorLinks" :key="index">
+              <v-tooltip bottom v-if="link.condition">
+                <template v-slot:activator="{ props }">
+                  <v-list-item v-bind="props">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <a
+                          :href="link.url"
+                          :target="link.target"
+                          class="menu-item"
+                        >
+                          <v-icon>{{ link.mdiIcon }}</v-icon>
+                          <span class="mr-2">{{ link.title }}</span>
+                        </a>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+                <span>{{ link.tooltip }}</span>
+              </v-tooltip>
+            </div>
+            <hr v-if="outsideLinks.length > 1" class="mx-2" />
+            <v-tooltip bottom>
+              <template v-slot:activator="{ props }">
+                <v-list-item
+                  v-if="outsideLinks.length > 1"
+                  v-bind="props"
+                >
+                  <v-menu left bottom>
+                    <template v-slot:activator="{ props }">
+                      <div class="menu-item" v-bind="props">
+                        <span class="mr-2">Links</span>
+                      </div>
+                    </template>
+                    <v-list class="menu-link-list">
+                      <!-- outside links -->
+                      <div v-for="(link, index) in outsideLinks" :key="index">
+                        <v-tooltip bottom v-if="link.condition">
+                          <template v-slot:activator="{ props }">
+                            <v-list-item v-bind="props">
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  <a
+                                    :href="link.url"
+                                    :target="link.target"
+                                    class="menu-item"
+                                  >
+                                    <v-icon>{{ link.mdiIcon }}</v-icon>
+                                    <span class="mr-2">{{ link.title }}</span>
+                                  </a>
+                                </v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </template>
+                          <span>{{ link.tooltip }}</span>
+                        </v-tooltip>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </v-list-item>
+              </template>
+              <span>Links to sites and resources</span>
+            </v-tooltip>
           </v-list>
         </v-menu>
       </div>
@@ -47,10 +101,30 @@
 </template>
 
 <script lang='ts'>
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
+  import { onBeforeMount } from '@vue/runtime-core';
+  import { InteriorLinks } from "@/utilities/links/interiorLinks";
+  import { OutsideLinks } from "@/utilities/links/outsideLinks";
+  import { MenuItem } from '@/models/infrastructure/menuItem';
 
   export default defineComponent({
     name: 'AppBar',
+    setup() {
+      const interiorLinks = ref(Array<MenuItem>());
+      const outsideLinks = ref(Array<MenuItem>());
+      onBeforeMount(() => {
+        InteriorLinks.forEach((link: MenuItem) => {
+          interiorLinks.value.push(link);
+        });
+        OutsideLinks.forEach((link: MenuItem) => {
+          outsideLinks.value.push(link);
+        });
+      });
+      return {
+        interiorLinks,
+        outsideLinks
+      }
+    }
   }); 
 </script>
 
@@ -80,7 +154,7 @@
   }
   .menu-item {
     text-decoration: none !important;
-    color: var(--v-secondary);
+    color: #63666A;
     cursor: pointer;
   }
 </style>
