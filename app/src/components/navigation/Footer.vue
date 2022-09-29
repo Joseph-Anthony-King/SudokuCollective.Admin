@@ -7,7 +7,7 @@
       class="text-center"
     >
 
-      <v-divider></v-divider>
+      <v-divider class="app-viewport"></v-divider>
 
       <v-card-text>
         © Copyright {{ getCopyrightYear }}:
