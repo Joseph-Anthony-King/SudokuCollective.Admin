@@ -13,9 +13,7 @@
             transition="scale-transition"
             width="40"
           />
-          <span class="nav-text">
-            Sudoku Collective Admin Vue
-          </span>
+          <span class="nav-text"> Sudoku Collective Admin Vue </span>
         </router-link>
       </v-app-bar-title>
 
@@ -54,10 +52,7 @@
             <hr v-if="outsideLinks.length > 1" class="mx-2" />
             <v-tooltip bottom>
               <template v-slot:activator="{ props }">
-                <v-list-item
-                  v-if="outsideLinks.length > 1"
-                  v-bind="props"
-                >
+                <v-list-item v-if="outsideLinks.length > 1" v-bind="props">
                   <v-menu left bottom>
                     <template v-slot:activator="{ props }">
                       <div class="menu-item" v-bind="props">
@@ -100,61 +95,52 @@
   </v-app-bar>
 </template>
 
-<script lang='ts'>
-  import { defineComponent, ref } from 'vue';
-  import { onBeforeMount } from '@vue/runtime-core';
-  import { InteriorLinks } from "@/utilities/links/interiorLinks";
-  import { OutsideLinks } from "@/utilities/links/outsideLinks";
-  import { MenuItem } from '@/models/infrastructure/menuItem';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { InteriorLinks } from '@/utilities/links/interiorLinks';
+import { OutsideLinks } from '@/utilities/links/outsideLinks';
 
-  export default defineComponent({
-    name: 'AppBar',
-    setup() {
-      const interiorLinks = ref(Array<MenuItem>());
-      const outsideLinks = ref(Array<MenuItem>());
-      onBeforeMount(() => {
-        InteriorLinks.forEach((link: MenuItem) => {
-          interiorLinks.value.push(link);
-        });
-        OutsideLinks.forEach((link: MenuItem) => {
-          outsideLinks.value.push(link);
-        });
-      });
-      return {
-        interiorLinks,
-        outsideLinks
-      }
-    }
-  }); 
+export default defineComponent({
+  name: 'AppBar',
+  setup() {
+    const interiorLinks = ref(InteriorLinks);
+    const outsideLinks = ref(OutsideLinks);
+
+    return {
+      interiorLinks,
+      outsideLinks,
+    };
+  },
+});
 </script>
 
-<style lang='scss' scoped>
-  .inline-flex {
-    display: inline-flex;
+<style lang="scss" scoped>
+.inline-flex {
+  display: inline-flex;
+}
+.header-logo {
+  margin: 0 0 0 10px;
+}
+.nav-text {
+  color: #fff;
+  font-size: x-large;
+  font-weight: bolder;
+  text-shadow: 2px 2px var(--v-secondary);
+  margin: auto;
+  padding: auto;
+  @media (max-width: 1264px) {
+    display: none;
   }
-  .header-logo {
-    margin: 0 0 0 10px;
-  }
-  .nav-text {
-    color: #fff;
-    font-size: x-large;
-    font-weight: bolder;
-    text-shadow: 2px 2px var(--v-secondary);
-    margin: auto;
-    padding: auto;
-    @media (max-width: 1264px) {
-      display: none;
-    }
-  }
-  .menu-text {
-    color: #fff;
-    text-shadow: 2px 2px var(--v-secondary);
-    margin: auto;
-    padding: auto;
-  }
-  .menu-item {
-    text-decoration: none !important;
-    color: #63666A;
-    cursor: pointer;
-  }
+}
+.menu-text {
+  color: #fff;
+  text-shadow: 2px 2px var(--v-secondary);
+  margin: auto;
+  padding: auto;
+}
+.menu-item {
+  text-decoration: none !important;
+  color: #63666a;
+  cursor: pointer;
+}
 </style>
