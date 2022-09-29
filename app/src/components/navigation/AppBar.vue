@@ -3,7 +3,7 @@
     <div class="d-flex app-viewport">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-app-bar-title class="title">
+      <v-app-bar-title>
         <router-link to="/" class="inline-flex">
           <v-img
             alt="Vuetify Logo"
@@ -18,6 +18,8 @@
           </span>
         </router-link>
       </v-app-bar-title>
+
+      <v-spacer></v-spacer>
 
       <div class="inline-flex">
         <v-menu bottom>
@@ -58,14 +60,6 @@
   }
   .header-logo {
     margin: 0 0 0 10px;
-  }
-  .title {
-    @media (min-width: 960px) and (max-width: 1264px) {
-      min-width: 260%;
-    }
-    @media (min-width: 1264px) and (max-width: 1920px) {
-      min-width: 260%;
-    }
   }
   .nav-text {
     color: #fff;

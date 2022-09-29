@@ -48,15 +48,19 @@
 
 <style lang='scss'>
   .app-viewport {
-    @media (max-width: 600px) {
+    @media (max-width: 1920px) {
+      display: flex;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 100%;
       min-width: 100%;
     }
     @media (min-width: 1921px) {
       display: flex;
-      margin-left: auto !important;
-      margin-right: auto !important;
-      max-width: 60% !important;
-      min-width: 60% !important;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 60%;
+      min-width: 60%;
     }
   }
   a {

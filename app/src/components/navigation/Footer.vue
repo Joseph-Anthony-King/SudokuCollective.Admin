@@ -1,20 +1,26 @@
 <template>
-  <v-container>
-    <v-row class="text-right">
-      <v-col cols="12">
-        <div>
-          © Copyright {{ getCopyrightYear }}:
-          <a
-            href="https://www.linkedin.com/in/joseph-king-23650256/"
-            target="_blank"
-            title="LinkedIn Profile: Joseph Anthony King"
-          >
-            Joseph-Anthony-King</a
-          >
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-footer>
+    <v-card
+      elevation="0"
+      rounded="0"
+      width="100%"
+      class="text-center"
+    >
+
+      <v-divider></v-divider>
+
+      <v-card-text>
+        © Copyright {{ getCopyrightYear }}:
+        <a
+          href="https://www.linkedin.com/in/joseph-king-23650256/"
+          target="_blank"
+          title="LinkedIn Profile: Joseph Anthony King"
+        >
+          Joseph-Anthony-King</a
+        >
+      </v-card-text>
+    </v-card>
+  </v-footer>
 </template>
 
 <script lang='ts'>
