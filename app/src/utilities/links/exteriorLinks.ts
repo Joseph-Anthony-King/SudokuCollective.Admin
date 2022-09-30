@@ -1,6 +1,6 @@
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-export const OutsideLinks: Array<MenuItem> = [
+export const ExteriorLinks: Array<MenuItem> = [
   new MenuItem(
     `${process.env.VUE_APP_API_URL}`,
     'API Status',
