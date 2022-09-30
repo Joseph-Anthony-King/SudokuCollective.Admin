@@ -1,0 +1,3 @@
+NODE_ENV=iisexpress
+VUE_APP_LICENSE=[Your value here]
+VUE_APP_API_URL=[Your value here]
