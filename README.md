@@ -13,6 +13,6 @@ In the app directory you will find dummy implementations of the **.env** configu
 
 As note above in requirements you will need the [vue cli - version 5.0.8](https://cli.vuejs.org/), follow the link for installation instructions.  You will also need a local running instance of the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).  Installation instructions for the API can be found in the [README](https://github.com/Joseph-Anthony-King/SudokuCollective/blob/master/README.md) file.  The [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective) has dependencies on [PostgreSQL 14](https://www.postgresql.org/download/) and [Redis Server - version 6.2.7](https://redis.io/download).
 
-Once this project and the api are installed this project can be started with the **app** directory with the following command:
+Once this project and the api are installed this project can be started within the **app** directory with the following command:
 
 `npm run serve`
