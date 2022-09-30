@@ -49,10 +49,10 @@
                 <span>{{ link.tooltip }}</span>
               </v-tooltip>
             </div>
-            <hr v-if="outsideLinks.length > 1" class="mx-2" />
+            <hr v-if="exteriorLinks.length > 1" class="mx-2" />
             <v-tooltip bottom>
               <template v-slot:activator="{ props }">
-                <v-list-item v-if="outsideLinks.length > 1" v-bind="props">
+                <v-list-item v-if="exteriorLinks.length > 1" v-bind="props">
                   <v-menu left bottom>
                     <template v-slot:activator="{ props }">
                       <div class="menu-item" v-bind="props">
@@ -61,7 +61,7 @@
                     </template>
                     <v-list class="menu-link-list">
                       <!-- outside links -->
-                      <div v-for="(link, index) in outsideLinks" :key="index">
+                      <div v-for="(link, index) in exteriorLinks" :key="index">
                         <v-tooltip bottom v-if="link.condition">
                           <template v-slot:activator="{ props }">
                             <v-list-item v-bind="props">
@@ -97,18 +97,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
 import { InteriorLinks } from '@/utilities/links/interiorLinks';
-import { OutsideLinks } from '@/utilities/links/outsideLinks';
 
 export default defineComponent({
   name: 'AppBar',
   setup() {
     const interiorLinks = ref(InteriorLinks);
-    const outsideLinks = ref(OutsideLinks);
+    const exteriorLinks = ref(ExteriorLinks);
 
     return {
       interiorLinks,
-      outsideLinks,
+      exteriorLinks,
     };
   },
 });
