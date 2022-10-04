@@ -112,7 +112,7 @@ export default defineComponent({
   color: var(--v-secondary);
   font-size: 2.5em;
   font-weight: 500;
-  font-family: 'Segoe UI';
+  font-family: 'SegoeUI-BoldItalic', sans-serif;
 }
 .description {
   color: var(--v-secondary);

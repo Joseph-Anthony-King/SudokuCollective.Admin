@@ -1,8 +1,12 @@
 import { createStore } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
+import VuexPersistence from 'vuex-persist';
 import { MutationTypes } from '@/store/mutationTypes';
 import valuesModule from '@/store/modules/valuesModule';
 import sudokuModule from '@/store/modules/sudokuModule';
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+});
 
 export default createStore({
   state: {
@@ -39,5 +43,5 @@ export default createStore({
     valuesModule,
     sudokuModule,
   },
-  plugins: [createPersistedState()],
+  plugins: [vuexLocal.plugin],
 })
