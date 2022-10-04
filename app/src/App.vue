@@ -47,6 +47,30 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@font-face {
+  font-family: 'SegoeUI';
+  src: url('@/assets/fonts/SegoeUI.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SegoeUI-Bold';
+  src: url('@/assets//fonts/SegoeUI-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SegoeUI-BoldItalic';
+  src: url('@/assets/fonts/SegoeUI-BoldItalic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SegoeUI-Italic';
+  src: url('@/assets/fonts/SegoeUI-Italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SegoeUI-Light';
+  src: url('@/assets/fonts/SegoeUI-Light.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SegoeUI-SemiBold';
+  src: url('@/assets/fonts/SegoeUI-SemiBold.woff2') format('woff2');
+}
 .app-viewport {
   @media (max-width: 1920px) {
     display: flex;
