@@ -11,4 +11,5 @@ export interface ISudokuState {
     serviceResult: boolean | null,
     serviceMessage: string | null,
     processing: boolean,
+    isSolveDisabled: boolean | null,
 }
