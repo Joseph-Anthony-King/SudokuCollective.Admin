@@ -4,7 +4,7 @@
 </template>
 
 <script lang='ts'>
-  import { defineComponent, Ref, ref, watch } from 'vue';
+  import { defineComponent, onBeforeMount, Ref, ref, watch } from 'vue';
   import store from '@/store';
 	import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
   import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
@@ -20,6 +20,9 @@
           loading.value = store.getters['sudokuModule/getProcessing'];
         }
       );
+      onBeforeMount(() => {
+				store.dispatch('updateProcessingMessage', 'processing, please do not navigate away...');
+      });
       return {
 				loading,
       }
