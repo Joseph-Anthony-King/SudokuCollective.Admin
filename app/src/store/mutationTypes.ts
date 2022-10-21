@@ -1,4 +1,5 @@
 export enum MutationTypes {
     UPDATELICENSE = 'updateLicense',
-    UPDATEEXPIRATIONDATE = 'updateExpirationDate'
+    UPDATEEXPIRATIONDATE = 'updateExpirationDate',
+    UPDATEPROCESSINGMESSAGE = 'updateProcessingMessage'
 }

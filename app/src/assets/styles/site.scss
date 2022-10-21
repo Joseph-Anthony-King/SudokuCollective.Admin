@@ -1,0 +1,57 @@
+@font-face {
+	font-family: 'SegoeUI';
+	src: url('@/assets/fonts/SegoeUI.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'SegoeUI-Bold';
+	src: url('@/assets//fonts/SegoeUI-Bold.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'SegoeUI-BoldItalic';
+	src: url('@/assets/fonts/SegoeUI-BoldItalic.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'SegoeUI-Italic';
+	src: url('@/assets/fonts/SegoeUI-Italic.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'SegoeUI-Light';
+	src: url('@/assets/fonts/SegoeUI-Light.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'SegoeUI-SemiBold';
+	src: url('@/assets/fonts/SegoeUI-SemiBold.woff2') format('woff2');
+}
+@media only screen and (max-width: 481px) {
+	.v-card-text {
+		padding: 0 !important;
+		input {
+			padding: 0;
+		}
+	}
+}
+@media screen and (max-width: 1920px) {
+	.app-viewport {
+		display: flex;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 100%;
+		min-width: 100%;
+	}
+}
+@media screen and (min-width: 1921px) {
+	.app-viewport {
+		display: flex;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 60%;
+		min-width: 60%;
+	}
+}
+a {
+	text-decoration: none;
+	color: #1976d2;
+}
+.button-full {
+  width: 100%;
+}
