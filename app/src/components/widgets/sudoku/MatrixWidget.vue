@@ -178,7 +178,6 @@
 						matrix.value[i][j] = '';
 					}
 				}
-				store.dispatch('updateProcessingMessage', 'processing, please do not navigate away...');
 			});
 			
 			return {
