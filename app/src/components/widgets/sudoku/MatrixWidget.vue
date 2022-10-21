@@ -293,7 +293,7 @@ export default defineComponent({
 @media only screen and (min-width: 412px) and (max-width: 482px) {
   .v-text-field {
     max-width: 42px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 14px;
@@ -303,7 +303,7 @@ export default defineComponent({
 @media only screen and (min-width: 483px) and (max-width: 491px) {
   .v-text-field {
     max-width: 43px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -313,7 +313,7 @@ export default defineComponent({
 @media only screen and (min-width: 492px) and (max-width: 500px) {
   .v-text-field {
     max-width: 44px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -323,7 +323,7 @@ export default defineComponent({
 @media only screen and (min-width: 501px) and (max-width: 509px) {
   .v-text-field {
     max-width: 45px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -333,7 +333,7 @@ export default defineComponent({
 @media only screen and (min-width: 510px) and (max-width: 518px) {
   .v-text-field {
     max-width: 46px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -343,7 +343,7 @@ export default defineComponent({
 @media only screen and (min-width: 519px) and (max-width: 527px) {
   .v-text-field {
     max-width: 47px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -353,7 +353,7 @@ export default defineComponent({
 @media only screen and (min-width: 528px) and (max-width: 536px) {
   .v-text-field {
     max-width: 48px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -363,7 +363,7 @@ export default defineComponent({
 @media only screen and (min-width: 537px) and (max-width: 545px) {
   .v-text-field {
     max-width: 49px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
@@ -373,7 +373,7 @@ export default defineComponent({
 @media only screen and (min-width: 546px) and (max-width: 554px) {
   .v-text-field {
     max-width: 50px;
-    max-height: 55px;
+    max-height: 56px;
     font-weight: bold;
     :deep(input) {
       font-size: 16px;
