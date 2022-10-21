@@ -55,3 +55,8 @@ a {
 .button-full {
   width: 100%;
 }
+/* removes spinners from textfields on 
+   the sudoku page for Firefox*/
+.sudoku-cell input[type="number"] {
+	-moz-appearance: textfield;
+}
