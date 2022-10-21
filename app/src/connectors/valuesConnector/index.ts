@@ -3,11 +3,11 @@ import { Endpoints } from '@/connectors/valuesConnector/endpoints';
 
 export class ValuesConnector {
   // eslint-disable-next-line
-  async getValues(): Promise<any> {
+  async getValuesAsync(): Promise<any> {
     try {
       const config = {
         method: 'post',
-        url: Endpoints.getValuesEndpoint,
+        url: Endpoints.getEndpoint,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',

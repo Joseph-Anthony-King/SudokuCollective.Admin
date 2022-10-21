@@ -8,7 +8,7 @@ export class MenuItem implements IMenuItem {
   target: string;
   condition: boolean;
 	
-  constructor(url?: string, title?: string, tooltip?: string, mdiIcon?: string, target?: string, condition?: boolean) {
+  constructor (url?: string, title?: string, tooltip?: string, mdiIcon?: string, target?: string, condition?: boolean) {
     this.url = url ? url : "";
     this.title = title ? title : "";
     this.tooltip = tooltip ? tooltip : "";
