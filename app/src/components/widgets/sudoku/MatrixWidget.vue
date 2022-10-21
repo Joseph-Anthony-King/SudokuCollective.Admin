@@ -8,14 +8,14 @@
 				variant="outlined"
 				v-model="row[cellIndex]"
 				@blur="validateEntry(rowIndex, cellIndex)"
-        type="number"
-        min="1"
-        max="9"
-        :bg-color="applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'"
+				type="number"
+				min="1"
+				max="9"
+				:bg-color="applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'"
 				:class="applyTextColorStyling(rowIndex, cellIndex)"
 				class="sudoku-cell ma-0 pa-0"
 				:readonly="isReadOnly(rowIndex, cellIndex)"
-			></v-text-field>
+				></v-text-field>
     </v-row>
 	</div>
 </template>
@@ -55,11 +55,11 @@
 							sudoku[i][j] = matrix.value[i][j];
 						}
 					}
-          if (gameState === GameState.PLAYGAME) {
-            store.dispatch('sudokuModule/updateGame', sudoku);
-          } else if (gameState === GameState.SOLVESUDOKU) {
-            store.dispatch('sudokuModule/updatePuzzle', sudoku);
-          }
+					if (gameState === GameState.PLAYGAME) {
+						store.dispatch('sudokuModule/updateGame', sudoku);
+					} else if (gameState === GameState.SOLVESUDOKU) {
+						store.dispatch('sudokuModule/updatePuzzle', sudoku);
+					}
 				}
 			}
 
@@ -120,9 +120,9 @@
 				}
 			);
 
-      watch(
-        () => store.getters['sudokuModule/getGame'],
-        function () {
+			watch(
+				() => store.getters['sudokuModule/getGame'],
+				function () {
 					if (gameState === GameState.PLAYGAME) {
 						const game = store.getters['sudokuModule/getGame'];
 						matrix.value = Array<Array<string>>(9);
@@ -134,8 +134,8 @@
 							}
 						}
 					}
-        }
-      );
+				}
+			);
 
 			watch(
 				() => store.getters['sudokuModule/getPuzzle'],
@@ -209,7 +209,10 @@
 		.v-text-field {
 			max-width: 24px;
 			max-height: 48px;
-			font-size: xx-small;
+			font-weight: bold;
+			:deep(input) {
+				font-size: 16px;
+			}
 		}
 	}
 	/* Moto G4, Galaxy S5, iPhone 5/SE */
@@ -217,7 +220,10 @@
 		.v-text-field {
 			max-width: 28px;
 			max-height: 48px;
-			font-size: medium;
+			font-weight: bold;
+			:deep(input) {
+				font-size: 16px;
+			}
 		}
 	}
 	/* iPhone 6/7/8, iPhone X, iPhone 12 */
@@ -225,8 +231,10 @@
 		.v-text-field {
 			max-width: 38px;
 			max-height: 54px;
-			font-size: x-large;
 			font-weight: bold;
+			:deep(input) {
+				font-size: 16px;
+			}
 		}
 	}
 	/* Pixel 2, Pixel 2 XL, Galaxy Note 10+ */
@@ -234,8 +242,10 @@
 		.v-text-field {
 			max-width: 48px;
 			max-height: 54px;
-			font-size: x-large;
 			font-weight: bold;
+			:deep(input) {
+				font-size: 18px;
+			}
 		}
 	}
 	/* iPhone 6/7/8 Plus, Surface Duo - Folded */
@@ -243,21 +253,36 @@
 		.v-text-field {
 			max-width: 42px;
 			max-height: 54px;
-			font-size: x-large;
 			font-weight: bold;
+			:deep(input) {
+				font-size: 18px;
+			}
 		}
 	}
 	/* iPhone 6/7/8 Plus, Surface Duo - Folded */
 	@media only screen and (min-width: 519px) and (max-width: 642px) {
 		.v-text-field {
-			max-width: 54px;
+			max-width: 47px;
 			max-height: 54px;
-			font-size: x-large;
 			font-weight: bold;
+			:deep(input) {
+				font-size: 21px;
+			}
 		}
 	}
 	/* desktop */
-	@media only screen and (min-width: 643px) {
+	@media only screen and (min-width: 643px) and (max-width: 1920px) {
+		.v-text-field {
+			max-width: 58px;
+			max-height: 58px;
+			font-weight: bold;
+			:deep(input) {
+				font-size: 24px;
+			}
+		}
+	}
+	/* desktop */
+	@media only screen and (min-width: 1921px) {
 		.v-text-field {
 			max-width: 66px;
 			max-height: 68px;

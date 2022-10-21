@@ -121,6 +121,8 @@
 					} else {
 						return false;
 					}
+				} else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
+					return store.getters['sudokuModule/getIsSolvedDisabled'];
 				} else {
 					return false;
 				}
