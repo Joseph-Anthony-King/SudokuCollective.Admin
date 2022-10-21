@@ -6,77 +6,91 @@ import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
+import { GameStates } from '@/utilities/dropdowns/gameStates';
 
 const valuesModule = {
   namespaced: true,
   state: (): IValuesState => ({
-    difficulties: Array<Difficulty>(),
-    releaseEnvironments: Array<DropdownItem>(),
-    sortValues: Array<DropdownItem>(),
-    timeFrames: Array<DropdownItem>(),
-    gallery: Array<GalleryApp>(),
+    difficulties: null,
+    releaseEnvironments: null,
+    sortValues: null,
+    timeFrames: null,
+    gameStates: null,
+    gallery: null,
     missionStatement: '',
     expirationDate: new Date(),
   }),
   getters: {
-    getState(state: IValuesState) {
+    getState(state: IValuesState): IValuesState {
       return state;
     },
-    getDifficulties(state: IValuesState) {
+    getDifficulties(state: IValuesState): Array<Difficulty> | null {
       return state.difficulties;
     },
-    getReleaseEnvironments(state: IValuesState) {
+    getReleaseEnvironments(state: IValuesState): Array<DropdownItem> | null {
       return state.releaseEnvironments;
     },
-    getSortValues(state: IValuesState) {
+    getSortValues(state: IValuesState): Array<DropdownItem> | null {
       return state.sortValues;
     },
-    getAppliedSortValue(state: IValuesState, apply: string) {
-      return state.sortValues.filter(
-        sortValue => { 
-          return sortValue.appliesTo.includes(apply)
-        });
+    getAppliedSortValue(state: IValuesState, apply: string): Array<DropdownItem> | null {
+      if (state.sortValues !== null) {
+        return state.sortValues.filter(
+          sortValue => { 
+            return sortValue.appliesTo.includes(apply)
+          });
+      } else {
+        return null;
+      }
     },
-    getTimeFrames(state: IValuesState) {
+    getTimeFrames(state: IValuesState): Array<DropdownItem> | null {
       return state.timeFrames;
     },
-    getGallery(state: IValuesState) {
+    getGameStates(state: IValuesState): Array<DropdownItem> | null {
+      return state.gameStates
+    },
+    getGallery(state: IValuesState): Array<GalleryApp> | null {
       return state.gallery;
     },
-    getMissionStatement(state: IValuesState) {
+    getMissionStatement(state: IValuesState): string | null {
       return state.missionStatement;
     }
   },
   mutations: {
-    [MutationTypes.UPDATEDIFFICULTIES](state: IValuesState, difficulties: Difficulty[]) {
+    [MutationTypes.UPDATEDIFFICULTIES](state: IValuesState, difficulties: Difficulty[]): void {
       state.difficulties = difficulties;
     },
-    [MutationTypes.UPDATERELEASEENVIRONMENTS](state: IValuesState, releaseEnvironments: DropdownItem[]) {
+    [MutationTypes.UPDATERELEASEENVIRONMENTS](state: IValuesState, releaseEnvironments: DropdownItem[]): void {
       state.releaseEnvironments = releaseEnvironments;
     },
-    [MutationTypes.UPDATESORTVALUES](state: IValuesState, sortValues: DropdownItem[]) {
+    [MutationTypes.UPDATESORTVALUES](state: IValuesState, sortValues: DropdownItem[]): void {
       state.sortValues = sortValues;
     },
-    [MutationTypes.UPDATETIMEFRAMES](state: IValuesState, timeFrames: DropdownItem[]) {
+    [MutationTypes.UPDATETIMEFRAMES](state: IValuesState, timeFrames: DropdownItem[]): void {
       state.timeFrames = timeFrames;
     },
-    [MutationTypes.UPDATEGALLERY](state: IValuesState, gallery: GalleryApp[]) {
+    [MutationTypes.UPDATEGAMESTATES](state: IValuesState, gameStates: DropdownItem[]): void {
+      state.gameStates = gameStates;
+    },
+    [MutationTypes.UPDATEGALLERY](state: IValuesState, gallery: GalleryApp[]): void {
       state.gallery = gallery;
     },
-    [MutationTypes.UPDATEMISSIONSTATEMENT](state: IValuesState, missionStatement: string) {
+    [MutationTypes.UPDATEMISSIONSTATEMENT](state: IValuesState, missionStatement: string): void {
       state.missionStatement = missionStatement;
     },
-    [MutationTypes.UPDATEEXPIRATIONDATE](state: IValuesState) {
+    [MutationTypes.UPDATEEXPIRATIONDATE](state: IValuesState): void {
       const currentDate = new Date();
-      state.expirationDate.setDate(currentDate.getDate() + 1);
+      if (state.expirationDate !== null) {
+        state.expirationDate.setDate(currentDate.getDate() + 1);
+      }
     },
   },
   actions: {
-    async initializeModule({ commit, state }: { commit: Commit, state: IValuesState }, valuesService: ValuesService) {
+    async initializeModuleAsync({ commit, state }: { commit: Commit, state: IValuesState }, valuesService: ValuesService): Promise<void> {
 
-      if (new Date() > state.expirationDate) {
+      if (state.expirationDate !== null && new Date() > state.expirationDate) {
 
-        const result: IServicePayload = await valuesService.getValues();
+        const result: IServicePayload = await valuesService.getValuesAsync();
   
         if (result.missionStatement) {
           commit(MutationTypes.UPDATEMISSIONSTATEMENT, result.missionStatement);
@@ -101,6 +115,8 @@ const valuesModule = {
         if (result.gallery) {
           commit(MutationTypes.UPDATEGALLERY, result.gallery);
         }
+
+        commit(MutationTypes.UPDATEGAMESTATES, GameStates);
         
         commit(MutationTypes.UPDATEEXPIRATIONDATE);
       }

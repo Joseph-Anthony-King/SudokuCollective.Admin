@@ -95,52 +95,51 @@
   </v-app-bar>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
-import { InteriorLinks } from '@/utilities/links/interiorLinks';
+<script lang='ts'>
+  import { defineComponent, ref } from 'vue';
+  import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
+  import { InteriorLinks } from '@/utilities/links/interiorLinks';
 
-export default defineComponent({
-  name: 'AppBar',
-  setup() {
-    const interiorLinks = ref(InteriorLinks);
-    const exteriorLinks = ref(ExteriorLinks);
-
-    return {
-      interiorLinks,
-      exteriorLinks,
-    };
-  },
-});
+  export default defineComponent({
+    name: 'AppBar',
+    setup() {
+      const interiorLinks = ref(InteriorLinks);
+      const exteriorLinks = ref(ExteriorLinks);
+      return {
+        interiorLinks,
+        exteriorLinks,
+      };
+    },
+  });
 </script>
 
-<style lang="scss" scoped>
-.inline-flex {
-  display: inline-flex;
-}
-.header-logo {
-  margin: 0 0 0 10px;
-}
-.nav-text {
-  color: #fff;
-  font-size: x-large;
-  font-weight: bolder;
-  text-shadow: 2px 2px var(--v-secondary);
-  margin: auto;
-  padding: auto;
-  @media (max-width: 1264px) {
-    display: none;
+<style lang='scss' scoped>
+  .inline-flex {
+    display: inline-flex;
   }
-}
-.menu-text {
-  color: #fff;
-  text-shadow: 2px 2px var(--v-secondary);
-  margin: auto;
-  padding: auto;
-}
-.menu-item {
-  text-decoration: none !important;
-  color: #63666a;
-  cursor: pointer;
-}
+  .header-logo {
+    margin: 0 0 0 10px;
+  }
+  .nav-text {
+    color: #fff;
+    font-size: x-large;
+    font-weight: bolder;
+    text-shadow: 2px 2px var(--v-secondary);
+    margin: auto;
+    padding: auto;
+    @media (max-width: 1264px) {
+      display: none;
+    }
+  }
+  .menu-text {
+    color: #fff;
+    text-shadow: 2px 2px var(--v-secondary);
+    margin: auto;
+    padding: auto;
+  }
+  .menu-item {
+    text-decoration: none !important;
+    color: #63666a;
+    cursor: pointer;
+  }
 </style>

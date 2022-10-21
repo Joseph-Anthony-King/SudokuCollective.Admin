@@ -12,6 +12,7 @@ export default createStore({
   state: {
     license: '',
     expirationDate: new Date(),
+    processingMessage: ''
    },
   getters: {
     getState(state) {
@@ -19,6 +20,9 @@ export default createStore({
     },
     getLicense(state) {
       return state.license;
+    },
+    getProcessingMessage(state) {
+      return state.processingMessage;
     }
   },
   mutations: {
@@ -29,14 +33,19 @@ export default createStore({
       const currentDate = new Date();
       state.expirationDate.setDate(currentDate.getDate() + 1);
     },
+    [MutationTypes.UPDATEPROCESSINGMESSAGE](state, message: string) {
+      state.processingMessage = message;
+    }
   },
   actions: {
     addLicense({ commit, state }, license: string) {
-    
       if (new Date() > state.expirationDate && license !== '') {
         commit(MutationTypes.UPDATELICENSE, license);
         commit(MutationTypes.UPDATEEXPIRATIONDATE);
       }
+    },
+    updateProcessingMessage({ commit }, message: string) {
+      commit(MutationTypes.UPDATEPROCESSINGMESSAGE, message);
     }
   },
   modules: {

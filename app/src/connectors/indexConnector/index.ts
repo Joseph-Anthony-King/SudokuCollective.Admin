@@ -3,11 +3,11 @@ import { Endpoints } from '@/connectors/indexConnector/endpoints';
 
 export class IndexConnector {
   // eslint-disable-next-line
-  async getMissionStatement(): Promise<any> {
+  async getMissionStatementAsync(): Promise<any> {
     try {
       const config = {
         method: 'get',
-        url: Endpoints.getIndexEndpoint,
+        url: Endpoints.getEndpoint,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',

@@ -10,7 +10,7 @@ export class GalleryApp implements IGalleryApp {
   dateCreated: Date;
   dateUpdated: Date;
 
-  constructor(id?: number, name?: string, url?: string, sourceCodeUrl?: string, createdBy?: string, userCount?: number, dateCreated?: string, dateUpdated?: string) {
+  constructor (id?: number, name?: string, url?: string, sourceCodeUrl?: string, createdBy?: string, userCount?: number, dateCreated?: string, dateUpdated?: string) {
     this.id = id ? id : 0;
     this.name = name ? name : '';
     this.url = url ? url : '';

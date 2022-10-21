@@ -9,7 +9,7 @@ export class ValuesService {
   indexConnector: IndexConnector;
   valuesConnector: ValuesConnector;
 
-  constructor(
+  constructor (
     indexConnector: IndexConnector,
     valuesConnector: ValuesConnector
   ) {
@@ -17,12 +17,13 @@ export class ValuesService {
     this.valuesConnector = valuesConnector;
   }
 
-  async getValues(): Promise<IServicePayload> {
+  async getValuesAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
-    const indexResponse = await this.indexConnector.getMissionStatement();
-    const valuesResponse = await this.valuesConnector.getValues();
 
     try {
+      const indexResponse = await this.indexConnector.getMissionStatementAsync();
+      const valuesResponse = await this.valuesConnector.getValuesAsync();
+      
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
           '/swagger/index.html',
