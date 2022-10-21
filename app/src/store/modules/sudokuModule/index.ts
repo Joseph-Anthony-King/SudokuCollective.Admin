@@ -18,7 +18,8 @@ const sudokuModule = {
     selectedDifficulty: null,
     serviceResult: null,
     serviceMessage: null,
-    processing: false
+    processing: false,
+    isSolveDisabled: null
   }),
   getters: {
     getState: (state: ISudokuState): ISudokuState => {
@@ -50,6 +51,9 @@ const sudokuModule = {
     },
     getProcessing: (state: ISudokuState): boolean => {
       return state.processing;
+    },
+    getIsSolvedDisabled: (state: ISudokuState): boolean | null => {
+      return state.isSolveDisabled;
     }
   },
   mutations: {
@@ -93,15 +97,17 @@ const sudokuModule = {
       state.serviceMessage = serviceMessage;
     },
     [MutationTypes.UPDATEPROCESSING](state: ISudokuState) {
-      console.log('update processing invoked: ', state.processing);
       state.processing = !state.processing;
-      console.log('update processing completed: ', state.processing);
+    },
+    [MutationTypes.UPDATEISSOLVEDISABLED](state: ISudokuState, isDisabled: boolean) {
+      state.isSolveDisabled = isDisabled;
     }
   },
   actions: {
     initializeModule({ commit }: { commit: Commit }) {
       commit(MutationTypes.INITIALIZEGAME);
       commit(MutationTypes.INITIALIZEINITIALGAME);
+      commit(MutationTypes.UPDATEISSOLVEDISABLED, true);
       commit(MutationTypes.INITIALIZEPUZZLE);
       commit(MutationTypes.INITIALIZESOLUTION);
     },
@@ -120,11 +126,13 @@ const sudokuModule = {
       commit(MutationTypes.UPDATEINITIALGAME, game);
     },
     initializePuzzle({ commit }: { commit: Commit }) {
-      commit(MutationTypes.INITIALIZEPUZZLE);
+      commit(MutationTypes.UPDATEISSOLVEDISABLED, true);
+      commit(MutationTypes.INITIALIZEPUZZLE, true);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
     },
     updatePuzzle({ commit }: { commit: Commit }, puzzle: Array<Array<string>>) {
+      commit(MutationTypes.UPDATEISSOLVEDISABLED, false);
       commit(MutationTypes.UPDATEPUZZLE, puzzle);
     },
     initializeSolution({ commit }: { commit: Commit }) {

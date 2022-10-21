@@ -12,5 +12,6 @@ export enum MutationTypes {
     UPDATESELECTEDDIFFICULTY = 'updateSelectedDifficulty',
     UPDATESERVICERESULT = 'updateServiceResult',
     UPDATESERVICEMESSAGE = 'updateServiceMessage',
-    UPDATEPROCESSING = 'updateProcessing'
+    UPDATEPROCESSING = 'updateProcessing',
+    UPDATEISSOLVEDISABLED = 'updateIsSolveDisabled'
 }
