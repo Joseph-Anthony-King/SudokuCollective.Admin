@@ -105,12 +105,14 @@ const sudokuModule = {
     }
   },
   actions: {
-    initializeModule({ commit }: { commit: Commit }) {
-      commit(MutationTypes.INITIALIZEGAME);
-      commit(MutationTypes.INITIALIZEINITIALGAME);
-      commit(MutationTypes.UPDATEISSOLVEDISABLED, true);
-      commit(MutationTypes.INITIALIZEPUZZLE);
-      commit(MutationTypes.INITIALIZESOLUTION);
+    initializeModule({ commit, state }: { commit: Commit, state: ISudokuState }) {
+      if (state.game === null && state.puzzle === null && state.solution === null) {
+        commit(MutationTypes.INITIALIZEGAME);
+        commit(MutationTypes.INITIALIZEINITIALGAME);
+        commit(MutationTypes.UPDATEISSOLVEDISABLED, true);
+        commit(MutationTypes.INITIALIZEPUZZLE);
+        commit(MutationTypes.INITIALIZESOLUTION);
+      }
     },
     initializeGame({ commit }: { commit: Commit }) {
       commit(MutationTypes.INITIALIZEGAME);
