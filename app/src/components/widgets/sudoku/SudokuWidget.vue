@@ -13,7 +13,6 @@
               label="Please make a selection"
               return-object
               single-line
-              @update:model-value="selectedGameState"
             ></v-select>
             <div v-if="isCurrentGameStatePlayGame">
               <v-card-title class="justify-center"
@@ -27,7 +26,6 @@
                 label="Please make a selection"
                 return-object
                 single-line
-                @update:model-value="selectedDifficulty"
               ></v-select>
             </div>
             <matrix-widget />

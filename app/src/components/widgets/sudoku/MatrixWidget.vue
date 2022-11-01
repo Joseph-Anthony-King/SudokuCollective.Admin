@@ -30,9 +30,10 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, onBeforeMount, ref, watch } from 'vue';
+  import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue';
   import store from '@/store';
   import {
+    obtainMatrix,
     applyOddRegion,
     applyTextColor,
   } from '@/components/widgets/sudoku/common';
@@ -105,38 +106,8 @@
       watch(
         () => store.getters['sudokuModule/getGameState'],
         function () {
-          gameState = store.getters['sudokuModule/getGameState'];
-          if (gameState?.value === GameState.PLAYGAME) {
-            const game = store.getters['sudokuModule/getGame'];
-            matrix.value = Array<Array<string>>(9);
-
-            for (let i = 0; i < 9; i++) {
-              matrix.value[i] = [];
-              for (let j = 0; j < 9; j++) {
-                matrix.value[i][j] = game[i][j];
-              }
-            }
-          } else if (gameState?.value === GameState.SOLVESUDOKU) {
-            const puzzle = store.getters['sudokuModule/getPuzzle'];
-            matrix.value = Array<Array<string>>(9);
-
-            for (let i = 0; i < 9; i++) {
-              matrix.value[i] = [];
-              for (let j = 0; j < 9; j++) {
-                matrix.value[i][j] = puzzle[i][j];
-              }
-            }
-          } else {
-            const solution = store.getters['sudokuModule/getSolution'];
-            matrix.value = Array<Array<string>>(9);
-
-            for (let i = 0; i < 9; i++) {
-              matrix.value[i] = [];
-              for (let j = 0; j < 9; j++) {
-                matrix.value[i][j] = solution[i][j];
-              }
-            }
-          }
+          gameState = toRaw(store.getters['sudokuModule/getGameState']);
+          matrix.value = obtainMatrix();
         }
       );
 
@@ -192,12 +163,7 @@
       );
 
       onBeforeMount(() => {
-        for (let i = 0; i < 9; i++) {
-          matrix.value[i] = [];
-          for (let j = 0; j < 9; j++) {
-            matrix.value[i][j] = '';
-          }
-        }
+        matrix.value = obtainMatrix();
       });
 
       return {
@@ -212,7 +178,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /* Galaxy Fold... folded */
   @media only screen and (max-width: 319px) {
     .v-text-field {
       max-width: 27px;
