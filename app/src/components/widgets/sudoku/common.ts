@@ -1,6 +1,7 @@
 import store from "@/store";
 import { toRaw } from "vue";
 import { GameState } from "@/enums/gameState";
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
 const oddRegionIndexes: Array<{ row: number, cell: number}> = [
 	{ row: 0, cell: 0},
@@ -63,11 +64,11 @@ function applyOddRegion(rowIndex: number, cellIndex: number): boolean {
 }
 
 function applyTextColor(rowIndex: number, cellIndex: number): string {
-	const gameState: GameState = toRaw(store.getters['sudokuModule/getGameState']);
+	const gameState: DropdownItem = toRaw(store.getters['sudokuModule/getGameState']);
 	const initialGame: Array<Array<string>> = toRaw(store.getters['sudokuModule/getInitialGame']);
 	const isOddRegion = applyOddRegion(rowIndex, cellIndex);
 	
-	if (gameState === GameState.PLAYGAME) {
+	if (gameState?.value === GameState.PLAYGAME) {
 		if (initialGame[rowIndex][cellIndex] === "") {
 			if (isOddRegion) {
 				return 'text-white';

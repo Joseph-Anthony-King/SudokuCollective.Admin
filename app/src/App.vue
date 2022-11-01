@@ -1,20 +1,20 @@
 <template>
   <v-app>
     <div class="app-viewport">
-      <AppBar />
+      <app-bar />
       <v-main>
         <router-view />
       </v-main>
     </div>
     <div>
       <v-footer>
-        <FooterNav />
+        <footer-nav />
       </v-footer>
     </div>
   </v-app>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
   import { defineComponent, provide, ref } from 'vue';
   import { onMounted, onBeforeMount } from '@vue/runtime-core';
   import store from '@/store';
@@ -36,7 +36,9 @@
       const indexConnector = ref(new IndexConnector());
       const solutionsConnector = ref(new SolutionsConnector());
       const valuesConnector = ref(new ValuesConnector());
-      const gameService = ref(new GamesService(gamesConnector.value, solutionsConnector.value));
+      const gameService = ref(
+        new GamesService(gamesConnector.value, solutionsConnector.value)
+      );
       const valuesService = ref(
         new ValuesService(indexConnector.value, valuesConnector.value)
       );
@@ -53,6 +55,6 @@
   });
 </script>
 
-<style lang='scss'>
+<style lang="scss">
   @import '@/assets/styles/site.scss';
 </style>
