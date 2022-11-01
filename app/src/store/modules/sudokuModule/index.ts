@@ -1,11 +1,12 @@
 import { Commit } from 'vuex';
 import { Methods } from "@/store/modules/sudokuModule/common";
 import { MutationTypes } from "@/store/modules/sudokuModule/mutationTypes";
-import { ISudokuState } from "@/interfaces/store/iSudokuState";
-import { GameState } from '@/enums/gameState';
-import { Difficulty } from "@/models/domain/difficulty";
 import { GamesService } from '@/services/gamesService';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { ISudokuState } from "@/interfaces/store/iSudokuState";
+import { GameState } from '@/enums/gameState';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { Difficulty } from "@/models/domain/difficulty";
 
 const sudokuModule = {
   namespaced: true,
@@ -37,7 +38,7 @@ const sudokuModule = {
     getSolution: (state: ISudokuState): Array<Array<string>> | null => {
       return state.solution;
     },
-    getGameState: (state: ISudokuState): GameState | null => {
+    getGameState: (state: ISudokuState): DropdownItem | null => {
       return state.gameState;
     },
     getSelectedDifficulty: (state: ISudokuState): Difficulty | null => {
@@ -87,7 +88,7 @@ const sudokuModule = {
     [MutationTypes.UPDATESELECTEDDIFFICULTY](state: ISudokuState, difficulty: Difficulty) {
       state.selectedDifficulty = difficulty;
     },
-    [MutationTypes.UPDATEGAMESTATE](state: ISudokuState, gameState: GameState) {
+    [MutationTypes.UPDATEGAMESTATE](state: ISudokuState, gameState: DropdownItem) {
       state.gameState = gameState;
     },
     [MutationTypes.UPDATESERVICERESULT](state: ISudokuState, serviceResult: boolean | null) {

@@ -1,4 +1,4 @@
-import { GameState } from "@/enums/gameState";
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from "@/models/domain/difficulty";
 
 export interface ISudokuState {
@@ -6,7 +6,7 @@ export interface ISudokuState {
     initialGame: Array<Array<string>> | null,
     puzzle: Array<Array<string>> | null,
     solution: Array<Array<string>> | null,
-    gameState: GameState | null,
+    gameState: DropdownItem | null,
     selectedDifficulty: Difficulty | null,
     serviceResult: boolean | null,
     serviceMessage: string | null,

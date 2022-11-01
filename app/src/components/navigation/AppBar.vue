@@ -95,7 +95,7 @@
   </v-app-bar>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
   import { defineComponent, ref } from 'vue';
   import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
   import { InteriorLinks } from '@/utilities/links/interiorLinks';
@@ -113,7 +113,7 @@
   });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
   .inline-flex {
     display: inline-flex;
   }

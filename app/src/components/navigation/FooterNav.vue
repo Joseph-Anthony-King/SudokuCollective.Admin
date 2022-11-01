@@ -1,12 +1,6 @@
 <template>
   <v-footer class="app-viewport">
-    <v-card
-      elevation="0"
-      rounded="0"
-      width="100%"
-      class="text-center"
-    >
-
+    <v-card elevation="0" rounded="0" width="100%" class="text-center">
       <v-divider></v-divider>
 
       <v-card-text>
@@ -23,18 +17,18 @@
   </v-footer>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
   import { computed } from '@vue/reactivity';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    name: "FooterNav",
+    name: 'FooterNav',
     setup() {
-      const getCopyrightYear = computed(() => (new Date()).getFullYear());
+      const getCopyrightYear = computed(() => new Date().getFullYear());
 
       return {
-        getCopyrightYear
-      }
-    }
+        getCopyrightYear,
+      };
+    },
   });
 </script>
