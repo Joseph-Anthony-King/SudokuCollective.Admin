@@ -115,10 +115,14 @@
           return store.getters['sudokuModule/getGameState'] !== null;
         }
       });
-      const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
-        return (
-          store.getters['sudokuModule/getGameState'].value === GameState.PLAYGAME
-        );
+      const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => { 
+        let result: boolean;
+        if (store.getters['sudokuModule/getGameState'] !== null) {
+          result = store.getters['sudokuModule/getGameState'].value === GameState.PLAYGAME;
+        } else {
+          result = false;
+        }
+        return result;
       });
       const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
         if (selectedGameState?.value.value === GameState.PLAYGAME) {
