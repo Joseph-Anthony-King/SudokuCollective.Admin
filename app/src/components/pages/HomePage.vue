@@ -30,7 +30,7 @@
   </v-container>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
   import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
   import store from '@/store';
   import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
@@ -63,7 +63,7 @@
   });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
   .v-card {
     @media (max-width: 600px) {
       padding: 0 0 0 0 !important;
