@@ -25,7 +25,7 @@
       onBeforeMount(() => {
         store.dispatch(
           'updateProcessingMessage',
-          'processing, please do not navigate away...'
+          'processing, please do not navigate away'
         );
       });
       return {

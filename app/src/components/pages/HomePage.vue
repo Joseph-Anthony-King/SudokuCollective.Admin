@@ -53,7 +53,7 @@
         }
       );
       onBeforeMount(() => {
-        store.dispatch('updateProcessingMessage', 'loading...');
+        store.dispatch('updateProcessingMessage', 'loading, please wait');
       });
       return {
         loading,
