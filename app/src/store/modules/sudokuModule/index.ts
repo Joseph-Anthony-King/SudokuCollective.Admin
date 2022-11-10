@@ -177,14 +177,16 @@ const sudokuModule = {
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
       if (state.game !== null) {
         const response: IServicePayload = await gameService.checkGameAsync(state.game);
-        const solvedGame = Array<Array<string>>(9);
-        for (let i = 0; i < 9; i++) {
-          solvedGame[i] = [];
-          for (let j = 0; j < 9; j++) {
-            solvedGame[i][j] = state.game[i][j];
+        if (response.isSuccess) {
+          const solvedGame = Array<Array<string>>(9);
+          for (let i = 0; i < 9; i++) {
+            solvedGame[i] = [];
+            for (let j = 0; j < 9; j++) {
+              solvedGame[i][j] = state.game[i][j];
+            }
           }
+          commit(MutationTypes.UPDATEINITIALGAME, solvedGame);
         }
-        commit(MutationTypes.UPDATEINITIALGAME, solvedGame);
         commit(MutationTypes.UPDATESERVICEMESSAGE, response.message);
         commit(MutationTypes.UPDATESERVICERESULT, response.isSuccess);
         commit(MutationTypes.UPDATEPROCESSING);

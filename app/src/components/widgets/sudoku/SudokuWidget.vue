@@ -69,6 +69,17 @@
                       {{ resetButtonText }}
                     </v-btn>
                   </v-col>
+                  <v-col v-if="isCurrentGameStatePlayGame">
+                    <v-btn 
+                      class="button-full" 
+                      color="blue darken-1" 
+                      text 
+                      @click="clearGame" 
+                      :disabled="isExectuteButtonDisabed"
+                    >
+                      Clear Game
+                    </v-btn>
+                  </v-col>
                 </v-row>
               </v-container>
             </v-card-actions>
@@ -180,6 +191,9 @@
           store.dispatch('sudokuModule/initializeSolution');
         }
       };
+      const clearGame = (): void => {
+        store.dispatch('sudokuModule/initializeGame');
+      };
       watch(
         () => selectedGameState?.value,
         function () {
@@ -217,6 +231,7 @@
         execute,
         checkGame,
         reset,
+        clearGame,
         difficulties,
         selectedDifficulty
       };
