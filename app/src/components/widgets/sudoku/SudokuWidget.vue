@@ -59,25 +59,24 @@
                       Check Game
                     </v-btn>
                   </v-col>
+                  <v-col v-if="isCurrentGameStatePlayGame">
+                    <v-btn 
+                      class="button-full" 
+                      color="blue darken-1" 
+                      text @click="resetGame" 
+                      :disabled="isExectuteButtonDisabed"
+                    >
+                      Reset Game
+                    </v-btn>
+                  </v-col>
                   <v-col>
                     <v-btn
                       class="button-full"
                       color="blue darken-1"
                       text
-                      @click="reset"
+                      @click="clear"
                     >
-                      {{ resetButtonText }}
-                    </v-btn>
-                  </v-col>
-                  <v-col v-if="isCurrentGameStatePlayGame">
-                    <v-btn 
-                      class="button-full" 
-                      color="blue darken-1" 
-                      text 
-                      @click="clearGame" 
-                      :disabled="isExectuteButtonDisabed"
-                    >
-                      Clear Game
+                      {{ clearButtonText }}
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -155,11 +154,11 @@
           return 'Generate Sudoku';
         }
       });
-      const resetButtonText: ComputedRef<string> = computed(() => {
+      const clearButtonText: ComputedRef<string> = computed(() => {
         if (selectedGameState?.value.value === GameState.PLAYGAME) {
-          return 'Reset Game';
+          return 'Clear Game';
         } else {
-          return 'Reset Sudoku';
+          return 'Clear Sudoku';
         }
       });
       const execute = (): void => {
@@ -174,25 +173,25 @@
       const checkGame = (): void => {
         store.dispatch('sudokuModule/checkGameAsync', gamesService);
       };
-      const reset = (): void => {
-        if (selectedGameState?.value.value === GameState.PLAYGAME) {
-          const initialGame = store.getters['sudokuModule/getInitialGame'];
-          const game = Array<Array<string>>(9);
-          for (let i = 0; i < 9; i++) {
-            game[i] = [];
-            for (let j = 0; j < 9; j++) {
-              game[i][j] = initialGame[i][j];
-            }
+      const resetGame = (): void => {
+        const initialGame = store.getters['sudokuModule/getInitialGame'];
+        const game = Array<Array<string>>(9);
+        for (let i = 0; i < 9; i++) {
+          game[i] = [];
+          for (let j = 0; j < 9; j++) {
+            game[i][j] = initialGame[i][j];
           }
-          store.dispatch('sudokuModule/updateGame', game);
+        }
+        store.dispatch('sudokuModule/updateGame', game);
+      };
+      const clear = (): void => {
+        if (selectedGameState?.value.value === GameState.PLAYGAME) {
+          store.dispatch('sudokuModule/initializeGame');
         } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
           store.dispatch('sudokuModule/initializePuzzle');
         } else {
           store.dispatch('sudokuModule/initializeSolution');
         }
-      };
-      const clearGame = (): void => {
-        store.dispatch('sudokuModule/initializeGame');
       };
       watch(
         () => selectedGameState?.value,
@@ -227,11 +226,11 @@
         isCurrentGameStatePlayGame,
         isExectuteButtonDisabed,
         executeButtonText,
-        resetButtonText,
+        clearButtonText,
         execute,
         checkGame,
-        reset,
-        clearGame,
+        resetGame,
+        clear,
         difficulties,
         selectedDifficulty
       };
