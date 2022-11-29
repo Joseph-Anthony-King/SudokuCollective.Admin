@@ -178,7 +178,17 @@
 </script>
 
 <style lang="scss" scoped>
-  @media only screen and (max-width: 319px) {
+  @media only screen and (max-width: 306px) {
+    .v-text-field {
+      max-width: 26px;
+      max-height: 48px;
+      font-weight: bold;
+      :deep(input) {
+        font-size: 12px;
+      }
+    }
+  }
+  @media only screen and (min-width:307px) and (max-width: 319px) {
     .v-text-field {
       max-width: 27px;
       max-height: 48px;
