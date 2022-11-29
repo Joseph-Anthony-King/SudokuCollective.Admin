@@ -4,7 +4,7 @@ import { ISudokuRequestData } from '@/interfaces/infrastructure/iSudokuRequestDa
 
 export class SolutionsConnector {
 	// eslint-disable-next-line
-	async postSolveAsync(matrix: ISudokuRequestData): Promise<any> {
+	static async postSolveAsync(matrix: ISudokuRequestData): Promise<any> {
 		try {
 			const config = {
 				method: 'post',
@@ -36,7 +36,7 @@ export class SolutionsConnector {
 	}
 
 	// eslint-disable-next-line
-	async getGenerateAsync(): Promise<any> {
+	static async getGenerateAsync(): Promise<any> {
 		try {
 			const config = {
 				method: 'get',

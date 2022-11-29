@@ -146,10 +146,10 @@ const sudokuModule = {
     updateSolution({ commit }: { commit: Commit }, puzzle: Array<Array<string>>) {
       commit(MutationTypes.UPDATESOLUTION, puzzle);
     },
-    async createGameAsync({ commit, state }: { commit: Commit, state: ISudokuState },  gamesService: GamesService) {
+    async createGameAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
       commit(MutationTypes.UPDATEPROCESSING);
       if (state.selectedDifficulty !== null) {
-        const response: IServicePayload = await gamesService.createGameAsync(state.selectedDifficulty.difficultyLevel);
+        const response: IServicePayload = await GamesService.createGameAsync(state.selectedDifficulty.difficultyLevel);
         const game: Array<Array<string>> = Array<Array<string>>(9);
         for (let i = 0; i < 9; i++) {
           game[i] = [];
@@ -171,12 +171,12 @@ const sudokuModule = {
       }
       commit(MutationTypes.UPDATEPROCESSING);
     },
-    async checkGameAsync({commit, state }: { commit: Commit, state: ISudokuState }, gameService: GamesService) {
+    async checkGameAsync({commit, state }: { commit: Commit, state: ISudokuState }) {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
       if (state.game !== null) {
-        const response: IServicePayload = await gameService.checkGameAsync(state.game);
+        const response: IServicePayload = await GamesService.checkGameAsync(state.game);
         if (response.isSuccess) {
           const solvedGame = Array<Array<string>>(9);
           for (let i = 0; i < 9; i++) {
@@ -192,24 +192,24 @@ const sudokuModule = {
         commit(MutationTypes.UPDATEPROCESSING);
       }
     },
-    async solvePuzzleAsync({ commit, state }: { commit: Commit, state: ISudokuState },  gamesService: GamesService) {
+    async solvePuzzleAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
       if (state.puzzle !== null) {
-        const response: IServicePayload = await gamesService.solvePuzzleAsync(state.puzzle);
+        const response: IServicePayload = await GamesService.solvePuzzleAsync(state.puzzle);
         commit(MutationTypes.UPDATEPUZZLE, response.puzzle);
         commit(MutationTypes.UPDATESERVICEMESSAGE, response.message);
         commit(MutationTypes.UPDATESERVICERESULT, response.isSuccess);
       }
       commit(MutationTypes.UPDATEPROCESSING);
     },
-    async generateSolutionAsync({ commit, state }: { commit: Commit, state: ISudokuState },  gamesService: GamesService) {
+    async generateSolutionAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
       if (state.puzzle !== null) {
-        const response: IServicePayload = await gamesService.generateSolutionAsync();
+        const response: IServicePayload = await GamesService.generateSolutionAsync();
         commit(MutationTypes.UPDATESOLUTION, response.solution);
         commit(MutationTypes.UPDATESERVICEMESSAGE, response.message);
         commit(MutationTypes.UPDATESERVICERESULT, response.isSuccess);
