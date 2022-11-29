@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="primary" dark>
     <div class="d-flex app-viewport">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="user.isLoggedIn"></v-app-bar-nav-icon>
 
       <v-app-bar-title>
         <router-link to="/" class="inline-flex">
@@ -96,7 +96,8 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, watch } from 'vue';
+  import store from '@/store';
   import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
   import { InteriorLinks } from '@/utilities/links/interiorLinks';
 
@@ -105,9 +106,19 @@
     setup() {
       const interiorLinks = ref(InteriorLinks);
       const exteriorLinks = ref(ExteriorLinks);
+      let user = ref(store.getters['getUser']);
+
+      watch(
+        () => store.getters['getUser'],
+        function () {
+          user = ref(store.getters['getUser']);
+        }
+      );
+
       return {
         interiorLinks,
         exteriorLinks,
+        user
       };
     },
   });

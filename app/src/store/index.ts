@@ -3,6 +3,7 @@ import VuexPersistence from 'vuex-persist';
 import { MutationTypes } from '@/store/mutationTypes';
 import valuesModule from '@/store/modules/valuesModule';
 import sudokuModule from '@/store/modules/sudokuModule';
+import { User } from '@/models/domain/user';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
@@ -12,7 +13,8 @@ export default createStore({
   state: {
     license: '',
     expirationDate: new Date(),
-    processingMessage: ''
+    processingMessage: '',
+    user: new User(),
    },
   getters: {
     getState(state) {
@@ -23,6 +25,9 @@ export default createStore({
     },
     getProcessingMessage(state) {
       return state.processingMessage;
+    },
+    getUser(state) {
+      return state.user;
     }
   },
   mutations: {
@@ -35,6 +40,9 @@ export default createStore({
     },
     [MutationTypes.UPDATEPROCESSINGMESSAGE](state, message: string) {
       state.processingMessage = message;
+    },
+    [MutationTypes.UPDATEUSER](state, user: User) {
+      state.user = user;
     }
   },
   actions: {
@@ -44,9 +52,12 @@ export default createStore({
         commit(MutationTypes.UPDATEEXPIRATIONDATE);
       }
     },
+    updateUser({ commit }, user: User) {
+      commit(MutationTypes.UPDATEUSER, user);
+    },
     updateProcessingMessage({ commit }, message: string) {
       commit(MutationTypes.UPDATEPROCESSINGMESSAGE, message);
-    }
+    },
   },
   modules: {
     valuesModule,
