@@ -20,8 +20,8 @@
   import store from '@/store';
   import AppBar from '@/components/navigation/AppBar.vue';
   import FooterNav from '@/components/navigation/FooterNav.vue';
-  import { StaticMethods } from '@/utilities/common';
   import { User } from '@/models/domain/user';
+  import { StaticMethods } from '@/utilities/common';
 
   export default defineComponent({
     name: 'App',
