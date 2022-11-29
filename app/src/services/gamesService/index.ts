@@ -2,7 +2,7 @@ import { GamesConnector } from "@/connectors/gamesConnector";
 import { SolutionsConnector } from "@/connectors/solutionsConnector";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ISudokuRequestData } from "@/interfaces/infrastructure/iSudokuRequestData";
-import { SudokuRequestData } from "@/models/infrastructure/SudokuRequestData";
+import { SudokuRequestData } from "@/models/infrastructure/sudokuRequestData";
 
 export class GamesService {
 
