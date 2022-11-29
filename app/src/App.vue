@@ -21,7 +21,7 @@
   import AppBar from '@/components/navigation/AppBar.vue';
   import FooterNav from '@/components/navigation/FooterNav.vue';
   import { StaticMethods } from '@/utilities/common';
-  import { User } from './models/domain/user';
+  import { User } from '@/models/domain/user';
 
   export default defineComponent({
     name: 'App',
