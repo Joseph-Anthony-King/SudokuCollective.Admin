@@ -6,23 +6,13 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 
 export class ValuesService {
-  indexConnector: IndexConnector;
-  valuesConnector: ValuesConnector;
 
-  constructor (
-    indexConnector: IndexConnector,
-    valuesConnector: ValuesConnector
-  ) {
-    this.indexConnector = indexConnector;
-    this.valuesConnector = valuesConnector;
-  }
-
-  async getValuesAsync(): Promise<IServicePayload> {
+  static async getValuesAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const indexResponse = await this.indexConnector.getMissionStatementAsync();
-      const valuesResponse = await this.valuesConnector.getValuesAsync();
+      const indexResponse = await IndexConnector.getMissionStatementAsync();
+      const valuesResponse = await ValuesConnector.getValuesAsync();
       
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(

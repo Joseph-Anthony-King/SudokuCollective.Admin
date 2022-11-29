@@ -3,7 +3,7 @@ import { Endpoints } from '@/connectors/valuesConnector/endpoints';
 
 export class ValuesConnector {
   // eslint-disable-next-line
-  async getValuesAsync(): Promise<any> {
+  static async getValuesAsync(): Promise<any> {
     try {
       const config = {
         method: 'post',
