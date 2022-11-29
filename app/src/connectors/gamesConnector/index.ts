@@ -4,7 +4,7 @@ import { ISudokuRequestData } from '@/interfaces/infrastructure/iSudokuRequestDa
 
 export class GamesConnector {
   // eslint-disable-next-line
-  async getCreateGameAsync(difficultyLevel: number): Promise<any> {
+  static async getCreateGameAsync(difficultyLevel: number): Promise<any> {
     try {
       const config = {
         method: 'get',
@@ -25,7 +25,7 @@ export class GamesConnector {
   }
 
 	// eslint-disable-next-line
-	async postCheckGameAsync(matrix: ISudokuRequestData): Promise<any> {
+	static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<any> {
 		try {
 			const config = {
 				method: 'post',

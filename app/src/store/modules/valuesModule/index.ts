@@ -86,11 +86,11 @@ const valuesModule = {
     },
   },
   actions: {
-    async initializeModuleAsync({ commit, state }: { commit: Commit, state: IValuesState }, valuesService: ValuesService): Promise<void> {
+    async initializeModuleAsync({ commit, state }: { commit: Commit, state: IValuesState }): Promise<void> {
 
       if (state.expirationDate !== null && new Date() > state.expirationDate) {
 
-        const result: IServicePayload = await valuesService.getValuesAsync();
+        const result: IServicePayload = await ValuesService.getValuesAsync();
   
         if (result.missionStatement) {
           commit(MutationTypes.UPDATEMISSIONSTATEMENT, result.missionStatement);

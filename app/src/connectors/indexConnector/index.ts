@@ -3,7 +3,7 @@ import { Endpoints } from '@/connectors/indexConnector/endpoints';
 
 export class IndexConnector {
   // eslint-disable-next-line
-  async getMissionStatementAsync(): Promise<any> {
+  static async getMissionStatementAsync(): Promise<any> {
     try {
       const config = {
         method: 'get',

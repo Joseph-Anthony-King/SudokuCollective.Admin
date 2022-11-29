@@ -5,19 +5,12 @@ import { ISudokuRequestData } from "@/interfaces/infrastructure/iSudokuRequestDa
 import { SudokuRequestData } from "@/models/infrastructure/SudokuRequestData";
 
 export class GamesService {
-	gamesConnector: GamesConnector;
-	solutionsConnector: SolutionsConnector;
 
-	constructor (gamesConnector: GamesConnector, solutionsConnector: SolutionsConnector) {
-		this.gamesConnector = gamesConnector;
-		this.solutionsConnector = solutionsConnector;
-	}
-
-	async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
+	static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 		
 		try {
-			const response = await this.gamesConnector.getCreateGameAsync(difficultyLevel);
+			const response = await GamesConnector.getCreateGameAsync(difficultyLevel);
 			
 			if (response.data.isSuccess) {
 				const game: Array<Array<string>> = Array<Array<string>>();
@@ -49,7 +42,7 @@ export class GamesService {
 		return result;
 	}
 
-	async checkGameAsync(game: Array<Array<string>>): Promise<IServicePayload> {
+	static async checkGameAsync(game: Array<Array<string>>): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
 		try {
@@ -131,7 +124,7 @@ export class GamesService {
 				}
 			}
 
-			const response = await this.gamesConnector.postCheckGameAsync(data);
+			const response = await GamesConnector.postCheckGameAsync(data);
 			
 			result.isSuccess = response.data.isSuccess;
 			result.message = response.data.message.substring(17);
@@ -154,7 +147,7 @@ export class GamesService {
 		return result;
 	}
 
-	async solvePuzzleAsync(puzzle: Array<Array<string>>): Promise<IServicePayload> {
+	static async solvePuzzleAsync(puzzle: Array<Array<string>>): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
 		try {
@@ -236,7 +229,7 @@ export class GamesService {
 				}
 			}
 
-			const response = await this.solutionsConnector.postSolveAsync(data);
+			const response = await SolutionsConnector.postSolveAsync(data);
 
 			result.isSuccess = response.data.isSuccess;
 			result.message = response.data.message.substring(17);
@@ -270,12 +263,12 @@ export class GamesService {
 		return result;
 	}
 
-	async generateSolutionAsync(): Promise<IServicePayload> {
+	static async generateSolutionAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
 		try {
 
-			const response = await this.solutionsConnector.getGenerateAsync();
+			const response = await SolutionsConnector.getGenerateAsync();
 
 			result.isSuccess = response.data.isSuccess;
 			result.message = response.data.message.substring(17);
