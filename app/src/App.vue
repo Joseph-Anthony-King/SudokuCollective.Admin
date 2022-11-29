@@ -16,18 +16,21 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { onMounted } from '@vue/runtime-core';
+  import { onMounted, ref } from '@vue/runtime-core';
   import store from '@/store';
   import AppBar from '@/components/navigation/AppBar.vue';
   import FooterNav from '@/components/navigation/FooterNav.vue';
   import { StaticMethods } from '@/utilities/common';
+  import { User } from './models/domain/user';
 
   export default defineComponent({
     name: 'App',
     components: { AppBar, FooterNav },
     setup() {
+      const user = ref(new User());
       onMounted(() => {
         store.dispatch('addLicense', StaticMethods.getLicense());
+        store.dispatch('addUser', user);
         store.dispatch('valuesModule/initializeModuleAsync');
         store.dispatch('sudokuModule/initializeModule');
       });
