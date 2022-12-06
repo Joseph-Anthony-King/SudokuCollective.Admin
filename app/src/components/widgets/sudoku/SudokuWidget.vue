@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, inject, ref, watch } from 'vue';
+  import { defineComponent, ref, watch } from 'vue';
   import { computed, ComputedRef, Ref, toRaw } from '@vue/reactivity';
   import store from '@/store';
   import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
@@ -102,7 +102,6 @@
     name: 'SudokuWidget',
     components: { MatrixWidget },
     setup() {
-      const gamesService = inject('gamesService');
       /* difficulty properties and methods */
       const difficulties: Difficulty[] | undefined = ref(
         store.getters['valuesModule/getDifficulties']
@@ -163,15 +162,15 @@
       });
       const execute = (): void => {
         if (selectedGameState?.value.value === GameState.PLAYGAME) {
-          store.dispatch('sudokuModule/createGameAsync', gamesService);
+          store.dispatch('sudokuModule/createGameAsync');
         } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
-          store.dispatch('sudokuModule/solvePuzzleAsync', gamesService);
+          store.dispatch('sudokuModule/solvePuzzleAsync');
         } else {
-          store.dispatch('sudokuModule/generateSolutionAsync', gamesService);
+          store.dispatch('sudokuModule/generateSolutionAsync');
         }
       };
       const checkGame = (): void => {
-        store.dispatch('sudokuModule/checkGameAsync', gamesService);
+        store.dispatch('sudokuModule/checkGameAsync');
       };
       const resetGame = (): void => {
         const initialGame = store.getters['sudokuModule/getInitialGame'];
