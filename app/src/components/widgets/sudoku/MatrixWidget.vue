@@ -61,7 +61,7 @@
         return applyTextColor(rowIndex, cellIndex);
       }
 
-      function validateEntry(rowIndex: number, cellIndex: number) {
+      function validateEntry(rowIndex: number, cellIndex: number): void {
         var entry = parseInt(matrix.value[rowIndex][cellIndex]);
 
         if (entry < 1 || entry > 9) {
