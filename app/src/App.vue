@@ -5,22 +5,13 @@
       <v-main>
         <router-view />
         <v-dialog 
-          v-if="isSmallViewPort"
           v-model="user.isLoggingIn" 
           persistent 
-          fullscreen
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
           hide-overlay 
           transition="dialog-bottom-transition">
           <LoginForm v-on:cancel-login="(user.isLoggingIn = false)" />
-        </v-dialog>
-        <v-dialog 
-          v-if="!isSmallViewPort"
-          v-model="user.isLoggingIn" 
-          persistent
-          max-width="600px"
-          hide-overlay
-          transition="dialog-bottom-transition">
-          <LoginForm v-on:cancel-login="(user.isLoggingIn = false)"/>
         </v-dialog>
       </v-main>
     </div>
@@ -47,12 +38,15 @@
     components: { AppBar, FooterNav, LoginForm },
     setup() {
       let isSmallViewPort: Ref<boolean> = ref(false);
+      let maxDialogWidth: Ref<string> = ref('');
       const user = reactive(new User());
       const resetAppViewPort = (): void => {
         if (window.innerWidth <= 960) {
           isSmallViewPort.value = true;
+          maxDialogWidth.value = 'auto';
         } else {
           isSmallViewPort.value = false;
+          maxDialogWidth.value = '600px';
         }
       };
       onMounted(() => {
@@ -72,6 +66,7 @@
       });
       return {
         isSmallViewPort,
+        maxDialogWidth,
         user
       };
     },
