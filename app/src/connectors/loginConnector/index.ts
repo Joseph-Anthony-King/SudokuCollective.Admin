@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosPromise, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/loginConnector/endpoints';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 

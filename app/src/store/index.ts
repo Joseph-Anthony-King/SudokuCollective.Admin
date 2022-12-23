@@ -15,6 +15,7 @@ export default createStore({
   plugins: [createPersistedState({
     key: 'admin.sudokuCollective',
     paths: ['appModule', 'serviceFailModule', 'sudokuModule', 'valuesModule'],
-    storage: window.localStorage         
+    storage: window.localStorage,
+    overwrite: true
   })],
 })

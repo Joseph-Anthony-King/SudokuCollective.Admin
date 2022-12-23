@@ -53,7 +53,10 @@ export default defineComponent({
       }
     );
     onBeforeMount(() => {
-      store.dispatch("updateProcessingMessage", "loading, please wait");
+      store.dispatch(
+        "appModule/updateProcessingMessage",
+        "loading, please wait"
+      );
     });
     return {
       loading,

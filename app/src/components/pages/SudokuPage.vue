@@ -24,7 +24,7 @@ export default defineComponent({
     );
     onBeforeMount(() => {
       store.dispatch(
-        "updateProcessingMessage",
+        "appModule/updateProcessingMessage",
         "processing, please do not navigate away"
       );
     });
