@@ -1,0 +1,31 @@
+import axios, { AxiosError, AxiosPromise, AxiosResponse } from 'axios';
+import { Endpoints } from '@/connectors/loginConnector/endpoints';
+import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+
+export class LoginConnector {
+  // eslint-disable-next-line
+	static async postLoginAsync(data: ILoginRequestData): Promise<AxiosResponse | AxiosError> {
+    try {
+      const config = {
+        method: 'post',
+        url: `${Endpoints.loginEndpoint}`,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+				},
+				data: {
+					'license': process.env.VUE_APP_LICENSE,
+					'userName': data.userName,
+					'password': data.password
+				}
+      }
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+	}
+}

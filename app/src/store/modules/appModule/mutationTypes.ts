@@ -3,4 +3,5 @@ export enum MutationTypes {
     UPDATEEXPIRATIONDATE = 'updateExpirationDate',
     UPDATEPROCESSINGMESSAGE = 'updateProcessingMessage',
     UPDATEUSER = 'updateUser',
+    UPDATETOKEN = 'updateToken',
 }

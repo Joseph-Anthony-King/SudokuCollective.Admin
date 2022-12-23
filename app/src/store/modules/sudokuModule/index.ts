@@ -58,54 +58,54 @@ const sudokuModule = {
     }
   },
   mutations: {
-    [MutationTypes.INITIALIZEPUZZLE](state: ISudokuState) {
+    [MutationTypes.INITIALIZEPUZZLE](state: ISudokuState): void {
       state.puzzle = Methods.InitializeMatix();
     },
-    [MutationTypes.INITIALIZEGAME](state: ISudokuState) {
+    [MutationTypes.INITIALIZEGAME](state: ISudokuState): void {
       state.game = Methods.InitializeMatix();
     },
-    [MutationTypes.UPDATEGAME](state: ISudokuState, game: Array<Array<string>>) {
+    [MutationTypes.UPDATEGAME](state: ISudokuState, game: Array<Array<string>>): void {
       state.game = game;
     },
-    [MutationTypes.INITIALIZEINITIALGAME](state: ISudokuState) {
+    [MutationTypes.INITIALIZEINITIALGAME](state: ISudokuState): void {
       state.initialGame = Methods.InitializeMatix();
     },
-    [MutationTypes.UPDATEINITIALGAME](state: ISudokuState, game: Array<Array<string>>) {
+    [MutationTypes.UPDATEINITIALGAME](state: ISudokuState, game: Array<Array<string>>): void {
       state.initialGame = game;
     },
-    [MutationTypes.INITIALIZEPUZZLE](state: ISudokuState) {
+    [MutationTypes.INITIALIZEPUZZLE](state: ISudokuState): void {
       state.puzzle = Methods.InitializeMatix();
     },
-    [MutationTypes.UPDATEPUZZLE](state: ISudokuState, puzzle: Array<Array<string>>) {
+    [MutationTypes.UPDATEPUZZLE](state: ISudokuState, puzzle: Array<Array<string>>): void {
       state.puzzle = puzzle;
     },
-    [MutationTypes.INITIALIZESOLUTION](state: ISudokuState) {
+    [MutationTypes.INITIALIZESOLUTION](state: ISudokuState): void {
       state.solution = Methods.InitializeMatix();
     },
-    [MutationTypes.UPDATESOLUTION](state: ISudokuState, solution: Array<Array<string>>) {
+    [MutationTypes.UPDATESOLUTION](state: ISudokuState, solution: Array<Array<string>>): void {
       state.solution = solution;
     },
-    [MutationTypes.UPDATESELECTEDDIFFICULTY](state: ISudokuState, difficulty: Difficulty) {
+    [MutationTypes.UPDATESELECTEDDIFFICULTY](state: ISudokuState, difficulty: Difficulty): void {
       state.selectedDifficulty = difficulty;
     },
-    [MutationTypes.UPDATEGAMESTATE](state: ISudokuState, gameState: DropdownItem) {
+    [MutationTypes.UPDATEGAMESTATE](state: ISudokuState, gameState: DropdownItem): void {
       state.gameState = gameState;
     },
-    [MutationTypes.UPDATESERVICERESULT](state: ISudokuState, serviceResult: boolean | null) {
+    [MutationTypes.UPDATESERVICERESULT](state: ISudokuState, serviceResult: boolean | null): void {
       state.serviceResult = serviceResult;
     },
-    [MutationTypes.UPDATESERVICEMESSAGE](state: ISudokuState, serviceMessage: string | null) {
+    [MutationTypes.UPDATESERVICEMESSAGE](state: ISudokuState, serviceMessage: string | null): void {
       state.serviceMessage = serviceMessage;
     },
-    [MutationTypes.UPDATEPROCESSING](state: ISudokuState) {
+    [MutationTypes.UPDATEPROCESSING](state: ISudokuState): void {
       state.processing = !state.processing;
     },
-    [MutationTypes.UPDATEISSOLVEDISABLED](state: ISudokuState, isDisabled: boolean) {
+    [MutationTypes.UPDATEISSOLVEDISABLED](state: ISudokuState, isDisabled: boolean): void {
       state.isSolveDisabled = isDisabled;
     }
   },
   actions: {
-    initializeModule({ commit, state }: { commit: Commit, state: ISudokuState }) {
+    initializeModule({ commit, state }: { commit: Commit, state: ISudokuState }): void {
       if (state.game === null && state.puzzle === null && state.solution === null) {
         commit(MutationTypes.INITIALIZEGAME);
         commit(MutationTypes.INITIALIZEINITIALGAME);
@@ -114,39 +114,39 @@ const sudokuModule = {
         commit(MutationTypes.INITIALIZESOLUTION);
       }
     },
-    initializeGame({ commit }: { commit: Commit }) {
+    initializeGame({ commit }: { commit: Commit }): void {
       commit(MutationTypes.INITIALIZEGAME);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
     },
-    updateGame({ commit }: { commit: Commit }, game: Array<Array<string>>) {
+    updateGame({ commit }: { commit: Commit }, game: Array<Array<string>>): void {
       commit(MutationTypes.UPDATEGAME, game);
     },
-    initializeInitialGame({ commit }: { commit: Commit }) {
+    initializeInitialGame({ commit }: { commit: Commit }): void {
       commit(MutationTypes.INITIALIZEINITIALGAME);
     },
-    updateInitialGame({ commit }: { commit: Commit }, game: Array<Array<string>>) {
+    updateInitialGame({ commit }: { commit: Commit }, game: Array<Array<string>>): void {
       commit(MutationTypes.UPDATEINITIALGAME, game);
     },
-    initializePuzzle({ commit }: { commit: Commit }) {
+    initializePuzzle({ commit }: { commit: Commit }): void {
       commit(MutationTypes.UPDATEISSOLVEDISABLED, true);
       commit(MutationTypes.INITIALIZEPUZZLE, true);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
     },
-    updatePuzzle({ commit }: { commit: Commit }, puzzle: Array<Array<string>>) {
+    updatePuzzle({ commit }: { commit: Commit }, puzzle: Array<Array<string>>): void {
       commit(MutationTypes.UPDATEISSOLVEDISABLED, false);
       commit(MutationTypes.UPDATEPUZZLE, puzzle);
     },
-    initializeSolution({ commit }: { commit: Commit }) {
+    initializeSolution({ commit }: { commit: Commit }): void {
       commit(MutationTypes.INITIALIZESOLUTION);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
     },
-    updateSolution({ commit }: { commit: Commit }, puzzle: Array<Array<string>>) {
+    updateSolution({ commit }: { commit: Commit }, puzzle: Array<Array<string>>): void {
       commit(MutationTypes.UPDATESOLUTION, puzzle);
     },
-    async createGameAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
+    async createGameAsync({ commit, state }: { commit: Commit, state: ISudokuState }): Promise<void> {
       commit(MutationTypes.UPDATEPROCESSING);
       if (state.selectedDifficulty !== null) {
         const response: IServicePayload = await GamesService.createGameAsync(state.selectedDifficulty.difficultyLevel);
@@ -171,7 +171,7 @@ const sudokuModule = {
       }
       commit(MutationTypes.UPDATEPROCESSING);
     },
-    async checkGameAsync({commit, state }: { commit: Commit, state: ISudokuState }) {
+    async checkGameAsync({commit, state }: { commit: Commit, state: ISudokuState }): Promise<void> {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
@@ -192,7 +192,7 @@ const sudokuModule = {
         commit(MutationTypes.UPDATEPROCESSING);
       }
     },
-    async solvePuzzleAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
+    async solvePuzzleAsync({ commit, state }: { commit: Commit, state: ISudokuState }): Promise<void> {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
@@ -204,7 +204,7 @@ const sudokuModule = {
       }
       commit(MutationTypes.UPDATEPROCESSING);
     },
-    async generateSolutionAsync({ commit, state }: { commit: Commit, state: ISudokuState }) {
+    async generateSolutionAsync({ commit, state }: { commit: Commit, state: ISudokuState }): Promise<void> {
       commit(MutationTypes.UPDATEPROCESSING);
       commit(MutationTypes.UPDATESERVICERESULT, null);
       commit(MutationTypes.UPDATESERVICEMESSAGE, null);
@@ -216,13 +216,13 @@ const sudokuModule = {
       }
       commit(MutationTypes.UPDATEPROCESSING);
     },
-    updateGameState({ commit }: { commit: Commit }, gameState: GameState) {
+    updateGameState({ commit }: { commit: Commit }, gameState: GameState): void {
       commit(MutationTypes.UPDATEGAMESTATE, gameState);
     },
-    updateSelectedDifficulty({ commit }: { commit: Commit }, difficulty: Difficulty) {
+    updateSelectedDifficulty({ commit }: { commit: Commit }, difficulty: Difficulty): void {
       commit(MutationTypes.UPDATESELECTEDDIFFICULTY, difficulty);
     },
-   }
+  }
 }
 
 export default sudokuModule;

@@ -4,6 +4,7 @@ import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { AxiosResponse } from 'axios';
 
 export class ValuesService {
 
@@ -11,8 +12,8 @@ export class ValuesService {
     const result: IServicePayload = {};
 
     try {
-      const indexResponse = await IndexConnector.getMissionStatementAsync();
-      const valuesResponse = await ValuesConnector.getValuesAsync();
+      const indexResponse = await IndexConnector.getMissionStatementAsync() as AxiosResponse;
+      const valuesResponse = await ValuesConnector.getValuesAsync() as AxiosResponse;
       
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
@@ -132,7 +133,7 @@ export class ValuesService {
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
     }
 
