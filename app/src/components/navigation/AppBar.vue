@@ -64,6 +64,21 @@
               </template>
               <span>Login to SudokuCollective.com</span>
             </v-tooltip>
+            <v-tooltip bottom v-if="user.isLoggedIn">
+              <template v-slot:activator="{ props }">
+                <v-list-item v-bind="props">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <div class="menu-item" @click="logoutHandler">
+                        <v-icon>mdi-logout-variant</v-icon>
+                        <span class="mr-2">Log Out</span>
+                      </div>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Log out of SudokuCollective.com</span>
+            </v-tooltip>
             <hr v-if="exteriorLinks.length > 1" class="mx-2" />
             <v-tooltip bottom>
               <template v-slot:activator="{ props }">
@@ -111,67 +126,70 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, Ref, ref, watch } from 'vue';
-  import store from '@/store';
-  import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
-  import { InteriorLinks } from '@/utilities/links/interiorLinks';
-  import { User } from '@/models/domain/user';
+import { defineComponent, Ref, ref, toRaw, watch } from "vue";
+import store from "@/store";
+import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
+import { InteriorLinks } from "@/utilities/links/interiorLinks";
+import { User } from "@/models/domain/user";
 
-  export default defineComponent({
-    name: 'AppBar',
-    setup(props, { emit }) {
-      const interiorLinks = ref(InteriorLinks);
-      const exteriorLinks = ref(ExteriorLinks);
-      let user: Ref<User> = ref(store.getters['getUser']);
-
-      function loginHandler(): void {
-        emit("user-logging-in", null, null);
+export default defineComponent({
+  name: "AppBar",
+  setup(props, { emit }) {
+    const interiorLinks = ref(InteriorLinks);
+    const exteriorLinks = ref(ExteriorLinks);
+    const user: Ref<User> = ref(store.getters["appModule/getUser"]);
+    function loginHandler(): void {
+      emit("user-logging-in", null, null);
+    }
+    function logoutHandler(): void {
+      if (confirm(`Are you sure you want to log out ${user.value.userName}?`)) {
+        emit("user-logging-out", null, null);
       }
-
-      watch(
-        () => store.getters['getUser'],
-        function () {
-          user = ref(store.getters['getUser']);
-        }
-      );
-
-      return {
-        interiorLinks,
-        exteriorLinks,
-        user,
-        loginHandler
-      };
-    },
-  });
+    }
+    watch(
+      () => store.getters["appModule/getUser"],
+      function () {
+        user.value = toRaw(store.getters["appModule/getUser"]);
+      }
+    );
+    return {
+      interiorLinks,
+      exteriorLinks,
+      user,
+      loginHandler,
+      logoutHandler,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
-  .inline-flex {
-    display: inline-flex;
+.inline-flex {
+  display: inline-flex;
+}
+.header-logo {
+  margin: 0 0 0 10px;
+}
+.nav-text {
+  color: #fff;
+  font-size: x-large;
+  font-weight: bolder;
+  text-shadow: 2px 2px var(--v-secondary);
+  margin: auto;
+  padding: auto;
+  @media (max-width: 1264px) {
+    display: none;
   }
-  .header-logo {
-    margin: 0 0 0 10px;
-  }
-  .nav-text {
-    color: #fff;
-    font-size: x-large;
-    font-weight: bolder;
-    text-shadow: 2px 2px var(--v-secondary);
-    margin: auto;
-    padding: auto;
-    @media (max-width: 1264px) {
-      display: none;
-    }
-  }
-  .menu-text {
-    color: #fff;
-    text-shadow: 2px 2px var(--v-secondary);
-    margin: auto;
-    padding: auto;
-  }
-  .menu-item {
-    text-decoration: none !important;
-    color: #63666a;
-    cursor: pointer;
-  }
+}
+.menu-text {
+  color: #fff;
+  text-shadow: 2px 2px var(--v-secondary);
+  margin: auto;
+  padding: auto;
+}
+.menu-item {
+  text-decoration: none !important;
+  color: #63666a;
+  cursor: pointer;
+}
 </style>

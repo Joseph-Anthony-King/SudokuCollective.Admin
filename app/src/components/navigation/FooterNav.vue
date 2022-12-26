@@ -18,17 +18,17 @@
 </template>
 
 <script lang="ts">
-  import { computed } from '@vue/reactivity';
-  import { defineComponent } from 'vue';
+import { computed } from "@vue/reactivity";
+import { defineComponent } from "vue";
 
-  export default defineComponent({
-    name: 'FooterNav',
-    setup() {
-      const getCopyrightYear = computed(() => new Date().getFullYear());
+export default defineComponent({
+  name: "FooterNav",
+  setup() {
+    const getCopyrightYear = computed(() => new Date().getFullYear());
 
-      return {
-        getCopyrightYear,
-      };
-    },
-  });
+    return {
+      getCopyrightYear,
+    };
+  },
+});
 </script>

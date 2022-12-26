@@ -1,8 +1,10 @@
 import { GamesConnector } from "@/connectors/gamesConnector";
 import { SolutionsConnector } from "@/connectors/solutionsConnector";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { ISudokuRequestData } from "@/interfaces/infrastructure/iSudokuRequestData";
-import { SudokuRequestData } from "@/models/infrastructure/sudokuRequestData";
+import { ISudokuRequestData } from "@/interfaces/requests/iSudokuRequestData";
+import { SudokuRequestData } from "@/models/requests/sudokuRequestData";
+import { AxiosResponse, AxiosError } from "axios";
+import { StaticServiceMethods } from "../common";
 
 export class GamesService {
 
@@ -10,7 +12,7 @@ export class GamesService {
     const result: IServicePayload = {};
 		
 		try {
-			const response = await GamesConnector.getCreateGameAsync(difficultyLevel);
+			const response = await GamesConnector.getCreateGameAsync(difficultyLevel) as AxiosResponse;
 			
 			if (response.data.isSuccess) {
 				const game: Array<Array<string>> = Array<Array<string>>();
@@ -35,8 +37,14 @@ export class GamesService {
 			}
 		} catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
+			if (error instanceof AxiosError && error.response) {
+				result.isSuccess = error.response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(error.response);
+			} else {
+				result.isSuccess = false;
+			}
     }
 
 		return result;
@@ -124,7 +132,7 @@ export class GamesService {
 				}
 			}
 
-			const response = await GamesConnector.postCheckGameAsync(data);
+			const response = await GamesConnector.postCheckGameAsync(data) as AxiosResponse;
 			
 			result.isSuccess = response.data.isSuccess;
 			result.message = response.data.message.substring(17);
@@ -132,15 +140,13 @@ export class GamesService {
 			// eslint-disable-next-line
 		} catch (error: any) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 
@@ -229,7 +235,7 @@ export class GamesService {
 				}
 			}
 
-			const response = await SolutionsConnector.postSolveAsync(data);
+			const response = await SolutionsConnector.postSolveAsync(data) as AxiosResponse;
 
 			result.isSuccess = response.data.isSuccess;
 			result.message = response.data.message.substring(17);
@@ -248,15 +254,13 @@ export class GamesService {
 			// eslint-disable-next-line
 		} catch (error: any) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 		
@@ -268,10 +272,10 @@ export class GamesService {
 
 		try {
 
-			const response = await SolutionsConnector.getGenerateAsync();
+			const response = await SolutionsConnector.getGenerateAsync() as AxiosResponse;
 
 			result.isSuccess = response.data.isSuccess;
-			result.message = response.data.message.substring(17);
+			result.message = response.data.message;
 			
 			if (response.data.isSuccess) {
 				const solution = Array<Array<string>>(9);
@@ -287,15 +291,13 @@ export class GamesService {
 			// eslint-disable-next-line
 		} catch (error: any) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 		

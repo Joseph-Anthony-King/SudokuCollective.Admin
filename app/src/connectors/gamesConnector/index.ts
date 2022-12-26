@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/gamesConnector/endpoints';
-import { ISudokuRequestData } from '@/interfaces/infrastructure/iSudokuRequestData';
+import { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class GamesConnector {
   // eslint-disable-next-line
-  static async getCreateGameAsync(difficultyLevel: number): Promise<any> {
+  static async getCreateGameAsync(difficultyLevel: number): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
         method: 'get',
@@ -18,14 +18,14 @@ export class GamesConnector {
       return axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-      return error;
+      return error as AxiosError;
     }
   }
 
 	// eslint-disable-next-line
-	static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<any> {
+	static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {
 				method: 'post',
@@ -50,9 +50,9 @@ export class GamesConnector {
 			return axios(config);
 		} catch (error) {
 			if (process.env.NODE_ENV === 'development') {
-				console.log(error);
+				console.error('error: ', error);
 			}
-			return error;
+			return error as AxiosError;
 		}
 	}
 }
