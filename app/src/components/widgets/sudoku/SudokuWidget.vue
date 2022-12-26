@@ -104,18 +104,18 @@ export default defineComponent({
   components: { MatrixWidget },
   setup() {
     /* difficulty properties and methods */
-    const difficulties: Difficulty[] | undefined = ref(
+    const difficulties: Ref<Difficulty[]> = ref(
       store.getters["valuesModule/getDifficulties"]
     );
-    const selectedDifficulty: Ref<Difficulty> | undefined = ref(
+    const selectedDifficulty: Ref<Difficulty> = ref(
       store.getters["sudokuModule/getSelectedDifficulty"]
     );
     /* Game state properties and methods */
-    const gameStates: GameState[] | undefined = ref(
+    const gameStates: Ref<GameState[]> = ref(
       store.getters["valuesModule/getGameStates"]
     );
     // eslint-disable-next-line
-    const selectedGameState: Ref<DropdownItem> | undefined = ref(
+    const selectedGameState: Ref<DropdownItem> = ref(
       store.getters["sudokuModule/getGameState"]
     );
     const isGameStateSelected: ComputedRef<boolean> = computed(() => {
@@ -196,11 +196,25 @@ export default defineComponent({
       }
     };
     watch(
+      () => store.getters["valuesModule/getGameStates"],
+      function () {
+        gameStates.value = toRaw(store.getters["valuesModule/getGameStates"]);
+      }
+    );
+    watch(
       () => selectedGameState?.value,
       function () {
         store.dispatch(
           "sudokuModule/updateGameState",
           toRaw(selectedGameState?.value)
+        );
+      }
+    );
+    watch(
+      () => store.getters["valuesModule/getDifficulties"],
+      function () {
+        difficulties.value = toRaw(
+          store.getters["valuesModule/getDifficulties"]
         );
       }
     );

@@ -4,7 +4,8 @@ import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
+import { StaticServiceMethods } from '../common';
 
 export class ValuesService {
 
@@ -135,6 +136,12 @@ export class ValuesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
+			if (error instanceof AxiosError && error.response) {
+				result.isSuccess = error.response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(error.response);
+			} else {
+				result.isSuccess = false;
+			}
     }
 
     return result;

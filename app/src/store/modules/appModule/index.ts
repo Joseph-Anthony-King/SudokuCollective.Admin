@@ -63,6 +63,9 @@ const appModule = {
     updateUser({ commit }: { commit: Commit }, user: User): void {
       commit(MutationTypes.UPDATEUSER, user);
     },
+    updateToken({ commit }: { commit: Commit }, token: string): void {
+      commit(MutationTypes.UPDATETOKEN, token);
+    },
     updateProcessingMessage({ commit }: { commit: Commit }, message: string): void {
       commit(MutationTypes.UPDATEPROCESSINGMESSAGE, message);
     },

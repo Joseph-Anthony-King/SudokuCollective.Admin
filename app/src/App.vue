@@ -48,9 +48,11 @@ export default defineComponent({
   name: "App",
   components: { AppBar, FooterNav, LoginForm },
   setup() {
-    const isSmallViewPort: Ref<boolean> = ref(false);
-    const maxDialogWidth: Ref<string> = ref("");
-    const user: Ref<User> = ref(new User());
+    const user: Ref<User> = ref(
+      toRaw(store.getters["appModule/getUser"]) as User
+    );
+    const isSmallViewPort: Ref<boolean> = ref(true);
+    const maxDialogWidth: Ref<string> = ref("auto");
     const resetAppViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
@@ -63,11 +65,12 @@ export default defineComponent({
     const logout = (): void => {
       user.value.logout();
       store.dispatch("appModule/updateUser", user.value);
+      store.dispatch("appModule/updateToken", "");
     };
     watch(
       () => store.getters["appModule/getUser"],
       function () {
-        user.value = toRaw(store.getters["appModule/getUser"]);
+        user.value = toRaw(store.getters["appModule/getUser"]) as User;
       }
     );
     watch(
@@ -75,14 +78,13 @@ export default defineComponent({
       function () {
         const isLoggedIn = toRaw(store.getters["appModule/getUserIsLoggedIn"]);
         if (isLoggedIn) {
-          const user = toRaw(store.getters["appModule/getUser"]) as User;
-          alert(`Welcome back ${user.userName}!`);
+          user.value = toRaw(store.getters["appModule/getUser"]) as User;
+          alert(`Welcome back ${user.value.userName}!`);
         }
       }
     );
     onMounted(() => {
       store.dispatch("appModule/addLicense", StaticMethods.getLicense());
-      store.dispatch("appModule/updateUser", user.value);
       store.dispatch("valuesModule/initializeModuleAsync");
       store.dispatch("sudokuModule/initializeModule");
       resetAppViewPort();

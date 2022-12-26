@@ -3,7 +3,8 @@ import { SolutionsConnector } from "@/connectors/solutionsConnector";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ISudokuRequestData } from "@/interfaces/requests/iSudokuRequestData";
 import { SudokuRequestData } from "@/models/requests/sudokuRequestData";
-import { AxiosResponse } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
+import { StaticServiceMethods } from "../common";
 
 export class GamesService {
 
@@ -38,6 +39,12 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
+			if (error instanceof AxiosError && error.response) {
+				result.isSuccess = error.response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(error.response);
+			} else {
+				result.isSuccess = false;
+			}
     }
 
 		return result;
@@ -135,13 +142,11 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 
@@ -251,13 +256,11 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 		
@@ -290,13 +293,11 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-			if (error.message === 'Request failed with status code 400') {
+			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
-				result.message = error.response.data.message.substring(17);
+				StaticServiceMethods.processFailedResponse(error.response);
 			} else {
-				const errorMessage = error.response.data.split('\n');
 				result.isSuccess = false;
-				result.message = errorMessage[0].substring(26);
 			}
 		}
 		
