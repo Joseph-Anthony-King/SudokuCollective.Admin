@@ -63,7 +63,7 @@ export default defineComponent({
       }
     };
     const logout = (): void => {
-      user.value.logout();
+      (user.value as User).logout();
       store.dispatch("appModule/updateUser", user.value);
       store.dispatch("appModule/updateToken", "");
     };
