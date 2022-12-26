@@ -61,13 +61,8 @@ export default defineComponent({
       return applyTextColor(rowIndex, cellIndex);
     }
 
-<<<<<<< HEAD
-      function validateEntry(rowIndex: number, cellIndex: number): void {
-        var entry = parseInt(matrix.value[rowIndex][cellIndex]);
-=======
     function validateEntry(rowIndex: number, cellIndex: number): void {
       var entry = parseInt(matrix.value[rowIndex][cellIndex]);
->>>>>>> master
 
       if (entry < 1 || entry > 9) {
         matrix.value[rowIndex][cellIndex] = "";
@@ -183,26 +178,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-<<<<<<< HEAD
-  @media only screen and (max-width: 306px) {
-    .v-text-field {
-      max-width: 26px;
-      max-height: 48px;
-      font-weight: bold;
-      :deep(input) {
-        font-size: 12px;
-      }
-    }
-  }
-  @media only screen and (min-width:307px) and (max-width: 319px) {
-    .v-text-field {
-      max-width: 27px;
-      max-height: 48px;
-      font-weight: bold;
-      :deep(input) {
-        font-size: 12px;
-      }
-=======
 @media only screen and (max-width: 306px) {
   .v-text-field {
     max-width: 26px;
@@ -210,7 +185,6 @@ export default defineComponent({
     font-weight: bold;
     :deep(input) {
       font-size: 12px;
->>>>>>> master
     }
   }
 }

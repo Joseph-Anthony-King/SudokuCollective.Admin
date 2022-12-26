@@ -64,8 +64,6 @@
               </template>
               <span>Login to SudokuCollective.com</span>
             </v-tooltip>
-<<<<<<< HEAD
-=======
             <v-tooltip bottom v-if="user.isLoggedIn">
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
@@ -81,7 +79,6 @@
               </template>
               <span>Log out of SudokuCollective.com</span>
             </v-tooltip>
->>>>>>> master
             <hr v-if="exteriorLinks.length > 1" class="mx-2" />
             <v-tooltip bottom>
               <template v-slot:activator="{ props }">
@@ -129,40 +126,6 @@
 </template>
 
 <script lang="ts">
-<<<<<<< HEAD
-  import { defineComponent, Ref, ref, watch } from 'vue';
-  import store from '@/store';
-  import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
-  import { InteriorLinks } from '@/utilities/links/interiorLinks';
-  import { User } from '@/models/domain/user';
-
-  export default defineComponent({
-    name: 'AppBar',
-    setup(props, { emit }) {
-      const interiorLinks = ref(InteriorLinks);
-      const exteriorLinks = ref(ExteriorLinks);
-      let user: Ref<User> = ref(store.getters['getUser']);
-
-      function loginHandler(): void {
-        emit("user-logging-in", null, null);
-      }
-
-      watch(
-        () => store.getters['getUser'],
-        function () {
-          user = ref(store.getters['getUser']);
-        }
-      );
-
-      return {
-        interiorLinks,
-        exteriorLinks,
-        user,
-        loginHandler
-      };
-    },
-  });
-=======
 import { defineComponent, Ref, ref, toRaw, watch } from "vue";
 import store from "@/store";
 import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
@@ -198,7 +161,6 @@ export default defineComponent({
     };
   },
 });
->>>>>>> master
 </script>
 
 <style lang="scss" scoped>
