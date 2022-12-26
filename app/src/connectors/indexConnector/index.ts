@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/indexConnector/endpoints';
 
 export class IndexConnector {
   // eslint-disable-next-line
-  static async getMissionStatementAsync(): Promise<any> {
+  static async getMissionStatementAsync(): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
         method: 'get',
@@ -17,9 +17,9 @@ export class IndexConnector {
       return axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-      return error;
+      return error as AxiosError;
     }
   }
 }

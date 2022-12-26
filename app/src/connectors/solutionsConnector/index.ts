@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/solutionsConnector/endpoints';
-import { ISudokuRequestData } from '@/interfaces/infrastructure/iSudokuRequestData';
+import { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class SolutionsConnector {
 	// eslint-disable-next-line
-	static async postSolveAsync(matrix: ISudokuRequestData): Promise<any> {
+	static async postSolveAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {
 				method: 'post',
@@ -29,14 +29,14 @@ export class SolutionsConnector {
 			return axios(config);
 		} catch (error) {
 			if (process.env.NODE_ENV === 'development') {
-				console.log(error);
+				console.error('error: ', error);
 			}
-			return error;
+			return error as AxiosError;
 		}
 	}
 
 	// eslint-disable-next-line
-	static async getGenerateAsync(): Promise<any> {
+	static async getGenerateAsync(): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {
 				method: 'get',
@@ -50,9 +50,9 @@ export class SolutionsConnector {
 			return axios(config);
 		} catch (error) {
 			if (process.env.NODE_ENV === 'development') {
-				console.log(error);
+				console.error('error: ', error);
 			}
-			return error;
+			return error as AxiosError;
 		}
 	}
 }

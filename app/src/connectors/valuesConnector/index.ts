@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/valuesConnector/endpoints';
 
 export class ValuesConnector {
   // eslint-disable-next-line
-  static async getValuesAsync(): Promise<any> {
+  static async getValuesAsync(): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
         method: 'post',
@@ -24,9 +24,9 @@ export class ValuesConnector {
       return axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        console.error('error: ', error);
       }
-      return error;
+      return error as AxiosError;
     }
   }
 }
