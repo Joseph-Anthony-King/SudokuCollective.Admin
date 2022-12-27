@@ -20,7 +20,10 @@
               <v-text-field
                 label="Password"
                 v-model="password"
+                :type="showPassword ? 'text' : 'password'"
                 prepend-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
               >
               </v-text-field>
             </v-col>
@@ -75,6 +78,7 @@ export default defineComponent({
     const loginFormIsValid: Ref<boolean> = ref(true);
     const userName: Ref<string> = ref("");
     const password: Ref<string> = ref("");
+    const showPassword: Ref<boolean> = ref(false);
     const userNameRules: ComputedRef<any> = computed(() => {
       return [(v: string) => !!v || "User Name is required"];
     });
@@ -99,6 +103,7 @@ export default defineComponent({
       loginFormIsValid,
       userName,
       password,
+      showPassword,
       userNameRules,
       cancelHandler,
       loginHandler,
