@@ -13,7 +13,7 @@ export default createStore({
     valuesModule,
   },
   plugins: [createPersistedState({
-    key: 'admin.sudokuCollective',
+    key: `${process.env.VUE_APP_CACHE_KEY}`,
     paths: ['appModule', 'serviceFailModule', 'sudokuModule', 'valuesModule'],
     storage: window.localStorage,
     overwrite: true
