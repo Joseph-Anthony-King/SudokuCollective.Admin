@@ -15,7 +15,10 @@
           hide-overlay
           transition="dialog-bottom-transition"
         >
-          <LoginForm v-on:cancel-login="user.isLoggingIn = false" />
+          <LoginForm
+            formStatus="user.isLoggingIn"
+            v-on:cancel-login="user.isLoggingIn = false"
+          />
         </v-dialog>
       </v-main>
     </div>
