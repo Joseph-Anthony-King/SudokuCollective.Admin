@@ -85,9 +85,9 @@
 </template>
 
 <script lang="ts">
-import { LoginRequestData } from "@/models/requests/loginRequestData";
-import store from "@/store";
 import { computed, ComputedRef, defineComponent, ref, Ref, watch } from "vue";
+import store from "@/store";
+import { LoginRequestData } from "@/models/requests/loginRequestData";
 
 export default defineComponent({
   name: "LoginForm",
@@ -131,7 +131,7 @@ export default defineComponent({
     const resetFormStatus: ComputedRef<boolean> = computed(() => {
       return !props.formStatus;
     });
-    function resetHandler(): void {
+    const resetHandler = (): void => {
       if (confirm("Are you sure you want to reset this form?")) {
         userName.value = "";
         password.value = "";
@@ -139,20 +139,19 @@ export default defineComponent({
         invalidPasswords = [];
         form.value?.reset();
       }
-    }
-    function cancelHandler(): void {
+    };
+    const cancelHandler = (): void => {
       emit("cancel-login", null, null);
-    }
-    function loginHandler(): void {
+    };
+    const loginHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginRequestData(userName.value, password.value);
-        console.log(new Date(), getFormStatus.value, "data: ", data);
         store.dispatch("appModule/loginAsync", data);
       }
-    }
+    };
     watch(
       () => store.getters["serviceFailModule/getIsSuccess"],
-      function () {
+      () => {
         const isSuccess = store.getters["serviceFailModule/getIsSuccess"];
         if (isSuccess !== null && !isSuccess) {
           const message: string = store.getters["serviceFailModule/getMessage"];

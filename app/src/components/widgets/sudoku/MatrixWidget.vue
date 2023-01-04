@@ -47,21 +47,21 @@ export default defineComponent({
     let gameState: DropdownItem | null =
       store.getters["sudokuModule/getGameState"];
 
-    function applyOddRegionStyling(
+    const applyOddRegionStyling = (
       rowIndex: number,
       cellIndex: number
-    ): boolean {
+    ): boolean => {
       return applyOddRegion(rowIndex, cellIndex);
-    }
+    };
 
-    function applyTextColorStyling(
+    const applyTextColorStyling = (
       rowIndex: number,
       cellIndex: number
-    ): string {
+    ): string => {
       return applyTextColor(rowIndex, cellIndex);
-    }
+    };
 
-    function validateEntry(rowIndex: number, cellIndex: number): void {
+    const validateEntry = (rowIndex: number, cellIndex: number): void => {
       var entry = parseInt(matrix.value[rowIndex][cellIndex]);
 
       if (entry < 1 || entry > 9) {
@@ -82,9 +82,9 @@ export default defineComponent({
           store.dispatch("sudokuModule/updatePuzzle", sudoku);
         }
       }
-    }
+    };
 
-    function isReadOnly(rowIndex: number, cellIndex: number): boolean {
+    const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
       if (gameState !== null) {
         if (gameState.value === GameState.PLAYGAME) {
           const initialGame = store.getters["sudokuModule/getInitialGame"];
@@ -101,11 +101,11 @@ export default defineComponent({
       } else {
         return true;
       }
-    }
+    };
 
     watch(
       () => store.getters["sudokuModule/getGameState"],
-      function () {
+      () => {
         gameState = toRaw(store.getters["sudokuModule/getGameState"]);
         matrix.value = obtainMatrix();
       }
@@ -113,7 +113,7 @@ export default defineComponent({
 
     watch(
       () => store.getters["sudokuModule/getGame"],
-      function () {
+      () => {
         if (gameState?.value === GameState.PLAYGAME) {
           const game = store.getters["sudokuModule/getGame"];
           matrix.value = Array<Array<string>>(9);
@@ -130,7 +130,7 @@ export default defineComponent({
 
     watch(
       () => store.getters["sudokuModule/getPuzzle"],
-      function () {
+      () => {
         if (gameState?.value === GameState.SOLVESUDOKU) {
           const puzzle = store.getters["sudokuModule/getPuzzle"];
           matrix.value = Array<Array<string>>(9);
@@ -147,7 +147,7 @@ export default defineComponent({
 
     watch(
       () => store.getters["sudokuModule/getSolution"],
-      function () {
+      () => {
         if (gameState?.value === GameState.GENERATESUDOKU) {
           const solution = store.getters["sudokuModule/getSolution"];
           matrix.value = Array<Array<string>>(9);

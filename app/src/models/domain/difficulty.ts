@@ -1,5 +1,6 @@
 import { IDifficulty } from '@/interfaces/domain/iDifficulty';
 
+// state...
 export class Difficulty implements IDifficulty {
   id: number;
   name: string;

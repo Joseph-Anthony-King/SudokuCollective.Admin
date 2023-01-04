@@ -1,5 +1,6 @@
 import { IGalleryApp } from '@/interfaces/domain/iGalleryApp';
 
+// state...
 export class GalleryApp implements IGalleryApp {
   id: number;
   name: string;
