@@ -51,7 +51,7 @@ const oddRegionIndexes: Array<{ row: number; cell: number }> = [
   { row: 8, cell: 8 },
 ];
 
-function initializeMatix(): Array<Array<string>> {
+const initializeMatix = (): Array<Array<string>> => {
 	const matrix = Array<Array<string>>(9);
 	for (let i = 0; i < 9; i++) {
 		matrix[i] = [];
@@ -62,7 +62,7 @@ function initializeMatix(): Array<Array<string>> {
 	return matrix;
 }
 
-function obtainMatrix(): Array<Array<string>> {
+const obtainMatrix = (): Array<Array<string>> => {
   let result = initializeMatix();
   const gameState = toRaw(store.getters['sudokuModule/getGameState']);
   if (gameState?.value === GameState.PLAYGAME) {
@@ -99,7 +99,7 @@ function obtainMatrix(): Array<Array<string>> {
   return result;
 }
 
-function applyOddRegion(rowIndex: number, cellIndex: number): boolean {
+const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
   let result = false;
 
   oddRegionIndexes.forEach((index) => {
@@ -111,7 +111,7 @@ function applyOddRegion(rowIndex: number, cellIndex: number): boolean {
   return result;
 }
 
-function applyTextColor(rowIndex: number, cellIndex: number): string {
+const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const gameState: DropdownItem = toRaw(
     store.getters['sudokuModule/getGameState']
   );

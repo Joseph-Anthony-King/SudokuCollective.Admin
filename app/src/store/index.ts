@@ -16,6 +16,6 @@ export default createStore({
     key: `${process.env.VUE_APP_CACHE_KEY}`,
     paths: ['appModule', 'serviceFailModule', 'sudokuModule', 'valuesModule'],
     storage: window.localStorage,
-    overwrite: true
+    overwrite: true,
   })],
 })

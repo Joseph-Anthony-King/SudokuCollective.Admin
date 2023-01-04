@@ -18,7 +18,7 @@ export default defineComponent({
     );
     watch(
       () => store.getters["sudokuModule/getProcessing"],
-      function () {
+      () => {
         loading.value = store.getters["sudokuModule/getProcessing"];
       }
     );
