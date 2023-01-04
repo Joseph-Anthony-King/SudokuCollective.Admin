@@ -120,7 +120,7 @@ export default defineComponent({
     };
     watch(
       () => store.getters["getProcessingMessage"],
-      function () {
+      () => {
         progressMessage.value = store.getters["getProcessingMessage"];
       }
     );

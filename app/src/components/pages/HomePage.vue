@@ -39,15 +39,15 @@ export default defineComponent({
   name: "HomePage",
   components: { ProgressWidget },
   setup() {
-    const loading = computed(() => {
-      return missionStatement.value === "";
-    });
     const missionStatement = ref(
       store.getters["valuesModule/getMissionStatement"]
     );
+    const loading = computed(() => {
+      return missionStatement.value === "";
+    });
     watch(
       () => store.getters["valuesModule/getMissionStatement"],
-      function () {
+      () => {
         missionStatement.value =
           store.getters["valuesModule/getMissionStatement"];
       }

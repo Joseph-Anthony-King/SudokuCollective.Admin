@@ -15,7 +15,10 @@
           hide-overlay
           transition="dialog-bottom-transition"
         >
-          <LoginForm v-on:cancel-login="user.isLoggingIn = false" />
+          <LoginForm
+            formStatus="user.isLoggingIn"
+            v-on:cancel-login="user.isLoggingIn = false"
+          />
         </v-dialog>
       </v-main>
     </div>
@@ -63,19 +66,18 @@ export default defineComponent({
       }
     };
     const logout = (): void => {
-      (user.value as User).logout();
-      store.dispatch("appModule/updateUser", user.value);
+      store.dispatch("appModule/logout");
       store.dispatch("appModule/updateToken", "");
     };
     watch(
       () => store.getters["appModule/getUser"],
-      function () {
+      () => {
         user.value = toRaw(store.getters["appModule/getUser"]) as User;
       }
     );
     watch(
       () => store.getters["appModule/getUserIsLoggedIn"],
-      function () {
+      () => {
         const isLoggedIn = toRaw(store.getters["appModule/getUserIsLoggedIn"]);
         if (isLoggedIn) {
           user.value = toRaw(store.getters["appModule/getUser"]) as User;

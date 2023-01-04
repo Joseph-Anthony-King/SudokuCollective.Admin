@@ -197,13 +197,13 @@ export default defineComponent({
     };
     watch(
       () => store.getters["valuesModule/getGameStates"],
-      function () {
+      () => {
         gameStates.value = toRaw(store.getters["valuesModule/getGameStates"]);
       }
     );
     watch(
       () => selectedGameState?.value,
-      function () {
+      () => {
         store.dispatch(
           "sudokuModule/updateGameState",
           toRaw(selectedGameState?.value)
@@ -212,7 +212,7 @@ export default defineComponent({
     );
     watch(
       () => store.getters["valuesModule/getDifficulties"],
-      function () {
+      () => {
         difficulties.value = toRaw(
           store.getters["valuesModule/getDifficulties"]
         );
@@ -220,7 +220,7 @@ export default defineComponent({
     );
     watch(
       () => selectedDifficulty?.value,
-      function () {
+      () => {
         store.dispatch(
           "sudokuModule/updateSelectedDifficulty",
           toRaw(selectedDifficulty?.value)
@@ -229,7 +229,7 @@ export default defineComponent({
     );
     watch(
       () => store.getters["sudokuModule/getServiceResult"],
-      function () {
+      () => {
         if (store.getters["sudokuModule/getServiceResult"] !== null) {
           alert(store.getters["sudokuModule/getServiceMessage"]);
         }

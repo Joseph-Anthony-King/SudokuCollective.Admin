@@ -1,9 +1,9 @@
-import { User } from "@/models/domain/user";
+import { IUser } from "@/interfaces/domain/iUser";
 
 export interface IAppState {
     license: string,
     expirationDate: Date,
     processingMessage: string,
-    user: User,
+    user: IUser | null,
     token: string,
 }

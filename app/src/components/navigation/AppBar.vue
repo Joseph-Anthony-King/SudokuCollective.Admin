@@ -138,17 +138,17 @@ export default defineComponent({
     const interiorLinks = ref(InteriorLinks);
     const exteriorLinks = ref(ExteriorLinks);
     const user: Ref<User> = ref(store.getters["appModule/getUser"]);
-    function loginHandler(): void {
+    const loginHandler = (): void => {
       emit("user-logging-in", null, null);
-    }
-    function logoutHandler(): void {
+    };
+    const logoutHandler = (): void => {
       if (confirm(`Are you sure you want to log out ${user.value.userName}?`)) {
         emit("user-logging-out", null, null);
       }
-    }
+    };
     watch(
       () => store.getters["appModule/getUser"],
-      function () {
+      () => {
         user.value = toRaw(store.getters["appModule/getUser"]);
       }
     );

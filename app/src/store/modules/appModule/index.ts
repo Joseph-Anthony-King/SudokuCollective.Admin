@@ -1,5 +1,5 @@
 import { IAppState } from "@/interfaces/store/IAppState";
-import { User } from "@/models/domain/user";
+import { User, UserMethods } from "@/models/domain/user";
 import { MutationTypes } from "./mutationTypes";
 import { Commit } from "vuex";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
@@ -16,40 +16,40 @@ const appModule = {
     token: '',
   }),
   getters: {
-    getState(state: IAppState) {
+    getState(state: IAppState): IAppState {
       return state;
     },
-    getLicense(state: IAppState) {
+    getLicense(state: IAppState): string {
       return state.license;
     },
-    getProcessingMessage(state: IAppState) {
+    getProcessingMessage(state: IAppState): string {
       return state.processingMessage;
     },
-    getUser(state: IAppState) {
+    getUser(state: IAppState): User | null {
       return state.user;
     },
-    getUserIsLoggedIn(state: IAppState) {
-      return state.user.isLoggedIn;
+    getUserIsLoggedIn(state: IAppState): boolean {
+      return state.user !== null ? state.user.isLoggedIn : false;
     },
-    getToken(state: IAppState) {
+    getToken(state: IAppState): string {
       return state.token;
     }
   },
   mutations: {
-    [MutationTypes.UPDATELICENSE](state: IAppState, license: string) {
+    [MutationTypes.UPDATELICENSE](state: IAppState, license: string): void {
       state.license = license;
     },
-    [MutationTypes.UPDATEEXPIRATIONDATE](state: IAppState) {
+    [MutationTypes.UPDATEEXPIRATIONDATE](state: IAppState): void {
       const currentDate = new Date();
       state.expirationDate.setDate(currentDate.getDate() + 1);
     },
-    [MutationTypes.UPDATEPROCESSINGMESSAGE](state: IAppState, message: string) {
+    [MutationTypes.UPDATEPROCESSINGMESSAGE](state: IAppState, message: string): void {
       state.processingMessage = message;
     },
-    [MutationTypes.UPDATEUSER](state: IAppState, user: User) {
+    [MutationTypes.UPDATEUSER](state: IAppState, user: User): void {
       state.user = user;
     },
-    [MutationTypes.UPDATETOKEN](state: IAppState, token: string) {
+    [MutationTypes.UPDATETOKEN](state: IAppState, token: string): void {
       state.token = token;
     }
   },
@@ -76,6 +76,10 @@ const appModule = {
         commit(MutationTypes.UPDATETOKEN, response.token);
       }
     },
+    logout({ commit, state }: { commit: Commit, state: IAppState }): void {
+      const user = UserMethods.logout(state.user as User);
+      commit(MutationTypes.UPDATEUSER, user);
+    }
   }
 }
 
