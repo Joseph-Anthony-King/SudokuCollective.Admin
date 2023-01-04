@@ -92,7 +92,10 @@ import { LoginRequestData } from "@/models/requests/loginRequestData";
 export default defineComponent({
   name: "LoginForm",
   props: {
-    formStatus: Boolean,
+    formStatus: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props, { emit }) {
     const form: Ref<HTMLFormElement | null> = ref(null);

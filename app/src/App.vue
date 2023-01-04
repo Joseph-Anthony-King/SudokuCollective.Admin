@@ -16,7 +16,7 @@
           transition="dialog-bottom-transition"
         >
           <LoginForm
-            formStatus="user.isLoggingIn"
+            :formStatus="user.isLoggingIn"
             v-on:cancel-login="user.isLoggingIn = false"
           />
         </v-dialog>
@@ -33,6 +33,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import {
+  computed,
+  ComputedRef,
   onMounted,
   onUnmounted,
   Ref,
@@ -69,6 +71,9 @@ export default defineComponent({
       store.dispatch("appModule/logout");
       store.dispatch("appModule/updateToken", "");
     };
+    const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
+      return user.value?.isLoggingIn;
+    });
     watch(
       () => store.getters["appModule/getUser"],
       () => {
@@ -104,6 +109,7 @@ export default defineComponent({
       maxDialogWidth,
       user,
       logout,
+      userIsLoggingIn
     };
   },
 });
