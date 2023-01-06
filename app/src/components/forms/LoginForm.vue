@@ -35,67 +35,69 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="helpHandler"
-                v-bind="props"
-              >
-                Help
-              </v-btn>
-            </template>
-            <span>Get assistance to verify your user name or change password</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="resetHandler"
-                v-bind="props"
-              >
-                Reset
-              </v-btn>
-            </template>
-            <span>Reset the login form</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="cancelHandler"
-                v-bind="props"
-              >
-                Cancel
-              </v-btn>
-            </template>
-            <span>Cancel the login process</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="submitHandler"
-                :disabled="!formValid"
-                v-bind="props"
-              >
-                Login
-              </v-btn>
-            </template>
-            <span>Login to the api</span>
-          </v-tooltip>
-        </v-col>
+        <v-row :dense="true">
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="helpHandler"
+                  v-bind="props"
+                >
+                  Help
+                </v-btn>
+              </template>
+              <span>Get assistance to verify your user name or change password</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="resetHandler"
+                  v-bind="props"
+                >
+                  Reset
+                </v-btn>
+              </template>
+              <span>Reset the login form</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="cancelHandler"
+                  v-bind="props"
+                >
+                  Cancel
+                </v-btn>
+              </template>
+              <span>Cancel the login process</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="submitHandler"
+                  :disabled="!formValid"
+                  v-bind="props"
+                >
+                  Login
+                </v-btn>
+              </template>
+              <span>Login to the api</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-form>
   </v-card>
