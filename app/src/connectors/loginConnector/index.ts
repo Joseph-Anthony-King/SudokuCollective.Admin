@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/loginConnector/endpoints';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+import { IConfirmUserNameRequestData } from '@/interfaces/requests/iConfrimUserNameRequestData';
 
 export class LoginConnector {
-  // eslint-disable-next-line
 	static async postLoginAsync(data: ILoginRequestData): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
@@ -28,4 +28,28 @@ export class LoginConnector {
       return error as AxiosError;
     }
 	}
+
+  static async postConfirmUserNameAsync(data: IConfirmUserNameRequestData): Promise<AxiosResponse | AxiosError> {
+    try {
+      const config = {
+        method: 'post',
+        url: `${Endpoints.confirmUserNameEndpoint}`,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+				},
+				data: {
+					'license': process.env.VUE_APP_LICENSE,
+					'email': data.email,
+				}
+      }
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
 }

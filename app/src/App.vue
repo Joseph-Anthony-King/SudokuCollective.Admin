@@ -3,12 +3,12 @@
     <div class="app-viewport">
       <app-bar
         v-on:user-logging-in="user.isLoggingIn = true"
-        v-on:user-logging-out="logout"
+        v-on:user-logging-out="logoutHandler"
       />
       <v-main>
         <router-view />
         <v-dialog
-          v-model="user.isLoggingIn"
+          v-model="userIsLoggingIn"
           persistent
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
@@ -16,8 +16,22 @@
           transition="dialog-bottom-transition"
         >
           <LoginForm
-            :formStatus="user.isLoggingIn"
+            :formStatus="userIsLoggingIn"
             v-on:cancel-login="user.isLoggingIn = false"
+            v-on:obtain-login-assistance="openLoginAssistanceHandler"
+          />
+        </v-dialog>
+        <v-dialog
+          v-model="userObtainingLoginAssistance"
+          persistent
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
+          hide-overlay
+          transition="dialog-bottom-transition"
+        >
+          <LoginAssistanceForm
+            :formStatus="userObtainingLoginAssistance"
+            v-on:go-back-to-login="closeLoginAssistanceHandler"
           />
         </v-dialog>
       </v-main>
@@ -31,33 +45,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import {
   computed,
   ComputedRef,
+  defineComponent,
   onMounted,
   onUnmounted,
   Ref,
   ref,
   toRaw,
   watch,
-} from "@vue/runtime-core";
+} from "vue";
 import store from "@/store";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
+import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
+import commonUtilities from "@/utilities/common";
 import { User } from "@/models/domain/user";
-import { StaticMethods } from "@/utilities/common";
 
 export default defineComponent({
   name: "App",
-  components: { AppBar, FooterNav, LoginForm },
+  components: { AppBar, FooterNav, LoginForm, LoginAssistanceForm },
   setup() {
+    const { getLicense } = commonUtilities();
+    const isSmallViewPort: Ref<boolean> = ref(true);
+    const maxDialogWidth: Ref<string> = ref("auto");
     const user: Ref<User> = ref(
       toRaw(store.getters["appModule/getUser"]) as User
     );
-    const isSmallViewPort: Ref<boolean> = ref(true);
-    const maxDialogWidth: Ref<string> = ref("auto");
+    const userObtainingLoginAssistance: Ref<boolean> = ref(false);
+    const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
+      return user.value?.isLoggingIn;
+    });
     const resetAppViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
@@ -67,13 +87,18 @@ export default defineComponent({
         maxDialogWidth.value = "960px";
       }
     };
-    const logout = (): void => {
+    const logoutHandler = (): void => {
       store.dispatch("appModule/logout");
       store.dispatch("appModule/updateToken", "");
     };
-    const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
-      return user.value?.isLoggingIn;
-    });
+    const openLoginAssistanceHandler = (): void => {
+      user.value.isLoggingIn = false;
+      userObtainingLoginAssistance.value = true;
+    }
+    const closeLoginAssistanceHandler = (): void => {
+      user.value.isLoggingIn = true;
+      userObtainingLoginAssistance.value = false;
+    }
     watch(
       () => store.getters["appModule/getUser"],
       () => {
@@ -91,7 +116,7 @@ export default defineComponent({
       }
     );
     onMounted(() => {
-      store.dispatch("appModule/addLicense", StaticMethods.getLicense());
+      store.dispatch("appModule/addLicense", getLicense());
       store.dispatch("valuesModule/initializeModuleAsync");
       store.dispatch("sudokuModule/initializeModule");
       resetAppViewPort();
@@ -108,8 +133,11 @@ export default defineComponent({
       isSmallViewPort,
       maxDialogWidth,
       user,
-      logout,
-      userIsLoggingIn
+      userObtainingLoginAssistance,
+      userIsLoggingIn,
+      logoutHandler,
+      openLoginAssistanceHandler,
+      closeLoginAssistanceHandler,
     };
   },
 });

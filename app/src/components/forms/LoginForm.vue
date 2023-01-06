@@ -13,6 +13,7 @@
                 v-model="userName"
                 prepend-icon="mdi-account-circle"
                 :rules="userNameRules"
+                autocomplete="off"
               >
               </v-text-field>
             </v-col>
@@ -25,6 +26,7 @@
                 prepend-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPassword = !showPassword"
+                autocomplete="off"
               >
               </v-text-field>
             </v-col>
@@ -34,13 +36,28 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-col>
-          <v-tooltip close-delay="3000">
+          <v-tooltip close-delay="3000" location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="helpHandler"
+                v-bind="props"
+              >
+                Help
+              </v-btn>
+            </template>
+            <span>Get assistance to verify your user name or change password</span>
+          </v-tooltip>
+        </v-col>
+        <v-col>
+          <v-tooltip close-delay="3000" location="bottom">
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
                 text
                 @click="resetHandler"
-                v-on="props"
+                v-bind="props"
               >
                 Reset
               </v-btn>
@@ -49,7 +66,7 @@
           </v-tooltip>
         </v-col>
         <v-col>
-          <v-tooltip close-delay="3000">
+          <v-tooltip close-delay="3000" location="bottom">
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
@@ -64,12 +81,12 @@
           </v-tooltip>
         </v-col>
         <v-col>
-          <v-tooltip close-delay="3000">
+          <v-tooltip close-delay="3000" location="bottom">
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
                 text
-                @click="loginHandler"
+                @click="submitHandler"
                 :disabled="!formValid"
                 v-bind="props"
               >
@@ -85,8 +102,10 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref, Ref, watch } from "vue";
+import { computed, ComputedRef, defineComponent, onMounted, onUpdated, ref, Ref, toRaw, watch } from "vue";
+import { VForm } from 'vuetify/components';
 import store from "@/store";
+import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
 
 export default defineComponent({
@@ -98,7 +117,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const form: Ref<HTMLFormElement | null> = ref(null);
+    const { isChrome, repairAutoComplete } = commonUtilities();
+    const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
     const userName: Ref<string> = ref("");
     const password: Ref<string> = ref("");
@@ -134,6 +154,15 @@ export default defineComponent({
     const resetFormStatus: ComputedRef<boolean> = computed(() => {
       return !props.formStatus;
     });
+    const submitHandler = (): void => {
+      if (getFormStatus.value) {
+        const data = new LoginRequestData(userName.value, password.value);
+        store.dispatch("appModule/loginAsync", data);
+      }
+    };
+    const helpHandler = (): void => {
+      emit("obtain-login-assistance", null, null);
+    };
     const resetHandler = (): void => {
       if (confirm("Are you sure you want to reset this form?")) {
         userName.value = "";
@@ -145,12 +174,6 @@ export default defineComponent({
     };
     const cancelHandler = (): void => {
       emit("cancel-login", null, null);
-    };
-    const loginHandler = (): void => {
-      if (getFormStatus.value) {
-        const data = new LoginRequestData(userName.value, password.value);
-        store.dispatch("appModule/loginAsync", data);
-      }
     };
     watch(
       () => store.getters["serviceFailModule/getIsSuccess"],
@@ -176,6 +199,26 @@ export default defineComponent({
         }
       }
     );
+    watch(
+      () => store.getters["appModule/getConfirmedUserName"],
+      () => {
+        const confirmedUserName = toRaw(store.getters["appModule/getConfirmedUserName"]);
+        if (confirmedUserName !== "") {
+          userName.value = confirmedUserName;
+          store.dispatch("appModule/updateConfirmedUserName", "");
+        }
+      }
+    );
+    onMounted(() => {
+      if (isChrome.value) {
+        repairAutoComplete();
+      }
+    });
+    onUpdated(() => {
+      if (isChrome.value) {
+        repairAutoComplete();
+      }
+    });
     return {
       form,
       formValid,
@@ -184,9 +227,10 @@ export default defineComponent({
       showPassword,
       userNameRules,
       passwordRules,
+      submitHandler,
+      helpHandler,
       resetHandler,
       cancelHandler,
-      loginHandler,
     };
   },
 });
