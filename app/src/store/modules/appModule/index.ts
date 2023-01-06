@@ -5,6 +5,7 @@ import { Commit } from "vuex";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { LoginService } from "@/services/loginService";
+import { IConfirmUserNameRequestData } from "@/interfaces/requests/iConfrimUserNameRequestData";
 
 const appModule = {
   namespaced: true,
@@ -14,6 +15,7 @@ const appModule = {
     processingMessage: '',
     user: new User(),
     token: '',
+    confirmedUserName: ''
   }),
   getters: {
     getState(state: IAppState): IAppState {
@@ -33,6 +35,9 @@ const appModule = {
     },
     getToken(state: IAppState): string {
       return state.token;
+    },
+    getConfirmedUserName(state: IAppState): string {
+      return state.confirmedUserName;
     }
   },
   mutations: {
@@ -51,6 +56,9 @@ const appModule = {
     },
     [MutationTypes.UPDATETOKEN](state: IAppState, token: string): void {
       state.token = token;
+    },
+    [MutationTypes.UPDATECONFIRMEDUSERNAME](state: IAppState, confirmedUserName: string): void {
+      state.confirmedUserName = confirmedUserName;
     }
   },
 	actions: {
@@ -79,6 +87,16 @@ const appModule = {
     logout({ commit, state }: { commit: Commit, state: IAppState }): void {
       const user = UserMethods.logout(state.user as User);
       commit(MutationTypes.UPDATEUSER, user);
+    },
+    async confirmUserNameAsync({ commit }: { commit: Commit }, data: IConfirmUserNameRequestData): Promise<void> {
+      const response: IServicePayload = await LoginService.postConfirmUserNameAsync(data);
+      if (response.isSuccess) {
+        commit(MutationTypes.UPDATECONFIRMEDUSERNAME, response.confirmedUserName);
+      }
+
+    },
+    updateConfirmedUserName({ commit }: {commit: Commit}, confirmedUserName: string): void {
+      commit(MutationTypes.UPDATECONFIRMEDUSERNAME, confirmedUserName);
     }
   }
 }

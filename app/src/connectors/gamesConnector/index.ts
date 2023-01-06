@@ -3,7 +3,6 @@ import { Endpoints } from '@/connectors/gamesConnector/endpoints';
 import { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class GamesConnector {
-  // eslint-disable-next-line
   static async getCreateGameAsync(difficultyLevel: number): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
@@ -24,7 +23,6 @@ export class GamesConnector {
     }
   }
 
-	// eslint-disable-next-line
 	static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {

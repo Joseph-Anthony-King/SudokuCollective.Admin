@@ -3,7 +3,6 @@ import { Endpoints } from '@/connectors/solutionsConnector/endpoints';
 import { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class SolutionsConnector {
-	// eslint-disable-next-line
 	static async postSolveAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {
@@ -35,7 +34,6 @@ export class SolutionsConnector {
 		}
 	}
 
-	// eslint-disable-next-line
 	static async getGenerateAsync(): Promise<AxiosResponse | AxiosError> {
 		try {
 			const config = {

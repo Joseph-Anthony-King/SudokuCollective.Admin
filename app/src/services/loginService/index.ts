@@ -4,6 +4,7 @@ import { StaticServiceMethods } from "../common";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 import { User } from "@/models/domain/user";
+import { IConfirmUserNameRequestData } from "@/interfaces/requests/iConfrimUserNameRequestData";
 
 export class LoginService {
 	
@@ -33,6 +34,34 @@ export class LoginService {
 					response.data.payload[0].user.dateUpdated,
 					true);
 				result.token = response.data.payload[0].token;
+			} else {
+				result.isSuccess = response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(response);
+			}	
+		} catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+			}
+			if (error instanceof AxiosError && error.response) {
+				result.isSuccess = error.response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(error.response);
+			} else {
+				result.isSuccess = false;
+			}
+		}
+
+    return result;
+	}
+
+	static async postConfirmUserNameAsync(data: IConfirmUserNameRequestData): Promise<IServicePayload> {
+		const result: IServicePayload = {};
+		
+		try {
+			const response = await LoginConnector.postConfirmUserNameAsync(data) as AxiosResponse;
+			
+			if (response.data.isSuccess) {
+				result.isSuccess = response.data.isSuccess;
+				result.confirmedUserName = response.data.payload[0].userName;
 			} else {
 				result.isSuccess = response.data.isSuccess;
 				StaticServiceMethods.processFailedResponse(response);
