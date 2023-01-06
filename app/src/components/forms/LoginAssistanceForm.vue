@@ -21,7 +21,8 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer>
+        </v-spacer>
         <v-row :dense="true">
           <v-col>
             <v-tooltip close-delay="3000" location="bottom">
