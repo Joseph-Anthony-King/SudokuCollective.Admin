@@ -23,56 +23,58 @@
       <v-card-actions>
         <v-spacer>
         </v-spacer>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="resetPasswordHandlder"
-                :disabled="!formValid"
-                v-bind="props"
+        <v-row :dense="true">
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="resetPasswordHandlder"
+                  :disabled="!formValid"
+                  v-bind="props"
+                >
+                  Reset Password
+                </v-btn>
+              </template>
+              <span
+                >Send a link to your email to reset your password if your email
+                has been confirmed</span
               >
-                Reset Password
-              </v-btn>
-            </template>
-            <span
-              >Send a link to your email to reset your password if your email
-              has been confirmed</span
-            >
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="submitHandler"
-                :disabled="!formValid"
-                v-bind="props"
-              >
-                Confirm User Name
-              </v-btn>
-            </template>
-            <span>Obtain your user name if your email has been confirmed</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip close-delay="3000" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="goBackHandler"
-                v-bind="props"
-              >
-                Go Back
-              </v-btn>
-            </template>
-            <span>Go back to the login form</span>
-          </v-tooltip>
-        </v-col>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="submitHandler"
+                  :disabled="!formValid"
+                  v-bind="props"
+                >
+                  Confirm User Name
+                </v-btn>
+              </template>
+              <span>Obtain your user name if your email has been confirmed</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip close-delay="3000" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="goBackHandler"
+                  v-bind="props"
+                >
+                  Go Back
+                </v-btn>
+              </template>
+              <span>Go back to the login form</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-form>
   </v-card>
