@@ -16,9 +16,8 @@
           transition="dialog-bottom-transition"
         >
           <LoginForm
-            formStatus="user.isLoggingIn"
-            v-on:cancel-login="user.isLoggingIn = false"
             :formStatus="userIsLoggingIn"
+            v-on:cancel-login="user.isLoggingIn = false"
             v-on:obtain-login-assistance="openLoginAssistanceHandler"
           />
         </v-dialog>
