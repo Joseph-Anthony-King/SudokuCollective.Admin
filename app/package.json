@@ -21,7 +21,7 @@
     "roboto-fontface": "*",
     "vue": "^3.2.40",
     "vue-router": "^4.0.3",
-    "vuetify": "^3.0.0-beta.12",
+    "vuetify": "^3.0.7",
     "vuex": "^4.0.0",
     "vuex-persistedstate": "^4.1.0",
     "webfontloader": "^1.0.0"

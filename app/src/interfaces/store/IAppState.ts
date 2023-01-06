@@ -6,4 +6,5 @@ export interface IAppState {
     processingMessage: string,
     user: IUser | null,
     token: string,
+    confirmedUserName: string,
 }

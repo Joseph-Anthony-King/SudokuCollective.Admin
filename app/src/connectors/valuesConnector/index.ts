@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/valuesConnector/endpoints';
 
 export class ValuesConnector {
-  // eslint-disable-next-line
   static async getValuesAsync(): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {

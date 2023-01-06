@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/indexConnector/endpoints';
 
 export class IndexConnector {
-  // eslint-disable-next-line
   static async getMissionStatementAsync(): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {

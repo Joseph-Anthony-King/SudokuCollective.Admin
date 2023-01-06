@@ -4,4 +4,5 @@ export enum MutationTypes {
     UPDATEPROCESSINGMESSAGE = 'updateProcessingMessage',
     UPDATEUSER = 'updateUser',
     UPDATETOKEN = 'updateToken',
+    UPDATECONFIRMEDUSERNAME = 'updateConfirmedUserName'
 }
