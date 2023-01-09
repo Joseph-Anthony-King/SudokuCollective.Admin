@@ -1,11 +1,11 @@
-import { Commit } from 'vuex';
+import { Commit } from "vuex";
 import { Methods } from "@/store/modules/sudokuModule/common";
 import { MutationTypes } from "@/store/modules/sudokuModule/mutationTypes";
-import { GamesService } from '@/services/gamesService';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { GamesService } from "@/services/gamesService";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ISudokuState } from "@/interfaces/store/iSudokuState";
-import { GameState } from '@/enums/gameState';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { GameState } from "@/enums/gameState";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 import { Difficulty } from "@/models/domain/difficulty";
 
 const sudokuModule = {

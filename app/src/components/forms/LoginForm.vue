@@ -134,7 +134,7 @@ export default defineComponent({
           /^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$/.test(v) ||
           "User name must be at least 4 characters and can contain alphanumeric characters and special characters of [! @ # $ % ^ & * + = ? - _ . ,]",
         (v: string) =>
-          !invalidUserNames.includes(v) || "No User has this User Name",
+          !invalidUserNames.includes(v) || "No user has this user name",
       ];
     });
     const passwordRules = computed(() => {
@@ -184,13 +184,13 @@ export default defineComponent({
         if (isSuccess !== null && !isSuccess) {
           const message: string = store.getters["serviceFailModule/getMessage"];
           if (
-            message === "Status Code 404: No User Has This User Name" &&
+            message === "Status Code 404: No user has this user name" &&
             !invalidUserNames.includes(userName.value)
           ) {
             invalidUserNames.push(userName.value);
           }
           if (
-            message === "Status Code 404: Password is Incorrect" &&
+            message === "Status Code 404: Password is incorrect" &&
             !invalidPasswords.includes(password.value)
           ) {
             invalidPasswords.push(password.value);
@@ -201,19 +201,14 @@ export default defineComponent({
         }
       }
     );
-    watch(
-      () => store.getters["appModule/getConfirmedUserName"],
-      () => {
-        const confirmedUserName = toRaw(store.getters["appModule/getConfirmedUserName"]);
-        if (confirmedUserName !== "") {
-          userName.value = confirmedUserName;
-          store.dispatch("appModule/updateConfirmedUserName", "");
-        }
-      }
-    );
     onMounted(() => {
       if (isChrome.value) {
         repairAutoComplete();
+      }
+      const confirmedUserName = toRaw(store.getters["appModule/getConfirmedUserName"]);
+      if (confirmedUserName !== "") {
+        userName.value = confirmedUserName;
+        store.dispatch("appModule/updateConfirmedUserName", "");
       }
     });
     onUpdated(() => {

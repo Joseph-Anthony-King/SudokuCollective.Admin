@@ -19,7 +19,7 @@ export class GamesService {
 				for (let i = 0; i < 9; i++) {
 					game[i] = [];
 					for(let j = 0; j < 9; j++) {
-						game[i][j] = '';
+						game[i][j] = "";
 					}
 				}
 				let rowIndex = 0;
@@ -36,8 +36,8 @@ export class GamesService {
 				result.game = game;
 			}
 		} catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
@@ -59,7 +59,7 @@ export class GamesService {
 			for (let i = 0; i < 9; i++) {
 				if (i === 0) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.firstRow[j] = parseInt(game[i][j]);
 						} else {
 							data.firstRow[j] = 0;
@@ -67,7 +67,7 @@ export class GamesService {
 					}
 				} else if (i === 1) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.secondRow[j] = parseInt(game[i][j]);
 						} else {
 							data.secondRow[j] = 0;
@@ -75,7 +75,7 @@ export class GamesService {
 					}
 				} else if (i === 2) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.thirdRow[j] = parseInt(game[i][j]);
 						} else {
 							data.thirdRow[j] = 0;
@@ -83,7 +83,7 @@ export class GamesService {
 					}
 				} else if (i === 3) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.fourthRow[j] = parseInt(game[i][j]);
 						} else {
 							data.fourthRow[j] = 0;
@@ -91,7 +91,7 @@ export class GamesService {
 					}
 				} else if (i === 4) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.fifthRow[j] = parseInt(game[i][j]);
 						} else {
 							data.fifthRow[j] = 0;
@@ -99,7 +99,7 @@ export class GamesService {
 					}
 				} else if (i === 5) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.sixthRow[j] = parseInt(game[i][j]);
 						} else {
 							data.sixthRow[j] = 0;
@@ -107,7 +107,7 @@ export class GamesService {
 					}
 				} else if (i === 6) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.seventhRow[j] = parseInt(game[i][j]);
 						} else {
 							data.seventhRow[j] = 0;
@@ -115,7 +115,7 @@ export class GamesService {
 					}
 				} else if (i === 7) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.eighthRow[j] = parseInt(game[i][j]);
 						} else {
 							data.eighthRow[j] = 0;
@@ -123,7 +123,7 @@ export class GamesService {
 					}
 				} else if (i === 8) {
 					for (let j = 0; j < 9; j++) {
-						if (game[i][j] !== '') {
+						if (game[i][j] !== "") {
 							data.ninthRow[j] = parseInt(game[i][j]);
 						} else {
 							data.ninthRow[j] = 0;
@@ -139,8 +139,8 @@ export class GamesService {
 
 			// eslint-disable-next-line
 		} catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
@@ -162,7 +162,7 @@ export class GamesService {
 			for (let i = 0; i < 9; i++) {
 				if (i === 0) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.firstRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.firstRow[j] = 0;
@@ -170,7 +170,7 @@ export class GamesService {
 					}
 				} else if (i === 1) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.secondRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.secondRow[j] = 0;
@@ -178,7 +178,7 @@ export class GamesService {
 					}
 				} else if (i === 2) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.thirdRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.thirdRow[j] = 0;
@@ -186,7 +186,7 @@ export class GamesService {
 					}
 				} else if (i === 3) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.fourthRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.fourthRow[j] = 0;
@@ -194,7 +194,7 @@ export class GamesService {
 					}
 				} else if (i === 4) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.fifthRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.fifthRow[j] = 0;
@@ -202,7 +202,7 @@ export class GamesService {
 					}
 				} else if (i === 5) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.sixthRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.sixthRow[j] = 0;
@@ -210,7 +210,7 @@ export class GamesService {
 					}
 				} else if (i === 6) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.seventhRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.seventhRow[j] = 0;
@@ -218,7 +218,7 @@ export class GamesService {
 					}
 				} else if (i === 7) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.eighthRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.eighthRow[j] = 0;
@@ -226,7 +226,7 @@ export class GamesService {
 					}
 				} else if (i === 8) {
 					for (let j = 0; j < 9; j++) {
-						if (puzzle[i][j] !== '') {
+						if (puzzle[i][j] !== "") {
 							data.ninthRow[j] = parseInt(puzzle[i][j]);
 						} else {
 							data.ninthRow[j] = 0;
@@ -253,8 +253,8 @@ export class GamesService {
 			
 			// eslint-disable-next-line
 		} catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
@@ -290,8 +290,8 @@ export class GamesService {
 			
 			// eslint-disable-next-line
 		} catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;

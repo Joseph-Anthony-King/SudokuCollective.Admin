@@ -115,6 +115,27 @@ export default defineComponent({
         }
       }
     );
+    watch(
+      () => store.getters["appModule/getConfirmedUserName"],
+      () => {
+        const confirmedUserName = store.getters["appModule/getConfirmedUserName"];
+        if (confirmedUserName !== "") {
+          closeLoginAssistanceHandler();
+        }
+      }
+    );
+    watch(
+      () => store.getters["appModule/getServiceMessage"],
+      () => {
+        const serviceMessage = store.getters["appModule/getServiceMessage"];
+        if (serviceMessage === "Status Code 200: Processed password reset request" || serviceMessage === "Status Code 200: Resent password reset request" ) {
+          alert(serviceMessage);
+          user.value.isLoggingIn = false;
+          userObtainingLoginAssistance.value = false;
+          store.dispatch("appModule/updateServiceMessage", "")
+        }
+      }
+    );
     onMounted(() => {
       store.dispatch("appModule/addLicense", getLicense());
       store.dispatch("valuesModule/initializeModuleAsync");

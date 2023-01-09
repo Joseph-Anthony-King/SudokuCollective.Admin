@@ -1,12 +1,12 @@
-import { Commit } from 'vuex';
-import { IValuesState } from '@/interfaces/store/iValuesState';
-import { MutationTypes } from '@/store/modules/valuesModule/mutationTypes';
-import { ValuesService } from '@/services/valuesService';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
-import { Difficulty } from '@/models/domain/difficulty';
-import { GalleryApp } from '@/models/domain/galleryApp';
-import { GameStates } from '@/utilities/dropdowns/gameStates';
+import { Commit } from "vuex";
+import { IValuesState } from "@/interfaces/store/iValuesState";
+import { MutationTypes } from "@/store/modules/valuesModule/mutationTypes";
+import { ValuesService } from "@/services/valuesService";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { Difficulty } from "@/models/domain/difficulty";
+import { GalleryApp } from "@/models/domain/galleryApp";
+import { GameStates } from "@/utilities/dropdowns/gameStates";
 
 const valuesModule = {
   namespaced: true,
@@ -17,7 +17,7 @@ const valuesModule = {
     timeFrames: null,
     gameStates: null,
     gallery: null,
-    missionStatement: '',
+    missionStatement: "",
     expirationDate: new Date(),
   }),
   getters: {
