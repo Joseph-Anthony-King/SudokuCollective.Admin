@@ -1,12 +1,12 @@
-import { IServiceFailState } from '@/interfaces/store/IServiceFailState';
-import { MutationTypes } from '@/store/modules/serviceFailModule/mutationTypes';
-import { Commit } from 'vuex';
+import { IServiceFailState } from "@/interfaces/store/IServiceFailState";
+import { MutationTypes } from "@/store/modules/serviceFailModule/mutationTypes";
+import { Commit } from "vuex";
 
 const serviceFailModule = {
 	namespaced: true,
 	state: (): IServiceFailState => ({
 		isSuccess: null,
-		message: '',
+		message: "",
 		statusCode: 0,
 	}),
 	getters: {
@@ -26,7 +26,7 @@ const serviceFailModule = {
 	mutations: {
 		[MutationTypes.CLEARSTATE](state: IServiceFailState): void {
 			state.isSuccess = null;
-			state.message = '';
+			state.message = "";
 			state.statusCode = 0;
 		},
 		[MutationTypes.UPDATEISSUCCESS](state: IServiceFailState, isSuccess: boolean): void {

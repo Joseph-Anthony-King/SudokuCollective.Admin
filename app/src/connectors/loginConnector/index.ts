@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/connectors/loginConnector/endpoints';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
-import { IConfirmUserNameRequestData } from '@/interfaces/requests/iConfrimUserNameRequestData';
+import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 
 export class LoginConnector {
 	static async postLoginAsync(data: ILoginRequestData): Promise<AxiosResponse | AxiosError> {
@@ -29,7 +29,7 @@ export class LoginConnector {
     }
 	}
 
-  static async postConfirmUserNameAsync(data: IConfirmUserNameRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postConfirmUserNameAsync(data: ILoginAssistanceRequestData): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
         method: 'post',

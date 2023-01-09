@@ -7,4 +7,5 @@ export interface IAppState {
     user: IUser | null,
     token: string,
     confirmedUserName: string,
+    serviceMessage: string,
 }
