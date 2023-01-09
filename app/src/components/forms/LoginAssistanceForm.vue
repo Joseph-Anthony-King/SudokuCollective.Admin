@@ -81,11 +81,11 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 import store from '@/store';
 import commonUtilities from "@/utilities/common";
-import { ConfirmUserNameRequestData } from '@/models/requests/confirmUserNameRequestData';
+import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
 export default defineComponent({
   name: "LoginAssistanceForm",
@@ -100,12 +100,14 @@ export default defineComponent({
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
     const email: Ref<string> = ref("");
+    let invalidEmails: string[] = [];
     const emailRules = computed(() => {
       return [
         (v: string) => !!v || "Email is required",
         (v: string) =>
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "Email must be in a valid format",
+        (v: string) => !invalidEmails.includes(v) || "No user is using this email",
       ];
     });
     const getFormStatus: ComputedRef<boolean> = computed(() => {
@@ -118,17 +120,46 @@ export default defineComponent({
     });
     const submitHandler = (): void => {
       if (getFormStatus.value) {
-        const data = new ConfirmUserNameRequestData(email.value);
+        const data = new LoginAssistanceRequestData(email.value);
         store.dispatch("appModule/confirmUserNameAsync", data);
-        emit("go-back-to-login", null, null);
       }
     }
     const resetPasswordHandlder = (): void => {
-      console.log("resetPasswordHandlder invoked...");
+      if (getFormStatus.value) {
+        const data = new LoginAssistanceRequestData(email.value);
+        store.dispatch("appModule/requestPasswordResetAsync", data);
+      }
     }
     const goBackHandler = (): void => {
       emit("go-back-to-login", null, null);
     }
+    watch(
+      () => store.getters["serviceFailModule/getIsSuccess"],
+      () => {
+        const isSuccess = store.getters["serviceFailModule/getIsSuccess"];
+        if (isSuccess !== null && !isSuccess) {
+          const message: string = store.getters["serviceFailModule/getMessage"];
+          if (
+            message === "Status Code 404: No user is using this email" &&
+            !invalidEmails.includes(email.value)
+          ) {
+            invalidEmails.push(email.value);
+          }
+          alert(message);
+          store.dispatch("serviceFailModule/clearState");
+          form.value?.validate();
+        }
+      }
+    );
+    watch(
+      () => store.getters["appModule/getConfirmedUserName"],
+      () => {
+        const confirmedUserName = store.getters["appModule/getConfirmedUserName"];
+        if (confirmedUserName !== "") {
+          emit("go-back-to-login", null, null);
+        }
+      }
+    );
     onMounted(() => {
       if (isChrome.value) {
         repairAutoComplete();

@@ -2,20 +2,22 @@ import { IAppState } from "@/interfaces/store/IAppState";
 import { User, UserMethods } from "@/models/domain/user";
 import { MutationTypes } from "./mutationTypes";
 import { Commit } from "vuex";
+import { LoginService } from "@/services/loginService";
+import { UsersService } from "@/services/usersService";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { LoginService } from "@/services/loginService";
-import { IConfirmUserNameRequestData } from "@/interfaces/requests/iConfrimUserNameRequestData";
+import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
 
 const appModule = {
   namespaced: true,
   state: (): IAppState => ({
-    license: '',
+    license: "",
     expirationDate: new Date(),
-    processingMessage: '',
+    processingMessage: "",
     user: new User(),
-    token: '',
-    confirmedUserName: ''
+    token: "",
+    confirmedUserName: "",
+    serviceMessage: "",
   }),
   getters: {
     getState(state: IAppState): IAppState {
@@ -38,6 +40,9 @@ const appModule = {
     },
     getConfirmedUserName(state: IAppState): string {
       return state.confirmedUserName;
+    },
+    getServiceMessage(state: IAppState): string {
+      return state.serviceMessage;
     }
   },
   mutations: {
@@ -59,13 +64,18 @@ const appModule = {
     },
     [MutationTypes.UPDATECONFIRMEDUSERNAME](state: IAppState, confirmedUserName: string): void {
       state.confirmedUserName = confirmedUserName;
+    },
+    [MutationTypes.UPDATESERVICEMSSAGE](state: IAppState, serviceMessage: string): void {
+      state.serviceMessage = serviceMessage;
     }
   },
 	actions: {
     addLicense({ commit, state }: { commit: Commit, state: IAppState }, license: string): void {
-      if (new Date() > state.expirationDate && license !== '') {
+      if (new Date() > state.expirationDate && license !== "") {
         commit(MutationTypes.UPDATELICENSE, license);
         commit(MutationTypes.UPDATEEXPIRATIONDATE);
+        commit(MutationTypes.UPDATECONFIRMEDUSERNAME, "");
+        commit(MutationTypes.UPDATESERVICEMSSAGE, "");
       }
     },
     updateUser({ commit }: { commit: Commit }, user: User): void {
@@ -76,6 +86,9 @@ const appModule = {
     },
     updateProcessingMessage({ commit }: { commit: Commit }, message: string): void {
       commit(MutationTypes.UPDATEPROCESSINGMESSAGE, message);
+    },
+    updateServiceMessage({ commit }: {commit: Commit}, serviceMessage: string): void {
+      commit(MutationTypes.UPDATESERVICEMSSAGE, serviceMessage);
     },
     async loginAsync({ commit }: { commit: Commit }, data: ILoginRequestData): Promise<void> {
       const response: IServicePayload = await LoginService.postLoginAsync(data);
@@ -88,7 +101,7 @@ const appModule = {
       const user = UserMethods.logout(state.user as User);
       commit(MutationTypes.UPDATEUSER, user);
     },
-    async confirmUserNameAsync({ commit }: { commit: Commit }, data: IConfirmUserNameRequestData): Promise<void> {
+    async confirmUserNameAsync({ commit }: { commit: Commit }, data: ILoginAssistanceRequestData): Promise<void> {
       const response: IServicePayload = await LoginService.postConfirmUserNameAsync(data);
       if (response.isSuccess) {
         commit(MutationTypes.UPDATECONFIRMEDUSERNAME, response.confirmedUserName);
@@ -97,6 +110,12 @@ const appModule = {
     },
     updateConfirmedUserName({ commit }: {commit: Commit}, confirmedUserName: string): void {
       commit(MutationTypes.UPDATECONFIRMEDUSERNAME, confirmedUserName);
+    },
+    async requestPasswordResetAsync({ commit }: {commit: Commit}, data: ILoginAssistanceRequestData): Promise<void> {
+      const response: IServicePayload = await UsersService.postRequestPasswordResetAsync(data);
+      if (response.isSuccess) {
+        commit(MutationTypes.UPDATESERVICEMSSAGE, response.message)
+      }
     }
   }
 }

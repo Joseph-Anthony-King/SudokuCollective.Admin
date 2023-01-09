@@ -4,7 +4,7 @@ import { StaticServiceMethods } from "../common";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 import { User } from "@/models/domain/user";
-import { IConfirmUserNameRequestData } from "@/interfaces/requests/iConfrimUserNameRequestData";
+import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
 
 export class LoginService {
 	
@@ -39,8 +39,8 @@ export class LoginService {
 				StaticServiceMethods.processFailedResponse(response);
 			}	
 		} catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
 			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
@@ -53,7 +53,7 @@ export class LoginService {
     return result;
 	}
 
-	static async postConfirmUserNameAsync(data: IConfirmUserNameRequestData): Promise<IServicePayload> {
+	static async postConfirmUserNameAsync(data: ILoginAssistanceRequestData): Promise<IServicePayload> {
 		const result: IServicePayload = {};
 		
 		try {
@@ -67,8 +67,8 @@ export class LoginService {
 				StaticServiceMethods.processFailedResponse(response);
 			}	
 		} catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
 			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
