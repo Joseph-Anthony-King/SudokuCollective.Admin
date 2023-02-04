@@ -2,7 +2,6 @@
   <v-app-bar app color="primary" dark>
     <div class="d-flex app-viewport">
       <v-app-bar-nav-icon v-if="user.isLoggedIn"></v-app-bar-nav-icon>
-
       <v-app-bar-title>
         <router-link to="/" class="inline-flex">
           <v-img
@@ -16,9 +15,7 @@
           <span class="nav-text"> Sudoku Collective Admin Vue </span>
         </router-link>
       </v-app-bar-title>
-
       <v-spacer></v-spacer>
-
       <div class="inline-flex">
         <v-menu bottom>
           <template v-slot:activator="{ props }">
@@ -69,7 +66,7 @@
                 <v-list-item v-bind="props">
                   <v-list-item-content>
                     <v-list-item-title>
-                      <div class="menu-item" @click="logoutHandler">
+                      <div class="menu-item" @click="confirmUserLogout = true">
                         <v-icon>mdi-logout-variant</v-icon>
                         <span class="mr-2">Log Out</span>
                       </div>
@@ -123,28 +120,45 @@
       </div>
     </div>
   </v-app-bar>
+  <v-dialog
+    v-model="confirmUserLogout"
+    persistent
+    max-width="600"
+    hide-overlay
+    transition="dialog-bottom-transition">
+    <ConfirmDialog 
+      title="Confirm Logout"
+      :message="confirmMessage"
+      v-on:action-confirmed="logoutHandler"
+      v-on:action-not-confirmed="confirmUserLogout = false"/>
+  </v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, toRaw, watch } from "vue";
+import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from "vue";
 import store from "@/store";
+import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
 import { InteriorLinks } from "@/utilities/links/interiorLinks";
 import { User } from "@/models/domain/user";
 
 export default defineComponent({
   name: "AppBar",
+  components: { ConfirmDialog },
   setup(props, { emit }) {
     const interiorLinks = ref(InteriorLinks);
     const exteriorLinks = ref(ExteriorLinks);
     const user: Ref<User> = ref(store.getters["appModule/getUser"]);
+    const confirmUserLogout: Ref<boolean> = ref(false);
+    const confirmMessage: ComputedRef<string> = computed(() => { 
+      return `Are you sure you want to log out ${user.value.userName}?`;
+    });
     const loginHandler = (): void => {
       emit("user-logging-in", null, null);
     };
     const logoutHandler = (): void => {
-      if (confirm(`Are you sure you want to log out ${user.value.userName}?`)) {
-        emit("user-logging-out", null, null);
-      }
+      confirmUserLogout.value = false;
+      emit("user-logging-out", null, null);
     };
     watch(
       () => store.getters["appModule/getUser"],
@@ -156,6 +170,8 @@ export default defineComponent({
       interiorLinks,
       exteriorLinks,
       user,
+      confirmUserLogout,
+      confirmMessage,
       loginHandler,
       logoutHandler,
     };
