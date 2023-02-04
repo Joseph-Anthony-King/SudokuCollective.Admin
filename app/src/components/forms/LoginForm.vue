@@ -57,7 +57,7 @@
                 <v-btn
                   color="blue darken-1"
                   text
-                  @click="resetHandler"
+                  @click="confirmFormReset = true"
                   v-bind="props"
                 >
                   Reset
@@ -101,17 +101,30 @@
       </v-card-actions>
     </v-form>
   </v-card>
+  <v-dialog 
+    v-model="confirmFormReset" 
+    persistent max-width="600" 
+    hide-overlay 
+    transition="dialog-bottom-transition">
+    <ConfirmDialog 
+      title="Reset Login Form" 
+      message="Are you sure you want to reset this form?" 
+      v-on:action-confirmed="resetHandler"
+      v-on:action-not-confirmed="confirmFormReset = false" />
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, onMounted, onUpdated, ref, Ref, toRaw, watch } from "vue";
 import { VForm } from 'vuetify/components';
 import store from "@/store";
+import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
 
 export default defineComponent({
   name: "LoginForm",
+  components: { ConfirmDialog },
   props: {
     formStatus: {
       type: Boolean,
@@ -125,6 +138,7 @@ export default defineComponent({
     const userName: Ref<string> = ref("");
     const password: Ref<string> = ref("");
     const showPassword: Ref<boolean> = ref(false);
+    const confirmFormReset: Ref<boolean> = ref(false);
     let invalidUserNames: string[] = [];
     let invalidPasswords: string[] = [];
     const userNameRules = computed(() => {
@@ -166,13 +180,12 @@ export default defineComponent({
       emit("obtain-login-assistance", null, null);
     };
     const resetHandler = (): void => {
-      if (confirm("Are you sure you want to reset this form?")) {
-        userName.value = "";
-        password.value = "";
-        invalidUserNames = [];
-        invalidPasswords = [];
-        form.value?.reset();
-      }
+      userName.value = "";
+      password.value = "";
+      invalidUserNames = [];
+      invalidPasswords = [];
+      form.value?.reset();
+      confirmFormReset.value = false;
     };
     const cancelHandler = (): void => {
       emit("cancel-login", null, null);
@@ -222,6 +235,7 @@ export default defineComponent({
       userName,
       password,
       showPassword,
+      confirmFormReset,
       userNameRules,
       passwordRules,
       submitHandler,
