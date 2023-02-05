@@ -125,7 +125,7 @@
     persistent
     max-width="600"
     hide-overlay
-    transition="dialog-bottom-transition">
+    transition="dialog-top-transition">
     <ConfirmDialog 
       title="Confirm Logout"
       :message="confirmMessage"

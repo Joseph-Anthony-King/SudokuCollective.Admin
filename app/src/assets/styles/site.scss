@@ -60,3 +60,7 @@ a {
 .sudoku-cell input[type="number"] {
 	-moz-appearance: textfield;
 }
+div[data-testid="toast-content"]{
+	font-family: "Roboto" !important;
+	color: #212121;
+}
