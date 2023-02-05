@@ -93,6 +93,8 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
 import { computed, ComputedRef, Ref, toRaw } from "@vue/reactivity";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import store from "@/store";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
@@ -231,7 +233,10 @@ export default defineComponent({
       () => store.getters["sudokuModule/getServiceResult"],
       () => {
         if (store.getters["sudokuModule/getServiceResult"] !== null) {
-          alert(store.getters["sudokuModule/getServiceMessage"]);
+          toast(store.getters["sudokuModule/getServiceMessage"], {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.SUCCESS,
+          });
         }
       }
     );

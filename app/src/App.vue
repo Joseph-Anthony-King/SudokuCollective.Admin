@@ -13,7 +13,7 @@
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
           hide-overlay
-          transition="dialog-bottom-transition"
+          transition="dialog-top-transition"
         >
           <LoginForm
             :formStatus="userIsLoggingIn"
@@ -27,7 +27,7 @@
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
           hide-overlay
-          transition="dialog-bottom-transition"
+          transition="dialog-top-transition"
         >
           <LoginAssistanceForm
             :formStatus="userObtainingLoginAssistance"
@@ -56,6 +56,8 @@ import {
   toRaw,
   watch,
 } from "vue";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import store from "@/store";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
@@ -111,7 +113,10 @@ export default defineComponent({
         const isLoggedIn = toRaw(store.getters["appModule/getUserIsLoggedIn"]);
         if (isLoggedIn) {
           user.value = toRaw(store.getters["appModule/getUser"]) as User;
-          alert(`Welcome back ${user.value.userName}!`);
+          toast(`Welcome back ${user.value.userName}!`, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.SUCCESS,
+          });
         }
       }
     );
@@ -129,7 +134,10 @@ export default defineComponent({
       () => {
         const serviceMessage = store.getters["appModule/getServiceMessage"];
         if (serviceMessage === "Status Code 200: Processed password reset request" || serviceMessage === "Status Code 200: Resent password reset request" ) {
-          alert(serviceMessage);
+          toast(serviceMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          });
           user.value.isLoggingIn = false;
           userObtainingLoginAssistance.value = false;
           store.dispatch("appModule/updateServiceMessage", "")

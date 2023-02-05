@@ -83,6 +83,8 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import store from '@/store';
 import commonUtilities from "@/utilities/common";
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
@@ -145,7 +147,10 @@ export default defineComponent({
           ) {
             invalidEmails.push(email.value);
           }
-          alert(message);
+          toast(message, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          });
           store.dispatch("serviceFailModule/clearState");
           form.value?.validate();
         }
