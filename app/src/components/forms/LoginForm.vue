@@ -105,7 +105,7 @@
     v-model="confirmFormReset" 
     persistent max-width="600" 
     hide-overlay 
-    transition="dialog-bottom-transition">
+    transition="dialog-top-transition">
     <ConfirmDialog 
       title="Reset Login Form" 
       message="Are you sure you want to reset this form?" 
@@ -117,6 +117,8 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, onMounted, onUpdated, ref, Ref, toRaw, watch } from "vue";
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import store from "@/store";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import commonUtilities from "@/utilities/common";
@@ -208,7 +210,10 @@ export default defineComponent({
           ) {
             invalidPasswords.push(password.value);
           }
-          alert(message);
+          toast(message, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          });
           store.dispatch("serviceFailModule/clearState");
           form.value?.validate();
         }
