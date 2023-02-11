@@ -78,6 +78,7 @@ export class UserMethods {
 			user.dateCreated = new Date('0001-01-01T00:00:00Z');
 			user.dateUpdated = new Date('0001-01-01T00:00:00Z');
 			user.isLoggedIn = false;
+			user.isLoggingIn = false;
 		} else {
 			user = new User();
 		}
