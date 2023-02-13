@@ -32,13 +32,23 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
+import { useRouter, useRoute } from 'vue-router';
 import store from "@/store";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
+import { User } from "@/models/domain/user";
 
 export default defineComponent({
   name: "HomePage",
   components: { ProgressWidget },
-  setup() {
+  props: {
+    action: {
+      type: String,
+      default: ""
+    },
+  },
+  setup(props) {
+    const router = useRouter();
+    const route = useRoute();
     const missionStatement = ref(
       store.getters["valuesModule/getMissionStatement"]
     );
@@ -52,11 +62,27 @@ export default defineComponent({
           store.getters["valuesModule/getMissionStatement"];
       }
     );
+    watch(
+      () => store.getters["appModule/getUserIsLoggingIn"],
+      () => {
+        const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
+        if (userIsLoggingIn === false) {
+          router.push("/");
+        } else if (userIsLoggingIn === true && route.params.action === "") {
+          router.push("/login");
+        }
+      }
+    )
     onBeforeMount(() => {
       store.dispatch(
         "appModule/updateProcessingMessage",
         "loading, please wait"
       );
+      if (props.action.toLowerCase() === 'login') {
+        const user: User = store.getters["appModule/getUser"];
+        user.isLoggingIn = true;
+        store.dispatch("appModule/updateUser", user)
+      }
     });
     return {
       loading,

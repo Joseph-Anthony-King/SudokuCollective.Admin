@@ -70,28 +70,31 @@ export default defineComponent({
   name: "App",
   components: { AppBar, FooterNav, LoginForm, LoginAssistanceForm },
   setup() {
-    const { getLicense } = commonUtilities();
-    const isSmallViewPort: Ref<boolean> = ref(true);
-    const maxDialogWidth: Ref<string> = ref("auto");
+    // User set up
     const user: Ref<User> = ref(
       toRaw(store.getters["appModule/getUser"]) as User
     );
+    watch(
+      () => store.getters["appModule/getUser"],
+      () => {
+        user.value = toRaw(store.getters["appModule/getUser"]) as User;
+      }
+    );
+
+    // Login/logout functionality
+    const { getLicense } = commonUtilities();
     const userObtainingLoginAssistance: Ref<boolean> = ref(false);
     const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
       return user.value?.isLoggingIn;
     });
-    const resetAppViewPort = (): void => {
-      if (window.innerWidth <= 960) {
-        isSmallViewPort.value = true;
-        maxDialogWidth.value = "auto";
-      } else {
-        isSmallViewPort.value = false;
-        maxDialogWidth.value = "960px";
-      }
-    };
     const logoutHandler = (): void => {
+      const userName = user.value.userName;
       store.dispatch("appModule/logout");
       store.dispatch("appModule/updateToken", "");
+      toast(`${userName}, you are logged out.`, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
     };
     const openLoginAssistanceHandler = (): void => {
       user.value.isLoggingIn = false;
@@ -102,9 +105,9 @@ export default defineComponent({
       userObtainingLoginAssistance.value = false;
     }
     watch(
-      () => store.getters["appModule/getUser"],
+      () => user.value.isLoggingIn,
       () => {
-        user.value = toRaw(store.getters["appModule/getUser"]) as User;
+        store.dispatch("appModule/userUpdate", user.value);
       }
     );
     watch(
@@ -144,6 +147,21 @@ export default defineComponent({
         }
       }
     );
+
+    // Dialog formatting
+    const isSmallViewPort: Ref<boolean> = ref(true);
+    const maxDialogWidth: Ref<string> = ref("auto");
+    const resetAppViewPort = (): void => {
+      if (window.innerWidth <= 960) {
+        isSmallViewPort.value = true;
+        maxDialogWidth.value = "auto";
+      } else {
+        isSmallViewPort.value = false;
+        maxDialogWidth.value = "960px";
+      }
+    };
+
+    // Lifecycle hooks
     onMounted(() => {
       store.dispatch("appModule/addLicense", getLicense());
       store.dispatch("valuesModule/initializeModuleAsync");
@@ -158,6 +176,7 @@ export default defineComponent({
         resetAppViewPort();
       });
     });
+
     return {
       isSmallViewPort,
       maxDialogWidth,

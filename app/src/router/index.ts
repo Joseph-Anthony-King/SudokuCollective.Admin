@@ -2,14 +2,16 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/:action?',
     name: 'home',
-    component: () => import(/* webpackChunkName: 'home' */ '../views/HomeView.vue')
+    component: () => import(/* webpackChunkName: 'home' */ '../views/HomeView.vue'),
+    props: true,
   },
   {
-    path: '/sudoku',
+    path: '/sudoku/:action?',
     name: 'sudoku',
-    component: () => import(/* webpackChunkName: 'sudoku' */ '../views/SudokuView.vue')
+    component: () => import(/* webpackChunkName: 'sudoku' */ '../views/SudokuView.vue'),
+    props: true,
   }
 ]
 

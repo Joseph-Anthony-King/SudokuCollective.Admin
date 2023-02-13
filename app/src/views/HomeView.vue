@@ -1,5 +1,5 @@
 <template>
-  <home-page />
+  <home-page :action="action" />
 </template>
 
 <script lang="ts">
@@ -8,6 +8,12 @@ import HomePage from "@/components/pages/HomePage.vue";
 
 export default defineComponent({
   name: "HomeView",
+  props: {
+    action: {
+      type: String,
+      default: ""
+    },
+  },
   components: {
     HomePage,
   },
