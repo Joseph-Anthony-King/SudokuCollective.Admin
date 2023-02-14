@@ -1,4 +1,5 @@
 import { ComputedRef, computed } from "vue";
+import { RouteLocationNormalizedLoaded, Router } from "vue-router";
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
@@ -15,9 +16,27 @@ export default function () {
     });
   }
 
+  const updateUrlWithAction = (
+    criteria: boolean,
+    url: string,
+    action: string,
+    router: Router,
+    route: RouteLocationNormalizedLoaded
+  ): void => {
+    if (criteria === false) {
+      router.push(url);
+    } else if (criteria === true && route.params.action === "") {
+      if (url !== "/") {
+        url = `${url}/`;
+      }
+      router.push(`${url}${action}`);
+    }
+  }
+
   return {
     isChrome,
     getLicense,
-    repairAutoComplete
+    repairAutoComplete,
+    updateUrlWithAction
   }
 }

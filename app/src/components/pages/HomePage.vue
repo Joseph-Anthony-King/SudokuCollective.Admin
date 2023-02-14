@@ -35,6 +35,7 @@ import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import store from "@/store";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
+import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
 
 export default defineComponent({
@@ -49,6 +50,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const route = useRoute();
+    const { updateUrlWithAction } = commonUtitlities();
     const missionStatement = ref(
       store.getters["valuesModule/getMissionStatement"]
     );
@@ -66,11 +68,12 @@ export default defineComponent({
       () => store.getters["appModule/getUserIsLoggingIn"],
       () => {
         const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
-        if (userIsLoggingIn === false) {
-          router.push("/");
-        } else if (userIsLoggingIn === true && route.params.action === "") {
-          router.push("/login");
-        }
+        updateUrlWithAction(
+          userIsLoggingIn,
+          "/",
+          "login",
+          router,
+          route);
       }
     )
     onBeforeMount(() => {
