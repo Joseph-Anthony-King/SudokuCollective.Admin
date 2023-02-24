@@ -9,6 +9,7 @@ import { useRouter, useRoute } from 'vue-router';
 import store from "@/store";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
+import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
 
 export default defineComponent({
@@ -23,6 +24,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const route = useRoute();
+    const { updateUrlWithAction } = commonUtitlities();
     let loading: Ref<boolean> = ref(
       store.getters["sudukuModule/getProcessing"]
     );
@@ -36,11 +38,12 @@ export default defineComponent({
       () => store.getters["appModule/getUserIsLoggingIn"],
       () => {
         const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
-        if (userIsLoggingIn === false) {
-          router.push("/sudoku");
-        } else if (userIsLoggingIn === true && route.params.action === "") {
-          router.push("/sudoku/login");
-        }
+        updateUrlWithAction(
+          userIsLoggingIn,
+          "/sudoku",
+          "login",
+          router,
+          route);
       }
     )
     onBeforeMount(() => {

@@ -35,6 +35,7 @@ import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import store from "@/store";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
+import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
 
 export default defineComponent({
@@ -49,6 +50,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const route = useRoute();
+    const { updateUrlWithAction } = commonUtitlities();
     const missionStatement = ref(
       store.getters["valuesModule/getMissionStatement"]
     );
@@ -66,13 +68,26 @@ export default defineComponent({
       () => store.getters["appModule/getUserIsLoggingIn"],
       () => {
         const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
-        if (userIsLoggingIn === false) {
-          router.push("/");
-        } else if (userIsLoggingIn === true && route.params.action === "") {
-          router.push("/login");
-        }
+        updateUrlWithAction(
+          userIsLoggingIn,
+          "/",
+          "login",
+          router,
+          route);
       }
-    )
+    );
+    watch(
+      () => store.getters["appModule/getUserIsSigningUp"],
+      () => {
+        const userIsSigningUp: boolean = store.getters["appModule/getUserIsSigningUp"];
+        updateUrlWithAction(
+          userIsSigningUp,
+          "/",
+          "signup",
+          router,
+          route);
+      }
+    );
     onBeforeMount(() => {
       store.dispatch(
         "appModule/updateProcessingMessage",
@@ -81,6 +96,10 @@ export default defineComponent({
       if (props.action.toLowerCase() === 'login') {
         const user: User = store.getters["appModule/getUser"];
         user.isLoggingIn = true;
+        store.dispatch("appModule/updateUser", user)
+      } else if (props.action.toLowerCase() === 'signup') {
+        const user: User = store.getters["appModule/getUser"];
+        user.isSigningUp = true;
         store.dispatch("appModule/updateUser", user)
       }
     });

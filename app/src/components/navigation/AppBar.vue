@@ -61,6 +61,21 @@
               </template>
               <span>Login to SudokuCollective.com</span>
             </v-tooltip>
+            <v-tooltip bottom v-if="!user.isLoggedIn">
+              <template v-slot:activator="{ props }">
+                <v-list-item v-bind="props">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <div class="menu-item" @click="signUpHandler">
+                        <v-icon>mdi-account-plus</v-icon>
+                        <span class="mr-2">Sign Up</span>
+                      </div>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <span>Sign up with SudokuCollective.com</span>
+            </v-tooltip>
             <v-tooltip bottom v-if="user.isLoggedIn">
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
@@ -160,6 +175,9 @@ export default defineComponent({
       confirmUserLogout.value = false;
       emit("user-logging-out", null, null);
     };
+    const signUpHandler = (): void => {
+      emit("user-signing-up", null, null);
+    };
     watch(
       () => store.getters["appModule/getUser"],
       () => {
@@ -174,6 +192,7 @@ export default defineComponent({
       confirmMessage,
       loginHandler,
       logoutHandler,
+      signUpHandler,
     };
   },
 });

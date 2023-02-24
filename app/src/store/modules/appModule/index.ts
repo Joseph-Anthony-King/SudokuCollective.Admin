@@ -38,6 +38,9 @@ const appModule = {
     getUserIsLoggingIn(state: IAppState): boolean {
       return state.user !== null ? state.user.isLoggingIn : false;
     },
+    getUserIsSigningUp(state: IAppState): boolean {
+      return state.user !== null ? state.user.isSigningUp : false;
+    },
     getToken(state: IAppState): string {
       return state.token;
     },

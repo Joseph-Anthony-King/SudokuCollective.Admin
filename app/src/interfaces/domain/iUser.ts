@@ -16,4 +16,5 @@ export interface IUser {
 	dateUpdated: Date;
 	isLoggedIn: boolean;
 	isLoggingIn: boolean;
+	isSigningUp: boolean;
 }
