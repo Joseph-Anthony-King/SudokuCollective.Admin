@@ -19,6 +19,7 @@ export class User implements IUser {
 	dateUpdated: Date;
 	isLoggedIn: boolean;
 	isLoggingIn: boolean;
+	isSigningUp: boolean;
 	
 	constructor(
 		id?: number,
@@ -55,6 +56,7 @@ export class User implements IUser {
 		this.dateUpdated = dateUpdated ? dateUpdated : new Date('0001-01-01T00:00:00Z');
 		this.isLoggedIn = isLoggedIn ? isLoggedIn : false;
 		this.isLoggingIn = false;
+		this.isSigningUp = false;
 	}
 }
 
@@ -79,6 +81,7 @@ export class UserMethods {
 			user.dateUpdated = new Date('0001-01-01T00:00:00Z');
 			user.isLoggedIn = false;
 			user.isLoggingIn = false;
+			user.isSigningUp = false;
 		} else {
 			user = new User();
 		}
