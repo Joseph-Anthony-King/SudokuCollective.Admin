@@ -4,6 +4,7 @@
       <app-bar
         v-on:user-logging-in="user.isLoggingIn = true"
         v-on:user-logging-out="logoutHandler"
+        v-on:user-signing-up="user.isSigningUp = true"
       />
       <v-main>
         <router-view />
@@ -20,6 +21,18 @@
             v-on:cancel-login="user.isLoggingIn = false"
             v-on:obtain-login-assistance="openLoginAssistanceHandler"
           />
+        </v-dialog>
+        <v-dialog 
+          v-model="userIsSigningUp" 
+          persistent 
+          :fullscreen="isSmallViewPort" 
+          :max-width="maxDialogWidth" 
+          hide-overlay
+          transition="dialog-top-transition"
+        >
+          <SignUpForm
+            :formStatus="userIsSigningUp"
+            v-on:cancel-signup="user.isSigningUp = false"/>
         </v-dialog>
         <v-dialog
           v-model="userObtainingLoginAssistance"
@@ -63,12 +76,19 @@ import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
 import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
+import SignUpForm from "@/components/forms/SignUpForm.vue"
 import commonUtilities from "@/utilities/common";
 import { User } from "@/models/domain/user";
 
 export default defineComponent({
   name: "App",
-  components: { AppBar, FooterNav, LoginForm, LoginAssistanceForm },
+  components: {
+    AppBar,
+    FooterNav,
+    LoginForm,
+    LoginAssistanceForm,
+    SignUpForm
+  },
   setup() {
     // User set up
     const user: Ref<User> = ref(
@@ -148,6 +168,17 @@ export default defineComponent({
       }
     );
 
+    // Sign up functionality
+    const userIsSigningUp: ComputedRef<boolean> = computed(() => {
+      return user.value?.isSigningUp;
+    });
+    watch(
+      () => user.value.isSigningUp,
+      () => {
+        store.dispatch("appModule/userUpdate", user.value);
+      }
+    );
+
     // Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
     const maxDialogWidth: Ref<string> = ref("auto");
@@ -183,6 +214,7 @@ export default defineComponent({
       user,
       userObtainingLoginAssistance,
       userIsLoggingIn,
+      userIsSigningUp,
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
