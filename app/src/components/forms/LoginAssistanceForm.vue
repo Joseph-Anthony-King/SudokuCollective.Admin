@@ -86,6 +86,7 @@ import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import store from '@/store';
+import { useAppStore } from "@/store/appStore/index";
 import commonUtilities from "@/utilities/common";
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
@@ -98,6 +99,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const appStore = useAppStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -123,13 +125,13 @@ export default defineComponent({
     const submitHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginAssistanceRequestData(email.value);
-        store.dispatch("appModule/confirmUserNameAsync", data);
+        appStore.confirmUserNameAsync(data);
       }
     }
     const resetPasswordHandlder = (): void => {
       if (getFormStatus.value) {
         const data = new LoginAssistanceRequestData(email.value);
-        store.dispatch("appModule/requestPasswordResetAsync", data);
+        appStore.requestPasswordResetAsync(data);
       }
     }
     const goBackHandler = (): void => {
@@ -157,9 +159,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => store.getters["appModule/getConfirmedUserName"],
+      () => appStore.getConfirmedUserName,
       () => {
-        const confirmedUserName = store.getters["appModule/getConfirmedUserName"];
+        const confirmedUserName = appStore.getConfirmedUserName;
         if (confirmedUserName !== "") {
           emit("go-back-to-login", null, null);
         }

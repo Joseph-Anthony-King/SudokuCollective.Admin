@@ -6,7 +6,7 @@ export default function () {
     return /Chrome/.test(navigator.userAgent);
   });
 
-  const getLicense = (): string | undefined => {
+  const getLicense = (): string => {
     return process.env.VUE_APP_LICENSE;
   }
 

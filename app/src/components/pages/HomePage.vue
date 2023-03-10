@@ -34,6 +34,7 @@
 import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
@@ -48,6 +49,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const appStore = useAppStore();
     const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
@@ -65,9 +67,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => store.getters["appModule/getUserIsLoggingIn"],
+      () => appStore.getUserIsLoggingIn,
       () => {
-        const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
+        const userIsLoggingIn: boolean = appStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
           "/",
@@ -77,9 +79,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => store.getters["appModule/getUserIsSigningUp"],
+      () => appStore.getUserIsSigningUp,
       () => {
-        const userIsSigningUp: boolean = store.getters["appModule/getUserIsSigningUp"];
+        const userIsSigningUp: boolean = appStore.getUserIsSigningUp;
         updateUrlWithAction(
           userIsSigningUp,
           "/",
@@ -89,18 +91,14 @@ export default defineComponent({
       }
     );
     onBeforeMount(() => {
-      store.dispatch(
-        "appModule/updateProcessingMessage",
-        "loading, please wait"
-      );
+      appStore.updateProcessingMessage("loading, please wait");
+      const user: User = appStore.getUser;
       if (props.action.toLowerCase() === 'login') {
-        const user: User = store.getters["appModule/getUser"];
         user.isLoggingIn = true;
-        store.dispatch("appModule/updateUser", user)
+        appStore.updateUser(user)
       } else if (props.action.toLowerCase() === 'signup') {
-        const user: User = store.getters["appModule/getUser"];
         user.isSigningUp = true;
-        store.dispatch("appModule/updateUser", user)
+        appStore.updateUser(user);
       }
     });
     return {

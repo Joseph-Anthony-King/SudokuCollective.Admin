@@ -151,7 +151,7 @@
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from "vue";
-import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
 import { InteriorLinks } from "@/utilities/links/interiorLinks";
@@ -161,9 +161,10 @@ export default defineComponent({
   name: "AppBar",
   components: { ConfirmDialog },
   setup(props, { emit }) {
+    const appStore = useAppStore();
     const interiorLinks = ref(InteriorLinks);
     const exteriorLinks = ref(ExteriorLinks);
-    const user: Ref<User> = ref(store.getters["appModule/getUser"]);
+    const user: Ref<User> = ref(appStore.getUser);
     const confirmUserLogout: Ref<boolean> = ref(false);
     const confirmMessage: ComputedRef<string> = computed(() => { 
       return `Are you sure you want to log out ${user.value.userName}?`;
@@ -179,9 +180,9 @@ export default defineComponent({
       emit("user-signing-up", null, null);
     };
     watch(
-      () => store.getters["appModule/getUser"],
+      () => appStore.getUser,
       () => {
-        user.value = toRaw(store.getters["appModule/getUser"]);
+        user.value = toRaw(appStore.getUser);
       }
     );
     return {

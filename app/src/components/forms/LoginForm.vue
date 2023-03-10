@@ -120,6 +120,7 @@ import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
@@ -134,6 +135,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const appStore = useAppStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -175,7 +177,7 @@ export default defineComponent({
     const submitHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginRequestData(userName.value, password.value);
-        store.dispatch("appModule/loginAsync", data);
+        appStore.loginAsync(data);
       }
     };
     const helpHandler = (): void => {
@@ -223,10 +225,10 @@ export default defineComponent({
       if (isChrome.value) {
         repairAutoComplete();
       }
-      const confirmedUserName = toRaw(store.getters["appModule/getConfirmedUserName"]);
+      const confirmedUserName = toRaw(appStore.getConfirmedUserName);
       if (confirmedUserName !== "") {
         userName.value = confirmedUserName;
-        store.dispatch("appModule/updateConfirmedUserName", "");
+        appStore.updateConfirmedUserName("");
       }
     });
     onUpdated(() => {
