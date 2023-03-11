@@ -73,6 +73,7 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import store from "@/store";
 import { useAppStore } from "@/store/appStore/index";
+import { useValuesStore } from "@/store/valuesStore/index";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
@@ -93,6 +94,7 @@ export default defineComponent({
   setup() {
     // Initialize stores
     const appStore = useAppStore();
+    const valuesStore = useValuesStore();
 
     // User set up
     const user: Ref<User> = ref(
@@ -199,7 +201,7 @@ export default defineComponent({
     // Lifecycle hooks
     onMounted(() => {
       appStore.addLicense(getLicense());
-      store.dispatch("valuesModule/initializeModuleAsync");
+      valuesStore.initializeAsync();
       store.dispatch("sudokuModule/initializeModule");
       resetAppViewPort();
       window.addEventListener("resize", () => {

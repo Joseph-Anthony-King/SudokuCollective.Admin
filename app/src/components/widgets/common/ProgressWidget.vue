@@ -25,6 +25,7 @@ import {
   onUnmounted,
   Ref,
   ref,
+  toRaw,
   watch,
 } from "vue";
 import store from "@/store";
@@ -121,7 +122,7 @@ export default defineComponent({
     watch(
       () => store.getters["getProcessingMessage"],
       () => {
-        progressMessage.value = store.getters["getProcessingMessage"];
+        progressMessage.value = toRaw(store.getters["getProcessingMessage"]);
       }
     );
     onMounted(() => {

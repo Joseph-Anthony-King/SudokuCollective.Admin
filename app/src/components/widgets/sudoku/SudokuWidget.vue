@@ -96,6 +96,7 @@ import { computed, ComputedRef, Ref, toRaw } from "@vue/reactivity";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import store from "@/store";
+import { useValuesStore } from "@/store/valuesStore/index";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
 import { Difficulty } from "@/models/domain/difficulty";
@@ -105,16 +106,19 @@ export default defineComponent({
   name: "SudokuWidget",
   components: { MatrixWidget },
   setup() {
+    /* initialize stores */
+    const valuesStore = useValuesStore();
+
     /* difficulty properties and methods */
     const difficulties: Ref<Difficulty[]> = ref(
-      store.getters["valuesModule/getDifficulties"]
+      valuesStore.getDifficulties
     );
     const selectedDifficulty: Ref<Difficulty> = ref(
       store.getters["sudokuModule/getSelectedDifficulty"]
     );
     /* Game state properties and methods */
-    const gameStates: Ref<GameState[]> = ref(
-      store.getters["valuesModule/getGameStates"]
+    const gameStates: Ref<DropdownItem[]> = ref(
+      valuesStore.getGameStates
     );
     // eslint-disable-next-line
     const selectedGameState: Ref<DropdownItem> = ref(
@@ -198,9 +202,9 @@ export default defineComponent({
       }
     };
     watch(
-      () => store.getters["valuesModule/getGameStates"],
+      () => valuesStore.getGameStates,
       () => {
-        gameStates.value = toRaw(store.getters["valuesModule/getGameStates"]);
+        gameStates.value = toRaw(valuesStore.getGameStates);
       }
     );
     watch(
@@ -213,10 +217,10 @@ export default defineComponent({
       }
     );
     watch(
-      () => store.getters["valuesModule/getDifficulties"],
+      () => valuesStore.getDifficulties,
       () => {
         difficulties.value = toRaw(
-          store.getters["valuesModule/getDifficulties"]
+          valuesStore.getDifficulties
         );
       }
     );

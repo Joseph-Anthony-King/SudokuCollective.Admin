@@ -33,8 +33,8 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
-import store from "@/store";
 import { useAppStore } from "@/store/appStore/index";
+import { useValuesStore } from "@/store/valuesStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
@@ -50,20 +50,21 @@ export default defineComponent({
   },
   setup(props) {
     const appStore = useAppStore();
+    const valuesStore = useValuesStore();
     const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
     const missionStatement = ref(
-      store.getters["valuesModule/getMissionStatement"]
+      valuesStore.getMissionStatement
     );
     const loading = computed(() => {
       return missionStatement.value === "";
     });
     watch(
-      () => store.getters["valuesModule/getMissionStatement"],
+      () => valuesStore.getMissionStatement,
       () => {
         missionStatement.value =
-          store.getters["valuesModule/getMissionStatement"];
+          valuesStore.getMissionStatement;
       }
     );
     watch(
