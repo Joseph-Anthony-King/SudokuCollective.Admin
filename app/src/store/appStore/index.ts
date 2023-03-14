@@ -1,4 +1,4 @@
-import { ComputedRef, computed, ref } from "vue";
+import { ComputedRef, Ref, computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { LoginService } from "@/services/loginService";
 import { UsersService } from "@/services/usersService";
@@ -8,12 +8,12 @@ import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssist
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 
 export const useAppStore = defineStore("appStore", () => {
-	const license = ref("");
-	const token = ref("");
-	const user = ref(new User());
-	const confirmedUserName = ref("");
-	const processingMessage = ref("");
-	const serviceMessage = ref("");
+	const license: Ref<string> = ref("");
+	const token: Ref<string> = ref("");
+	const user: Ref<User> = ref(new User());
+	const confirmedUserName: Ref<string> = ref("");
+	const processingMessage: Ref<string> = ref("");
+	const serviceMessage: Ref<string> = ref("");
 
 	const getLicense: ComputedRef<string> = computed(() => license.value);
 	const getToken: ComputedRef<string> = computed(() => token.value);

@@ -71,8 +71,8 @@ import {
 } from "vue";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import store from "@/store";
 import { useAppStore } from "@/store/appStore/index";
+import { useSudokuStore } from "@/store/sudokuStore/index";
 import { useValuesStore } from "@/store/valuesStore/index";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
@@ -94,6 +94,7 @@ export default defineComponent({
   setup() {
     // Initialize stores
     const appStore = useAppStore();
+    const sudokuStore = useSudokuStore();
     const valuesStore = useValuesStore();
 
     // User set up
@@ -202,7 +203,7 @@ export default defineComponent({
     onMounted(() => {
       appStore.addLicense(getLicense());
       valuesStore.initializeAsync();
-      store.dispatch("sudokuModule/initializeModule");
+      sudokuStore.initializeStore();
       resetAppViewPort();
       window.addEventListener("resize", () => {
         resetAppViewPort();

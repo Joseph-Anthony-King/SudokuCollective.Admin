@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from "vue";
-import store from "@/store";
+import { useSudokuStore } from "@/store/sudokuStore/index";
 import {
   obtainMatrix,
   applyOddRegion,
@@ -43,9 +43,10 @@ import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 export default defineComponent({
   name: "MatrixWidget",
   setup() {
+    const sudokuStore = useSudokuStore();
     const matrix = ref(Array<Array<string>>());
-    let gameState: DropdownItem | null =
-      store.getters["sudokuModule/getGameState"];
+    let gameState: DropdownItem =
+      sudokuStore.getGameState;
 
     const applyOddRegionStyling = (
       rowIndex: number,
@@ -77,9 +78,9 @@ export default defineComponent({
           }
         }
         if (gameState?.value === GameState.PLAYGAME) {
-          store.dispatch("sudokuModule/updateGame", sudoku);
+          sudokuStore.updateGame(sudoku);
         } else if (gameState?.value === GameState.SOLVESUDOKU) {
-          store.dispatch("sudokuModule/updatePuzzle", sudoku);
+          sudokuStore.updatePuzzle(sudoku);
         }
       }
     };
@@ -87,7 +88,7 @@ export default defineComponent({
     const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
       if (gameState !== null) {
         if (gameState.value === GameState.PLAYGAME) {
-          const initialGame = store.getters["sudokuModule/getInitialGame"];
+          const initialGame = sudokuStore.getInitialGame;
           if (initialGame[rowIndex][cellIndex] === "") {
             return false;
           } else {
@@ -104,18 +105,18 @@ export default defineComponent({
     };
 
     watch(
-      () => store.getters["sudokuModule/getGameState"],
+      () => sudokuStore.getGameState,
       () => {
-        gameState = toRaw(store.getters["sudokuModule/getGameState"]);
+        gameState = toRaw(sudokuStore.getGameState);
         matrix.value = obtainMatrix();
       }
     );
 
     watch(
-      () => store.getters["sudokuModule/getGame"],
+      () => sudokuStore.getGame,
       () => {
         if (gameState?.value === GameState.PLAYGAME) {
-          const game = store.getters["sudokuModule/getGame"];
+          const game = sudokuStore.getGame;
           matrix.value = Array<Array<string>>(9);
 
           for (let i = 0; i < 9; i++) {
@@ -129,10 +130,10 @@ export default defineComponent({
     );
 
     watch(
-      () => store.getters["sudokuModule/getPuzzle"],
+      () => sudokuStore.getPuzzle,
       () => {
         if (gameState?.value === GameState.SOLVESUDOKU) {
-          const puzzle = store.getters["sudokuModule/getPuzzle"];
+          const puzzle = sudokuStore.getPuzzle;
           matrix.value = Array<Array<string>>(9);
 
           for (let i = 0; i < 9; i++) {
@@ -146,10 +147,10 @@ export default defineComponent({
     );
 
     watch(
-      () => store.getters["sudokuModule/getSolution"],
+      () => sudokuStore.getSolution,
       () => {
         if (gameState?.value === GameState.GENERATESUDOKU) {
-          const solution = store.getters["sudokuModule/getSolution"];
+          const solution = sudokuStore.getSolution;
           matrix.value = Array<Array<string>>(9);
 
           for (let i = 0; i < 9; i++) {

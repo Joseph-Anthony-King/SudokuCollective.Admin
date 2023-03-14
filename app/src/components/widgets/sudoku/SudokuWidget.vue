@@ -95,7 +95,7 @@ import { defineComponent, ref, watch } from "vue";
 import { computed, ComputedRef, Ref, toRaw } from "@vue/reactivity";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import store from "@/store";
+import { useSudokuStore } from "@/store/sudokuStore/index";
 import { useValuesStore } from "@/store/valuesStore/index";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
@@ -107,6 +107,7 @@ export default defineComponent({
   components: { MatrixWidget },
   setup() {
     /* initialize stores */
+    const sudokuStore = useSudokuStore();
     const valuesStore = useValuesStore();
 
     /* difficulty properties and methods */
@@ -114,7 +115,7 @@ export default defineComponent({
       valuesStore.getDifficulties
     );
     const selectedDifficulty: Ref<Difficulty> = ref(
-      store.getters["sudokuModule/getSelectedDifficulty"]
+      sudokuStore.getSelectedDifficulty
     );
     /* Game state properties and methods */
     const gameStates: Ref<DropdownItem[]> = ref(
@@ -122,18 +123,18 @@ export default defineComponent({
     );
     // eslint-disable-next-line
     const selectedGameState: Ref<DropdownItem> = ref(
-      store.getters["sudokuModule/getGameState"]
+      sudokuStore.getGameState
     );
     const isGameStateSelected: ComputedRef<boolean> = computed(() => {
       {
-        return store.getters["sudokuModule/getGameState"] !== null;
+        return sudokuStore.getGameState !== null;
       }
     });
     const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
       let result: boolean;
-      if (store.getters["sudokuModule/getGameState"] !== null) {
+      if (sudokuStore.getGameState !== null) {
         result =
-          store.getters["sudokuModule/getGameState"].value ===
+          sudokuStore.getGameState.value ===
           GameState.PLAYGAME;
       } else {
         result = false;
@@ -148,7 +149,7 @@ export default defineComponent({
           return false;
         }
       } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
-        return store.getters["sudokuModule/getIsSolvedDisabled"];
+        return sudokuStore.getIsSolvedDisabled;
       } else {
         return false;
       }
@@ -171,18 +172,18 @@ export default defineComponent({
     });
     const execute = (): void => {
       if (selectedGameState?.value.value === GameState.PLAYGAME) {
-        store.dispatch("sudokuModule/createGameAsync");
+        sudokuStore.createGameAsync();
       } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
-        store.dispatch("sudokuModule/solvePuzzleAsync");
+        sudokuStore.solvePuzzleAsync();
       } else {
-        store.dispatch("sudokuModule/generateSolutionAsync");
+        sudokuStore.generateSolutionAsync();
       }
     };
     const checkGame = (): void => {
-      store.dispatch("sudokuModule/checkGameAsync");
+      sudokuStore.checkGameAsync();
     };
     const resetGame = (): void => {
-      const initialGame = store.getters["sudokuModule/getInitialGame"];
+      const initialGame = sudokuStore.getInitialGame;
       const game = Array<Array<string>>(9);
       for (let i = 0; i < 9; i++) {
         game[i] = [];
@@ -190,15 +191,15 @@ export default defineComponent({
           game[i][j] = initialGame[i][j];
         }
       }
-      store.dispatch("sudokuModule/updateGame", game);
+      sudokuStore.updateGame(game);
     };
     const clear = (): void => {
       if (selectedGameState?.value.value === GameState.PLAYGAME) {
-        store.dispatch("sudokuModule/initializeGame");
+        sudokuStore.initializeGame();
       } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
-        store.dispatch("sudokuModule/initializePuzzle");
+        sudokuStore.initializePuzzle();
       } else {
-        store.dispatch("sudokuModule/initializeSolution");
+        sudokuStore.initializeSolution();
       }
     };
     watch(
@@ -210,10 +211,7 @@ export default defineComponent({
     watch(
       () => selectedGameState?.value,
       () => {
-        store.dispatch(
-          "sudokuModule/updateGameState",
-          toRaw(selectedGameState?.value)
-        );
+        sudokuStore.updateGameState(toRaw(selectedGameState?.value));
       }
     );
     watch(
@@ -227,17 +225,14 @@ export default defineComponent({
     watch(
       () => selectedDifficulty?.value,
       () => {
-        store.dispatch(
-          "sudokuModule/updateSelectedDifficulty",
-          toRaw(selectedDifficulty?.value)
-        );
+        sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty?.value));
       }
     );
     watch(
-      () => store.getters["sudokuModule/getServiceResult"],
+      () => sudokuStore.getServiceResult,
       () => {
-        if (store.getters["sudokuModule/getServiceResult"] !== null) {
-          toast(store.getters["sudokuModule/getServiceMessage"], {
+        if (sudokuStore.getServiceResult !== null && sudokuStore.getServiceMessage !== "") {
+          toast(sudokuStore.getServiceMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.SUCCESS,
           });

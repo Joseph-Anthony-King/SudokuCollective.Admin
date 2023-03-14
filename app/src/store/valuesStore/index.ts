@@ -14,7 +14,7 @@ export const useValuesStore = defineStore("valuesStore", () => {
 	const timeFrames: Ref<Array<DropdownItem> | null> = ref(null);
 	const gameStates: Ref<Array<DropdownItem> | null> = ref(null);
 	const gallery: Ref<Array<GalleryApp> | null> = ref(null);
-	const missionStatement = ref("");
+	const missionStatement: Ref<string> = ref("");
 	const expirationDate = new Date();
 
 	const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>

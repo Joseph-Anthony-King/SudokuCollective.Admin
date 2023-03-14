@@ -6,8 +6,8 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, Ref, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
-import store from "@/store";
 import { useAppStore } from "@/store/appStore/index";
+import { useSudokuStore } from "@/store/sudokuStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
 import commonUtitlities from "@/utilities/common";
@@ -24,16 +24,17 @@ export default defineComponent({
   },
   setup(props) {
     const appStore = useAppStore();
+    const sudokuStore = useSudokuStore();
     const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
     let loading: Ref<boolean> = ref(
-      store.getters["sudukuModule/getProcessing"]
+      sudokuStore.getProcessing
     );
     watch(
-      () => store.getters["sudokuModule/getProcessing"],
+      () => sudokuStore.getProcessing,
       () => {
-        loading.value = store.getters["sudokuModule/getProcessing"];
+        loading.value = sudokuStore.getProcessing;
       }
     );
     watch(
