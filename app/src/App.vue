@@ -71,7 +71,9 @@ import {
 } from "vue";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
+import { useSudokuStore } from "@/store/sudokuStore/index";
+import { useValuesStore } from "@/store/valuesStore/index";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
@@ -90,14 +92,19 @@ export default defineComponent({
     SignUpForm
   },
   setup() {
+    // Initialize stores
+    const appStore = useAppStore();
+    const sudokuStore = useSudokuStore();
+    const valuesStore = useValuesStore();
+
     // User set up
     const user: Ref<User> = ref(
-      toRaw(store.getters["appModule/getUser"]) as User
+      toRaw(appStore.getUser)
     );
     watch(
-      () => store.getters["appModule/getUser"],
+      () => appStore.getUser,
       () => {
-        user.value = toRaw(store.getters["appModule/getUser"]) as User;
+        user.value = toRaw(appStore.getUser);
       }
     );
 
@@ -109,8 +116,8 @@ export default defineComponent({
     });
     const logoutHandler = (): void => {
       const userName = user.value.userName;
-      store.dispatch("appModule/logout");
-      store.dispatch("appModule/updateToken", "");
+      appStore.logout();
+      appStore.updateToken("");
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
@@ -127,15 +134,15 @@ export default defineComponent({
     watch(
       () => user.value.isLoggingIn,
       () => {
-        store.dispatch("appModule/userUpdate", user.value);
+        appStore.updateUser(user.value);
       }
     );
     watch(
-      () => store.getters["appModule/getUserIsLoggedIn"],
+      () => appStore.getUserIsLoggedIn,
       () => {
-        const isLoggedIn = toRaw(store.getters["appModule/getUserIsLoggedIn"]);
+        const isLoggedIn = toRaw(appStore.getUserIsLoggedIn);
         if (isLoggedIn) {
-          user.value = toRaw(store.getters["appModule/getUser"]) as User;
+          user.value = toRaw(appStore.getUser);
           toast(`Welcome back ${user.value.userName}!`, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.SUCCESS,
@@ -144,18 +151,18 @@ export default defineComponent({
       }
     );
     watch(
-      () => store.getters["appModule/getConfirmedUserName"],
+      () => appStore.getConfirmedUserName,
       () => {
-        const confirmedUserName = store.getters["appModule/getConfirmedUserName"];
+        const confirmedUserName = appStore.getConfirmedUserName;
         if (confirmedUserName !== "") {
           closeLoginAssistanceHandler();
         }
       }
     );
     watch(
-      () => store.getters["appModule/getServiceMessage"],
+      () => appStore.getServiceMessage,
       () => {
-        const serviceMessage = store.getters["appModule/getServiceMessage"];
+        const serviceMessage = appStore.getServiceMessage;
         if (serviceMessage === "Status Code 200: Processed password reset request" || serviceMessage === "Status Code 200: Resent password reset request" ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
@@ -163,7 +170,7 @@ export default defineComponent({
           });
           user.value.isLoggingIn = false;
           userObtainingLoginAssistance.value = false;
-          store.dispatch("appModule/updateServiceMessage", "")
+          appStore.updateServiceMessage("");
         }
       }
     );
@@ -175,7 +182,7 @@ export default defineComponent({
     watch(
       () => user.value.isSigningUp,
       () => {
-        store.dispatch("appModule/userUpdate", user.value);
+        appStore.updateUser(user.value);
       }
     );
 
@@ -194,9 +201,9 @@ export default defineComponent({
 
     // Lifecycle hooks
     onMounted(() => {
-      store.dispatch("appModule/addLicense", getLicense());
-      store.dispatch("valuesModule/initializeModuleAsync");
-      store.dispatch("sudokuModule/initializeModule");
+      appStore.addLicense(getLicense());
+      valuesStore.initializeAsync();
+      sudokuStore.initializeStore();
       resetAppViewPort();
       window.addEventListener("resize", () => {
         resetAppViewPort();

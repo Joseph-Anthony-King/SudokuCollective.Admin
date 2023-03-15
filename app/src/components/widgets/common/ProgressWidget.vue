@@ -25,16 +25,18 @@ import {
   onUnmounted,
   Ref,
   ref,
+  toRaw,
   watch,
 } from "vue";
-import store from "@/store";
+import { useAppStore } from "@/store/appStore";
 
 export default defineComponent({
   name: "ProgressWidget",
   setup() {
+    const appStore = useAppStore();
     let windowWidth: Ref<number> = ref(window.innerWidth);
     let progressMessage: Ref<string> = ref(
-      store.getters["getProcessingMessage"]
+      appStore.getProcessingMessage
     );
     const progressSize: ComputedRef<number> = computed(() => {
       if (windowWidth.value > 1920) {
@@ -119,9 +121,9 @@ export default defineComponent({
       windowWidth.value = window.innerWidth;
     };
     watch(
-      () => store.getters["getProcessingMessage"],
+      () => appStore.getProcessingMessage,
       () => {
-        progressMessage.value = store.getters["getProcessingMessage"];
+        progressMessage.value = toRaw(appStore.getProcessingMessage);
       }
     );
     onMounted(() => {

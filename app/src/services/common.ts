@@ -1,10 +1,11 @@
-import store from "@/store";
 import { AxiosResponse } from "axios";
+import { useServiceFailStore } from "@/store/serviceFailStore";
 
 export class StaticServiceMethods {
 	static processFailedResponse(response: AxiosResponse): void {
-		store.dispatch("serviceFailModule/updateIsSuccess", response.data.isSuccess);
-		store.dispatch("serviceFailModule/updateMessage", response.data.message);
-		store.dispatch("serviceFailModule/updateStatusCode", response.status);
+		const serviceFailStore = useServiceFailStore();
+		serviceFailStore.updateIsSuccess(response.data.isSuccess);
+		serviceFailStore.updateMessage(response.data.message);
+		serviceFailStore.updateStatusCode(response.status);
 	}
 }
