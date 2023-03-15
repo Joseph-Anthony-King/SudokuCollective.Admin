@@ -6,7 +6,8 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, Ref, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
-import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
+import { useSudokuStore } from "@/store/sudokuStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
 import commonUtitlities from "@/utilities/common";
@@ -22,22 +23,24 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const appStore = useAppStore();
+    const sudokuStore = useSudokuStore();
     const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
     let loading: Ref<boolean> = ref(
-      store.getters["sudukuModule/getProcessing"]
+      sudokuStore.getProcessing
     );
     watch(
-      () => store.getters["sudokuModule/getProcessing"],
+      () => sudokuStore.getProcessing,
       () => {
-        loading.value = store.getters["sudokuModule/getProcessing"];
+        loading.value = sudokuStore.getProcessing;
       }
     );
     watch(
-      () => store.getters["appModule/getUserIsLoggingIn"],
+      () => appStore.getUserIsLoggingIn,
       () => {
-        const userIsLoggingIn: boolean = store.getters["appModule/getUserIsLoggingIn"];
+        const userIsLoggingIn: boolean = appStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
           "/sudoku",
@@ -47,14 +50,11 @@ export default defineComponent({
       }
     )
     onBeforeMount(() => {
-      store.dispatch(
-        "appModule/updateProcessingMessage",
-        "processing, please do not navigate away"
-      );
+      appStore.updateProcessingMessage("processing, please do not navigate away");
       if (props.action.toLowerCase() === 'login') {
-        const user: User = store.getters["appModule/getUser"];
+        const user: User = appStore.getUser;
         user.isLoggingIn = true;
-        store.dispatch("appModule/updateUser", user)
+        appStore.updateUser(user)
       }
     });
     return {

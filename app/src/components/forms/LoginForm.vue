@@ -119,7 +119,8 @@ import { computed, ComputedRef, defineComponent, onMounted, onUpdated, ref, Ref,
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import store from "@/store";
+import { useAppStore } from "@/store/appStore/index";
+import { useServiceFailStore } from "@/store/serviceFailStore";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
@@ -134,6 +135,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const appStore = useAppStore();
+    const serviceFailStore = useServiceFailStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -175,7 +178,7 @@ export default defineComponent({
     const submitHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginRequestData(userName.value, password.value);
-        store.dispatch("appModule/loginAsync", data);
+        appStore.loginAsync(data);
       }
     };
     const helpHandler = (): void => {
@@ -193,11 +196,11 @@ export default defineComponent({
       emit("cancel-login", null, null);
     };
     watch(
-      () => store.getters["serviceFailModule/getIsSuccess"],
+      () => serviceFailStore.getIsSuccess,
       () => {
-        const isSuccess = store.getters["serviceFailModule/getIsSuccess"];
+        const isSuccess = serviceFailStore.getIsSuccess;
         if (isSuccess !== null && !isSuccess) {
-          const message: string = store.getters["serviceFailModule/getMessage"];
+          const message: string = serviceFailStore.getMessage;
           if (
             message === "Status Code 404: No user has this user name" &&
             !invalidUserNames.includes(userName.value)
@@ -214,7 +217,7 @@ export default defineComponent({
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.ERROR,
           });
-          store.dispatch("serviceFailModule/clearState");
+          serviceFailStore.initializeStore();
           form.value?.validate();
         }
       }
@@ -223,10 +226,10 @@ export default defineComponent({
       if (isChrome.value) {
         repairAutoComplete();
       }
-      const confirmedUserName = toRaw(store.getters["appModule/getConfirmedUserName"]);
+      const confirmedUserName = toRaw(appStore.getConfirmedUserName);
       if (confirmedUserName !== "") {
         userName.value = confirmedUserName;
-        store.dispatch("appModule/updateConfirmedUserName", "");
+        appStore.updateConfirmedUserName("");
       }
     });
     onUpdated(() => {
