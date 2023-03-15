@@ -1,10 +1,10 @@
-import { Difficulty } from "@/models/domain/difficulty";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 import { defineStore } from "pinia";
 import { ComputedRef, Ref, computed, ref } from "vue";
 import { Methods } from "@/store/sudokuStore/common";
 import { GamesService } from "@/services/gamesService";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { Difficulty } from "@/models/domain/difficulty";
 
 export const useSudokuStore = defineStore("sudokuStore", () => {
 	const initialGame: Ref<Array<Array<string>> | null> = ref(null);
