@@ -52,15 +52,15 @@ const oddRegionIndexes: Array<{ row: number; cell: number }> = [
 ];
 
 const initializeMatix = (): Array<Array<string>> => {
-	const matrix = Array<Array<string>>(9);
-	for (let i = 0; i < 9; i++) {
-		matrix[i] = [];
-		for (let j = 0; j < 9; j++) {
-			matrix[i][j] = "";
-		}
-	}
-	return matrix;
-}
+  const matrix = Array<Array<string>>(9);
+  for (let i = 0; i < 9; i++) {
+    matrix[i] = [];
+    for (let j = 0; j < 9; j++) {
+      matrix[i][j] = "";
+    }
+  }
+  return matrix;
+};
 
 const obtainMatrix = (): Array<Array<string>> => {
   const sudokuStore = useSudokuStore();
@@ -98,7 +98,7 @@ const obtainMatrix = (): Array<Array<string>> => {
     }
   }
   return result;
-}
+};
 
 const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
   let result = false;
@@ -110,7 +110,7 @@ const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
   });
 
   return result;
-}
+};
 
 const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const sudokuStore = useSudokuStore();
@@ -144,6 +144,6 @@ const applyTextColor = (rowIndex: number, cellIndex: number): string => {
       return 'text-black';
     }
   }
-}
+};
 
 export { obtainMatrix, applyOddRegion, applyTextColor };
