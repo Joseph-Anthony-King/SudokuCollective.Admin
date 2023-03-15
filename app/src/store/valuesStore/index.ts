@@ -1,11 +1,11 @@
 import { ComputedRef, Ref, computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { ValuesService } from "@/services/valuesService";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { GameStates } from "@/utilities/dropdowns/gameStates";
 import { Difficulty } from "@/models/domain/difficulty";
 import { GalleryApp } from "@/models/domain/galleryApp";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { GameStates } from "@/utilities/dropdowns/gameStates";
 
 export const useValuesStore = defineStore("valuesStore", () => {
 	const difficulties: Ref<Array<Difficulty> | null> = ref(null);
