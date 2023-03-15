@@ -5,7 +5,6 @@ import { ComputedRef, Ref, computed, ref } from "vue";
 import { Methods } from "@/store/sudokuStore/common";
 import { GamesService } from "@/services/gamesService";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { MutationTypes } from "../modules/serviceFailModule/mutationTypes";
 
 export const useSudokuStore = defineStore("sudokuStore", () => {
 	const initialGame: Ref<Array<Array<string>> | null> = ref(null);
@@ -39,11 +38,13 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 		isSolveDisabled.value !== null ? isSolveDisabled.value : false);
 	
 	const initializeStore = (): void => {
-		initializeInitialGame();
-		initializeGame();
-		initializePuzzle();
-		initializeSolution();
-		isSolveDisabled.value = true;
+		if (game.value === null && puzzle.value === null && solution.value === null) { 
+			initializeInitialGame();
+			initializeGame();
+			initializePuzzle();
+			initializeSolution();
+			isSolveDisabled.value = true;
+		}
 	};
 	const initializeInitialGame = (): void => {
 		initialGame.value = Methods.InitializeMatix();
@@ -182,4 +183,6 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 		solvePuzzleAsync,
 		generateSolutionAsync
 	}
-}, { persist: true });
+}, {
+	persist: true
+});

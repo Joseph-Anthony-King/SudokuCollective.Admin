@@ -85,8 +85,8 @@ import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref,
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import store from '@/store';
 import { useAppStore } from "@/store/appStore/index";
+import { useServiceFailStore } from "@/store/serviceFailStore/index";
 import commonUtilities from "@/utilities/common";
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
@@ -100,6 +100,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const appStore = useAppStore();
+    const serviceFailStore = useServiceFailStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -138,11 +139,11 @@ export default defineComponent({
       emit("go-back-to-login", null, null);
     }
     watch(
-      () => store.getters["serviceFailModule/getIsSuccess"],
+      () => serviceFailStore.getIsSuccess,
       () => {
-        const isSuccess = store.getters["serviceFailModule/getIsSuccess"];
+        const isSuccess = serviceFailStore.getIsSuccess;
         if (isSuccess !== null && !isSuccess) {
-          const message: string = store.getters["serviceFailModule/getMessage"];
+          const message: string = serviceFailStore.getMessage;
           if (
             message === "Status Code 404: No user is using this email" &&
             !invalidEmails.includes(email.value)
@@ -153,7 +154,7 @@ export default defineComponent({
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.ERROR,
           });
-          store.dispatch("serviceFailModule/clearState");
+          serviceFailStore.initializeStore();
           form.value?.validate();
         }
       }

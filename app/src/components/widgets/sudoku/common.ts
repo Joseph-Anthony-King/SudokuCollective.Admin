@@ -1,4 +1,3 @@
-import store from '@/store';
 import { toRaw } from 'vue';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
@@ -66,8 +65,8 @@ const initializeMatix = (): Array<Array<string>> => {
 const obtainMatrix = (): Array<Array<string>> => {
   const sudokuStore = useSudokuStore();
   let result = initializeMatix();
-  const gameState = toRaw(sudokuStore.getGameState);
-  if (gameState?.value === GameState.PLAYGAME) {
+  const gameState = sudokuStore.getGameState;
+  if (gameState.value === GameState.PLAYGAME) {
     const game = sudokuStore.getGame;
     result = Array<Array<string>>(9);
 
@@ -77,7 +76,7 @@ const obtainMatrix = (): Array<Array<string>> => {
         result[i][j] = game[i][j];
       }
     }
-  } else if (gameState?.value === GameState.SOLVESUDOKU) {
+  } else if (gameState.value === GameState.SOLVESUDOKU) {
     const puzzle = sudokuStore.getPuzzle;
     result = Array<Array<string>>(9);
 
