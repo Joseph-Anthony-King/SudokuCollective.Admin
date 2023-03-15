@@ -99,8 +99,8 @@ import { useSudokuStore } from "@/store/sudokuStore/index";
 import { useValuesStore } from "@/store/valuesStore/index";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
-import { Difficulty } from "@/models/domain/difficulty";
 import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { Difficulty } from "@/models/domain/difficulty";
 
 export default defineComponent({
   name: "SudokuWidget",
