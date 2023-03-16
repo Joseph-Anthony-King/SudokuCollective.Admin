@@ -114,7 +114,7 @@ export default defineComponent({
     const difficulties: Ref<Difficulty[]> = ref(
       valuesStore.getDifficulties
     );
-    const selectedDifficulty: Ref<Difficulty> = ref(
+    const selectedDifficulty: Ref<Difficulty | null> = ref(
       sudokuStore.getSelectedDifficulty
     );
     /* Game state properties and methods */
@@ -122,7 +122,7 @@ export default defineComponent({
       valuesStore.getGameStates
     );
     // eslint-disable-next-line
-    const selectedGameState: Ref<DropdownItem> = ref(
+    const selectedGameState: Ref<DropdownItem | null> = ref(
       sudokuStore.getGameState
     );
     const isGameStateSelected: ComputedRef<boolean> = computed(() => {
@@ -142,38 +142,38 @@ export default defineComponent({
       return result;
     });
     const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
-      if (selectedGameState?.value.value === GameState.PLAYGAME) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
         if (selectedDifficulty?.value === null) {
           return true;
         } else {
           return false;
         }
-      } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
+      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
         return sudokuStore.getIsSolvedDisabled;
       } else {
         return false;
       }
     });
     const executeButtonText: ComputedRef<string> = computed(() => {
-      if (selectedGameState?.value.value === GameState.PLAYGAME) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
         return "Create Game";
-      } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
+      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
         return "Solve Sudoku";
       } else {
         return "Generate Sudoku";
       }
     });
     const clearButtonText: ComputedRef<string> = computed(() => {
-      if (selectedGameState?.value.value === GameState.PLAYGAME) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
         return "Clear Game";
       } else {
         return "Clear Sudoku";
       }
     });
     const execute = (): void => {
-      if (selectedGameState?.value.value === GameState.PLAYGAME) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
         sudokuStore.createGameAsync();
-      } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
+      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
         sudokuStore.solvePuzzleAsync();
       } else {
         sudokuStore.generateSolutionAsync();
@@ -194,9 +194,9 @@ export default defineComponent({
       sudokuStore.updateGame(game);
     };
     const clear = (): void => {
-      if (selectedGameState?.value.value === GameState.PLAYGAME) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
         sudokuStore.initializeGame();
-      } else if (selectedGameState?.value.value === GameState.SOLVESUDOKU) {
+      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
         sudokuStore.initializePuzzle();
       } else {
         sudokuStore.initializeSolution();
@@ -211,7 +211,7 @@ export default defineComponent({
     watch(
       () => selectedGameState?.value,
       () => {
-        sudokuStore.updateGameState(toRaw(selectedGameState?.value));
+        sudokuStore.updateGameState(toRaw(selectedGameState.value));
       }
     );
     watch(
@@ -225,7 +225,7 @@ export default defineComponent({
     watch(
       () => selectedDifficulty?.value,
       () => {
-        sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty?.value));
+        sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty.value));
       }
     );
     watch(

@@ -26,10 +26,8 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 		puzzle.value !== null ? puzzle.value : new Array<Array<string>>());
 	const getSolution: ComputedRef<Array<Array<string>>> = computed(() => 
 		solution.value !== null ? solution.value : new Array<Array<string>>());
-	const getGameState: ComputedRef<DropdownItem> = computed(() =>
-		gameState.value !== null ? gameState.value : new DropdownItem());
-	const getSelectedDifficulty: ComputedRef<Difficulty> = computed(() => 
-		selectedDifficulty.value !== null ? selectedDifficulty.value : new Difficulty());
+	const getGameState: ComputedRef<DropdownItem | null> = computed(() => gameState.value);
+	const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() => selectedDifficulty.value);
 	const getServiceResult: ComputedRef<boolean> = computed(() => 
 		serviceResult.value !== null ? serviceResult.value : false);
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
@@ -71,10 +69,10 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 	const updateSolution = (param: Array<Array<string>>): void => {
 		solution.value = param;
 	};
-	const updateGameState = (param: DropdownItem): void => {
+	const updateGameState = (param: DropdownItem | null): void => {
 		gameState.value = param;
 	};
-	const updateSelectedDifficulty = (param: Difficulty): void => {
+	const updateSelectedDifficulty = (param: Difficulty | null): void => {
 		selectedDifficulty.value = param;
 	};
 	const createGameAsync = async (): Promise<void> => {

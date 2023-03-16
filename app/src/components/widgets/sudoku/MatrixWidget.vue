@@ -45,7 +45,7 @@ export default defineComponent({
   setup() {
     const sudokuStore = useSudokuStore();
     const matrix = ref(Array<Array<string>>());
-    let gameState: DropdownItem =
+    let gameState: DropdownItem | null =
       sudokuStore.getGameState;
 
     const applyOddRegionStyling = (
