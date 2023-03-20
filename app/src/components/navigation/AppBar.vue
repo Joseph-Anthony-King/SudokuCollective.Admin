@@ -151,7 +151,6 @@
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from "vue";
-import { useAppStore } from "@/store/appStore/index";
 import { useUserStore } from "@/store/userStore/index";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
@@ -162,7 +161,6 @@ export default defineComponent({
   name: "AppBar",
   components: { ConfirmDialog },
   setup(props, { emit }) {
-    const appStore = useAppStore();
     const userStore = useUserStore();
     const interiorLinks = ref(InteriorLinks);
     const exteriorLinks = ref(ExteriorLinks);
