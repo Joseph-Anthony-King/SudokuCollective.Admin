@@ -34,6 +34,7 @@
 import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import { useAppStore } from "@/store/appStore/index";
+import { useUserStore } from "@/store/userStore/index";
 import { useValuesStore } from "@/store/valuesStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import commonUtitlities from "@/utilities/common";
@@ -50,6 +51,7 @@ export default defineComponent({
   },
   setup(props) {
     const appStore = useAppStore();
+    const userStore = useUserStore();
     const valuesStore = useValuesStore();
     const router = useRouter();
     const route = useRoute();
@@ -68,9 +70,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => appStore.getUserIsLoggingIn,
+      () => userStore.getUserIsLoggingIn,
       () => {
-        const userIsLoggingIn: boolean = appStore.getUserIsLoggingIn;
+        const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
           "/",
@@ -80,9 +82,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => appStore.getUserIsSigningUp,
+      () => userStore.getUserIsSigningUp,
       () => {
-        const userIsSigningUp: boolean = appStore.getUserIsSigningUp;
+        const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
         updateUrlWithAction(
           userIsSigningUp,
           "/",
@@ -93,13 +95,13 @@ export default defineComponent({
     );
     onBeforeMount(() => {
       appStore.updateProcessingMessage("loading, please wait");
-      const user: User = appStore.getUser;
+      const user: User = userStore.getUser;
       if (props.action.toLowerCase() === 'login') {
         user.isLoggingIn = true;
-        appStore.updateUser(user)
+        userStore.updateUser(user)
       } else if (props.action.toLowerCase() === 'signup') {
         user.isSigningUp = true;
-        appStore.updateUser(user);
+        userStore.updateUser(user);
       }
     });
     return {

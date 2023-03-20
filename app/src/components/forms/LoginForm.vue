@@ -121,6 +121,7 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from "@/store/appStore/index";
 import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useUserStore } from "@/store/userStore/index";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
 import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
@@ -137,6 +138,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const appStore = useAppStore();
     const serviceFailStore = useServiceFailStore();
+    const userStore = useUserStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -226,10 +228,10 @@ export default defineComponent({
       if (isChrome.value) {
         repairAutoComplete();
       }
-      const confirmedUserName = toRaw(appStore.getConfirmedUserName);
+      const confirmedUserName = toRaw(userStore.getConfirmedUserName);
       if (confirmedUserName !== "") {
         userName.value = confirmedUserName;
-        appStore.updateConfirmedUserName("");
+        userStore.updateConfirmedUserName("");
       }
     });
     onUpdated(() => {
