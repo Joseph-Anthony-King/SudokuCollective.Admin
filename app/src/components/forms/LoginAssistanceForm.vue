@@ -87,6 +87,7 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from "@/store/appStore/index";
 import { useServiceFailStore } from "@/store/serviceFailStore/index";
+import { useUserStore } from "@/store/userStore/index";
 import commonUtilities from "@/utilities/common";
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
@@ -101,6 +102,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const appStore = useAppStore();
     const serviceFailStore = useServiceFailStore();
+    const userStore = useUserStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
@@ -160,9 +162,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => appStore.getConfirmedUserName,
+      () => userStore.getConfirmedUserName,
       () => {
-        const confirmedUserName = appStore.getConfirmedUserName;
+        const confirmedUserName = userStore.getConfirmedUserName;
         if (confirmedUserName !== "") {
           emit("go-back-to-login", null, null);
         }

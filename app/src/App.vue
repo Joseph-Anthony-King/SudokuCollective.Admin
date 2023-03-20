@@ -73,6 +73,7 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from "@/store/appStore/index";
 import { useSudokuStore } from "@/store/sudokuStore/index";
+import { useUserStore } from "@/store/userStore/index";
 import { useValuesStore } from "@/store/valuesStore/index";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
@@ -95,16 +96,17 @@ export default defineComponent({
     // Initialize stores
     const appStore = useAppStore();
     const sudokuStore = useSudokuStore();
+    const userStore = useUserStore();
     const valuesStore = useValuesStore();
 
     // User set up
     const user: Ref<User> = ref(
-      toRaw(appStore.getUser)
+      toRaw(userStore.getUser)
     );
     watch(
-      () => appStore.getUser,
+      () => userStore.getUser,
       () => {
-        user.value = toRaw(appStore.getUser);
+        user.value = toRaw(userStore.getUser);
       }
     );
 
@@ -134,15 +136,15 @@ export default defineComponent({
     watch(
       () => user.value.isLoggingIn,
       () => {
-        appStore.updateUser(user.value);
+        userStore.updateUser(user.value);
       }
     );
     watch(
-      () => appStore.getUserIsLoggedIn,
+      () => userStore.getUserIsLoggedIn,
       () => {
-        const isLoggedIn = toRaw(appStore.getUserIsLoggedIn);
+        const isLoggedIn = toRaw(userStore.getUserIsLoggedIn);
         if (isLoggedIn) {
-          user.value = toRaw(appStore.getUser);
+          user.value = toRaw(userStore.getUser);
           toast(`Welcome back ${user.value.userName}!`, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.SUCCESS,
@@ -151,9 +153,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => appStore.getConfirmedUserName,
+      () => userStore.getConfirmedUserName,
       () => {
-        const confirmedUserName = appStore.getConfirmedUserName;
+        const confirmedUserName = userStore.getConfirmedUserName;
         if (confirmedUserName !== "") {
           closeLoginAssistanceHandler();
         }
@@ -182,7 +184,7 @@ export default defineComponent({
     watch(
       () => user.value.isSigningUp,
       () => {
-        appStore.updateUser(user.value);
+        userStore.updateUser(user.value);
       }
     );
 
