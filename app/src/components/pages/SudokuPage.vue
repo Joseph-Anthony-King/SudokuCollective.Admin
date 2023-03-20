@@ -8,6 +8,7 @@ import { defineComponent, onBeforeMount, Ref, ref, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import { useAppStore } from "@/store/appStore/index";
 import { useSudokuStore } from "@/store/sudokuStore/index";
+import { useUserStore } from "@/store/userStore/index";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
 import commonUtitlities from "@/utilities/common";
@@ -25,6 +26,7 @@ export default defineComponent({
   setup(props) {
     const appStore = useAppStore();
     const sudokuStore = useSudokuStore();
+    const userStore = useUserStore();
     const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
@@ -38,9 +40,9 @@ export default defineComponent({
       }
     );
     watch(
-      () => appStore.getUserIsLoggingIn,
+      () => userStore.getUserIsLoggingIn,
       () => {
-        const userIsLoggingIn: boolean = appStore.getUserIsLoggingIn;
+        const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
           "/sudoku",
@@ -52,9 +54,9 @@ export default defineComponent({
     onBeforeMount(() => {
       appStore.updateProcessingMessage("processing, please do not navigate away");
       if (props.action.toLowerCase() === 'login') {
-        const user: User = appStore.getUser;
+        const user: User = userStore.getUser;
         user.isLoggingIn = true;
-        appStore.updateUser(user)
+        userStore.updateUser(user)
       }
     });
     return {
