@@ -18,6 +18,8 @@
     "@mdi/font": "5.9.55",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persistedstate": "^3.1.0",
     "roboto-fontface": "*",
     "vue": "^3.2.40",
     "vue-router": "^4.0.3",
