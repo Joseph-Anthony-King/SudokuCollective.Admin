@@ -2,10 +2,12 @@ import { ComputedRef, Ref, computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { useAppStore } from "@/store/appStore/index";
 import { LoginService } from "@/services/loginService";
+import { SignupService } from "@/services/signupService";
 import { UsersService } from "@/services/usersService";
 import { User } from "@/models/domain/user";
-import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
+import { ISignupRequestData } from "@/interfaces/requests/iSignupRequestData";
 
 export const useUserStore = defineStore("userStore", () => {
 	const user: Ref<User> = ref(new User());
@@ -16,6 +18,7 @@ export const useUserStore = defineStore("userStore", () => {
 	const getUser: ComputedRef<User> = computed(() => user.value);
 	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
 	const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => user.value.isLoggingIn);
+	const getUserIsSignedIn: ComputedRef<boolean> = computed(() => user.value.isSignedUp);
 	const getUserIsSigningUp: ComputedRef<boolean> = computed(() => user.value.isSigningUp);
 	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value);
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value);
@@ -32,6 +35,14 @@ export const useUserStore = defineStore("userStore", () => {
 	};
 	const updateServiceMessage = (param: string): void => {
 		serviceMessage.value = param;
+	};
+	const signupUserAsync = async (data: ISignupRequestData): Promise<void> => {
+		const appStore = useAppStore();
+		const response: IServicePayload = await SignupService.postAsync(data);
+		if (response.isSuccess) {
+			updateUser(response.user);
+			appStore.updateToken(response.token);
+		}
 	};
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const appStore = useAppStore();
@@ -56,6 +67,7 @@ export const useUserStore = defineStore("userStore", () => {
 		getUser,
 		getUserIsLoggedIn,
 		getUserIsLoggingIn,
+		getUserIsSignedIn,
 		getUserIsSigningUp,
 		getConfirmedUserName,
 		getProcessingMessage,
@@ -64,6 +76,7 @@ export const useUserStore = defineStore("userStore", () => {
 		updateConfirmedUserName,
 		updateProcessingMessage,
 		updateServiceMessage,
+		signupUserAsync,
 		confirmUserNameAsync,
 		requestPasswordResetAsync
 	}
