@@ -1,18 +1,17 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { LoginConnector } from "@/connectors/loginConnector";
-import { StaticServiceMethods } from "../common";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { ISignupRequestData } from "@/interfaces/requests/iSignupRequestData";
+import { AxiosError, AxiosResponse } from "axios";
+import { StaticServiceMethods } from "@/services/common";
+import { SignupConnector } from "@/connectors/signupConnector";
 import { User } from "@/models/domain/user";
-import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 
-export class LoginService {
-	
-	static async postLoginAsync(data: ILoginRequestData): Promise<IServicePayload> {
+export class SignupService {
+
+	static async postAsync(data: ISignupRequestData): Promise<IServicePayload> {
 		const result: IServicePayload = {};
-		
+
 		try {
-			const response = await LoginConnector.postLoginAsync(data) as AxiosResponse;
+			const response = await SignupConnector.postAsync(data) as AxiosResponse;
 			
 			if (response.data.isSuccess) {
 				result.isSuccess = response.data.isSuccess;
@@ -32,6 +31,7 @@ export class LoginService {
 					response.data.payload[0].user.isAdmin,
 					response.data.payload[0].user.dateCreated,
 					response.data.payload[0].user.dateUpdated,
+					true,
 					true);
 				result.token = response.data.payload[0].token;
 			} else {
@@ -50,34 +50,6 @@ export class LoginService {
 			}
 		}
 
-    return result;
-	}
-
-	static async postConfirmUserNameAsync(data: ILoginAssistanceRequestData): Promise<IServicePayload> {
-		const result: IServicePayload = {};
-		
-		try {
-			const response = await LoginConnector.postConfirmUserNameAsync(data) as AxiosResponse;
-			
-			if (response.data.isSuccess) {
-				result.isSuccess = response.data.isSuccess;
-				result.confirmedUserName = response.data.payload[0].userName;
-			} else {
-				result.isSuccess = response.data.isSuccess;
-				StaticServiceMethods.processFailedResponse(response);
-			}	
-		} catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
-			}
-			if (error instanceof AxiosError && error.response) {
-				result.isSuccess = error.response.data.isSuccess;
-				StaticServiceMethods.processFailedResponse(error.response);
-			} else {
-				result.isSuccess = false;
-			}
-		}
-
-    return result;
+		return result;
 	}
 }

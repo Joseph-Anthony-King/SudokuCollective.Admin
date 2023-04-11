@@ -143,9 +143,18 @@ export default defineComponent({
       () => userStore.getUserIsLoggedIn,
       () => {
         const isLoggedIn = toRaw(userStore.getUserIsLoggedIn);
+        const isSignedUp = toRaw(userStore.getUserIsSignedIn);
         if (isLoggedIn) {
+          let toastMessage: string;
           user.value = toRaw(userStore.getUser);
-          toast(`Welcome back ${user.value.userName}!`, {
+          if (!isSignedUp) {
+            toastMessage = `Welcome back ${user.value.userName}!`;
+          } else {
+            toastMessage = `Welcome to Sudoku Collective ${user.value.userName}!`;
+            user.value.isSignedUp = false;
+            userStore.updateUser(user.value);
+          }
+          toast(toastMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.SUCCESS,
           });

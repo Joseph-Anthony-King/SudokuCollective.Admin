@@ -6,6 +6,6 @@ export interface ISudokuRequestData {
 	fifthRow: Array<number>,
 	sixthRow: Array<number>,
 	seventhRow: Array<number>,
-	eighthRow: Array<number>
-	ninthRow: Array<number>
+	eighthRow: Array<number>,
+	ninthRow: Array<number>,
 }

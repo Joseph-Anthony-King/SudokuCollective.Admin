@@ -115,14 +115,24 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, onUpdated, ref, Ref, toRaw, watch } from "vue";
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  onMounted,
+  onUpdated,
+  ref,
+  Ref,
+  toRaw,
+  watch
+} from "vue";
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from "@/store/appStore/index";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useUserStore } from "@/store/userStore/index";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
+import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import commonUtilities from "@/utilities/common";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
 
@@ -162,27 +172,13 @@ export default defineComponent({
       return [
         (v: string) => !!v || "Password is required",
         (v: string) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*+=?-_.,]).{4,20}$/.test(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
             v
           ) ||
-          "Password must be between 4 and up to 20 characters with at least 1 capital letter, 1 lower case letter, and 1 special character of [! @ # $ % ^ & * + = ? - _ . ,]",
+          "Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,",
         (v: string) => !invalidPasswords.includes(v) || "Password is incorrect",
       ];
     });
-    const getFormStatus: ComputedRef<boolean> = computed(() => {
-      return props.formStatus;
-    });
-    // the following line is used by vuetify to reset the form
-    // eslint-disable-next-line
-    const resetFormStatus: ComputedRef<boolean> = computed(() => {
-      return !props.formStatus;
-    });
-    const submitHandler = (): void => {
-      if (getFormStatus.value) {
-        const data = new LoginRequestData(userName.value, password.value);
-        appStore.loginAsync(data);
-      }
-    };
     const helpHandler = (): void => {
       emit("obtain-login-assistance", null, null);
     };
@@ -193,10 +189,25 @@ export default defineComponent({
       invalidPasswords = [];
       form.value?.reset();
       confirmFormReset.value = false;
+      serviceFailStore.initializeStore();
     };
     const cancelHandler = (): void => {
       emit("cancel-login", null, null);
     };
+    const submitHandler = (): void => {
+      if (getFormStatus.value) {
+        const data = new LoginRequestData(userName.value, password.value);
+        appStore.loginAsync(data);
+      }
+    };
+    const getFormStatus: ComputedRef<boolean> = computed(() => {
+      return props.formStatus;
+    });
+    // the following line is used by vuetify to reset the form
+    // eslint-disable-next-line
+    const resetFormStatus: ComputedRef<boolean> = computed(() => {
+      return !props.formStatus;
+    });
     watch(
       () => serviceFailStore.getIsSuccess,
       () => {
