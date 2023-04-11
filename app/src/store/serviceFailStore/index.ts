@@ -6,8 +6,7 @@ export const useServiceFailStore = defineStore("serviceFailStore", () => {
 	const message = ref("");
 	const statusCode = ref(0);
 
-	const getIsSuccess: ComputedRef<boolean> = computed(() => 
-		isSuccess.value !== null ? isSuccess.value : false);
+	const getIsSuccess: ComputedRef<boolean | null> = computed(() => isSuccess.value);
 	const getMessage: ComputedRef<string> = computed(() => message.value);
 	const getStatusCode: ComputedRef<number> = computed(() => statusCode.value);
 
