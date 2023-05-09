@@ -1,17 +1,17 @@
 <template>
-  <home-page :action="action" />
+  <home-page :action='action' />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import HomePage from "@/components/pages/HomePage.vue";
+<script lang='ts'>
+import { defineComponent } from 'vue';
+import HomePage from '@/components/pages/HomePage.vue';
 
 export default defineComponent({
-  name: "HomeView",
+  name: 'HomeView',
   props: {
     action: {
       type: String,
-      default: ""
+      default: ''
     },
   },
   components: {

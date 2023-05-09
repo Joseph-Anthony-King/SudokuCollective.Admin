@@ -1,5 +1,5 @@
-import { AxiosResponse } from "axios";
-import { useServiceFailStore } from "@/store/serviceFailStore";
+import { AxiosResponse } from 'axios';
+import { useServiceFailStore } from '@/store/serviceFailStore';
 
 export class StaticServiceMethods {
 	static processFailedResponse(response: AxiosResponse): void {

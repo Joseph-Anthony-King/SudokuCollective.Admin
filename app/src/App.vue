@@ -1,50 +1,50 @@
 <template>
   <v-app>
-    <div class="app-viewport">
+    <div class='app-viewport'>
       <app-bar
-        v-on:user-logging-in="user.isLoggingIn = true"
-        v-on:user-logging-out="logoutHandler"
-        v-on:user-signing-up="user.isSigningUp = true"
+        v-on:user-logging-in='user.isLoggingIn = true'
+        v-on:user-logging-out='logoutHandler'
+        v-on:user-signing-up='user.isSigningUp = true'
       />
       <v-main>
         <router-view />
         <v-dialog
-          v-model="userIsLoggingIn"
+          v-model='userIsLoggingIn'
           persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxDialogWidth"
+          :fullscreen='isSmallViewPort'
+          :max-width='maxDialogWidth'
           hide-overlay
-          transition="dialog-top-transition"
+          transition='dialog-top-transition'
         >
           <LoginForm
-            :formStatus="userIsLoggingIn"
-            v-on:cancel-login="user.isLoggingIn = false"
-            v-on:obtain-login-assistance="openLoginAssistanceHandler"
+            :formStatus='userIsLoggingIn'
+            v-on:cancel-login='user.isLoggingIn = false'
+            v-on:obtain-login-assistance='openLoginAssistanceHandler'
           />
         </v-dialog>
         <v-dialog 
-          v-model="userIsSigningUp" 
+          v-model='userIsSigningUp' 
           persistent 
-          :fullscreen="isSmallViewPort" 
-          :max-width="maxDialogWidth" 
+          :fullscreen='isSmallViewPort' 
+          :max-width='maxDialogWidth' 
           hide-overlay
-          transition="dialog-top-transition"
+          transition='dialog-top-transition'
         >
           <SignUpForm
-            :formStatus="userIsSigningUp"
-            v-on:cancel-signup="user.isSigningUp = false"/>
+            :formStatus='userIsSigningUp'
+            v-on:cancel-signup='user.isSigningUp = false'/>
         </v-dialog>
         <v-dialog
-          v-model="userObtainingLoginAssistance"
+          v-model='userObtainingLoginAssistance'
           persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxDialogWidth"
+          :fullscreen='isSmallViewPort'
+          :max-width='maxDialogWidth'
           hide-overlay
-          transition="dialog-top-transition"
+          transition='dialog-top-transition'
         >
           <LoginAssistanceForm
-            :formStatus="userObtainingLoginAssistance"
-            v-on:go-back-to-login="closeLoginAssistanceHandler"
+            :formStatus='userObtainingLoginAssistance'
+            v-on:go-back-to-login='closeLoginAssistanceHandler'
           />
         </v-dialog>
       </v-main>
@@ -57,7 +57,7 @@
   </v-app>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import {
   computed,
   ComputedRef,
@@ -68,23 +68,23 @@ import {
   ref,
   toRaw,
   watch,
-} from "vue";
+} from 'vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useAppStore } from "@/store/appStore/index";
-import { useSudokuStore } from "@/store/sudokuStore/index";
-import { useUserStore } from "@/store/userStore/index";
-import { useValuesStore } from "@/store/valuesStore/index";
-import AppBar from "@/components/navigation/AppBar.vue";
-import FooterNav from "@/components/navigation/FooterNav.vue";
-import LoginForm from "@/components/forms/LoginForm.vue";
-import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
-import SignUpForm from "@/components/forms/SignUpForm.vue"
-import commonUtilities from "@/utilities/common";
-import { User } from "@/models/domain/user";
+import { useAppStore } from '@/store/appStore/index';
+import { useSudokuStore } from '@/store/sudokuStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import { useValuesStore } from '@/store/valuesStore/index';
+import AppBar from '@/components/navigation/AppBar.vue';
+import FooterNav from '@/components/navigation/FooterNav.vue';
+import LoginForm from '@/components/forms/LoginForm.vue';
+import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
+import SignUpForm from '@/components/forms/SignUpForm.vue'
+import commonUtilities from '@/utilities/common';
+import { User } from '@/models/domain/user';
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     AppBar,
     FooterNav,
@@ -119,7 +119,7 @@ export default defineComponent({
     const logoutHandler = (): void => {
       const userName = user.value.userName;
       appStore.logout();
-      appStore.updateToken("");
+      appStore.updateToken('');
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
@@ -165,7 +165,7 @@ export default defineComponent({
       () => userStore.getConfirmedUserName,
       () => {
         const confirmedUserName = userStore.getConfirmedUserName;
-        if (confirmedUserName !== "") {
+        if (confirmedUserName !== '') {
           closeLoginAssistanceHandler();
         }
       }
@@ -174,14 +174,14 @@ export default defineComponent({
       () => appStore.getServiceMessage,
       () => {
         const serviceMessage = appStore.getServiceMessage;
-        if (serviceMessage === "Status Code 200: Processed password reset request" || serviceMessage === "Status Code 200: Resent password reset request" ) {
+        if (serviceMessage === 'Status Code 200: Processed password reset request' || serviceMessage === 'Status Code 200: Resent password reset request' ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.ERROR,
           });
           user.value.isLoggingIn = false;
           userObtainingLoginAssistance.value = false;
-          appStore.updateServiceMessage("");
+          appStore.updateServiceMessage('');
         }
       }
     );
@@ -199,14 +199,14 @@ export default defineComponent({
 
     // Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
-    const maxDialogWidth: Ref<string> = ref("auto");
+    const maxDialogWidth: Ref<string> = ref('auto');
     const resetAppViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
-        maxDialogWidth.value = "auto";
+        maxDialogWidth.value = 'auto';
       } else {
         isSmallViewPort.value = false;
-        maxDialogWidth.value = "960px";
+        maxDialogWidth.value = '960px';
       }
     };
 
@@ -216,12 +216,12 @@ export default defineComponent({
       valuesStore.initializeAsync();
       sudokuStore.initializeStore();
       resetAppViewPort();
-      window.addEventListener("resize", () => {
+      window.addEventListener('resize', () => {
         resetAppViewPort();
       });
     });
     onUnmounted(() => {
-      window.removeEventListener("resize", () => {
+      window.removeEventListener('resize', () => {
         resetAppViewPort();
       });
     });
@@ -241,6 +241,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "@/assets/styles/site.scss";
+<style lang='scss'>
+@import '@/assets/styles/site.scss';
 </style>

@@ -1,10 +1,10 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { LoginConnector } from "@/connectors/loginConnector";
-import { StaticServiceMethods } from "../common";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { User } from "@/models/domain/user";
-import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
+import { AxiosError, AxiosResponse } from 'axios';
+import { LoginConnector } from '@/connectors/loginConnector';
+import { StaticServiceMethods } from '../common';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { User } from '@/models/domain/user';
+import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
+import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 
 export class LoginService {
 	
@@ -39,8 +39,8 @@ export class LoginService {
 				StaticServiceMethods.processFailedResponse(response);
 			}	
 		} catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
 			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
@@ -67,8 +67,8 @@ export class LoginService {
 				StaticServiceMethods.processFailedResponse(response);
 			}	
 		} catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
 			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
