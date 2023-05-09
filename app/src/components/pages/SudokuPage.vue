@@ -1,26 +1,26 @@
 <template>
-  <progress-widget v-if="loading" />
-  <sudoku-widget v-show="!loading" />
+  <progress-widget v-if='loading' />
+  <sudoku-widget v-show='!loading' />
 </template>
 
-<script lang="ts">
-import { defineComponent, onBeforeMount, Ref, ref, watch } from "vue";
+<script lang='ts'>
+import { defineComponent, onBeforeMount, Ref, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useAppStore } from "@/store/appStore/index";
-import { useSudokuStore } from "@/store/sudokuStore/index";
-import { useUserStore } from "@/store/userStore/index";
-import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
-import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
-import commonUtitlities from "@/utilities/common";
-import { User } from "@/models/domain/user";
+import { useAppStore } from '@/store/appStore/index';
+import { useSudokuStore } from '@/store/sudokuStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
+import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
+import commonUtitlities from '@/utilities/common';
+import { User } from '@/models/domain/user';
 
 export default defineComponent({
-  name: "SudokuPage",
+  name: 'SudokuPage',
   components: { ProgressWidget, SudokuWidget },
   props: {
     action: {
       type: String,
-      default: ""
+      default: ''
     },
   },
   setup(props) {
@@ -45,14 +45,14 @@ export default defineComponent({
         const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
-          "/sudoku",
-          "login",
+          '/sudoku',
+          'login',
           router,
           route);
       }
     )
     onBeforeMount(() => {
-      appStore.updateProcessingMessage("processing, please do not navigate away");
+      appStore.updateProcessingMessage('processing, please do not navigate away');
       if (props.action.toLowerCase() === 'login') {
         const user: User = userStore.getUser;
         user.isLoggingIn = true;

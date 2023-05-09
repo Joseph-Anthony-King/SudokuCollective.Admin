@@ -1,18 +1,18 @@
-import { ComputedRef, Ref, computed, ref } from "vue";
-import { defineStore } from "pinia";
-import { useUserStore } from "@/store/userStore/index";
-import { LoginService } from "@/services/loginService";
-import { UsersService } from "@/services/usersService";
-import { UserMethods } from "@/models/domain/user";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
-import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { ComputedRef, Ref, computed, ref } from 'vue';
+import { defineStore } from 'pinia';
+import { useUserStore } from '@/store/userStore/index';
+import { LoginService } from '@/services/loginService';
+import { UsersService } from '@/services/usersService';
+import { UserMethods } from '@/models/domain/user';
+import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 
-export const useAppStore = defineStore("appStore", () => {
-	const license: Ref<string> = ref("");
-	const token: Ref<string> = ref("");
-	const processingMessage: Ref<string> = ref("");
-	const serviceMessage: Ref<string> = ref("");
+export const useAppStore = defineStore('appStore', () => {
+	const license: Ref<string> = ref('');
+	const token: Ref<string> = ref('');
+	const processingMessage: Ref<string> = ref('');
+	const serviceMessage: Ref<string> = ref('');
 
 	const getLicense: ComputedRef<string> = computed(() => license.value);
 	const getToken: ComputedRef<string> = computed(() => token.value);
@@ -20,7 +20,7 @@ export const useAppStore = defineStore("appStore", () => {
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
 	
 	const addLicense = (param: string): void => {
-		if (param !== "") {
+		if (param !== '') {
 			license.value = param;
 		}
 	};

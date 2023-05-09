@@ -1,20 +1,20 @@
-import { ComputedRef, Ref, computed, ref } from "vue";
-import { defineStore } from "pinia";
-import { ValuesService } from "@/services/valuesService";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { GameStates } from "@/utilities/dropdowns/gameStates";
-import { Difficulty } from "@/models/domain/difficulty";
-import { GalleryApp } from "@/models/domain/galleryApp";
+import { ComputedRef, Ref, computed, ref } from 'vue';
+import { defineStore } from 'pinia';
+import { ValuesService } from '@/services/valuesService';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { GameStates } from '@/utilities/dropdowns/gameStates';
+import { Difficulty } from '@/models/domain/difficulty';
+import { GalleryApp } from '@/models/domain/galleryApp';
 
-export const useValuesStore = defineStore("valuesStore", () => {
+export const useValuesStore = defineStore('valuesStore', () => {
 	const difficulties: Ref<Array<Difficulty> | null> = ref(null);
 	const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);
 	const sortValues: Ref<Array<DropdownItem> | null> = ref(null);
 	const timeFrames: Ref<Array<DropdownItem> | null> = ref(null);
 	const gameStates: Ref<Array<DropdownItem> | null> = ref(null);
 	const gallery: Ref<Array<GalleryApp> | null> = ref(null);
-	const missionStatement: Ref<string> = ref("");
+	const missionStatement: Ref<string> = ref('');
 	const expirationDate = new Date();
 
 	const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>

@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
-import { ComputedRef, Ref, computed, ref } from "vue";
-import { Methods } from "@/store/sudokuStore/common";
-import { GamesService } from "@/services/gamesService";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { Difficulty } from "@/models/domain/difficulty";
+import { defineStore } from 'pinia';
+import { ComputedRef, Ref, computed, ref } from 'vue';
+import { Methods } from '@/store/sudokuStore/common';
+import { GamesService } from '@/services/gamesService';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { Difficulty } from '@/models/domain/difficulty';
 
-export const useSudokuStore = defineStore("sudokuStore", () => {
+export const useSudokuStore = defineStore('sudokuStore', () => {
 	const initialGame: Ref<Array<Array<string>> | null> = ref(null);
 	const game: Ref<Array<Array<string>> | null> = ref(null);
 	const puzzle: Ref<Array<Array<string>> | null> = ref(null);
@@ -14,7 +14,7 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 	const gameState: Ref<DropdownItem | null> = ref(null);
 	const selectedDifficulty: Ref<Difficulty | null> = ref(null);
 	const serviceResult: Ref<boolean | null> = ref(null);
-	const serviceMessage: Ref<string> = ref("");
+	const serviceMessage: Ref<string> = ref('');
 	const processing: Ref<boolean> = ref(false);
 	const isSolveDisabled: Ref<boolean | null> = ref(null);
 
@@ -96,14 +96,14 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 			updateInitialGame(initialGame);
 			updateGame(game);
 			serviceResult.value = null;
-			serviceMessage.value = "";
+			serviceMessage.value = '';
 		}
 		processing.value = !processing.value;
 	};
 	const checkGameAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
 		serviceResult.value = null;
-		serviceMessage.value = "";
+		serviceMessage.value = '';
 		if (game.value !== null) {
 			const response: IServicePayload = await GamesService.checkGameAsync(game.value);
 			if (response.isSuccess) {
@@ -124,7 +124,7 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 	const solvePuzzleAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
 		serviceResult.value = null;
-		serviceMessage.value = "";
+		serviceMessage.value = '';
 		if (puzzle.value !== null) {
 			const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
 			updatePuzzle(response.puzzle);
@@ -136,7 +136,7 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
 	const generateSolutionAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
 		serviceResult.value = null;
-		serviceMessage.value = "";
+		serviceMessage.value = '';
 		const response: IServicePayload = await GamesService.generateSolutionAsync();
 		updateSolution(response.solution);
 		serviceResult.value = response.isSuccess;
