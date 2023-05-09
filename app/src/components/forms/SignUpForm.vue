@@ -1,78 +1,78 @@
 <template>
 	<v-card>
-		<v-card-title class="justify-center text-center">
-			<span class="headline">Sign Up Form</span>
+		<v-card-title class='justify-center text-center'>
+			<span class='headline'>Sign Up Form</span>
 		</v-card-title>
-		<v-form v-model="formValid" ref="form">
+		<v-form v-model='formValid' ref='form'>
 			<v-card-text>
 				<v-container>
 					<v-row>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="user.userName"
-								label="User Name"
-								prepend-icon="mdi-account-plus"
-								:rules="userNameRules"
+								v-model='user.userName'
+								label='User Name'
+								prepend-icon='mdi-account-plus'
+								:rules='userNameRules'
 								required
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="user.firstName"
-								label="First Name"
-								prepend-icon="mdi-account-plus"
+								v-model='user.firstName'
+								label='First Name'
+								prepend-icon='mdi-account-plus'
 								:rules="requiredRulesHandler('First Name')"
 								required
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="user.lastName"
-								label="Last Name"
-								prepend-icon="mdi-account-plus"
+								v-model='user.lastName'
+								label='Last Name'
+								prepend-icon='mdi-account-plus'
 								:rules="requiredRulesHandler('Last Name')"
 								required
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="user.nickName"
-								label="Nickname (Not Required)"
-								prepend-icon="mdi-account-plus"
+								v-model='user.nickName'
+								label='Nickname (Not Required)'
+								prepend-icon='mdi-account-plus'
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="user.email"
-								label="Email"
-								prepend-icon="mdi-email"
-								:rules="emailRules"
+								v-model='user.email'
+								label='Email'
+								prepend-icon='mdi-email'
+								:rules='emailRules'
 								required
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="password"
-								label="Password"
+								v-model='password'
+								label='Password'
 								:type="showPassword ? 'text' : 'password'"
-								prepend-icon="mdi-account-key"
+								prepend-icon='mdi-account-key'
 								:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
 								@click:append="showPassword = !showPassword"
-								autocomplete="new-password"
-								:rules="passwordRules"
+								autocomplete='new-password'
+								:rules='passwordRules'
 								required
 							></v-text-field>
 						</v-col>
-						<v-col cols="12">
+						<v-col cols='12'>
 							<v-text-field
-								v-model="confirmPassword"
-								label="Confirm Password"
+								v-model='confirmPassword'
+								label='Confirm Password'
 								:type="showPassword ? 'text' : 'password'"
-								prepend-icon="mdi-account-key"
+								prepend-icon='mdi-account-key'
 								:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-								@click:append="showPassword = !showPassword"
-								autocomplete="new-password"
-								:rules="confirmPasswordRules"
+								@click:append='showPassword = !showPassword'
+								autocomplete='new-password'
+								:rules='confirmPasswordRules'
 								required
 							></v-text-field>
 						</v-col>
@@ -81,15 +81,15 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-row :dense="true">
+				<v-row :dense='true'>
 					<v-col>
-						<v-tooltip close-delay="3000" location="bottom">
-							<template v-slot:activator="{ props }">
+						<v-tooltip close-delay='3000' location='bottom'>
+							<template v-slot:activator='{ props }'>
 								<v-btn
-									color="blue darken-1"
+									color='blue darken-1'
 									text
-									@click="confirmFormReset = true"
-									v-bind="props"
+									@click='confirmFormReset = true'
+									v-bind='props'
 								>
 									Reset
 								</v-btn>
@@ -98,13 +98,13 @@
 						</v-tooltip>
 					</v-col>
 					<v-col>
-						<v-tooltip close-delay="3000" location="bottom">
-							<template v-slot:activator="{ props }">
+						<v-tooltip close-delay='3000' location='bottom'>
+							<template v-slot:activator='{ props }'>
 								<v-btn 
-									color="blue darken-1" 
+									color='blue darken-1' 
 									text 
-									@click="cancelHandler" 
-									v-bind="props">
+									@click='cancelHandler' 
+									v-bind='props'>
 									Cancel
 								</v-btn>
 							</template>
@@ -112,14 +112,14 @@
 						</v-tooltip>
 					</v-col>
 					<v-col>
-						<v-tooltip close-delay="3000" location="bottom">
-							<template v-slot:activator="{ props }">
+						<v-tooltip close-delay='3000' location='bottom'>
+							<template v-slot:activator='{ props }'>
 								<v-btn
-									color="blue darken-1"
+									color='blue darken-1'
 									text
-									@click="submitHandler"
-									:disabled="!formValid"
-									v-bind="props"
+									@click='submitHandler'
+									:disabled='!formValid'
+									v-bind='props'
 								>
 									Sign Up
 								</v-btn>
@@ -132,30 +132,30 @@
 		</v-form>
 	</v-card>
 	<v-dialog 
-		v-model="confirmFormReset" 
-		persistent max-width="600" 
+		v-model='confirmFormReset' 
+		persistent max-width='600' 
 		hide-overlay 
-		transition="dialog-top-transition">
+		transition='dialog-top-transition'>
 		<ConfirmDialog 
-			title="Reset Sign Up Form" 
-			message="Are you sure you want to reset this form?" 
-			v-on:action-confirmed="resetHandler"
-			v-on:action-not-confirmed="confirmFormReset = false" />
+			title='Reset Sign Up Form' 
+			message='Are you sure you want to reset this form?' 
+			v-on:action-confirmed='resetHandler'
+			v-on:action-not-confirmed='confirmFormReset = false' />
 	</v-dialog>
 </template>
 
-<script lang="ts">
-import { ComputedRef, Ref, computed, defineComponent, ref, watch } from "vue";
-import { VForm } from "vuetify/components";
-import { toast } from "vue3-toastify";
-import { useUserStore } from "@/store/userStore/index";
-import { useServiceFailStore } from "@/store/serviceFailStore/index";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import { User } from "@/models/domain/user";
-import { SignupRequestData } from "@/models/requests/signupRequestData";
+<script lang='ts'>
+import { ComputedRef, Ref, computed, defineComponent, ref, watch } from 'vue';
+import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import { useUserStore } from '@/store/userStore/index';
+import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { User } from '@/models/domain/user';
+import { SignupRequestData } from '@/models/requests/signupRequestData';
 
 export default defineComponent({
-	name: "SignUpForm",
+	name: 'SignUpForm',
 	components: { ConfirmDialog },
 	props: {
 		formStatus: {
@@ -177,41 +177,41 @@ export default defineComponent({
 		let invalidEmails: string[] = [];
 		const userNameRules = computed(() => {
 			return [
-				(v: string) => !!v || "User Name is required",
+				(v: string) => !!v || 'User Name is required',
 				(v: string) =>
 					/^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$/.test(v) ||
-					"User name must be at least 4 characters and can contain alphanumeric characters and special characters of [! @ # $ % ^ & * + = ? - _ . ,]",
-				(v: string) => !invalidUserNames.includes(v) || "User name not unique",
+					'User name must be at least 4 characters and can contain alphanumeric characters and special characters of [! @ # $ % ^ & * + = ? - _ . ,]',
+				(v: string) => !invalidUserNames.includes(v) || 'User name not unique',
 			];
 		});
 		const emailRules = computed(() => {
 			return [
-				(v: string) => !!v || "Email is required",
+				(v: string) => !!v || 'Email is required',
 				(v: string) =>
 					/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-					"Email must be in a valid format",
-				(v: string) => !invalidEmails.includes(v) || "Email not unique",
+					'Email must be in a valid format',
+				(v: string) => !invalidEmails.includes(v) || 'Email not unique',
 			];
 		});
 		const passwordRules = computed(() => {
 			return [
-				(v: string) => !!v || "Password is required",
+				(v: string) => !!v || 'Password is required',
 				(v: string) =>
 					/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
 						v
 					) ||
-					"Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,",
+					'Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,',
 			];
 		});
 		const confirmPasswordRules = computed(() => {
 			return [
-				(v: string) => !!v || "Password is required",
+				(v: string) => !!v || 'Password is required',
 				(v: string) =>
 					/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
 						v
 					) ||
-					"Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,",
-				(v: string) => v === password.value || "Password and confirm password must match",
+					'Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,',
+				(v: string) => v === password.value || 'Password and confirm password must match',
 			];
 		});
 		const requiredRulesHandler = (value: string) => {
@@ -233,7 +233,7 @@ export default defineComponent({
 			serviceFailStore.initializeStore();
 		};
 		const cancelHandler = (): void => {
-			emit("cancel-signup", null, null);
+			emit('cancel-signup', null, null);
 		};
 		const submitHandler = (): void => {
 			if (getFormStatus.value) {
@@ -256,13 +256,13 @@ export default defineComponent({
 				if (isSuccess !== null && !isSuccess) {
 					const message: string = serviceFailStore.getMessage;
 					if (
-						message === "Status Code 404: User name not unique" &&
+						message === 'Status Code 404: User name not unique' &&
 						!invalidUserNames.includes(user.value.userName as string)
 					) {
 						invalidUserNames.push(user.value.userName as string);
 					}
 					if (
-						message === "Status Code 404: Email not unique" &&
+						message === 'Status Code 404: Email not unique' &&
 						!invalidEmails.includes(user.value.email as string)
 					) {
 						invalidEmails.push(user.value.email as string);

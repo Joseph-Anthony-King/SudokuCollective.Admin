@@ -1,43 +1,43 @@
 <template>
-  <v-app-bar app color="primary" dark>
-    <div class="d-flex app-viewport">
-      <v-app-bar-nav-icon v-if="user.isLoggedIn"></v-app-bar-nav-icon>
+  <v-app-bar app color='primary' dark>
+    <div class='d-flex app-viewport'>
+      <v-app-bar-nav-icon v-if='user.isLoggedIn'></v-app-bar-nav-icon>
       <v-app-bar-title>
-        <router-link to="/" class="inline-flex">
+        <router-link to='/' class='inline-flex'>
           <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2 header-logo"
+            alt='Vuetify Logo'
+            class='shrink mr-2 header-logo'
             contain
-            src="/images/logo.png"
-            transition="scale-transition"
-            width="40"
+            src='/images/logo.png'
+            transition='scale-transition'
+            width='40'
           />
-          <span class="nav-text"> Sudoku Collective Admin Vue </span>
+          <span class='nav-text'> Sudoku Collective Admin Vue </span>
         </router-link>
       </v-app-bar-title>
       <v-spacer></v-spacer>
-      <div class="inline-flex">
+      <div class='inline-flex'>
         <v-menu bottom>
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props">
-              <span class="mr-2 menu-text">Menu</span>
-              <v-btn icon="mdi-dots-vertical"></v-btn>
+          <template v-slot:activator='{ props }'>
+            <v-btn v-bind='props'>
+              <span class='mr-2 menu-text'>Menu</span>
+              <v-btn icon='mdi-dots-vertical'></v-btn>
             </v-btn>
           </template>
           <v-list>
-            <div v-for="(link, index) in interiorLinks" :key="index">
-              <v-tooltip bottom v-if="link.condition">
-                <template v-slot:activator="{ props }">
-                  <v-list-item v-bind="props">
+            <div v-for='(link, index) in interiorLinks' :key='index'>
+              <v-tooltip bottom v-if='link.condition'>
+                <template v-slot:activator='{ props }'>
+                  <v-list-item v-bind='props'>
                     <v-list-item-content>
                       <v-list-item-title>
                         <a
-                          :href="link.url"
-                          :target="link.target"
-                          class="menu-item"
+                          :href='link.url'
+                          :target='link.target'
+                          class='menu-item'
                         >
                           <v-icon>{{ link.mdiIcon }}</v-icon>
-                          <span class="mr-2">{{ link.title }}</span>
+                          <span class='mr-2'>{{ link.title }}</span>
                         </a>
                       </v-list-item-title>
                     </v-list-item-content>
@@ -46,14 +46,14 @@
                 <span>{{ link.tooltip }}</span>
               </v-tooltip>
             </div>
-            <v-tooltip bottom v-if="!user.isLoggedIn">
-              <template v-slot:activator="{ props }">
-                <v-list-item v-bind="props">
+            <v-tooltip bottom v-if='!user.isLoggedIn'>
+              <template v-slot:activator='{ props }'>
+                <v-list-item v-bind='props'>
                   <v-list-item-content>
                     <v-list-item-title>
-                      <div class="menu-item" @click="loginHandler">
+                      <div class='menu-item' @click='loginHandler'>
                         <v-icon>mdi-login-variant</v-icon>
-                        <span class="mr-2">Login</span>
+                        <span class='mr-2'>Login</span>
                       </div>
                     </v-list-item-title>
                   </v-list-item-content>
@@ -61,14 +61,14 @@
               </template>
               <span>Login to SudokuCollective.com</span>
             </v-tooltip>
-            <v-tooltip bottom v-if="!user.isLoggedIn">
-              <template v-slot:activator="{ props }">
-                <v-list-item v-bind="props">
+            <v-tooltip bottom v-if='!user.isLoggedIn'>
+              <template v-slot:activator='{ props }'>
+                <v-list-item v-bind='props'>
                   <v-list-item-content>
                     <v-list-item-title>
-                      <div class="menu-item" @click="signUpHandler">
+                      <div class='menu-item' @click='signUpHandler'>
                         <v-icon>mdi-account-plus</v-icon>
-                        <span class="mr-2">Sign Up</span>
+                        <span class='mr-2'>Sign Up</span>
                       </div>
                     </v-list-item-title>
                   </v-list-item-content>
@@ -76,14 +76,14 @@
               </template>
               <span>Sign up with SudokuCollective.com</span>
             </v-tooltip>
-            <v-tooltip bottom v-if="user.isLoggedIn">
-              <template v-slot:activator="{ props }">
-                <v-list-item v-bind="props">
+            <v-tooltip bottom v-if='user.isLoggedIn'>
+              <template v-slot:activator='{ props }'>
+                <v-list-item v-bind='props'>
                   <v-list-item-content>
                     <v-list-item-title>
-                      <div class="menu-item" @click="confirmUserLogout = true">
+                      <div class='menu-item' @click='confirmUserLogout = true'>
                         <v-icon>mdi-logout-variant</v-icon>
-                        <span class="mr-2">Log Out</span>
+                        <span class='mr-2'>Log Out</span>
                       </div>
                     </v-list-item-title>
                   </v-list-item-content>
@@ -91,31 +91,31 @@
               </template>
               <span>Log out of SudokuCollective.com</span>
             </v-tooltip>
-            <hr v-if="exteriorLinks.length > 1" class="mx-2" />
+            <hr v-if='exteriorLinks.length > 1' class='mx-2' />
             <v-tooltip bottom>
-              <template v-slot:activator="{ props }">
-                <v-list-item v-if="exteriorLinks.length > 1" v-bind="props">
+              <template v-slot:activator='{ props }'>
+                <v-list-item v-if='exteriorLinks.length > 1' v-bind='props'>
                   <v-menu left bottom>
-                    <template v-slot:activator="{ props }">
-                      <div class="menu-item" v-bind="props">
-                        <span class="mr-2">Links</span>
+                    <template v-slot:activator='{ props }'>
+                      <div class='menu-item' v-bind='props'>
+                        <span class='mr-2'>Links</span>
                       </div>
                     </template>
-                    <v-list class="menu-link-list">
+                    <v-list class='menu-link-list'>
                       <!-- outside links -->
-                      <div v-for="(link, index) in exteriorLinks" :key="index">
-                        <v-tooltip bottom v-if="link.condition">
-                          <template v-slot:activator="{ props }">
-                            <v-list-item v-bind="props">
+                      <div v-for='(link, index) in exteriorLinks' :key='index'>
+                        <v-tooltip bottom v-if='link.condition'>
+                          <template v-slot:activator='{ props }'>
+                            <v-list-item v-bind='props'>
                               <v-list-item-content>
                                 <v-list-item-title>
                                   <a
-                                    :href="link.url"
-                                    :target="link.target"
-                                    class="menu-item"
+                                    :href='link.url'
+                                    :target='link.target'
+                                    class='menu-item'
                                   >
                                     <v-icon>{{ link.mdiIcon }}</v-icon>
-                                    <span class="mr-2">{{ link.title }}</span>
+                                    <span class='mr-2'>{{ link.title }}</span>
                                   </a>
                                 </v-list-item-title>
                               </v-list-item-content>
@@ -136,29 +136,29 @@
     </div>
   </v-app-bar>
   <v-dialog
-    v-model="confirmUserLogout"
+    v-model='confirmUserLogout'
     persistent
-    max-width="600"
+    max-width='600'
     hide-overlay
-    transition="dialog-top-transition">
+    transition='dialog-top-transition'>
     <ConfirmDialog 
-      title="Confirm Logout"
-      :message="confirmMessage"
-      v-on:action-confirmed="logoutHandler"
-      v-on:action-not-confirmed="confirmUserLogout = false"/>
+      title='Confirm Logout'
+      :message='confirmMessage'
+      v-on:action-confirmed='logoutHandler'
+      v-on:action-not-confirmed='confirmUserLogout = false'/>
   </v-dialog>
 </template>
 
-<script lang="ts">
-import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from "vue";
-import { useUserStore } from "@/store/userStore/index";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue"
-import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
-import { InteriorLinks } from "@/utilities/links/interiorLinks";
-import { User } from "@/models/domain/user";
+<script lang='ts'>
+import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from 'vue';
+import { useUserStore } from '@/store/userStore/index';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
+import { InteriorLinks } from '@/utilities/links/interiorLinks';
+import { User } from '@/models/domain/user';
 
 export default defineComponent({
-  name: "AppBar",
+  name: 'AppBar',
   components: { ConfirmDialog },
   setup(props, { emit }) {
     const userStore = useUserStore();
@@ -170,14 +170,14 @@ export default defineComponent({
       return `Are you sure you want to log out ${user.value.userName}?`;
     });
     const loginHandler = (): void => {
-      emit("user-logging-in", null, null);
+      emit('user-logging-in', null, null);
     };
     const logoutHandler = (): void => {
       confirmUserLogout.value = false;
-      emit("user-logging-out", null, null);
+      emit('user-logging-out', null, null);
     };
     const signUpHandler = (): void => {
-      emit("user-signing-up", null, null);
+      emit('user-signing-up', null, null);
     };
     watch(
       () => userStore.getUser,
@@ -199,7 +199,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .inline-flex {
   display: inline-flex;
 }
