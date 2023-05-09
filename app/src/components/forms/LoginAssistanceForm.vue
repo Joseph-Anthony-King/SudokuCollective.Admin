@@ -1,20 +1,20 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center text-center">
-      <span class="headline">Login Assistance Form</span>
+    <v-card-title class='justify-center text-center'>
+      <span class='headline'>Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model="formValid" ref="form">
+    <v-form v-model='formValid' ref='form'>
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12">
+            <v-col cols='12'>
               <v-text-field
-                v-model="email"
-                label="Please enter your email to confirm your user name"
-                prepend-icon="mdi-email"
+                v-model='email'
+                label='Please enter your email to confirm your user name'
+                prepend-icon='mdi-email'
                 required
-                :rules="emailRules"
-                autocomplete="off"
+                :rules='emailRules'
+                autocomplete='off'
               ></v-text-field>
             </v-col>
           </v-row>
@@ -23,16 +23,16 @@
       <v-card-actions>
         <v-spacer>
         </v-spacer>
-        <v-row :dense="true">
+        <v-row :dense='true'>
           <v-col>
-            <v-tooltip close-delay="3000" location="bottom">
-              <template v-slot:activator="{ props }">
+            <v-tooltip close-delay='3000' location='bottom'>
+              <template v-slot:activator='{ props }'>
                 <v-btn
-                  color="blue darken-1"
+                  color='blue darken-1'
                   text
-                  @click="resetPasswordHandlder"
-                  :disabled="!formValid"
-                  v-bind="props"
+                  @click='resetPasswordHandlder'
+                  :disabled='!formValid'
+                  v-bind='props'
                 >
                   Reset Password
                 </v-btn>
@@ -44,14 +44,14 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay="3000" location="bottom">
-              <template v-slot:activator="{ props }">
+            <v-tooltip close-delay='3000' location='bottom'>
+              <template v-slot:activator='{ props }'>
                 <v-btn
-                  color="blue darken-1"
+                  color='blue darken-1'
                   text
-                  @click="submitHandler"
-                  :disabled="!formValid"
-                  v-bind="props"
+                  @click='submitHandler'
+                  :disabled='!formValid'
+                  v-bind='props'
                 >
                   Confirm User Name
                 </v-btn>
@@ -60,13 +60,13 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay="3000" location="bottom">
-              <template v-slot:activator="{ props }">
+            <v-tooltip close-delay='3000' location='bottom'>
+              <template v-slot:activator='{ props }'>
                 <v-btn
-                  color="blue darken-1"
+                  color='blue darken-1'
                   text
-                  @click="goBackHandler"
-                  v-bind="props"
+                  @click='goBackHandler'
+                  v-bind='props'
                 >
                   Go Back
                 </v-btn>
@@ -80,19 +80,19 @@
   </v-card>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useAppStore } from "@/store/appStore/index";
-import { useServiceFailStore } from "@/store/serviceFailStore/index";
-import { useUserStore } from "@/store/userStore/index";
-import commonUtilities from "@/utilities/common";
+import { useAppStore } from '@/store/appStore/index';
+import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import commonUtilities from '@/utilities/common';
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
 export default defineComponent({
-  name: "LoginAssistanceForm",
+  name: 'LoginAssistanceForm',
   props: {
     formStatus: {
       type: Boolean,
@@ -106,15 +106,15 @@ export default defineComponent({
     const { isChrome, repairAutoComplete } = commonUtilities();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
-    const email: Ref<string> = ref("");
+    const email: Ref<string> = ref('');
     let invalidEmails: string[] = [];
     const emailRules = computed(() => {
       return [
-        (v: string) => !!v || "Email is required",
+        (v: string) => !!v || 'Email is required',
         (v: string) =>
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "Email must be in a valid format",
-        (v: string) => !invalidEmails.includes(v) || "No user is using this email",
+          'Email must be in a valid format',
+        (v: string) => !invalidEmails.includes(v) || 'No user is using this email',
       ];
     });
     const getFormStatus: ComputedRef<boolean> = computed(() => {
@@ -138,7 +138,7 @@ export default defineComponent({
       }
     }
     const goBackHandler = (): void => {
-      emit("go-back-to-login", null, null);
+      emit('go-back-to-login', null, null);
     }
     watch(
       () => serviceFailStore.getIsSuccess,
@@ -147,7 +147,7 @@ export default defineComponent({
         if (isSuccess !== null && !isSuccess) {
           const message: string = serviceFailStore.getMessage;
           if (
-            message === "Status Code 404: No user is using this email" &&
+            message === 'Status Code 404: No user is using this email' &&
             !invalidEmails.includes(email.value)
           ) {
             invalidEmails.push(email.value);
@@ -165,8 +165,8 @@ export default defineComponent({
       () => userStore.getConfirmedUserName,
       () => {
         const confirmedUserName = userStore.getConfirmedUserName;
-        if (confirmedUserName !== "") {
-          emit("go-back-to-login", null, null);
+        if (confirmedUserName !== '') {
+          emit('go-back-to-login', null, null);
         }
       }
     );

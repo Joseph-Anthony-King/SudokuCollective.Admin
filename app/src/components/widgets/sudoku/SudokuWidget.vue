@@ -91,36 +91,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
-import { computed, ComputedRef, Ref, toRaw } from "@vue/reactivity";
+import { defineComponent, ref, watch } from 'vue';
+import { computed, ComputedRef, Ref, toRaw } from '@vue/reactivity';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useSudokuStore } from "@/store/sudokuStore/index";
-import { useValuesStore } from "@/store/valuesStore/index";
-import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
-import { GameState } from "@/enums/gameState";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { Difficulty } from "@/models/domain/difficulty";
+import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useSudokuStore } from '@/store/sudokuStore/index';
+import { useValuesStore } from '@/store/valuesStore/index';
+import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
+import { GameState } from '@/enums/gameState';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { Difficulty } from '@/models/domain/difficulty';
 
 export default defineComponent({
-  name: "SudokuWidget",
+  name: 'SudokuWidget',
   components: { MatrixWidget },
   setup() {
     /* initialize stores */
+    const serviceFailStore = useServiceFailStore();
     const sudokuStore = useSudokuStore();
     const valuesStore = useValuesStore();
 
     /* difficulty properties and methods */
-    const difficulties: Ref<Difficulty[]> = ref(
-      valuesStore.getDifficulties
-    );
+    const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
     const selectedDifficulty: Ref<Difficulty | null> = ref(
       sudokuStore.getSelectedDifficulty
     );
     /* Game state properties and methods */
-    const gameStates: Ref<DropdownItem[]> = ref(
-      valuesStore.getGameStates
-    );
+    const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
     // eslint-disable-next-line
     const selectedGameState: Ref<DropdownItem | null> = ref(
       sudokuStore.getGameState
@@ -133,47 +131,56 @@ export default defineComponent({
     const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
       let result: boolean;
       if (sudokuStore.getGameState !== null) {
-        result =
-          sudokuStore.getGameState.value ===
-          GameState.PLAYGAME;
+        result = sudokuStore.getGameState.value === GameState.PLAYGAME;
       } else {
         result = false;
       }
       return result;
     });
     const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
+      if (selectedGameState.value?.value === GameState.PLAYGAME) {
         if (selectedDifficulty?.value === null) {
           return true;
         } else {
           return false;
         }
-      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      } else if (
+        selectedGameState.value?.value === GameState.SOLVESUDOKU
+      ) {
         return sudokuStore.getIsSolvedDisabled;
       } else {
         return false;
       }
     });
     const executeButtonText: ComputedRef<string> = computed(() => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
-        return "Create Game";
-      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-        return "Solve Sudoku";
+      if (selectedGameState.value?.value === GameState.PLAYGAME) {
+        return 'Create Game';
+      } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+        return 'Solve Sudoku';
       } else {
-        return "Generate Sudoku";
+        return 'Generate Sudoku';
       }
     });
     const clearButtonText: ComputedRef<string> = computed(() => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
-        return "Clear Game";
+      if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.PLAYGAME
+      ) {
+        return 'Clear Game';
       } else {
-        return "Clear Sudoku";
+        return 'Clear Sudoku';
       }
     });
     const execute = (): void => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
+      if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.PLAYGAME
+      ) {
         sudokuStore.createGameAsync();
-      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      } else if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.SOLVESUDOKU
+      ) {
         sudokuStore.solvePuzzleAsync();
       } else {
         sudokuStore.generateSolutionAsync();
@@ -194,9 +201,15 @@ export default defineComponent({
       sudokuStore.updateGame(game);
     };
     const clear = (): void => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
+      if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.PLAYGAME
+      ) {
         sudokuStore.initializeGame();
-      } else if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      } else if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.SOLVESUDOKU
+      ) {
         sudokuStore.initializePuzzle();
       } else {
         sudokuStore.initializeSolution();
@@ -217,9 +230,7 @@ export default defineComponent({
     watch(
       () => valuesStore.getDifficulties,
       () => {
-        difficulties.value = toRaw(
-          valuesStore.getDifficulties
-        );
+        difficulties.value = toRaw(valuesStore.getDifficulties);
       }
     );
     watch(
@@ -231,11 +242,28 @@ export default defineComponent({
     watch(
       () => sudokuStore.getServiceResult,
       () => {
-        if (sudokuStore.getServiceResult !== null && sudokuStore.getServiceMessage !== "") {
+        if (
+          sudokuStore.getServiceResult !== null &&
+          sudokuStore.getServiceMessage !== ''
+        ) {
           toast(sudokuStore.getServiceMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.SUCCESS,
           });
+        }
+      }
+    );
+    watch(
+      () => serviceFailStore.getIsSuccess,
+      () => {
+        const isSuccess = serviceFailStore.getIsSuccess;
+        if (isSuccess !== null && !isSuccess) {
+          const message: string = serviceFailStore.getMessage;
+          toast(message, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          });
+          serviceFailStore.initializeStore();
         }
       }
     );

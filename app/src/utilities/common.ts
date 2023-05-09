@@ -1,5 +1,5 @@
-import { ComputedRef, computed } from "vue";
-import { RouteLocationNormalizedLoaded, Router } from "vue-router";
+import { ComputedRef, computed } from 'vue';
+import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
@@ -12,7 +12,7 @@ export default function () {
 
   const repairAutoComplete = (): void => {
     document.querySelectorAll('input[type="text"][autocomplete="off"').forEach((element) => {
-      element.setAttribute("autocomplete", "new-password")
+      element.setAttribute('autocomplete', 'new-password')
     });
   }
 
@@ -25,8 +25,8 @@ export default function () {
   ): void => {
     if (criteria === false) {
       router.push(url);
-    } else if (criteria === true && route.params.action === "") {
-      if (url !== "/") {
+    } else if (criteria === true && route.params.action === '') {
+      if (url !== '/') {
         url = `${url}/`;
       }
       router.push(`${url}${action}`);

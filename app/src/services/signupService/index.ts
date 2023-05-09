@@ -1,9 +1,9 @@
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { ISignupRequestData } from "@/interfaces/requests/iSignupRequestData";
-import { AxiosError, AxiosResponse } from "axios";
-import { StaticServiceMethods } from "@/services/common";
-import { SignupConnector } from "@/connectors/signupConnector";
-import { User } from "@/models/domain/user";
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
+import { AxiosError, AxiosResponse } from 'axios';
+import { StaticServiceMethods } from '@/services/common';
+import { SignupConnector } from '@/connectors/signupConnector';
+import { User } from '@/models/domain/user';
 
 export class SignupService {
 
@@ -39,8 +39,8 @@ export class SignupService {
 				StaticServiceMethods.processFailedResponse(response);
 			}	
 		} catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
 			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;

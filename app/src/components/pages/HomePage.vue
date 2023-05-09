@@ -1,28 +1,28 @@
 <template>
   <v-container fluid>
-    <ProgressWidget v-if="loading" />
-    <v-card elevation="6" class="mx-16" v-show="!loading">
-      <v-row class="text-center home-banner">
-        <v-col cols="12">
-          <h1 class="text-center centered-welcome-message text-padding">
+    <ProgressWidget v-if='loading' />
+    <v-card elevation='6' class='mx-16' v-show='!loading'>
+      <v-row class='text-center home-banner'>
+        <v-col cols='12'>
+          <h1 class='text-center centered-welcome-message text-padding'>
             Welcome to Sudoku Collective Admin Vue
           </h1>
           <v-img
-            src="/images/logo.png"
-            class="my-3 centered-logo"
+            src='/images/logo.png'
+            class='my-3 centered-logo'
             contain
-            height="200"
+            height='200'
           />
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
-          <p class="motto text-center text-padding">
+        <v-col cols='12'>
+          <p class='motto text-center text-padding'>
             Code... Create... Inspire...
           </p>
           <p
-            class="description text-center text-padding"
-            v-html="missionStatement"
+            class='description text-center text-padding'
+            v-html='missionStatement'
           ></p>
         </v-col>
       </v-row>
@@ -30,23 +30,23 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
+<script lang='ts'>
+import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useAppStore } from "@/store/appStore/index";
-import { useUserStore } from "@/store/userStore/index";
-import { useValuesStore } from "@/store/valuesStore/index";
-import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
-import commonUtitlities from "@/utilities/common";
-import { User } from "@/models/domain/user";
+import { useAppStore } from '@/store/appStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import { useValuesStore } from '@/store/valuesStore/index';
+import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
+import commonUtitlities from '@/utilities/common';
+import { User } from '@/models/domain/user';
 
 export default defineComponent({
-  name: "HomePage",
+  name: 'HomePage',
   components: { ProgressWidget },
   props: {
     action: {
       type: String,
-      default: ""
+      default: ''
     },
   },
   setup(props) {
@@ -60,7 +60,7 @@ export default defineComponent({
       valuesStore.getMissionStatement
     );
     const loading = computed(() => {
-      return missionStatement.value === "";
+      return missionStatement.value === '';
     });
     watch(
       () => valuesStore.getMissionStatement,
@@ -75,8 +75,8 @@ export default defineComponent({
         const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
         updateUrlWithAction(
           userIsLoggingIn,
-          "/",
-          "login",
+          '/',
+          'login',
           router,
           route);
       }
@@ -87,14 +87,14 @@ export default defineComponent({
         const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
         updateUrlWithAction(
           userIsSigningUp,
-          "/",
-          "signup",
+          '/',
+          'signup',
           router,
           route);
       }
     );
     onBeforeMount(() => {
-      appStore.updateProcessingMessage("loading, please wait");
+      appStore.updateProcessingMessage('loading, please wait');
       const user: User = userStore.getUser;
       if (props.action.toLowerCase() === 'login') {
         user.isLoggingIn = true;
@@ -112,7 +112,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .v-card {
   @media (max-width: 600px) {
     padding: 0 0 0 0 !important;
@@ -133,7 +133,7 @@ export default defineComponent({
   border: 0;
   border-color: transparent;
   min-height: 500px;
-  background-image: url("@/assets/banner.jpg");
+  background-image: url('@/assets/banner.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -159,7 +159,7 @@ export default defineComponent({
   color: var(--v-secondary);
   font-size: 2.5em;
   font-weight: 500;
-  font-family: "SegoeUI-BoldItalic", sans-serif;
+  font-family: 'SegoeUI-BoldItalic', sans-serif;
 }
 .description {
   color: var(--v-secondary);

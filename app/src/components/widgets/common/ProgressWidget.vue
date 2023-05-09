@@ -1,22 +1,22 @@
 <template>
-  <div class="d-flex pa-12 justify-center">
+  <div class='d-flex pa-12 justify-center'>
     <v-progress-circular
       indeterminate
-      color="primary"
-      :size="progressSize"
-      :width="progressWidth"
-      class="progress-circular"
+      color='primary'
+      :size='progressSize'
+      :width='progressWidth'
+      class='progress-circular'
     ></v-progress-circular>
   </div>
   <v-row>
-    <v-col :cols="progressPadding(true)" />
-    <v-col class="d-flex pa-3 ma-3" :cols="progressPadding(false)">
-      <h1 class="progress-message">{{ progressMessage }}</h1>
+    <v-col :cols='progressPadding(true)' />
+    <v-col class='d-flex pa-3 ma-3' :cols='progressPadding(false)'>
+      <h1 class='progress-message'>{{ progressMessage }}</h1>
     </v-col>
   </v-row>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import {
   computed,
   ComputedRef,
@@ -27,11 +27,11 @@ import {
   ref,
   toRaw,
   watch,
-} from "vue";
-import { useAppStore } from "@/store/appStore";
+} from 'vue';
+import { useAppStore } from '@/store/appStore';
 
 export default defineComponent({
-  name: "ProgressWidget",
+  name: 'ProgressWidget',
   setup() {
     const appStore = useAppStore();
     let windowWidth: Ref<number> = ref(window.innerWidth);
@@ -64,7 +64,7 @@ export default defineComponent({
       let result: number;
       if (outerColumn) {
         if (
-          progressMessage.value === "processing, please do not navigate away"
+          progressMessage.value === 'processing, please do not navigate away'
         ) {
           if (windowWidth.value >= 1904) {
             result = 4;
@@ -92,7 +92,7 @@ export default defineComponent({
         }
       } else {
         if (
-          progressMessage.value === "processing, please do not navigate away"
+          progressMessage.value === 'processing, please do not navigate away'
         ) {
           if (windowWidth.value >= 1264) {
             return 6;
@@ -128,12 +128,12 @@ export default defineComponent({
     );
     onMounted(() => {
       resetProgressMessagePadding();
-      window.addEventListener("resize", () => {
+      window.addEventListener('resize', () => {
         resetProgressMessagePadding();
       });
     });
     onUnmounted(() => {
-      window.removeEventListener("resize", () => {
+      window.removeEventListener('resize', () => {
         resetProgressMessagePadding();
       });
     });
@@ -147,7 +147,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @media only screen and (max-width: 809px) {
   .progress-message {
     font-size: 15px;
@@ -174,7 +174,7 @@ export default defineComponent({
   vertical-align: bottom;
   -webkit-animation: ellipsis steps(4, end) 900ms infinite;
   animation: ellipsis steps(4, end) 900ms infinite;
-  content: "\2026";
+  content: '\2026';
   /* ascii code for the ellipsis character */
   width: 0px;
 }
