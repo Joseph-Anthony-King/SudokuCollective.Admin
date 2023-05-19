@@ -1,6 +1,8 @@
 <template>
-  <progress-widget v-if='loading' />
-  <sudoku-widget v-show='!loading' />
+  <v-container fluid class='app-responsive-viewport'>
+    <progress-widget v-if='loading' />
+    <sudoku-widget v-show='!loading' />
+  </v-container>
 </template>
 
 <script lang='ts'>
