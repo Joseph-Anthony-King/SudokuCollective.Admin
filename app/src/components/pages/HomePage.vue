@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class='app-responsive-viewport'>
     <ProgressWidget v-if='loading' />
     <v-card elevation='6' class='mx-16' v-show='!loading'>
       <v-row class='text-center home-banner'>

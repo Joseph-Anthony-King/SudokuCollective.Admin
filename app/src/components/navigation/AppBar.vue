@@ -1,7 +1,10 @@
 <template>
   <v-app-bar app color='primary' dark>
-    <div class='d-flex app-viewport'>
-      <v-app-bar-nav-icon v-if='user.isLoggedIn'></v-app-bar-nav-icon>
+    <div class='d-flex app-bar-viewport'>
+      <v-app-bar-nav-icon 
+        v-if='user.isLoggedIn && $vuetify.display.smAndDown'
+        @click='updateNavDrawerHandler'>
+      </v-app-bar-nav-icon>
       <v-app-bar-title>
         <router-link to='/' class='inline-flex'>
           <v-img
@@ -160,6 +163,7 @@ import { User } from '@/models/domain/user';
 export default defineComponent({
   name: 'AppBar',
   components: { ConfirmDialog },
+  emits: ['user-logging-in', 'user-logging-out', 'user-signing-up', 'update-nav-drawer'],
   setup(props, { emit }) {
     const userStore = useUserStore();
     const interiorLinks = ref(InteriorLinks);
@@ -179,6 +183,9 @@ export default defineComponent({
     const signUpHandler = (): void => {
       emit('user-signing-up', null, null);
     };
+    const updateNavDrawerHandler = (): void => {
+      emit('update-nav-drawer', null, null);
+    };
     watch(
       () => userStore.getUser,
       () => {
@@ -194,12 +201,20 @@ export default defineComponent({
       loginHandler,
       logoutHandler,
       signUpHandler,
+      updateNavDrawerHandler,
     };
   },
 });
 </script>
 
 <style lang='scss' scoped>
+.app-bar-viewport {
+		display: flex;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 100%;
+		min-width: 100%;
+}
 .inline-flex {
   display: inline-flex;
 }

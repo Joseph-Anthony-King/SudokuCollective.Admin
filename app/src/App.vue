@@ -1,10 +1,16 @@
 <template>
   <v-app>
-    <div class='app-viewport'>
+    <NavigationDrawer
+      :navDrawerStatus='navDrawerStatus'
+      :userLoggedIn='user.isLoggedIn'
+      app
+    />
+    <v-content>
       <app-bar
         v-on:user-logging-in='user.isLoggingIn = true'
         v-on:user-logging-out='logoutHandler'
         v-on:user-signing-up='user.isSigningUp = true'
+        v-on:update-nav-drawer='updateNavDrawerHandler'
       />
       <v-main>
         <router-view />
@@ -48,12 +54,10 @@
           />
         </v-dialog>
       </v-main>
-    </div>
-    <div>
-      <v-footer>
-        <footer-nav />
-      </v-footer>
-    </div>
+    </v-content>
+    <v-footer app inset>
+      <footer-nav />
+    </v-footer>
   </v-app>
 </template>
 
@@ -70,6 +74,7 @@ import {
   watch,
 } from 'vue';
 import { toast } from 'vue3-toastify';
+import vuetify from './plugins/vuetify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
@@ -77,9 +82,10 @@ import { useUserStore } from '@/store/userStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
 import AppBar from '@/components/navigation/AppBar.vue';
 import FooterNav from '@/components/navigation/FooterNav.vue';
+import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
-import SignUpForm from '@/components/forms/SignUpForm.vue'
+import SignUpForm from '@/components/forms/SignUpForm.vue';
 import commonUtilities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 
@@ -88,6 +94,7 @@ export default defineComponent({
   components: {
     AppBar,
     FooterNav,
+    NavigationDrawer,
     LoginForm,
     LoginAssistanceForm,
     SignUpForm
@@ -98,6 +105,17 @@ export default defineComponent({
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
     const valuesStore = useValuesStore();
+
+    // Navbar functionality
+    const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
+    const updateNavDrawerHandler = (): void => {
+      if (vuetify.display.smAndDown) {
+        navDrawerStatus.value = !navDrawerStatus.value;
+      } else {
+        navDrawerStatus.value = true;
+      }
+      appStore.updateNavDrawerStatus(navDrawerStatus.value);
+    };
 
     // User set up
     const user: Ref<User> = ref(
@@ -117,6 +135,7 @@ export default defineComponent({
       return user.value?.isLoggingIn;
     });
     const logoutHandler = (): void => {
+      navDrawerStatus.value = false;
       const userName = user.value.userName;
       appStore.logout();
       appStore.updateToken('');
@@ -145,6 +164,7 @@ export default defineComponent({
         const isLoggedIn = toRaw(userStore.getUserIsLoggedIn);
         const isSignedUp = toRaw(userStore.getUserIsSignedIn);
         if (isLoggedIn) {
+          updateNavDrawerHandler();
           let toastMessage: string;
           user.value = toRaw(userStore.getUser);
           if (!isSignedUp) {
@@ -230,12 +250,14 @@ export default defineComponent({
       isSmallViewPort,
       maxDialogWidth,
       user,
+      navDrawerStatus,
       userObtainingLoginAssistance,
       userIsLoggingIn,
       userIsSigningUp,
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
+      updateNavDrawerHandler,
     };
   },
 });

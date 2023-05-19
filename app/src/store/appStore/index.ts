@@ -13,11 +13,13 @@ export const useAppStore = defineStore('appStore', () => {
 	const token: Ref<string> = ref('');
 	const processingMessage: Ref<string> = ref('');
 	const serviceMessage: Ref<string> = ref('');
+	const navDrawerStatus: Ref<boolean> = ref(false);
 
 	const getLicense: ComputedRef<string> = computed(() => license.value);
 	const getToken: ComputedRef<string> = computed(() => token.value);
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value);
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => navDrawerStatus.value);
 	
 	const addLicense = (param: string): void => {
 		if (param !== '') {
@@ -32,6 +34,9 @@ export const useAppStore = defineStore('appStore', () => {
 	};
 	const updateServiceMessage = (param: string): void => {
 		serviceMessage.value = param;
+	};
+	const updateNavDrawerStatus = (param: boolean): void => {
+		navDrawerStatus.value = param;
 	};
 	const loginAsync = async (data: ILoginRequestData): Promise<void> => {
 		const userStore = useUserStore();
@@ -65,14 +70,17 @@ export const useAppStore = defineStore('appStore', () => {
 		token,
 		processingMessage,
 		serviceMessage,
+		navDrawerStatus,
 		getLicense,
 		getToken,
 		getProcessingMessage,
 		getServiceMessage,
+		getNavDrawerStatus,
 		addLicense,
 		updateToken,
 		updateProcessingMessage,
 		updateServiceMessage,
+		updateNavDrawerStatus,
 		loginAsync,
 		logout,
 		confirmUserNameAsync,
