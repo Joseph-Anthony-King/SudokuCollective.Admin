@@ -1,37 +1,37 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto">
+    <v-card elevation='6' class='mx-auto'>
       <v-card-text>
         <v-container fluid>
-          <div class="center">
+          <div class='center'>
             <v-card-title>Game Modes</v-card-title>
             <v-select
-              :items="gameStates"
-              v-model="selectedGameState"
-              item-title="label"
-              item-value="value"
-              label="Please make a selection"
+              :items='gameStates'
+              v-model='selectedGameState'
+              item-title='label'
+              item-value='value'
+              label='Please make a selection'
               return-object
               single-line
             ></v-select>
-            <div v-if="isCurrentGameStatePlayGame">
-              <v-card-title class="justify-center"
+            <div v-if='isCurrentGameStatePlayGame'>
+              <v-card-title class='justify-center'
                 >Difficulty Level</v-card-title
               >
               <v-select
-                :items="difficulties"
-                v-model="selectedDifficulty"
-                item-title="displayName"
-                item-value="difficultyLevel"
-                label="Please make a selection"
+                :items='difficulties'
+                v-model='selectedDifficulty'
+                item-title='displayName'
+                item-value='difficultyLevel'
+                label='Please make a selection'
                 return-object
                 single-line
               ></v-select>
             </div>
             <matrix-widget />
           </div>
-          <div class="center" v-if="isGameStateSelected">
-            <v-card-title class="justify-center text-center"
+          <div class='center' v-if='isGameStateSelected'>
+            <v-card-title class='justify-center text-center'
               >Available Actions</v-card-title
             >
             <v-card-actions>
@@ -39,43 +39,43 @@
                 <v-row dense>
                   <v-col>
                     <v-btn
-                      class="button-full"
-                      color="blue darken-1"
+                      class='button-full'
+                      color='blue darken-1'
                       text
-                      @click="execute"
-                      :disabled="isExectuteButtonDisabed"
+                      @click='execute'
+                      :disabled='isExectuteButtonDisabed'
                     >
                       {{ executeButtonText }}
                     </v-btn>
                   </v-col>
-                  <v-col v-if="isCurrentGameStatePlayGame">
+                  <v-col v-if='isCurrentGameStatePlayGame'>
                     <v-btn
-                      class="button-full"
-                      color="blue darken-1"
+                      class='button-full'
+                      color='blue darken-1'
                       text
-                      @click="checkGame"
-                      :disabled="isExectuteButtonDisabed"
+                      @click='checkGame'
+                      :disabled='isExectuteButtonDisabed'
                     >
                       Check Game
                     </v-btn>
                   </v-col>
-                  <v-col v-if="isCurrentGameStatePlayGame">
+                  <v-col v-if='isCurrentGameStatePlayGame'>
                     <v-btn
-                      class="button-full"
-                      color="blue darken-1"
+                      class='button-full'
+                      color='blue darken-1'
                       text
-                      @click="resetGame"
-                      :disabled="isExectuteButtonDisabed"
+                      @click='resetGame'
+                      :disabled='isExectuteButtonDisabed'
                     >
                       Reset Game
                     </v-btn>
                   </v-col>
                   <v-col>
                     <v-btn
-                      class="button-full"
-                      color="blue darken-1"
+                      class='button-full'
+                      color='blue darken-1'
                       text
-                      @click="clear"
+                      @click='clear'
                     >
                       {{ clearButtonText }}
                     </v-btn>
@@ -90,12 +90,12 @@
   </v-container>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { defineComponent, ref, watch } from 'vue';
 import { computed, ComputedRef, Ref, toRaw } from '@vue/reactivity';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
@@ -178,7 +178,6 @@ export default defineComponent({
       ) {
         sudokuStore.createGameAsync();
       } else if (
-        selectedDifficulty.value !== null &&
         selectedGameState.value?.value === GameState.SOLVESUDOKU
       ) {
         sudokuStore.solvePuzzleAsync();
@@ -202,12 +201,10 @@ export default defineComponent({
     };
     const clear = (): void => {
       if (
-        selectedDifficulty.value !== null &&
         selectedGameState.value?.value === GameState.PLAYGAME
       ) {
         sudokuStore.initializeGame();
       } else if (
-        selectedDifficulty.value !== null &&
         selectedGameState.value?.value === GameState.SOLVESUDOKU
       ) {
         sudokuStore.initializePuzzle();
@@ -286,7 +283,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .v-card {
   @media (max-width: 600px) {
     padding: 0 0 0 0 !important;

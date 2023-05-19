@@ -1,5 +1,5 @@
 <template>
-  <v-footer class='app-viewport'>
+  <v-footer class='app-responsive-viewport'>
     <v-card elevation='0' rounded='0' width='100%' class='text-center'>
       <v-divider></v-divider>
 
