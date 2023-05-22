@@ -3,7 +3,7 @@
     <NavigationDrawer
       :navDrawerStatus='navDrawerStatus'
       :userLoggedIn='user.isLoggedIn'
-      app
+      @update:modelValue="(modelValue: boolean) => closeNavDrawerHandler(modelValue)"
     />
     <v-content>
       <app-bar
@@ -109,12 +109,18 @@ export default defineComponent({
     // Navbar functionality
     const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
     const updateNavDrawerHandler = (): void => {
-      if (vuetify.display.smAndDown) {
+      if (vuetify.display.smAndDown.value) {
         navDrawerStatus.value = !navDrawerStatus.value;
       } else {
         navDrawerStatus.value = true;
       }
       appStore.updateNavDrawerStatus(navDrawerStatus.value);
+    };
+    const closeNavDrawerHandler = (modelValue: boolean): void => {
+      if (modelValue === false && navDrawerStatus.value === true) {
+        navDrawerStatus.value = modelValue;
+        appStore.updateNavDrawerStatus(navDrawerStatus.value);
+      }
     };
 
     // User set up
@@ -194,7 +200,7 @@ export default defineComponent({
       () => appStore.getServiceMessage,
       () => {
         const serviceMessage = appStore.getServiceMessage;
-        if (serviceMessage === 'Status Code 200: Processed password reset request' || serviceMessage === 'Status Code 200: Resent password reset request' ) {
+        if (serviceMessage === 'Status Code 200: Processed password reset request' || serviceMessage === 'Status Code 200: Resent password reset request') {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.ERROR,
@@ -224,9 +230,13 @@ export default defineComponent({
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
         maxDialogWidth.value = 'auto';
+        navDrawerStatus.value = false;
+        appStore.updateNavDrawerStatus(navDrawerStatus.value);
       } else {
         isSmallViewPort.value = false;
         maxDialogWidth.value = '960px';
+        navDrawerStatus.value = true;
+        appStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
     };
 
@@ -236,8 +246,12 @@ export default defineComponent({
       valuesStore.initializeAsync();
       sudokuStore.initializeStore();
       resetAppViewPort();
+      let resizeTimeout: number | undefined;
       window.addEventListener('resize', () => {
-        resetAppViewPort();
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          resetAppViewPort();
+        }, 250, 'Resized');
       });
     });
     onUnmounted(() => {
@@ -251,6 +265,7 @@ export default defineComponent({
       maxDialogWidth,
       user,
       navDrawerStatus,
+      closeNavDrawerHandler,
       userObtainingLoginAssistance,
       userIsLoggingIn,
       userIsSigningUp,

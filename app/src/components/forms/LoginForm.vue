@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class='justify-center text-center'>
-      <span class='headline'>Login Form</span>
+      <span class='headline'>Login</span>
     </v-card-title>
     <v-form v-model='formValid' ref='form'>
       <v-card-text>
@@ -91,7 +91,7 @@
                   :disabled='!formValid'
                   v-bind='props'
                 >
-                  Login
+                  Submit
                 </v-btn>
               </template>
               <span>Login to the api</span>
@@ -107,7 +107,7 @@
     hide-overlay 
     transition='dialog-top-transition'>
     <ConfirmDialog 
-      title='Reset Login Form' 
+      title='Reset Form' 
       message='Are you sure you want to reset this form?' 
       v-on:action-confirmed='resetHandler'
       v-on:action-not-confirmed='confirmFormReset = false' />
