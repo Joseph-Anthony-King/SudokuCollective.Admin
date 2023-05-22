@@ -1,19 +1,21 @@
 <template>
-  <div class='d-flex pa-12 justify-center'>
-    <v-progress-circular
-      indeterminate
-      color='primary'
-      :size='progressSize'
-      :width='progressWidth'
-      class='progress-circular'
-    ></v-progress-circular>
-  </div>
-  <v-row>
-    <v-col :cols='progressPadding(true)' />
-    <v-col class='d-flex pa-3 ma-3' :cols='progressPadding(false)'>
-      <h1 class='progress-message'>{{ progressMessage }}</h1>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row class='d-flex pa-12 justify-center' cols="12">
+      <v-progress-circular
+        indeterminate
+        color='primary'
+        :size='progressSize'
+        :width='progressWidth'
+        class='progress-circular'
+      ></v-progress-circular>
+    </v-row>
+    <v-row :cols='progressPadding(true)' />
+    <v-row class='d-flex pa-12 justify-center' cols="12">
+      <v-col class='d-flex pa-3 ma-3' :cols='progressPadding(false)'>
+        <h1 class='progress-message'>{{ progressMessage }}</h1>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang='ts'>
