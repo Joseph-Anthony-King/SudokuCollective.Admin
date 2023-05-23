@@ -32,7 +32,8 @@
 
 <script lang='ts'>
 import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+import router from '@/router/index';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
@@ -53,7 +54,6 @@ export default defineComponent({
     const appStore = useAppStore();
     const userStore = useUserStore();
     const valuesStore = useValuesStore();
-    const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
     const missionStatement = ref(

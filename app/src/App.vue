@@ -73,8 +73,9 @@ import {
   toRaw,
   watch,
 } from 'vue';
+import router from '@/router/index';
 import { toast } from 'vue3-toastify';
-import vuetify from './plugins/vuetify';
+import vuetify from '@/plugins/vuetify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
@@ -145,6 +146,9 @@ export default defineComponent({
       const userName = user.value.userName;
       appStore.logout();
       appStore.updateToken('');
+      if (router.currentRoute.value.name !== 'home' && router.currentRoute.value.name !== 'sudoku') {
+        router.push({ name: 'home' });
+      }
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
