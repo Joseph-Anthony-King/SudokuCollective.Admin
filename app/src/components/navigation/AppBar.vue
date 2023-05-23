@@ -155,10 +155,11 @@
 <script lang='ts'>
 import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from 'vue';
 import { useUserStore } from '@/store/userStore/index';
-import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
 import { InteriorLinks } from '@/utilities/links/interiorLinks';
 import { User } from '@/models/domain/user';
+import { MenuItem } from '@/models/infrastructure/menuItem';
 
 export default defineComponent({
   name: 'AppBar',
@@ -166,8 +167,8 @@ export default defineComponent({
   emits: ['user-logging-in', 'user-logging-out', 'user-signing-up', 'update-nav-drawer'],
   setup(props, { emit }) {
     const userStore = useUserStore();
-    const interiorLinks = ref(InteriorLinks);
-    const exteriorLinks = ref(ExteriorLinks);
+    const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
+    const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
     const user: Ref<User> = ref(userStore.getUser);
     const confirmUserLogout: Ref<boolean> = ref(false);
     const confirmMessage: ComputedRef<string> = computed(() => { 
