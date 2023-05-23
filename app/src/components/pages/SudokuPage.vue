@@ -7,7 +7,8 @@
 
 <script lang='ts'>
 import { defineComponent, onBeforeMount, Ref, ref, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+import router from '@/router/index';
 import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useUserStore } from '@/store/userStore/index';
@@ -29,7 +30,6 @@ export default defineComponent({
     const appStore = useAppStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
-    const router = useRouter();
     const route = useRoute();
     const { updateUrlWithAction } = commonUtitlities();
     let loading: Ref<boolean> = ref(

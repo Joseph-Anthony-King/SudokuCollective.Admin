@@ -13,14 +13,29 @@
 				<span class='user-profile-item'>{{ user.userName }}</span>
 			</v-list-item>
 		</v-list>
+		<v-list>
+			<v-list-item v-for="(navItem, index) in navDrawerItems" :key="index">
+				<v-list-item-content v-if="navItem.condition">
+					<v-list-item-title>
+						<v-icon class="white--text">{{ navItem.mdiIcon }}</v-icon>
+						<router-link :to="navItem.url" class="nav-drawer-item">{{
+							navItem.title
+						}}</router-link>
+					</v-list-item-title>
+				</v-list-item-content>
+			</v-list-item>
+		</v-list>
 	</v-navigation-drawer>
 </template>
 
 <script lang='ts'>
 import { Ref, defineComponent, ref, watch } from 'vue';
+import { onBeforeMount } from 'vue';
+import { onBeforeUpdate } from 'vue';
 import { useUserStore } from '@/store/userStore';
+import { NavDrawerLinks } from '@/utilities/links/navDrawerLinks';
 import { User } from '@/models/domain/user';
-import { onMounted } from 'vue';
+import { MenuItem } from '@/models/infrastructure/menuItem';
 
 export default defineComponent({
 	name: 'NavigationDrawer',
@@ -37,6 +52,7 @@ export default defineComponent({
 	setup() {
 		const userStore = useUserStore();
 		const greeting: Ref<string> = ref('');
+		const navDrawerItems: Ref<MenuItem[]> = ref(NavDrawerLinks);
 		const user: Ref<User> = ref(userStore.getUser);
 
 		const updateNow = () => {
@@ -58,6 +74,21 @@ export default defineComponent({
 				updateNow();
 			}, 60000);
 		};
+
+		const updateSiteAdminVisibility = () => {
+			const navItemIndex = navDrawerItems.value.findIndex(
+				(item) => item.title === 'Site Admin'
+			);
+			if (navItemIndex !== -1) {
+				if (user.value.isSuperUser === true) {
+					navDrawerItems.value[navItemIndex].condition = true;
+				} else {
+					if (navDrawerItems.value[navItemIndex].condition === true) {
+						navDrawerItems.value[navItemIndex].condition = false;
+					}
+				}
+			}
+		};
 		
 		watch(
 			() => userStore.getUser,
@@ -66,12 +97,18 @@ export default defineComponent({
 			}
 		);
 
-		onMounted(() => { 
+		onBeforeMount(() => { 
 			updateGreeting();
+			updateSiteAdminVisibility();
+		});
+
+		onBeforeUpdate(() => {
+			updateSiteAdminVisibility();
 		});
 
 		return {
 			greeting,
+			navDrawerItems,
 			user,
 		}
 	}
@@ -110,6 +147,7 @@ export default defineComponent({
 	margin: 0;
 }
 .white--text {
-	padding-right: 10px;
+	padding-left: 25px;
+	padding-right: 25px;
 	padding-bottom: 5px;
 }</style>

@@ -14,6 +14,6 @@ export class MenuItem implements IMenuItem {
     this.tooltip = tooltip ? tooltip : "";
     this.mdiIcon = mdiIcon ? mdiIcon : "";
     this.target = target ? target : "blank";
-    this.condition = condition ? condition : true;
+    this.condition = condition === false ? false : true;
   }
 }
