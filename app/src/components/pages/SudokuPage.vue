@@ -52,13 +52,29 @@ export default defineComponent({
           router,
           route);
       }
-    )
+    );
+    watch(
+      () => userStore.getUserIsSigningUp,
+      () => {
+        const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
+        updateUrlWithAction(
+          userIsSigningUp,
+          '/sudoku',
+          'signup',
+          router,
+          route);
+      }
+    );
     onBeforeMount(() => {
       appStore.updateProcessingMessage('processing, please do not navigate away');
       if (props.action.toLowerCase() === 'login') {
         const user: User = userStore.getUser;
         user.isLoggingIn = true;
         userStore.updateUser(user)
+      } else if (props.action.toLowerCase() === 'signup') {
+        const user = new User();
+        user.isSigningUp = true;
+        userStore.updateUser(user);
       }
     });
     return {
