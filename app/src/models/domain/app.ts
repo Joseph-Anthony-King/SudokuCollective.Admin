@@ -1,6 +1,6 @@
 import { ReleaseEnvironment } from "@/enums/releaseEnvironment";
 import { TimeFrame } from "@/enums/timeFrame";
-import { ISmtpServerSettings } from "@/interfaces/domain/ISmtpServerSettings";
+import { ISmtpServerSettings } from "@/interfaces/domain/iSmtpServerSettings";
 import { IApp } from "@/interfaces/domain/iApp";
 import { User } from "./user";
 

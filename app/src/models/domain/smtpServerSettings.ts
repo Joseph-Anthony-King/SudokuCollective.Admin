@@ -1,4 +1,4 @@
-import { ISmtpServerSettings } from "@/interfaces/domain/ISmtpServerSettings";
+import { ISmtpServerSettings } from "@/interfaces/domain/iSmtpServerSettings";
 
 export class SmtpServerSettings implements ISmtpServerSettings {
 	id: number;
