@@ -15,11 +15,11 @@ export class SignupRequestData implements ISignupRequestData {
 		nickName: string | null,
 		email: string | null,
 		password: string | null) {
-		this.userName = userName ? userName : "";
-		this.firstName = firstName ? firstName : "";
-		this.lastName = lastName ? lastName : "";
-		this.nickName = nickName ? nickName : "";
-		this.email = email ? email : "";
-		this.password = password ? password : "";
+		userName ? this.userName = userName : this.userName = "";
+		firstName ? this.firstName = firstName : this.firstName = "";
+		lastName ? this.lastName = lastName : this.lastName = "";
+		nickName ? this.nickName = nickName : this.nickName = "";
+		email ? this.email = email : this.email = "";
+		password ? this.password = password : this.password = "";
 	}
 }
