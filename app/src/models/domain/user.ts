@@ -40,24 +40,25 @@ export class User implements IUser {
 		isLoggedIn?: boolean,
 		isSignedUp?: boolean,
 	) {
-		this.id = id ? id : 0;
-		this.userName = userName ? userName : null;
-		this.firstName = firstName ? firstName : null;
-		this.lastName = lastName ? lastName : null;
-		this.nickName = nickName ? nickName : null;
-		this.fullName = fullName ? fullName : null;
-		this.email = email ? email : null;
-		this.isEmailConfirmed = isEmailConfirmed ? isEmailConfirmed : false;
-		this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail ? receivedRequestToUpdateEmail : false;
-		this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword ? receivedRequestToUpdatePassword : false;
-		this.isActive = isActive ? isActive : false;
-		this.isSuperUser = isSuperUser ? isSuperUser : false;
-		this.isAdmin = isAdmin ? isAdmin : false;
-		this.dateCreated = dateCreated ? dateCreated : null;
-		this.dateUpdated = dateUpdated ? dateUpdated : null;
-		this.isLoggedIn = isLoggedIn ? isLoggedIn : false;
+		id ? this.id = id : this.id = 0;
+		userName ? this.userName = userName : this.userName = null;
+		firstName ? this.firstName = firstName : this.firstName = null;
+		lastName ? this.lastName = lastName : this.lastName = null;
+		nickName ? this.nickName = nickName : this.nickName = null;
+		fullName ? this.fullName = fullName : this.fullName = null;
+		email ? this.email = email : this.email = null;
+		isEmailConfirmed ? this.isEmailConfirmed = isEmailConfirmed : this.isEmailConfirmed = false;
+		receivedRequestToUpdateEmail ? this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail : this.receivedRequestToUpdateEmail = false;
+		receivedRequestToUpdatePassword ? this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword : this.receivedRequestToUpdatePassword = false;
+		isActive ? this.isActive = isActive : this.isActive = false;
+		isSuperUser ? this.isSuperUser = isSuperUser : this.isSuperUser = false;
+		isAdmin ? this.isAdmin = isAdmin : this.isAdmin = false;
+		dateCreated ? this.dateCreated = dateCreated : this.dateCreated = null;
+		dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = null;
+		isLoggedIn ? this.isLoggedIn = isLoggedIn : this.isLoggedIn = false;
+		isSignedUp ? this.isSignedUp = isSignedUp : this.isSignedUp = false;
+
 		this.isLoggingIn = false;
-		this.isSignedUp = isSignedUp ? isSignedUp : false;
 		this.isSigningUp = false;
 	}
 }
