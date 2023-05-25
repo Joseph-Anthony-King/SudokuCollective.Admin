@@ -25,4 +25,12 @@ export const NavDrawerLinks: Array<MenuItem> = [
 		'_blank',
 		false
   ),
+  new MenuItem(
+    '/user-profile',
+    'User Profile',
+    'Go to User Profile',
+    'mdi-account',
+    '_blank',
+    true
+  )
 ]
