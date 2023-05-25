@@ -27,6 +27,14 @@ for (const name of Object.keys(nets)) {
   }
 }
 
+let networkAddress = '';
+
+if (results['en0'] !== undefined) {
+  networkAddress = results['en0'][0];
+} else {
+  networkAddress = results['Wi-Fi'][0];
+}
+
 app.listen(app.get('port'), () => {
-  console.log(` App running at:\n - Local:   ${chalk.cyan(`http://localhost:${app.get('port')}/`)}\n - Network: ${chalk.cyan(`http://${results['Wi-Fi'][0]}:${app.get('port')}/`)}`);
+  console.log(` App running at:\n - Local:   ${chalk.cyan(`http://localhost:${app.get('port')}/`)}\n - Network: ${chalk.cyan(`http://${networkAddress}:${app.get('port')}/`)}`);
 });
