@@ -27,6 +27,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: 'sudoku' */ '../views/SudokuView.vue'),
     props: true,
   },
+  {
+    path: '/user-profile',
+    name: 'user-profile',
+    component: () => import(/* webpackChunkName: 'user' */ '../views/UserProfileView.vue'),
+    beforeEnter: checkUserLoggedIn,
+  }
 ]
 
 const router = createRouter({
