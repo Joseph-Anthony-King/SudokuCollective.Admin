@@ -31,6 +31,8 @@ let networkAddress = '';
 
 if (results['en0'] !== undefined) {
   networkAddress = results['en0'][0];
+} else if (results['eth0'] !== undefined) {
+  networkAddress = results['eth0'][0];
 } else {
   networkAddress = results['Wi-Fi'][0];
 }
