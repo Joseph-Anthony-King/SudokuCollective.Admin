@@ -12,8 +12,9 @@
                 label='User Name'
                 v-model='userName'
                 prepend-icon='mdi-account-circle'
-                :rules='userNameRules'
+                :rules='userNameRules(invalidUserNames, "No user is using this user name")'
                 autocomplete='off'
+                color="primary"
               >
               </v-text-field>
             </v-col>
@@ -22,22 +23,22 @@
                 label='Password'
                 v-model='password'
                 :type="showPassword ? 'text' : 'password'"
-                :rules='passwordRules'
+                :rules='passwordRules(invalidPasswords)'
                 prepend-icon='mdi-lock'
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append='showPassword = !showPassword'
                 autocomplete='off'
+                color="primary"
               >
               </v-text-field>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-row :dense='true'>
+      <v-card-actions class='text-center'>
+        <v-row dense>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -52,7 +53,7 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -67,7 +68,7 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -82,7 +83,7 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -94,7 +95,7 @@
                   Submit
                 </v-btn>
               </template>
-              <span>Login to the api</span>
+              <span>Login to the app</span>
             </v-tooltip>
           </v-col>
         </v-row>
@@ -134,6 +135,7 @@ import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useUserStore } from '@/store/userStore/index';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';
+import rules from '@/utilities/rules/index';
 import { LoginRequestData } from '@/models/requests/loginRequestData';
 
 export default defineComponent({
@@ -150,64 +152,50 @@ export default defineComponent({
     const serviceFailStore = useServiceFailStore();
     const userStore = useUserStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
+    const { passwordRules, userNameRules } = rules();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
     const userName: Ref<string> = ref('');
     const password: Ref<string> = ref('');
     const showPassword: Ref<boolean> = ref(false);
     const confirmFormReset: Ref<boolean> = ref(false);
-    let invalidUserNames: string[] = [];
-    let invalidPasswords: string[] = [];
-    const userNameRules = computed(() => {
-      return [
-        (v: string) => !!v || 'User Name is required',
-        (v: string) =>
-          /^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$/.test(v) ||
-          'User name must be at least 4 characters and can contain alphanumeric characters and special characters of [! @ # $ % ^ & * + = ? - _ . ,]',
-        (v: string) =>
-          !invalidUserNames.includes(v) || 'No user has this user name',
-      ];
+    const invalidUserNames: Ref<string[]> = ref([]);
+    const invalidPasswords: Ref<string[]> = ref([]);
+
+    const getFormStatus: ComputedRef<boolean> = computed(() => {
+      return props.formStatus;
     });
-    const passwordRules = computed(() => {
-      return [
-        (v: string) => !!v || 'Password is required',
-        (v: string) =>
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
-            v
-          ) ||
-          'Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,',
-        (v: string) => !invalidPasswords.includes(v) || 'Password is incorrect',
-      ];
+
+    // the following line is used by vuetify to reset the form
+    // eslint-disable-next-line
+    const resetFormStatus: ComputedRef<boolean> = computed(() => {
+      return !props.formStatus;
     });
     const helpHandler = (): void => {
       emit('obtain-login-assistance', null, null);
     };
+
     const resetHandler = (): void => {
       userName.value = '';
       password.value = '';
-      invalidUserNames = [];
-      invalidPasswords = [];
+      invalidUserNames.value = [];
+      invalidPasswords.value = [];
       form.value?.reset();
       confirmFormReset.value = false;
       serviceFailStore.initializeStore();
     };
+
     const cancelHandler = (): void => {
       emit('cancel-login', null, null);
     };
+
     const submitHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginRequestData(userName.value, password.value);
         appStore.loginAsync(data);
       }
     };
-    const getFormStatus: ComputedRef<boolean> = computed(() => {
-      return props.formStatus;
-    });
-    // the following line is used by vuetify to reset the form
-    // eslint-disable-next-line
-    const resetFormStatus: ComputedRef<boolean> = computed(() => {
-      return !props.formStatus;
-    });
+
     watch(
       () => serviceFailStore.getIsSuccess,
       () => {
@@ -216,15 +204,15 @@ export default defineComponent({
           const message: string = serviceFailStore.getMessage;
           if (
             message === 'Status Code 404: No user has this user name' &&
-            !invalidUserNames.includes(userName.value)
+            !invalidUserNames.value.includes(userName.value)
           ) {
-            invalidUserNames.push(userName.value);
+            invalidUserNames.value.push(userName.value);
           }
           if (
             message === 'Status Code 404: Password is incorrect' &&
-            !invalidPasswords.includes(password.value)
+            !invalidPasswords.value.includes(password.value)
           ) {
-            invalidPasswords.push(password.value);
+            invalidPasswords.value.push(password.value);
           }
           toast(message, {
             position: toast.POSITION.TOP_CENTER,
@@ -235,6 +223,7 @@ export default defineComponent({
         }
       }
     );
+
     onMounted(() => {
       if (isChrome.value) {
         repairAutoComplete();
@@ -245,11 +234,13 @@ export default defineComponent({
         userStore.updateConfirmedUserName('');
       }
     });
+
     onUpdated(() => {
       if (isChrome.value) {
         repairAutoComplete();
       }
     });
+    
     return {
       form,
       formValid,
@@ -257,7 +248,9 @@ export default defineComponent({
       password,
       showPassword,
       confirmFormReset,
+      invalidUserNames,
       userNameRules,
+      invalidPasswords,
       passwordRules,
       submitHandler,
       helpHandler,

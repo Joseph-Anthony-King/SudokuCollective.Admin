@@ -13,19 +13,18 @@
                 label='Please enter your email to confirm your user name'
                 prepend-icon='mdi-email'
                 required
-                :rules='emailRules'
+                :rules='emailRules(invalidEmails, "No user is using this email")'
                 autocomplete='off'
+                color="primary"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer>
-        </v-spacer>
-        <v-row :dense='true'>
+      <v-card-actions class='text-center'>
+        <v-row dense>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -44,7 +43,7 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -60,7 +59,23 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip close-delay='3000' location='bottom'>
+            <v-tooltip location='bottom'>
+              <template v-slot:activator='{ props }'>
+                <v-btn
+                  color='blue darken-1'
+                  text
+                  @click='confirmFormReset = true'
+                  :disabled='(email === "" || email === null) && invalidEmails.length === 0'
+                  v-bind='props'
+                >
+                  Reset
+                </v-btn>
+              </template>
+              <span>Reset this form</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip location='bottom'>
               <template v-slot:activator='{ props }'>
                 <v-btn
                   color='blue darken-1'
@@ -78,6 +93,17 @@
       </v-card-actions>
     </v-form>
   </v-card>
+  <v-dialog 
+    v-model='confirmFormReset' 
+    persistent max-width='600' 
+    hide-overlay 
+    transition='dialog-top-transition'>
+    <ConfirmDialog 
+      title='Reset Form' 
+      message='Are you sure you want to reset this form?' 
+      v-on:action-confirmed='resetHandler'
+      v-on:action-not-confirmed='confirmFormReset = false' />
+  </v-dialog>
 </template>
 
 <script lang='ts'>
@@ -88,11 +114,14 @@ import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useUserStore } from '@/store/userStore/index';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';
+import rules from '@/utilities/rules/index';
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
 export default defineComponent({
   name: 'LoginAssistanceForm',
+  components: { ConfirmDialog },
   props: {
     formStatus: {
       type: Boolean,
@@ -104,42 +133,51 @@ export default defineComponent({
     const serviceFailStore = useServiceFailStore();
     const userStore = useUserStore();
     const { isChrome, repairAutoComplete } = commonUtilities();
+    const { emailRules } = rules();
     const form: Ref<VForm | null> = ref(null);
     const formValid: Ref<boolean> = ref(true);
+    const confirmFormReset: Ref<boolean> = ref(false);
     const email: Ref<string> = ref('');
-    let invalidEmails: string[] = [];
-    const emailRules = computed(() => {
-      return [
-        (v: string) => !!v || 'Email is required',
-        (v: string) =>
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          'Email must be in a valid format',
-        (v: string) => !invalidEmails.includes(v) || 'No user is using this email',
-      ];
-    });
+    const invalidEmails: Ref<string[]> = ref([]);
+
     const getFormStatus: ComputedRef<boolean> = computed(() => {
       return props.formStatus;
     });
+    
     // the following line is used by vuetify to reset the form
     // eslint-disable-next-line
     const resetFormStatus: ComputedRef<boolean> = computed(() => {
       return !props.formStatus;
     });
+
     const submitHandler = (): void => {
       if (getFormStatus.value) {
         const data = new LoginAssistanceRequestData(email.value);
         appStore.confirmUserNameAsync(data);
       }
     }
+
     const resetPasswordHandlder = (): void => {
       if (getFormStatus.value) {
         const data = new LoginAssistanceRequestData(email.value);
         appStore.requestPasswordResetAsync(data);
       }
     }
+
+    const resetHandler = (): void => {
+      if (getFormStatus.value) {
+        email.value = '';
+        invalidEmails.value = [];
+        form.value?.reset();
+        confirmFormReset.value = false;
+        serviceFailStore.initializeStore();
+      }
+    }
+
     const goBackHandler = (): void => {
       emit('go-back-to-login', null, null);
     }
+
     watch(
       () => serviceFailStore.getIsSuccess,
       () => {
@@ -148,9 +186,9 @@ export default defineComponent({
           const message: string = serviceFailStore.getMessage;
           if (
             message === 'Status Code 404: No user is using this email' &&
-            !invalidEmails.includes(email.value)
+            !invalidEmails.value.includes(email.value)
           ) {
-            invalidEmails.push(email.value);
+            invalidEmails.value.push(email.value);
           }
           toast(message, {
             position: toast.POSITION.TOP_CENTER,
@@ -161,6 +199,7 @@ export default defineComponent({
         }
       }
     );
+
     watch(
       () => userStore.getConfirmedUserName,
       () => {
@@ -170,23 +209,29 @@ export default defineComponent({
         }
       }
     );
+    
     onMounted(() => {
       if (isChrome.value) {
         repairAutoComplete();
       }
     });
+
     onUpdated(() => {
       if (isChrome.value) {
         repairAutoComplete();
       }
     });
+
     return {
       form,
       formValid,
-      email,
+      confirmFormReset,
       emailRules,
+      email,
+      invalidEmails,
       submitHandler,
       resetPasswordHandlder,
+      resetHandler,
       goBackHandler
     }
   }

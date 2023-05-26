@@ -54,7 +54,7 @@ export const useAppStore = defineStore('appStore', () => {
 		const userStore = useUserStore();
 		const response: IServicePayload = await LoginService.postConfirmUserNameAsync(data);
 		if (response.isSuccess) {
-			userStore.updateUser(response.user);
+			userStore.updateConfirmedUserName(response.confirmedUserName);
 			updateToken(response.token);
 		}
 	};
