@@ -3,9 +3,9 @@
 		<v-card elevation='6' class='mx-auto'>
 			<v-card-text>
 				<v-container fluid>
-					<div class='text-center'>
-						<v-card-title>Site Administration</v-card-title>
-					</div>
+					<v-card-title class='justify-center text-center'>
+						<span class='headline'>Site Administration</span>
+					</v-card-title>
 				</v-container>
 			</v-card-text>
 		</v-card>
