@@ -8,12 +8,14 @@ import { User } from '@/models/domain/user';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
+import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user: Ref<User> = ref(new User());
 	const confirmedUserName: Ref<string> = ref('');
 	const processingMessage: Ref<string> = ref('');
 	const serviceMessage: Ref<string> = ref('');
+	const serviceResult: Ref<boolean | null> = ref(null);
 
 	const getUser: ComputedRef<User> = computed(() => user.value);
 	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
@@ -23,6 +25,7 @@ export const useUserStore = defineStore('userStore', () => {
 	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value);
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value);
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+	const getServiceResult: ComputedRef<boolean | null> = computed(() => serviceResult.value);
 
 	const updateUser = (param: User): void => {
 		user.value = param;
@@ -36,6 +39,9 @@ export const useUserStore = defineStore('userStore', () => {
 	const updateServiceMessage = (param: string): void => {
 		serviceMessage.value = param;
 	};
+	const updateServiceResult = (param: boolean | null): void => {
+		serviceResult.value = param;
+	}
 	const signupUserAsync = async (data: ISignupRequestData): Promise<void> => {
 		const appStore = useAppStore();
 		const response: IServicePayload = await SignupService.postAsync(data);
@@ -43,6 +49,14 @@ export const useUserStore = defineStore('userStore', () => {
 			updateUser(response.user);
 			appStore.updateToken(response.token);
 		}
+	};
+	const updateUserAsync = async (data: IUpdateUserRequestData): Promise<void> => {
+		const response: IServicePayload = await UsersService.putUpdateUserAsync(data);
+		if (response.isSuccess) {
+			updateUser(response.user);
+		}
+		updateServiceMessage(response.message);
+		updateServiceResult(response.isSuccess);
 	};
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const appStore = useAppStore();
@@ -54,9 +68,7 @@ export const useUserStore = defineStore('userStore', () => {
 	};
 	const requestPasswordResetAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const response: IServicePayload = await UsersService.postRequestPasswordResetAsync(data);
-		if (response.isSuccess) {
-			updateServiceMessage(response.message);
-		}
+		updateServiceMessage(response.message);
 	};
 
 	return {
@@ -72,11 +84,14 @@ export const useUserStore = defineStore('userStore', () => {
 		getConfirmedUserName,
 		getProcessingMessage,
 		getServiceMessage,
+		getServiceResult,
 		updateUser,
 		updateConfirmedUserName,
 		updateProcessingMessage,
 		updateServiceMessage,
+		updateServiceResult,
 		signupUserAsync,
+		updateUserAsync,
 		confirmUserNameAsync,
 		requestPasswordResetAsync
 	}

@@ -20,6 +20,7 @@ export class User implements IUser {
 	isLoggingIn: boolean;
 	isSignedUp: boolean;
 	isSigningUp: boolean;
+	isEditing: boolean;
 	
 	constructor(
 		id?: number,
@@ -60,6 +61,7 @@ export class User implements IUser {
 
 		this.isLoggingIn = false;
 		this.isSigningUp = false;
+		this.isEditing = false;
 	}
 }
 
