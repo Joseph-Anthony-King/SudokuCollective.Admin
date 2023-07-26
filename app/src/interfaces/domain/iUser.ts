@@ -18,4 +18,5 @@ export interface IUser {
 	isLoggingIn: boolean;
 	isSignedUp: boolean;
 	isSigningUp: boolean;
+	isEditing: boolean;
 }
