@@ -10,46 +10,46 @@
 					type='number'
 					label='Id' 
 					prepend-icon='mdi-account-circle' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit'></v-text-field>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing'></v-text-field>
 				<v-text-field 
 					v-model='userName' 
 					label='User Name'
 					prepend-icon='mdi-account-circle'
 					:rules='userNameRules()'
-					:readonly='enableEdit' 
-					:color='enableEdit ? "" : "primary"'></v-text-field>
+					:readonly='!user.isEditing' 
+					:color='!user.isEditing ? "" : "primary"'></v-text-field>
 				<v-text-field 
 					v-model='firstName' 
 					label='First Name' 
 					prepend-icon='mdi-account-circle'
 					:rule='requiredRules("First Name")'
-					:readonly='enableEdit' 
-					:color='enableEdit ? "" : "primary"'></v-text-field>
+					:readonly='!user.isEditing' 
+					:color='!user.isEditing ? "" : "primary"'></v-text-field>
 				<v-text-field 
 					v-model='lastName' 
 					label='Last Name' 
 					prepend-icon='mdi-account-circle'
 					:rules='requiredRules("Last Name")'
-					:readonly='enableEdit' 
-					:color='enableEdit ? "" : "primary"'></v-text-field>
+					:readonly='!user.isEditing' 
+					:color='!user.isEditing ? "" : "primary"'></v-text-field>
 				<v-text-field 
 					v-model='nickName' 
 					label='Nickname (not required)' 
 					prepend-icon='mdi-account-circle' 
-					:readonly='enableEdit' 
-					:color='enableEdit ? "" : "primary"'></v-text-field>
+					:readonly='!user.isEditing' 
+					:color='!user.isEditing ? "" : "primary"'></v-text-field>
 				<v-checkbox 
 					v-model='user.isAdmin' 
 					label='Admin Privileges' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit' ></v-checkbox>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing' ></v-checkbox>
 				<v-checkbox 
 					v-if='user.isSuperUser' 
 					v-model='user.isSuperUser' 
 					label='Super User Privileges' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit'></v-checkbox>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing'></v-checkbox>
 			</v-col>
 			<v-col cols='12' lg='6' xl='6'>
 				<v-text-field 
@@ -58,28 +58,28 @@
 					hint='MM/DD/YYYY format' 
 					persistent-hint 
 					prepend-icon='mdi-calendar' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit'></v-text-field>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing'></v-text-field>
 				<v-text-field 
 					v-model='formattedDateUpdated' 
 					label='Date Updated' 
 					hint='MM/DD/YYYY format' 
 					persistent-hint 
 					prepend-icon='mdi-calendar' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit'></v-text-field>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing'></v-text-field>
 				<v-text-field 
 					v-model='email' 
 					label='Email' 
 					prepend-icon='mdi-email'
 					:rules='emailRules(invalidEmails, "Email not unique")'
-					:readonly='enableEdit' 
-					:color='enableEdit ? "" : "primary"'></v-text-field>
+					:readonly='!user.isEditing' 
+					:color='!user.isEditing ? "" : "primary"'></v-text-field>
 				<v-checkbox 
 					v-model='user.isEmailConfirmed' 
 					label='Email Confirmed' 
-					:readonly='enableEdit' 
-					:disabled='!enableEdit'></v-checkbox>
+					:readonly='!user.isEditing' 
+					:disabled='user.isEditing'></v-checkbox>
 			</v-col>
 		</v-row>
 		<v-card-actions class='text-center'>
@@ -92,7 +92,7 @@
 									text 
 									@click='submitHandler' 
 									v-bind='props'
-									:disabled="!enableEdit ? !formValid : false">
+									:disabled="user.isEditing ? !formValid : false">
 									{{ submitText }}
 								</v-btn>
 							</template>
@@ -100,14 +100,14 @@
 						</v-tooltip>
 					</v-col>
 					<v-col>
-						<v-tooltip location='bottom' :disabled="enableEdit">
+						<v-tooltip location='bottom' :disabled="user.isEditing">
 							<template v-slot:activator='{ props }'>
 								<v-btn 
 									color='blue darken-1' 
 									text 
 									@click='cancelHandler' 
 									v-bind='props' 
-									:disabled='enableEdit'>
+									:disabled='!user.isEditing'>
 									Cancel
 								</v-btn>
 							</template>
@@ -120,11 +120,13 @@
 </template>
 
 <script lang='ts'>
-import { computed, ComputedRef, Ref, defineComponent, ref } from 'vue';
+import { computed, ComputedRef, Ref, defineComponent, ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 import { useUserStore } from '@/store/userStore/index';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
+import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
+import { toast } from 'vue3-toastify';
 
 export default defineComponent({
 	name: 'UserProfileForm',
@@ -138,7 +140,6 @@ export default defineComponent({
 		const form: Ref<VForm | null> = ref(null);
 		const formValid: Ref<boolean> = ref(false);
 		const formTitle: Ref<string> = ref('User Profile');
-		const enableEdit: Ref<boolean> = ref(true);
 		const userStore = useUserStore();
 		const {
 			emailRules,
@@ -152,11 +153,11 @@ export default defineComponent({
 		const email: Ref<string | null> = ref(user.value.email);
 		const invalidEmails: Ref<string[]> = ref([]);
 
+		// eslint-disable-next-line
 		const getFormStatus: ComputedRef<boolean> = computed(() => {
 			return props.formStatus;
 		});
 
-		// the following line is used by vuetify to reset the form
 		// eslint-disable-next-line
 		const resetFormStatus: ComputedRef<boolean> = computed(() => {
 			return !props.formStatus;
@@ -183,7 +184,7 @@ export default defineComponent({
 		});
 
 		const submitText: ComputedRef<string> = computed(() => {
-			if (enableEdit.value) {
+			if (!user.value.isEditing) {
 				return 'Edit';
 			} else {
 				return 'Submit';
@@ -191,7 +192,7 @@ export default defineComponent({
 		});
 
 		const submitHelperText: ComputedRef<string> = computed(() => {
-			if (enableEdit.value) {
+			if (user.value.isEditing) {
 				return 'Edit your profile';
 			} else {
 				return 'Submit your changes';
@@ -199,21 +200,22 @@ export default defineComponent({
 		});
 
 		const submitHandler = (): void => {
-			if (enableEdit.value === true) {
-				enableEdit.value = false;
+			if (!user.value.isEditing) {
+				user.value.isEditing = true;
 				form.value?.validate();
-				formTitle.value = 'Edit User Profile';
 			} else {
-				if (getFormStatus.value) {
-					enableEdit.value = true;
-					formTitle.value = 'User Profile';
-				}
+				const data = new UpdateUserRequestData(
+					userName.value, 
+					firstName.value, 
+					lastName.value, 
+					nickName.value, 
+					email.value);
+				userStore.updateUserAsync(data);
 			}
 		};
 
 		const cancelHandler = (): void => {
-			enableEdit.value = true;
-			formTitle.value = 'User Profile';
+			user.value.isEditing = false;
 			invalidEmails.value = [];
 			form.value?.resetValidation();
 			userName.value = user.value.userName;
@@ -223,12 +225,51 @@ export default defineComponent({
 			email.value = user.value.email;
 			emit('updating-user-completed', null);
 		};
+		
+		watch(
+			() => userStore.getUser,
+			() => {
+				user.value = userStore.getUser;
+				userName.value = user.value.userName;
+				firstName.value = user.value.firstName;
+				lastName.value = user.value.lastName;
+				nickName.value = user.value.nickName;
+				email.value = user.value.email;
+			}
+		);
+
+		watch(
+			() => user.value.isEditing,
+			() => {
+				if (user.value.isEditing) {
+					formTitle.value = 'Edit User Profile';
+				} else {
+					formTitle.value = 'User Profile';
+				}
+			}
+		);
+
+    watch(
+      () => userStore.getServiceMessage,
+      () => {
+        if (
+          userStore.getServiceMessage !== null &&
+          userStore.getServiceMessage !== ''
+        ) {
+          toast(userStore.getServiceMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            type: userStore.getServiceResult ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+          });
+					userStore.updateServiceMessage('');
+					userStore.updateServiceResult(null);
+        }
+      }
+    );
 
 		return {
 			form,
 			formValid,
 			formTitle,
-			enableEdit,
 			user,
 			userName,
 			firstName,

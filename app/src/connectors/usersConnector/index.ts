@@ -1,6 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from "@/connectors/usersConnector/endpoints";
 import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
+import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
+import { useAppStore} from '@/store/appStore/index';
+import { useUserStore } from '@/store/userStore/index'
 
 export class UsersConnector {
 	static async postRequestPasswordResetAsync(data: ILoginAssistanceRequestData): Promise<AxiosResponse | AxiosError> {
@@ -26,4 +29,41 @@ export class UsersConnector {
       return error as AxiosError;
     }
 	}
+
+  static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<AxiosResponse | AxiosError> {
+    try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: 'put',
+        url: `${Endpoints.updateUserEndpoint}/${userStore.getUser.id}`,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${appStore.getToken}`,
+				},
+				data: {
+					'license': process.env.VUE_APP_LICENSE,
+          'requestorId': userStore.getUser.id,
+          'appId': process.env.VUE_APP_ID,
+          'paginator': {},
+          'payload': {
+            'userName': data.userName,
+            'firstName': data.firstName,
+            'lastName': data.lastName,
+            'nickName': data.nickName,
+            'email': data.email
+          }
+				}
+      }
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
 }
