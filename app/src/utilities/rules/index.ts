@@ -55,6 +55,6 @@ export default function () {
 		emailRules,
 		passwordRules,
 		requiredRules,
-		userNameRules
+		userNameRules,
 	}
 }
