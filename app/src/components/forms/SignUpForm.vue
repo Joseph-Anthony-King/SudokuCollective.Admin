@@ -100,7 +100,7 @@
 									Reset
 								</v-btn>
 							</template>
-							<span>Reset the sing up form</span>
+							<span>Reset the sign up form</span>
 						</v-tooltip>
 					</v-col>
 					<v-col>
@@ -130,7 +130,7 @@
 									Submit
 								</v-btn>
 							</template>
-							<span>Sign up with the a`pi</span>
+							<span>Sign up with SudokuCollective.com</span>
 						</v-tooltip>
 					</v-col>
 				</v-row>
