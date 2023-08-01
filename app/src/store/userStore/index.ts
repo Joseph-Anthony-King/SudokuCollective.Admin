@@ -45,6 +45,14 @@ export const useUserStore = defineStore('userStore', () => {
 			appStore.updateToken(response.token);
 		}
 	};
+	const getUserAsync = async (): Promise<void> => {
+		const response: IServicePayload = await UsersService.getUserAsync(user.value.id);
+		console.log(response);
+		if (response.isSuccess) {
+			updateUser(response.user);
+			updateServiceMessage(response.message);
+		}
+	}
 	const updateUserAsync = async (data: IUpdateUserRequestData): Promise<void> => {
 		const response: IServicePayload = await UsersService.putUpdateUserAsync(data);
 		if (response.isSuccess) {
@@ -81,6 +89,7 @@ export const useUserStore = defineStore('userStore', () => {
 		updateProcessingMessage,
 		updateServiceMessage,
 		signupUserAsync,
+		getUserAsync,
 		updateUserAsync,
 		confirmUserNameAsync,
 		requestPasswordResetAsync

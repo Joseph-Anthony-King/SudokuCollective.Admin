@@ -7,7 +7,6 @@ import { AxiosResponse, AxiosError } from 'axios';
 import { StaticServiceMethods } from '../common';
 
 export class GamesService {
-
 	static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 		

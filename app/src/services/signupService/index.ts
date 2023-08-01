@@ -6,7 +6,6 @@ import { SignupConnector } from '@/connectors/signupConnector';
 import { User } from '@/models/domain/user';
 
 export class SignupService {
-
 	static async postAsync(data: ISignupRequestData): Promise<IServicePayload> {
 		const result: IServicePayload = {};
 

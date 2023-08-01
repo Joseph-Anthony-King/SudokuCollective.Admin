@@ -6,19 +6,26 @@ import { useAppStore} from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index'
 
 export class UsersConnector {
-	static async postRequestPasswordResetAsync(data: ILoginAssistanceRequestData): Promise<AxiosResponse | AxiosError> {
+  static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
     try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
       const config = {
         method: 'post',
-        url: `${Endpoints.requestPasswordResetEndpoint}`,
+        url: `${Endpoints.usersEndpoint}/${id}`,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${appStore.getToken}`,
 				},
 				data: {
 					'license': process.env.VUE_APP_LICENSE,
-					'email': data.email,
+          'requestorId': userStore.getUser.id,
+          'appId': process.env.VUE_APP_ID,
+          'paginator': {},
+          'payload': { }
 				}
       }
       return axios(config);
@@ -27,8 +34,9 @@ export class UsersConnector {
         console.error('error: ', error);
       }
       return error as AxiosError;
+      
     }
-	}
+  }
 
   static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<AxiosResponse | AxiosError> {
     try {
@@ -37,7 +45,7 @@ export class UsersConnector {
 
       const config = {
         method: 'put',
-        url: `${Endpoints.updateUserEndpoint}/${userStore.getUser.id}`,
+        url: `${Endpoints.usersEndpoint}/${userStore.getUser.id}`,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
@@ -66,4 +74,28 @@ export class UsersConnector {
       return error as AxiosError;
     }
   }
+
+	static async postRequestPasswordResetAsync(data: ILoginAssistanceRequestData): Promise<AxiosResponse | AxiosError> {
+    try {
+      const config = {
+        method: 'post',
+        url: `${Endpoints.requestPasswordResetEndpoint}`,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+				},
+				data: {
+					'license': process.env.VUE_APP_LICENSE,
+					'email': data.email,
+				}
+      }
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+	}
 }

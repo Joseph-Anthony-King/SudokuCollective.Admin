@@ -7,7 +7,6 @@ import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssist
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 
 export class LoginService {
-	
 	static async postLoginAsync(data: ILoginRequestData): Promise<IServicePayload> {
 		const result: IServicePayload = {};
 		

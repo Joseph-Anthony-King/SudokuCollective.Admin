@@ -117,6 +117,22 @@
               <v-btn
                 color='blue darken-1'
                 text
+                @click='refreshHandler'
+                v-bind='props'
+                :disabled='user.isEditing'
+              >
+                Refresh
+              </v-btn>
+            </template>
+            <span>Pull latest values from the API</span>
+          </v-tooltip>
+        </v-col>
+        <v-col>
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
                 @click='cancelHandler'
                 v-bind='props'
                 :disabled='!user.isEditing'
@@ -242,6 +258,10 @@ export default defineComponent({
       }
     };
 
+    const refreshHandler = (): void => {
+      userStore.getUserAsync();
+    };
+
     const cancelHandler = (): void => {
       user.value.isEditing = false;
       invalidUserNames.value = [];
@@ -342,6 +362,7 @@ export default defineComponent({
       submitText,
       submitHelperText,
       submitHandler,
+      refreshHandler,
       cancelHandler,
     };
   },
