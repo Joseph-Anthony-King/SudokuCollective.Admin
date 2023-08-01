@@ -8,7 +8,6 @@ import { AxiosResponse, AxiosError } from 'axios';
 import { StaticServiceMethods } from '../common';
 
 export class ValuesService {
-
   static async getValuesAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
