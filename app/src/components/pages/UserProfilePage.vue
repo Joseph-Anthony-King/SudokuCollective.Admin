@@ -10,12 +10,6 @@
   </v-container>
 </template>
 
-<script lang='ts'>
-import { defineComponent } from 'vue';
+<script setup lang='ts'>
 import UserProfileForm from '@/components/forms/UserProfileForm.vue';
-
-export default defineComponent({
-  name: 'UserProfilePage',
-  components: { UserProfileForm },
-});
 </script>

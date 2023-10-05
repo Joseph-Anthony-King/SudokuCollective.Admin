@@ -106,8 +106,16 @@
   </v-dialog>
 </template>
 
-<script lang='ts'>
-import { computed, ComputedRef, defineComponent, onMounted, onUpdated, Ref, ref, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref,
+  Ref,
+  computed,
+  ComputedRef,
+  onMounted, 
+  onUpdated, 
+  watch 
+} from 'vue';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -119,121 +127,104 @@ import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
 import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceRequestData';
 
-export default defineComponent({
-  name: 'LoginAssistanceForm',
-  components: { ConfirmDialog },
-  props: {
-    formStatus: {
-      type: Boolean,
-      default: false
+const props = defineProps({
+  formStatus: {
+    type: Boolean,
+    default: false
+  }
+});
+const emit = defineEmits(['return-to-login']);
+
+const appStore = useAppStore();
+const serviceFailStore = useServiceFailStore();
+const userStore = useUserStore();
+const { isChrome, repairAutoComplete } = commonUtilities();
+const { emailRules } = rules();
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
+const confirmFormReset: Ref<boolean> = ref(false);
+const email: Ref<string> = ref('');
+const invalidEmails: Ref<string[]> = ref([]);
+
+const getFormStatus: ComputedRef<boolean> = computed(() => {
+  return props.formStatus;
+});
+
+// the following line is used by vuetify to reset the form
+// eslint-disable-next-line
+const resetFormStatus: ComputedRef<boolean> = computed(() => {
+  return !props.formStatus;
+});
+
+const submitHandler = (): void => {
+  if (getFormStatus.value) {
+    const data = new LoginAssistanceRequestData(email.value);
+    appStore.confirmUserNameAsync(data);
+  }
+}
+
+const resetPasswordHandlder = (): void => {
+  if (getFormStatus.value) {
+    const data = new LoginAssistanceRequestData(email.value);
+    appStore.requestPasswordResetAsync(data);
+  }
+}
+
+const resetHandler = (): void => {
+  if (getFormStatus.value) {
+    email.value = '';
+    invalidEmails.value = [];
+    form.value?.reset();
+    confirmFormReset.value = false;
+    serviceFailStore.initializeStore();
+  }
+}
+
+const goBackHandler = (): void => {
+  emit('return-to-login', null, null);
+}
+
+watch(
+  () => serviceFailStore.getIsSuccess,
+  () => {
+    const isSuccess = serviceFailStore.getIsSuccess;
+    if (isSuccess !== null && !isSuccess) {
+      const message: string = serviceFailStore.getMessage;
+      if (
+        message === 'Status Code 404: No user is using this email' &&
+        !invalidEmails.value.includes(email.value)
+      ) {
+        invalidEmails.value.push(email.value);
+      }
+      toast(message, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
+      serviceFailStore.initializeStore();
+      form.value?.validate();
     }
-  },
-  setup(props, { emit }) {
-    const appStore = useAppStore();
-    const serviceFailStore = useServiceFailStore();
-    const userStore = useUserStore();
-    const { isChrome, repairAutoComplete } = commonUtilities();
-    const { emailRules } = rules();
-    const form: Ref<VForm | null> = ref(null);
-    const formValid: Ref<boolean> = ref(true);
-    const confirmFormReset: Ref<boolean> = ref(false);
-    const email: Ref<string> = ref('');
-    const invalidEmails: Ref<string[]> = ref([]);
+  }
+);
 
-    const getFormStatus: ComputedRef<boolean> = computed(() => {
-      return props.formStatus;
-    });
-    
-    // the following line is used by vuetify to reset the form
-    // eslint-disable-next-line
-    const resetFormStatus: ComputedRef<boolean> = computed(() => {
-      return !props.formStatus;
-    });
-
-    const submitHandler = (): void => {
-      if (getFormStatus.value) {
-        const data = new LoginAssistanceRequestData(email.value);
-        appStore.confirmUserNameAsync(data);
-      }
+watch(
+  () => userStore.getConfirmedUserName,
+  () => {
+    const confirmedUserName = userStore.getConfirmedUserName;
+    if (confirmedUserName !== '') {
+      emit('return-to-login', null, null);
     }
+  }
+);
 
-    const resetPasswordHandlder = (): void => {
-      if (getFormStatus.value) {
-        const data = new LoginAssistanceRequestData(email.value);
-        appStore.requestPasswordResetAsync(data);
-      }
-    }
+onMounted(() => {
+  if (isChrome.value) {
+    repairAutoComplete();
+  }
+});
 
-    const resetHandler = (): void => {
-      if (getFormStatus.value) {
-        email.value = '';
-        invalidEmails.value = [];
-        form.value?.reset();
-        confirmFormReset.value = false;
-        serviceFailStore.initializeStore();
-      }
-    }
-
-    const goBackHandler = (): void => {
-      emit('go-back-to-login', null, null);
-    }
-
-    watch(
-      () => serviceFailStore.getIsSuccess,
-      () => {
-        const isSuccess = serviceFailStore.getIsSuccess;
-        if (isSuccess !== null && !isSuccess) {
-          const message: string = serviceFailStore.getMessage;
-          if (
-            message === 'Status Code 404: No user is using this email' &&
-            !invalidEmails.value.includes(email.value)
-          ) {
-            invalidEmails.value.push(email.value);
-          }
-          toast(message, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          });
-          serviceFailStore.initializeStore();
-          form.value?.validate();
-        }
-      }
-    );
-
-    watch(
-      () => userStore.getConfirmedUserName,
-      () => {
-        const confirmedUserName = userStore.getConfirmedUserName;
-        if (confirmedUserName !== '') {
-          emit('go-back-to-login', null, null);
-        }
-      }
-    );
-    
-    onMounted(() => {
-      if (isChrome.value) {
-        repairAutoComplete();
-      }
-    });
-
-    onUpdated(() => {
-      if (isChrome.value) {
-        repairAutoComplete();
-      }
-    });
-
-    return {
-      form,
-      formValid,
-      confirmFormReset,
-      emailRules,
-      email,
-      invalidEmails,
-      submitHandler,
-      resetPasswordHandlder,
-      resetHandler,
-      goBackHandler
-    }
+onUpdated(() => {
+  if (isChrome.value) {
+    repairAutoComplete();
   }
 });
 </script>

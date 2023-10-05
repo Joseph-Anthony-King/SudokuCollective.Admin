@@ -30,8 +30,13 @@
   </v-container>
 </template>
 
-<script lang='ts'>
-import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref,
+  computed, 
+  onBeforeMount, 
+  watch 
+} from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router/index';
 import { useAppStore } from '@/store/appStore/index';
@@ -41,74 +46,65 @@ import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
 import commonUtitlities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 
-export default defineComponent({
-  name: 'HomePage',
-  components: { ProgressWidget },
-  props: {
-    action: {
-      type: String,
-      default: ''
-    },
+const props = defineProps({
+  action: {
+    type: String,
+    default: ''
   },
-  setup(props) {
-    const appStore = useAppStore();
-    const userStore = useUserStore();
-    const valuesStore = useValuesStore();
-    const route = useRoute();
-    const { updateUrlWithAction } = commonUtitlities();
-    const missionStatement = ref(
-      valuesStore.getMissionStatement
-    );
-    const loading = computed(() => {
-      return missionStatement.value === '';
-    });
-    watch(
-      () => valuesStore.getMissionStatement,
-      () => {
-        missionStatement.value =
-          valuesStore.getMissionStatement;
-      }
-    );
-    watch(
-      () => userStore.getUserIsLoggingIn,
-      () => {
-        const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-        updateUrlWithAction(
-          userIsLoggingIn,
-          '/',
-          'login',
-          router,
-          route);
-      }
-    );
-    watch(
-      () => userStore.getUserIsSigningUp,
-      () => {
-        const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-        updateUrlWithAction(
-          userIsSigningUp,
-          '/',
-          'signup',
-          router,
-          route);
-      }
-    );
-    onBeforeMount(() => {
-      appStore.updateProcessingMessage('loading, please wait');
-      const user: User = userStore.getUser;
-      if (props.action.toLowerCase() === 'login') {
-        user.isLoggingIn = true;
-        userStore.updateUser(user)
-      } else if (props.action.toLowerCase() === 'signup') {
-        user.isSigningUp = true;
-        userStore.updateUser(user);
-      }
-    });
-    return {
-      loading,
-      missionStatement,
-    };
-  },
+});
+
+const appStore = useAppStore();
+const userStore = useUserStore();
+const valuesStore = useValuesStore();
+const route = useRoute();
+const { updateUrlWithAction } = commonUtitlities();
+const missionStatement = ref(
+  valuesStore.getMissionStatement
+);
+const loading = computed(() => {
+  return missionStatement.value === '';
+});
+watch(
+  () => valuesStore.getMissionStatement,
+  () => {
+    missionStatement.value =
+      valuesStore.getMissionStatement;
+  }
+);
+watch(
+  () => userStore.getUserIsLoggingIn,
+  () => {
+    const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
+    updateUrlWithAction(
+      userIsLoggingIn,
+      '/',
+      'login',
+      router,
+      route);
+  }
+);
+watch(
+  () => userStore.getUserIsSigningUp,
+  () => {
+    const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
+    updateUrlWithAction(
+      userIsSigningUp,
+      '/',
+      'signup',
+      router,
+      route);
+  }
+);
+onBeforeMount(() => {
+  appStore.updateProcessingMessage('loading, please wait');
+  const user: User = userStore.getUser;
+  if (props.action.toLowerCase() === 'login') {
+    user.isLoggingIn = true;
+    userStore.updateUser(user)
+  } else if (props.action.toLowerCase() === 'signup') {
+    user.isSigningUp = true;
+    userStore.updateUser(user);
+  }
 });
 </script>
 

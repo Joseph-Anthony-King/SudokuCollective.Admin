@@ -5,8 +5,13 @@
   </v-container>
 </template>
 
-<script lang='ts'>
-import { defineComponent, onBeforeMount, Ref, ref, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref, 
+  Ref, 
+  onBeforeMount, 
+  watch 
+} from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router/index';
 import { useAppStore } from '@/store/appStore/index';
@@ -17,69 +22,61 @@ import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
 import commonUtitlities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 
-export default defineComponent({
-  name: 'SudokuPage',
-  components: { ProgressWidget, SudokuWidget },
-  props: {
-    action: {
-      type: String,
-      default: ''
-    },
+const props = defineProps({
+  action: {
+    type: String,
+    default: ''
   },
-  setup(props) {
-    const appStore = useAppStore();
-    const sudokuStore = useSudokuStore();
-    const userStore = useUserStore();
-    const route = useRoute();
-    const { updateUrlWithAction } = commonUtitlities();
-    let loading: Ref<boolean> = ref(
-      sudokuStore.getProcessing
-    );
-    watch(
-      () => sudokuStore.getProcessing,
-      () => {
-        loading.value = sudokuStore.getProcessing;
-      }
-    );
-    watch(
-      () => userStore.getUserIsLoggingIn,
-      () => {
-        const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-        updateUrlWithAction(
-          userIsLoggingIn,
-          '/sudoku',
-          'login',
-          router,
-          route);
-      }
-    );
-    watch(
-      () => userStore.getUserIsSigningUp,
-      () => {
-        const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-        updateUrlWithAction(
-          userIsSigningUp,
-          '/sudoku',
-          'signup',
-          router,
-          route);
-      }
-    );
-    onBeforeMount(() => {
-      appStore.updateProcessingMessage('processing, please do not navigate away');
-      if (props.action.toLowerCase() === 'login') {
-        const user: User = userStore.getUser;
-        user.isLoggingIn = true;
-        userStore.updateUser(user)
-      } else if (props.action.toLowerCase() === 'signup') {
-        const user = new User();
-        user.isSigningUp = true;
-        userStore.updateUser(user);
-      }
-    });
-    return {
-      loading,
-    };
-  },
+});
+
+const appStore = useAppStore();
+const sudokuStore = useSudokuStore();
+const userStore = useUserStore();
+const route = useRoute();
+const { updateUrlWithAction } = commonUtitlities();
+let loading: Ref<boolean> = ref(
+  sudokuStore.getProcessing
+);
+watch(
+  () => sudokuStore.getProcessing,
+  () => {
+    loading.value = sudokuStore.getProcessing;
+  }
+);
+watch(
+  () => userStore.getUserIsLoggingIn,
+  () => {
+    const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
+    updateUrlWithAction(
+      userIsLoggingIn,
+      '/sudoku',
+      'login',
+      router,
+      route);
+  }
+);
+watch(
+  () => userStore.getUserIsSigningUp,
+  () => {
+    const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
+    updateUrlWithAction(
+      userIsSigningUp,
+      '/sudoku',
+      'signup',
+      router,
+      route);
+  }
+);
+onBeforeMount(() => {
+  appStore.updateProcessingMessage('processing, please do not navigate away');
+  if (props.action.toLowerCase() === 'login') {
+    const user: User = userStore.getUser;
+    user.isLoggingIn = true;
+    userStore.updateUser(user)
+  } else if (props.action.toLowerCase() === 'signup') {
+    const user = new User();
+    user.isSigningUp = true;
+    userStore.updateUser(user);
+  }
 });
 </script>

@@ -152,8 +152,15 @@
   </v-dialog>
 </template>
 
-<script lang='ts'>
-import { computed, ComputedRef, defineComponent, Ref, ref, toRaw, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref,
+  Ref,
+  computed,
+  ComputedRef,  
+  toRaw, 
+  watch 
+} from 'vue';
 import { useUserStore } from '@/store/userStore/index';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
@@ -161,51 +168,40 @@ import { InteriorLinks } from '@/utilities/links/interiorLinks';
 import { User } from '@/models/domain/user';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-export default defineComponent({
-  name: 'AppBar',
-  components: { ConfirmDialog },
-  emits: ['user-logging-in', 'user-logging-out', 'user-signing-up', 'update-nav-drawer'],
-  setup(props, { emit }) {
-    const userStore = useUserStore();
-    const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
-    const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
-    const user: Ref<User> = ref(userStore.getUser);
-    const confirmUserLogout: Ref<boolean> = ref(false);
-    const confirmMessage: ComputedRef<string> = computed(() => { 
-      return `Are you sure you want to log out ${user.value.userName}?`;
-    });
-    const loginHandler = (): void => {
-      emit('user-logging-in', null, null);
-    };
-    const logoutHandler = (): void => {
-      confirmUserLogout.value = false;
-      emit('user-logging-out', null, null);
-    };
-    const signUpHandler = (): void => {
-      emit('user-signing-up', null, null);
-    };
-    const updateNavDrawerHandler = (): void => {
-      emit('update-nav-drawer', null, null);
-    };
-    watch(
-      () => userStore.getUser,
-      () => {
-        user.value = toRaw(userStore.getUser);
-      }
-    );
-    return {
-      interiorLinks,
-      exteriorLinks,
-      user,
-      confirmUserLogout,
-      confirmMessage,
-      loginHandler,
-      logoutHandler,
-      signUpHandler,
-      updateNavDrawerHandler,
-    };
-  },
+const emit = defineEmits([
+  'user-logging-in', 
+  'user-logging-out', 
+  'user-signing-up', 
+  'update-nav-drawer'
+]);
+
+const userStore = useUserStore();
+const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
+const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
+const user: Ref<User> = ref(userStore.getUser);
+const confirmUserLogout: Ref<boolean> = ref(false);
+const confirmMessage: ComputedRef<string> = computed(() => { 
+  return `Are you sure you want to log out ${user.value.userName}?`;
 });
+const loginHandler = (): void => {
+  emit('user-logging-in', null, null);
+};
+const logoutHandler = (): void => {
+  confirmUserLogout.value = false;
+  emit('user-logging-out', null, null);
+};
+const signUpHandler = (): void => {
+  emit('user-signing-up', null, null);
+};
+const updateNavDrawerHandler = (): void => {
+  emit('update-nav-drawer', null, null);
+};
+watch(
+  () => userStore.getUser,
+  () => {
+    user.value = toRaw(userStore.getUser);
+  }
+);
 </script>
 
 <style lang='scss' scoped>

@@ -29,8 +29,13 @@
   </div>
 </template>
 
-<script lang='ts'>
-import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref, 
+  onBeforeMount, 
+  toRaw, 
+  watch 
+} from 'vue';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import {
   obtainMatrix,
@@ -40,141 +45,127 @@ import {
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
-export default defineComponent({
-  name: 'MatrixWidget',
-  setup() {
-    const sudokuStore = useSudokuStore();
-    const matrix = ref(Array<Array<string>>());
-    let gameState: DropdownItem | null =
-      sudokuStore.getGameState;
+const sudokuStore = useSudokuStore();
+const matrix = ref(Array<Array<string>>());
+let gameState: DropdownItem | null = sudokuStore.getGameState;
 
-    const applyOddRegionStyling = (
-      rowIndex: number,
-      cellIndex: number
-    ): boolean => {
-      return applyOddRegion(rowIndex, cellIndex);
-    };
+const applyOddRegionStyling = (
+  rowIndex: number,
+  cellIndex: number
+): boolean => {
+  return applyOddRegion(rowIndex, cellIndex);
+};
 
-    const applyTextColorStyling = (
-      rowIndex: number,
-      cellIndex: number
-    ): string => {
-      return applyTextColor(rowIndex, cellIndex);
-    };
+const applyTextColorStyling = (
+  rowIndex: number,
+  cellIndex: number
+): string => {
+  return applyTextColor(rowIndex, cellIndex);
+};
 
-    const validateEntry = (rowIndex: number, cellIndex: number): void => {
-      var entry = parseInt(matrix.value[rowIndex][cellIndex]);
+const validateEntry = (rowIndex: number, cellIndex: number): void => {
+  var entry = parseInt(matrix.value[rowIndex][cellIndex]);
 
-      if (entry < 1 || entry > 9) {
-        matrix.value[rowIndex][cellIndex] = '';
-      } else {
-        matrix.value[rowIndex][cellIndex] =
-          matrix.value[rowIndex][cellIndex].toString();
-        const sudoku = Array<Array<string>>(9);
-        for (let i = 0; i < 9; i++) {
-          sudoku[i] = [];
-          for (let j = 0; j < 9; j++) {
-            sudoku[i][j] = matrix.value[i][j];
-          }
-        }
-        if (gameState?.value === GameState.PLAYGAME) {
-          sudokuStore.updateGame(sudoku);
-        } else if (gameState?.value === GameState.SOLVESUDOKU) {
-          sudokuStore.updatePuzzle(sudoku);
-        }
+  if (entry < 1 || entry > 9) {
+    matrix.value[rowIndex][cellIndex] = '';
+  } else {
+    matrix.value[rowIndex][cellIndex] =
+      matrix.value[rowIndex][cellIndex].toString();
+    const sudoku = Array<Array<string>>(9);
+    for (let i = 0; i < 9; i++) {
+      sudoku[i] = [];
+      for (let j = 0; j < 9; j++) {
+        sudoku[i][j] = matrix.value[i][j];
       }
-    };
+    }
+    if (gameState?.value === GameState.PLAYGAME) {
+      sudokuStore.updateGame(sudoku);
+    } else if (gameState?.value === GameState.SOLVESUDOKU) {
+      sudokuStore.updatePuzzle(sudoku);
+    }
+  }
+};
 
-    const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
-      if (gameState !== null) {
-        if (gameState.value === GameState.PLAYGAME) {
-          const initialGame = sudokuStore.getInitialGame;
-          if (initialGame[rowIndex][cellIndex] === '') {
-            return false;
-          } else {
-            return true;
-          }
-        } else if (gameState.value === GameState.SOLVESUDOKU) {
-          return false;
-        } else {
-          return true;
-        }
+const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
+  if (gameState !== null) {
+    if (gameState.value === GameState.PLAYGAME) {
+      const initialGame = sudokuStore.getInitialGame;
+      if (initialGame[rowIndex][cellIndex] === '') {
+        return false;
       } else {
         return true;
       }
-    };
+    } else if (gameState.value === GameState.SOLVESUDOKU) {
+      return false;
+    } else {
+      return true;
+    }
+  } else {
+    return true;
+  }
+};
 
-    watch(
-      () => sudokuStore.getGameState,
-      () => {
-        gameState = toRaw(sudokuStore.getGameState);
-        matrix.value = obtainMatrix();
-      }
-    );
+watch(
+  () => sudokuStore.getGameState,
+  () => {
+    gameState = toRaw(sudokuStore.getGameState);
+    matrix.value = obtainMatrix();
+  }
+);
 
-    watch(
-      () => sudokuStore.getGame,
-      () => {
-        if (gameState?.value === GameState.PLAYGAME) {
-          const game = sudokuStore.getGame;
-          matrix.value = Array<Array<string>>(9);
+watch(
+  () => sudokuStore.getGame,
+  () => {
+    if (gameState?.value === GameState.PLAYGAME) {
+      const game = sudokuStore.getGame;
+      matrix.value = Array<Array<string>>(9);
 
-          for (let i = 0; i < 9; i++) {
-            matrix.value[i] = [];
-            for (let j = 0; j < 9; j++) {
-              matrix.value[i][j] = game[i][j];
-            }
-          }
+      for (let i = 0; i < 9; i++) {
+        matrix.value[i] = [];
+        for (let j = 0; j < 9; j++) {
+          matrix.value[i][j] = game[i][j];
         }
       }
-    );
+    }
+  }
+);
 
-    watch(
-      () => sudokuStore.getPuzzle,
-      () => {
-        if (gameState?.value === GameState.SOLVESUDOKU) {
-          const puzzle = sudokuStore.getPuzzle;
-          matrix.value = Array<Array<string>>(9);
+watch(
+  () => sudokuStore.getPuzzle,
+  () => {
+    if (gameState?.value === GameState.SOLVESUDOKU) {
+      const puzzle = sudokuStore.getPuzzle;
+      matrix.value = Array<Array<string>>(9);
 
-          for (let i = 0; i < 9; i++) {
-            matrix.value[i] = [];
-            for (let j = 0; j < 9; j++) {
-              matrix.value[i][j] = puzzle[i][j];
-            }
-          }
+      for (let i = 0; i < 9; i++) {
+        matrix.value[i] = [];
+        for (let j = 0; j < 9; j++) {
+          matrix.value[i][j] = puzzle[i][j];
         }
       }
-    );
+    }
+  }
+);
 
-    watch(
-      () => sudokuStore.getSolution,
-      () => {
-        if (gameState?.value === GameState.GENERATESUDOKU) {
-          const solution = sudokuStore.getSolution;
-          matrix.value = Array<Array<string>>(9);
+watch(
+  () => sudokuStore.getSolution,
+  () => {
+    if (gameState?.value === GameState.GENERATESUDOKU) {
+      const solution = sudokuStore.getSolution;
+      matrix.value = Array<Array<string>>(9);
 
-          for (let i = 0; i < 9; i++) {
-            matrix.value[i] = [];
-            for (let j = 0; j < 9; j++) {
-              matrix.value[i][j] = solution[i][j];
-            }
-          }
+      for (let i = 0; i < 9; i++) {
+        matrix.value[i] = [];
+        for (let j = 0; j < 9; j++) {
+          matrix.value[i][j] = solution[i][j];
         }
       }
-    );
+    }
+  }
+);
 
-    onBeforeMount(() => {
-      matrix.value = obtainMatrix();
-    });
-
-    return {
-      matrix,
-      applyOddRegionStyling,
-      applyTextColorStyling,
-      validateEntry,
-      isReadOnly,
-    };
-  },
+onBeforeMount(() => {
+  matrix.value = obtainMatrix();
 });
 </script>
 
