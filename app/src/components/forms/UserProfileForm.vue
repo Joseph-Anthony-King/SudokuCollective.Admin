@@ -148,8 +148,14 @@
   </v-form>
 </template>
 
-<script lang='ts'>
-import { computed, ComputedRef, Ref, defineComponent, ref, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+  ref,
+  Ref,
+  computed,
+  ComputedRef, 
+  watch 
+} from 'vue';
 import { VForm } from 'vuetify/components';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
@@ -158,213 +164,186 @@ import rules from '@/utilities/rules/index';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { toast } from 'vue3-toastify';
 
-export default defineComponent({
-  name: 'UserProfileForm',
-  props: {
-    formStatus: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props, { emit }) {
-    const form: Ref<VForm | null> = ref(null);
-    const formValid: Ref<boolean> = ref(false);
-    const formTitle: Ref<string> = ref('User Profile');
-    const userStore = useUserStore();
-    const serviceFailStore = useServiceFailStore();
-    const { emailRules, requiredRules, userNameRules } = rules();
-    const user: Ref<User> = ref(userStore.getUser);
-    const userName: Ref<string | null> = ref(user.value.userName);
-    const firstName: Ref<string | null> = ref(user.value.firstName);
-    const lastName: Ref<string | null> = ref(user.value.lastName);
-    const nickName: Ref<string | null> = ref(user.value.nickName);
-    const email: Ref<string | null> = ref(user.value.email);
-    const invalidUserNames: Ref<string[]> = ref([]);
-    const invalidEmails: Ref<string[]> = ref([]);
-
-    // eslint-disable-next-line
-    const getFormStatus: ComputedRef<boolean> = computed(() => {
-      return props.formStatus;
-    });
-
-    // eslint-disable-next-line
-    const resetFormStatus: ComputedRef<boolean> = computed(() => {
-      return !props.formStatus;
-    });
-
-    const formattedDateCreated: ComputedRef<string | null> = computed(() => {
-      if (user.value.dateCreated === null) {
-        return null;
-      } else {
-        return `${new Date(
-          user.value.dateCreated
-        ).toLocaleDateString()} ${new Date(
-          user.value.dateCreated
-        ).toLocaleTimeString()}`;
-      }
-    });
-
-    const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
-      if (user.value.dateUpdated === null) {
-        return null;
-      } else {
-        if (
-          `${new Date(user.value.dateUpdated).toLocaleDateString()} ${new Date(
-            user.value.dateUpdated
-          ).toLocaleTimeString()}` === '1/1/1 12:00:00 AM'
-        ) {
-          return null;
-        } else {
-          return `${new Date(
-            user.value.dateUpdated
-          ).toLocaleDateString()} ${new Date(
-            user.value.dateUpdated
-          ).toLocaleTimeString()}`;
-        }
-      }
-    });
-
-    const submitText: ComputedRef<string> = computed(() => {
-      if (!user.value.isEditing) {
-        return 'Edit';
-      } else {
-        return 'Submit';
-      }
-    });
-
-    const submitHelperText: ComputedRef<string> = computed(() => {
-      if (user.value.isEditing) {
-        return 'Edit your profile';
-      } else {
-        return 'Submit your changes';
-      }
-    });
-
-    const submitHandler = (): void => {
-      if (!user.value.isEditing) {
-        user.value.isEditing = true;
-        form.value?.validate();
-      } else {
-        if (getFormStatus.value) {
-          const data = new UpdateUserRequestData(
-            userName.value,
-            firstName.value,
-            lastName.value,
-            nickName.value,
-            email.value
-          );
-          userStore.updateUserAsync(data);
-        }
-      }
-    };
-
-    const refreshHandler = (): void => {
-      userStore.getUserAsync();
-    };
-
-    const cancelHandler = (): void => {
-      user.value.isEditing = false;
-      invalidUserNames.value = [];
-      invalidEmails.value = [];
-      form.value?.resetValidation();
-      userName.value = user.value.userName;
-      firstName.value = user.value.firstName;
-      lastName.value = user.value.lastName;
-      nickName.value = user.value.nickName;
-      email.value = user.value.email;
-      emit('updating-user-completed', null);
-    };
-
-    watch(
-      () => userStore.getUser,
-      () => {
-        user.value = userStore.getUser;
-        userName.value = user.value.userName;
-        firstName.value = user.value.firstName;
-        lastName.value = user.value.lastName;
-        nickName.value = user.value.nickName;
-        email.value = user.value.email;
-      }
-    );
-
-    watch(
-      () => user.value.isEditing,
-      () => {
-        if (user.value.isEditing) {
-          formTitle.value = 'Edit User Profile';
-        } else {
-          formTitle.value = 'User Profile';
-        }
-      }
-    );
-
-    watch(
-      () => userStore.getServiceMessage,
-      () => {
-        if (
-          userStore.getServiceMessage !== null &&
-          userStore.getServiceMessage !== ''
-        ) {
-          toast(userStore.getServiceMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.SUCCESS,
-          });
-          userStore.updateServiceMessage('');
-        }
-      }
-    );
-
-    watch(
-      () => serviceFailStore.getIsSuccess,
-      () => {
-        const isSuccess = serviceFailStore.getIsSuccess;
-        if (isSuccess !== null && !isSuccess) {
-          const message: string = serviceFailStore.getMessage;
-          if (
-            message === 'Status Code 404: User name not unique' &&
-            !invalidUserNames.value.includes(userName.value as string)
-          ) {
-            invalidUserNames.value.push(userName.value as string);
-          }
-          if (
-            message === 'Status Code 404: Email not unique' &&
-            !invalidEmails.value.includes(email.value as string)
-          ) {
-            invalidEmails.value.push(email.value as string);
-          }
-          toast(message, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          });
-          serviceFailStore.initializeStore();
-          form.value?.validate();
-        }
-      }
-    );
-
-    return {
-      form,
-      formValid,
-      formTitle,
-      user,
-      userName,
-      firstName,
-      lastName,
-      nickName,
-      email,
-      invalidUserNames,
-      invalidEmails,
-      userNameRules,
-      emailRules,
-      requiredRules,
-      formattedDateCreated,
-      formattedDateUpdated,
-      submitText,
-      submitHelperText,
-      submitHandler,
-      refreshHandler,
-      cancelHandler,
-    };
-  },
+const props = defineProps({
+  formStatus: {
+    type: Boolean,
+    default: true,
+  }
 });
+const emit = defineEmits(['user-updated']);
+
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(false);
+const formTitle: Ref<string> = ref('User Profile');
+const userStore = useUserStore();
+const serviceFailStore = useServiceFailStore();
+const { emailRules, requiredRules, userNameRules } = rules();
+const user: Ref<User> = ref(userStore.getUser);
+const userName: Ref<string | null> = ref(user.value.userName);
+const firstName: Ref<string | null> = ref(user.value.firstName);
+const lastName: Ref<string | null> = ref(user.value.lastName);
+const nickName: Ref<string | null> = ref(user.value.nickName);
+const email: Ref<string | null> = ref(user.value.email);
+const invalidUserNames: Ref<string[]> = ref([]);
+const invalidEmails: Ref<string[]> = ref([]);
+
+// eslint-disable-next-line
+const getFormStatus: ComputedRef<boolean> = computed(() => {
+  return props.formStatus;
+});
+
+// eslint-disable-next-line
+const resetFormStatus: ComputedRef<boolean> = computed(() => {
+  return !props.formStatus;
+});
+
+const formattedDateCreated: ComputedRef<string | null> = computed(() => {
+  if (user.value.dateCreated === null) {
+    return null;
+  } else {
+    return `${new Date(
+      user.value.dateCreated
+    ).toLocaleDateString()} ${new Date(
+      user.value.dateCreated
+    ).toLocaleTimeString()}`;
+  }
+});
+
+const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
+  if (user.value.dateUpdated === null) {
+    return null;
+  } else {
+    if (
+      `${new Date(user.value.dateUpdated).toLocaleDateString()} ${new Date(
+        user.value.dateUpdated
+      ).toLocaleTimeString()}` === '1/1/1 12:00:00 AM'
+    ) {
+      return null;
+    } else {
+      return `${new Date(
+        user.value.dateUpdated
+      ).toLocaleDateString()} ${new Date(
+        user.value.dateUpdated
+      ).toLocaleTimeString()}`;
+    }
+  }
+});
+
+const submitText: ComputedRef<string> = computed(() => {
+  if (!user.value.isEditing) {
+    return 'Edit';
+  } else {
+    return 'Submit';
+  }
+});
+
+const submitHelperText: ComputedRef<string> = computed(() => {
+  if (user.value.isEditing) {
+    return 'Edit your profile';
+  } else {
+    return 'Submit your changes';
+  }
+});
+
+const submitHandler = (): void => {
+  if (!user.value.isEditing) {
+    user.value.isEditing = true;
+    form.value?.validate();
+  } else {
+    if (getFormStatus.value) {
+      const data = new UpdateUserRequestData(
+        userName.value,
+        firstName.value,
+        lastName.value,
+        nickName.value,
+        email.value
+      );
+      userStore.updateUserAsync(data);
+    }
+  }
+};
+
+const refreshHandler = (): void => {
+  userStore.getUserAsync();
+};
+
+const cancelHandler = (): void => {
+  user.value.isEditing = false;
+  invalidUserNames.value = [];
+  invalidEmails.value = [];
+  form.value?.resetValidation();
+  userName.value = user.value.userName;
+  firstName.value = user.value.firstName;
+  lastName.value = user.value.lastName;
+  nickName.value = user.value.nickName;
+  email.value = user.value.email;
+  emit('user-updated', null);
+};
+
+watch(
+  () => userStore.getUser,
+  () => {
+    user.value = userStore.getUser;
+    userName.value = user.value.userName;
+    firstName.value = user.value.firstName;
+    lastName.value = user.value.lastName;
+    nickName.value = user.value.nickName;
+    email.value = user.value.email;
+  }
+);
+
+watch(
+  () => user.value.isEditing,
+  () => {
+    if (user.value.isEditing) {
+      formTitle.value = 'Edit User Profile';
+    } else {
+      formTitle.value = 'User Profile';
+    }
+  }
+);
+
+watch(
+  () => userStore.getServiceMessage,
+  () => {
+    if (
+      userStore.getServiceMessage !== null &&
+      userStore.getServiceMessage !== ''
+    ) {
+      toast(userStore.getServiceMessage, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
+      userStore.updateServiceMessage('');
+    }
+  }
+);
+
+watch(
+  () => serviceFailStore.getIsSuccess,
+  () => {
+    const isSuccess = serviceFailStore.getIsSuccess;
+    if (isSuccess !== null && !isSuccess) {
+      const message: string = serviceFailStore.getMessage;
+      if (
+        message === 'Status Code 404: User name not unique' &&
+        !invalidUserNames.value.includes(userName.value as string)
+      ) {
+        invalidUserNames.value.push(userName.value as string);
+      }
+      if (
+        message === 'Status Code 404: Email not unique' &&
+        !invalidEmails.value.includes(email.value as string)
+      ) {
+        invalidEmails.value.push(email.value as string);
+      }
+      toast(message, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
+      serviceFailStore.initializeStore();
+      form.value?.validate();
+    }
+  }
+);
 </script>
