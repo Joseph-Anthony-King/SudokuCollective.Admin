@@ -30,8 +30,12 @@
 	</v-navigation-drawer>
 </template>
 
-<script lang='ts'>
-import { Ref, defineComponent, ref, watch } from 'vue';
+<script setup lang='ts'>
+import { 
+	ref, 
+	Ref, 
+	watch 
+} from 'vue';
 import { onBeforeMount } from 'vue';
 import { onBeforeUpdate } from 'vue';
 import { useUserStore } from '@/store/userStore';
@@ -39,81 +43,72 @@ import { NavDrawerLinks } from '@/utilities/links/navDrawerLinks';
 import { User } from '@/models/domain/user';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-export default defineComponent({
-	name: 'NavigationDrawer',
-	props: {
-		navDrawerStatus: {
-			type: Boolean,
-			default: false
-		},
-		userLoggedIn: {
-			type: Boolean,
-			default: false
-		},
+// eslint-disable-next-line
+const props = defineProps({
+	navDrawerStatus: {
+		type: Boolean,
+		default: false
 	},
-	setup() {
-		const userStore = useUserStore();
-		const greeting: Ref<string> = ref('');
-		const navDrawerItems: Ref<MenuItem[]> = ref(NavDrawerLinks);
-		const user: Ref<User> = ref(userStore.getUser);
+	userLoggedIn: {
+		type: Boolean,
+		default: false
+	},
+});
 
-		const updateNow = () => {
-			const now = new Date();
+const userStore = useUserStore();
+const greeting: Ref<string> = ref('');
+const navDrawerItems: Ref<MenuItem[]> = ref(NavDrawerLinks);
+const user: Ref<User> = ref(userStore.getUser);
 
-			if (now.getHours() < 12) {
-				greeting.value = 'Good Morning,';
-			} else if (now.getHours() < 18) {
-				greeting.value = 'Good Afternoon,';
-			} else {
-				greeting.value = 'Good Evening,';
+const updateNow = () => {
+	const now = new Date();
+
+	if (now.getHours() < 12) {
+		greeting.value = 'Good Morning,';
+	} else if (now.getHours() < 18) {
+		greeting.value = 'Good Afternoon,';
+	} else {
+		greeting.value = 'Good Evening,';
+	}
+};
+
+const updateGreeting = () => {
+	updateNow();
+
+	setInterval(() => {
+		updateNow();
+	}, 60000);
+};
+
+const updateSiteAdminVisibility = () => {
+	const navItemIndex = navDrawerItems.value.findIndex(
+		(item) => item.title === 'Site Admin'
+	);
+	if (navItemIndex !== -1) {
+		if (user.value.isSuperUser === true) {
+			navDrawerItems.value[navItemIndex].condition = true;
+		} else {
+			if (navDrawerItems.value[navItemIndex].condition === true) {
+				navDrawerItems.value[navItemIndex].condition = false;
 			}
-		};
-
-		const updateGreeting = () => {
-			updateNow();
-
-			setInterval(() => {
-				updateNow();
-			}, 60000);
-		};
-
-		const updateSiteAdminVisibility = () => {
-			const navItemIndex = navDrawerItems.value.findIndex(
-				(item) => item.title === 'Site Admin'
-			);
-			if (navItemIndex !== -1) {
-				if (user.value.isSuperUser === true) {
-					navDrawerItems.value[navItemIndex].condition = true;
-				} else {
-					if (navDrawerItems.value[navItemIndex].condition === true) {
-						navDrawerItems.value[navItemIndex].condition = false;
-					}
-				}
-			}
-		};
-		
-		watch(
-			() => userStore.getUser,
-			() => {
-				user.value = userStore.getUser;
-			}
-		);
-
-		onBeforeMount(() => { 
-			updateGreeting();
-			updateSiteAdminVisibility();
-		});
-
-		onBeforeUpdate(() => {
-			updateSiteAdminVisibility();
-		});
-
-		return {
-			greeting,
-			navDrawerItems,
-			user,
 		}
 	}
+};
+
+watch(
+	() => userStore.getUser,
+	() => {
+		user.value = userStore.getUser;
+	}
+);
+
+onBeforeMount(() => { 
+	updateGreeting();
+	updateSiteAdminVisibility();
+});
+
+onBeforeUpdate(() => {
+	updateSiteAdminVisibility();
 });
 </script>
 
@@ -152,4 +147,5 @@ export default defineComponent({
 	padding-left: 25px;
 	padding-right: 25px;
 	padding-bottom: 5px;
-}</style>
+}
+</style>

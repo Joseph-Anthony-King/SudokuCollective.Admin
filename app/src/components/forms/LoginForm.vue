@@ -115,15 +115,14 @@
   </v-dialog>
 </template>
 
-<script lang='ts'>
+<script setup lang='ts'>
 import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  onMounted,
-  onUpdated,
   ref,
   Ref,
+  computed,
+  ComputedRef,
+  onMounted,
+  onUpdated,
   toRaw,
   watch
 } from 'vue';
@@ -137,126 +136,105 @@ import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
 import { LoginRequestData } from '@/models/requests/loginRequestData';
+  
+const props = defineProps({
+  formStatus: {
+    type: Boolean,
+    default: false
+  }
+});
+const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
 
-export default defineComponent({
-  name: 'LoginForm',
-  components: { ConfirmDialog },
-  props: {
-    formStatus: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props, { emit }) {
-    const appStore = useAppStore();
-    const serviceFailStore = useServiceFailStore();
-    const userStore = useUserStore();
-    const { isChrome, repairAutoComplete } = commonUtilities();
-    const { passwordRules, userNameRules } = rules();
-    const form: Ref<VForm | null> = ref(null);
-    const formValid: Ref<boolean> = ref(true);
-    const userName: Ref<string> = ref('');
-    const password: Ref<string> = ref('');
-    const showPassword: Ref<boolean> = ref(false);
-    const confirmFormReset: Ref<boolean> = ref(false);
-    const invalidUserNames: Ref<string[]> = ref([]);
-    const invalidPasswords: Ref<string[]> = ref([]);
+const appStore = useAppStore();
+const serviceFailStore = useServiceFailStore();
+const userStore = useUserStore();
+const { isChrome, repairAutoComplete } = commonUtilities();
+const { passwordRules, userNameRules } = rules();
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
+const userName: Ref<string> = ref('');
+const password: Ref<string> = ref('');
+const showPassword: Ref<boolean> = ref(false);
+const confirmFormReset: Ref<boolean> = ref(false);
+const invalidUserNames: Ref<string[]> = ref([]);
+const invalidPasswords: Ref<string[]> = ref([]);
 
-    const getFormStatus: ComputedRef<boolean> = computed(() => {
-      return props.formStatus;
-    });
+const getFormStatus: ComputedRef<boolean> = computed(() => {
+  return props.formStatus;
+});
 
-    // the following line is used by vuetify to reset the form
-    // eslint-disable-next-line
-    const resetFormStatus: ComputedRef<boolean> = computed(() => {
-      return !props.formStatus;
-    });
-    const helpHandler = (): void => {
-      emit('obtain-login-assistance', null, null);
-    };
+// the following line is used by vuetify to reset the form
+// eslint-disable-next-line
+const resetFormStatus: ComputedRef<boolean> = computed(() => {
+  return !props.formStatus;
+});
+const helpHandler = (): void => {
+  emit('obtain-login-assistance', null, null);
+};
 
-    const resetHandler = (): void => {
-      userName.value = '';
-      password.value = '';
-      invalidUserNames.value = [];
-      invalidPasswords.value = [];
-      form.value?.reset();
-      confirmFormReset.value = false;
+const resetHandler = (): void => {
+  userName.value = '';
+  password.value = '';
+  invalidUserNames.value = [];
+  invalidPasswords.value = [];
+  form.value?.reset();
+  confirmFormReset.value = false;
+  serviceFailStore.initializeStore();
+};
+
+const cancelHandler = (): void => {
+  emit('cancel-login', null, null);
+};
+
+const submitHandler = (): void => {
+  if (getFormStatus.value) {
+    const data = new LoginRequestData(userName.value, password.value);
+    appStore.loginAsync(data);
+  }
+};
+
+watch(
+  () => serviceFailStore.getIsSuccess,
+  () => {
+    const isSuccess = serviceFailStore.getIsSuccess;
+    if (isSuccess !== null && !isSuccess) {
+      const message: string = serviceFailStore.getMessage;
+      if (
+        message === 'Status Code 404: No user has this user name' &&
+        !invalidUserNames.value.includes(userName.value)
+      ) {
+        invalidUserNames.value.push(userName.value);
+      }
+      if (
+        message === 'Status Code 404: Password is incorrect' &&
+        !invalidPasswords.value.includes(password.value)
+      ) {
+        invalidPasswords.value.push(password.value);
+      }
+      toast(message, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
       serviceFailStore.initializeStore();
-    };
+      form.value?.validate();
+    }
+  }
+);
 
-    const cancelHandler = (): void => {
-      emit('cancel-login', null, null);
-    };
+onMounted(() => {
+  if (isChrome.value) {
+    repairAutoComplete();
+  }
+  const confirmedUserName = toRaw(userStore.getConfirmedUserName);
+  if (confirmedUserName !== '') {
+    userName.value = confirmedUserName;
+    userStore.updateConfirmedUserName('');
+  }
+});
 
-    const submitHandler = (): void => {
-      if (getFormStatus.value) {
-        const data = new LoginRequestData(userName.value, password.value);
-        appStore.loginAsync(data);
-      }
-    };
-
-    watch(
-      () => serviceFailStore.getIsSuccess,
-      () => {
-        const isSuccess = serviceFailStore.getIsSuccess;
-        if (isSuccess !== null && !isSuccess) {
-          const message: string = serviceFailStore.getMessage;
-          if (
-            message === 'Status Code 404: No user has this user name' &&
-            !invalidUserNames.value.includes(userName.value)
-          ) {
-            invalidUserNames.value.push(userName.value);
-          }
-          if (
-            message === 'Status Code 404: Password is incorrect' &&
-            !invalidPasswords.value.includes(password.value)
-          ) {
-            invalidPasswords.value.push(password.value);
-          }
-          toast(message, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          });
-          serviceFailStore.initializeStore();
-          form.value?.validate();
-        }
-      }
-    );
-
-    onMounted(() => {
-      if (isChrome.value) {
-        repairAutoComplete();
-      }
-      const confirmedUserName = toRaw(userStore.getConfirmedUserName);
-      if (confirmedUserName !== '') {
-        userName.value = confirmedUserName;
-        userStore.updateConfirmedUserName('');
-      }
-    });
-
-    onUpdated(() => {
-      if (isChrome.value) {
-        repairAutoComplete();
-      }
-    });
-    
-    return {
-      form,
-      formValid,
-      userName,
-      password,
-      showPassword,
-      confirmFormReset,
-      invalidUserNames,
-      userNameRules,
-      invalidPasswords,
-      passwordRules,
-      submitHandler,
-      helpHandler,
-      resetHandler,
-      cancelHandler,
-    };
-  },
+onUpdated(() => {
+  if (isChrome.value) {
+    repairAutoComplete();
+  }
 });
 </script>

@@ -11,7 +11,7 @@
               item-title='label'
               item-value='value'
               label='Please make a selection'
-              return-object
+              v-bind="{'return-object':true}"
               single-line
             ></v-select>
             <div v-if='isCurrentGameStatePlayGame'>
@@ -24,7 +24,7 @@
                 item-title='displayName'
                 item-value='difficultyLevel'
                 label='Please make a selection'
-                return-object
+                v-bind="{'return-object':true}"
                 single-line
               ></v-select>
             </div>
@@ -90,9 +90,15 @@
   </v-container>
 </template>
 
-<script lang='ts'>
-import { defineComponent, ref, watch } from 'vue';
-import { computed, ComputedRef, Ref, toRaw } from '@vue/reactivity';
+<script setup lang='ts'>
+import { 
+  ref,
+  Ref,
+  computed,
+  ComputedRef,
+  toRaw,
+  watch 
+} from 'vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useServiceFailStore } from '@/store/serviceFailStore';
@@ -103,184 +109,163 @@ import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 
-export default defineComponent({
-  name: 'SudokuWidget',
-  components: { MatrixWidget },
-  setup() {
-    /* initialize stores */
-    const serviceFailStore = useServiceFailStore();
-    const sudokuStore = useSudokuStore();
-    const valuesStore = useValuesStore();
+/* initialize stores */
+const serviceFailStore = useServiceFailStore();
+const sudokuStore = useSudokuStore();
+const valuesStore = useValuesStore();
 
-    /* difficulty properties and methods */
-    const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
-    const selectedDifficulty: Ref<Difficulty | null> = ref(
-      sudokuStore.getSelectedDifficulty
-    );
-    /* Game state properties and methods */
-    const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
-    // eslint-disable-next-line
-    const selectedGameState: Ref<DropdownItem | null> = ref(
-      sudokuStore.getGameState
-    );
-    const isGameStateSelected: ComputedRef<boolean> = computed(() => {
-      {
-        return sudokuStore.getGameState !== null;
-      }
-    });
-    const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
-      let result: boolean;
-      if (sudokuStore.getGameState !== null) {
-        result = sudokuStore.getGameState.value === GameState.PLAYGAME;
-      } else {
-        result = false;
-      }
-      return result;
-    });
-    const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
-      if (selectedGameState.value?.value === GameState.PLAYGAME) {
-        if (selectedDifficulty?.value === null) {
-          return true;
-        } else {
-          return false;
-        }
-      } else if (
-        selectedGameState.value?.value === GameState.SOLVESUDOKU
-      ) {
-        return sudokuStore.getIsSolvedDisabled;
-      } else {
-        return false;
-      }
-    });
-    const executeButtonText: ComputedRef<string> = computed(() => {
-      if (selectedGameState.value?.value === GameState.PLAYGAME) {
-        return 'Create Game';
-      } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-        return 'Solve Sudoku';
-      } else {
-        return 'Generate Sudoku';
-      }
-    });
-    const clearButtonText: ComputedRef<string> = computed(() => {
-      if (
-        selectedDifficulty.value !== null &&
-        selectedGameState.value?.value === GameState.PLAYGAME
-      ) {
-        return 'Clear Game';
-      } else {
-        return 'Clear Sudoku';
-      }
-    });
-    const execute = (): void => {
-      if (
-        selectedDifficulty.value !== null &&
-        selectedGameState.value?.value === GameState.PLAYGAME
-      ) {
-        sudokuStore.createGameAsync();
-      } else if (
-        selectedGameState.value?.value === GameState.SOLVESUDOKU
-      ) {
-        sudokuStore.solvePuzzleAsync();
-      } else {
-        sudokuStore.generateSolutionAsync();
-      }
-    };
-    const checkGame = (): void => {
-      sudokuStore.checkGameAsync();
-    };
-    const resetGame = (): void => {
-      const initialGame = sudokuStore.getInitialGame;
-      const game = Array<Array<string>>(9);
-      for (let i = 0; i < 9; i++) {
-        game[i] = [];
-        for (let j = 0; j < 9; j++) {
-          game[i][j] = initialGame[i][j];
-        }
-      }
-      sudokuStore.updateGame(game);
-    };
-    const clear = (): void => {
-      if (
-        selectedGameState.value?.value === GameState.PLAYGAME
-      ) {
-        sudokuStore.initializeGame();
-      } else if (
-        selectedGameState.value?.value === GameState.SOLVESUDOKU
-      ) {
-        sudokuStore.initializePuzzle();
-      } else {
-        sudokuStore.initializeSolution();
-      }
-    };
-    watch(
-      () => valuesStore.getGameStates,
-      () => {
-        gameStates.value = toRaw(valuesStore.getGameStates);
-      }
-    );
-    watch(
-      () => selectedGameState?.value,
-      () => {
-        sudokuStore.updateGameState(toRaw(selectedGameState.value));
-      }
-    );
-    watch(
-      () => valuesStore.getDifficulties,
-      () => {
-        difficulties.value = toRaw(valuesStore.getDifficulties);
-      }
-    );
-    watch(
-      () => selectedDifficulty?.value,
-      () => {
-        sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty.value));
-      }
-    );
-    watch(
-      () => sudokuStore.getServiceResult,
-      () => {
-        if (
-          sudokuStore.getServiceResult !== null &&
-          sudokuStore.getServiceMessage !== ''
-        ) {
-          toast(sudokuStore.getServiceMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.SUCCESS,
-          });
-        }
-      }
-    );
-    watch(
-      () => serviceFailStore.getIsSuccess,
-      () => {
-        const isSuccess = serviceFailStore.getIsSuccess;
-        if (isSuccess !== null && !isSuccess) {
-          const message: string = serviceFailStore.getMessage;
-          toast(message, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          });
-          serviceFailStore.initializeStore();
-        }
-      }
-    );
-    return {
-      gameStates,
-      selectedGameState,
-      isGameStateSelected,
-      isCurrentGameStatePlayGame,
-      isExectuteButtonDisabed,
-      executeButtonText,
-      clearButtonText,
-      execute,
-      checkGame,
-      resetGame,
-      clear,
-      difficulties,
-      selectedDifficulty,
-    };
-  },
+/* difficulty properties and methods */
+const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
+const selectedDifficulty: Ref<Difficulty | null> = ref(
+  sudokuStore.getSelectedDifficulty
+);
+/* Game state properties and methods */
+const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
+// eslint-disable-next-line
+const selectedGameState: Ref<DropdownItem | null> = ref(
+  sudokuStore.getGameState
+);
+const isGameStateSelected: ComputedRef<boolean> = computed(() => {
+  {
+    return sudokuStore.getGameState !== null;
+  }
 });
+const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
+  let result: boolean;
+  if (sudokuStore.getGameState !== null) {
+    result = sudokuStore.getGameState.value === GameState.PLAYGAME;
+  } else {
+    result = false;
+  }
+  return result;
+});
+const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
+  if (selectedGameState.value?.value === GameState.PLAYGAME) {
+    if (selectedDifficulty?.value === null) {
+      return true;
+    } else {
+      return false;
+    }
+  } else if (
+    selectedGameState.value?.value === GameState.SOLVESUDOKU
+  ) {
+    return sudokuStore.getIsSolvedDisabled;
+  } else {
+    return false;
+  }
+});
+const executeButtonText: ComputedRef<string> = computed(() => {
+  if (selectedGameState.value?.value === GameState.PLAYGAME) {
+    return 'Create Game';
+  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+    return 'Solve Sudoku';
+  } else {
+    return 'Generate Sudoku';
+  }
+});
+const clearButtonText: ComputedRef<string> = computed(() => {
+  if (
+    selectedDifficulty.value !== null &&
+    selectedGameState.value?.value === GameState.PLAYGAME
+  ) {
+    return 'Clear Game';
+  } else {
+    return 'Clear Sudoku';
+  }
+});
+const execute = (): void => {
+  if (
+    selectedDifficulty.value !== null &&
+    selectedGameState.value?.value === GameState.PLAYGAME
+  ) {
+    sudokuStore.createGameAsync();
+  } else if (
+    selectedGameState.value?.value === GameState.SOLVESUDOKU
+  ) {
+    sudokuStore.solvePuzzleAsync();
+  } else {
+    sudokuStore.generateSolutionAsync();
+  }
+};
+const checkGame = (): void => {
+  sudokuStore.checkGameAsync();
+};
+const resetGame = (): void => {
+  const initialGame = sudokuStore.getInitialGame;
+  const game = Array<Array<string>>(9);
+  for (let i = 0; i < 9; i++) {
+    game[i] = [];
+    for (let j = 0; j < 9; j++) {
+      game[i][j] = initialGame[i][j];
+    }
+  }
+  sudokuStore.updateGame(game);
+};
+const clear = (): void => {
+  if (
+    selectedGameState.value?.value === GameState.PLAYGAME
+  ) {
+    sudokuStore.initializeGame();
+  } else if (
+    selectedGameState.value?.value === GameState.SOLVESUDOKU
+  ) {
+    sudokuStore.initializePuzzle();
+  } else {
+    sudokuStore.initializeSolution();
+  }
+};
+watch(
+  () => valuesStore.getGameStates,
+  () => {
+    gameStates.value = toRaw(valuesStore.getGameStates);
+  }
+);
+watch(
+  () => selectedGameState?.value,
+  () => {
+    sudokuStore.updateGameState(toRaw(selectedGameState.value));
+  }
+);
+watch(
+  () => valuesStore.getDifficulties,
+  () => {
+    difficulties.value = toRaw(valuesStore.getDifficulties);
+  }
+);
+watch(
+  () => selectedDifficulty?.value,
+  () => {
+    sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty.value));
+  }
+);
+watch(
+  () => sudokuStore.getServiceResult,
+  () => {
+    if (
+      sudokuStore.getServiceResult !== null &&
+      sudokuStore.getServiceMessage !== ''
+    ) {
+      toast(sudokuStore.getServiceMessage, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
+    }
+  }
+);
+watch(
+  () => serviceFailStore.getIsSuccess,
+  () => {
+    const isSuccess = serviceFailStore.getIsSuccess;
+    if (isSuccess !== null && !isSuccess) {
+      const message: string = serviceFailStore.getMessage;
+      toast(message, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
+      serviceFailStore.initializeStore();
+    }
+  }
+);
 </script>
 
 <style lang='scss' scoped>

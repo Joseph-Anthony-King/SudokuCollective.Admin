@@ -29,32 +29,24 @@
   </v-card>
 </template>
 
-<script lang='ts'>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'ConfirmDialog',
-  props: {
-    title: {
-      type: String,
-      default: '',
-    },
-    message: {
-      type: String,
-      default: '',
-    },
+<script setup lang='ts'>
+// eslint-disable-next-line
+const props = defineProps({
+  title: {
+    type: String,
+    default: '',
   },
-  setup(props, { emit }) {
-    const confirmedHandler = (): void => {
-      emit('action-confirmed', null, null);
-    };
-    const notConfirmedHandlder = (): void => {
-      emit('action-not-confirmed', null, null);
-    };
-    return {
-      confirmedHandler,
-      notConfirmedHandlder,
-    };
+  message: {
+    type: String,
+    default: '',
   },
 });
+const emit = defineEmits(['action-confirmed', 'action-not-confirmed']);
+
+const confirmedHandler = (): void => {
+  emit('action-confirmed', null, null);
+};
+const notConfirmedHandlder = (): void => {
+  emit('action-not-confirmed', null, null);
+};   
 </script>
