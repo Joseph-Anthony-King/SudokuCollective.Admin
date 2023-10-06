@@ -6,10 +6,6 @@ export default function () {
     return /Chrome/.test(navigator.userAgent);
   });
 
-  const getLicense = (): string => {
-    return process.env.VUE_APP_LICENSE;
-  }
-
   const repairAutoComplete = (): void => {
     document.querySelectorAll('input[type="text"][autocomplete="off"').forEach((element) => {
       element.setAttribute('autocomplete', 'new-password')
@@ -35,7 +31,6 @@ export default function () {
 
   return {
     isChrome,
-    getLicense,
     repairAutoComplete,
     updateUrlWithAction
   }
