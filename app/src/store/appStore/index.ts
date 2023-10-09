@@ -8,8 +8,8 @@ import { defineStore } from 'pinia';
 import { useUserStore } from '@/store/userStore/index';
 import { LoginService } from '@/services/loginService';
 import { UsersService } from '@/services/usersService';
-import router from '@/router/index';
-import { UserMethods } from '@/models/domain/user';
+import router from '@/router';
+import { User, UserMethods } from '@/models/domain/user';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
@@ -18,7 +18,7 @@ export const useAppStore = defineStore('appStore', () => {
 	const license: Ref<string> = ref(process.env.VUE_APP_LICENSE);
 	const token: Ref<string | undefined> = ref(undefined);
 	const expirationDate: Ref<Date | undefined> = ref(undefined);
-	const refreshTokenRedirectUrl: Ref<string | undefined> = ref(undefined);
+	const redirectUrl: Ref<string | undefined> = ref(undefined);
 	const processingMessage: Ref<string | undefined> = ref(undefined);
 	const serviceMessage: Ref<string | undefined> = ref(undefined);
 	const navDrawerStatus: Ref<boolean> = ref(false);
@@ -26,7 +26,7 @@ export const useAppStore = defineStore('appStore', () => {
 	const getLicense: ComputedRef<string> = computed(() => license.value);
 	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
 	const getExpirationDate: ComputedRef<Date> = computed(() => expirationDate.value ? expirationDate.value : new Date());
-	const getRefreshTokenRedirectUrl: ComputedRef<string> = computed(() => refreshTokenRedirectUrl.value ? refreshTokenRedirectUrl.value : '');
+	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => navDrawerStatus.value);
@@ -37,8 +37,8 @@ export const useAppStore = defineStore('appStore', () => {
 	const updateExpirationDate = (param: Date | undefined = undefined): void => {
 		expirationDate.value = param;
 	};
-	const updateRefreshTokenRedirectUrl = (param: string | undefined = undefined): void => {
-		refreshTokenRedirectUrl.value = param;
+	const updateRedirectUrl = (param: string | undefined = undefined): void => {
+		redirectUrl.value = param;
 	};
 	const updateProcessingMessage = (param: string | undefined = undefined): void => {
 		processingMessage.value = param;
@@ -56,9 +56,9 @@ export const useAppStore = defineStore('appStore', () => {
 			userStore.updateUser(response.user);
 			updateToken(response.token);
 			updateExpirationDate(response.expirationDate);
-			if (refreshTokenRedirectUrl.value !== undefined) {
-				router.push(refreshTokenRedirectUrl.value);
-				updateRefreshTokenRedirectUrl();
+			if (redirectUrl.value !== undefined) {
+				window.location.href = redirectUrl.value
+				updateRedirectUrl();
 			}
 		}
 	};
@@ -83,27 +83,34 @@ export const useAppStore = defineStore('appStore', () => {
 	};
 
 	const isTokenExpired = (): boolean => {
-		return expirationDate.value !== undefined ? new Date(expirationDate.value) < new Date() : false;
+		let result = false;
+		if (expirationDate.value !== undefined && new Date(expirationDate.value) < new Date()) {
+			redirectUrl.value = router.currentRoute.value.path;
+			const user = new User();
+			useUserStore().updateUser(user);
+			result = true;
+		}
+		return result;
 	};
 
 	return {
 		license,
 		token,
 		expirationDate,
-		refreshTokenRedirectUrl,
+		redirectUrl,
 		processingMessage,
 		serviceMessage,
 		navDrawerStatus,
 		getLicense,
 		getToken,
 		getExpirationDate,
-		getRefreshTokenRedirectUrl,
+		getRedirectUrl,
 		getProcessingMessage,
 		getServiceMessage,
 		getNavDrawerStatus,
 		updateToken,
 		updateExpirationDate,
-		updateRefreshTokenRedirectUrl,
+		updateRedirectUrl,
 		updateProcessingMessage,
 		updateServiceMessage,
 		updateNavDrawerStatus,

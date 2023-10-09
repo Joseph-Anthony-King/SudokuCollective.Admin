@@ -8,7 +8,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: () => import(/* webpackChunkName: 'dashboard' */ '../views/DashboardView.vue'),
-    props: true,
   },
   {
     path: '/:action?',
@@ -20,7 +19,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/site-admin',
     name: 'site-admin',
     component: () => import(/* webpackChunkName: 'site-admin' */ '../views/SiteAdminView.vue'),
-    props: true,
   },
   {
     path: '/sudoku/:action?',
@@ -32,19 +30,21 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user-profile',
     name: 'user-profile',
     component: () => import(/* webpackChunkName: 'user' */ '../views/UserProfileView.vue'),
-    props: true,
   }
 ];
 
 const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext): void => {
   const user = useUserStore().getUser;
-  user.isLoggingIn = true;
-  useUserStore().updateUser(user);
-  toast('Login has expired, please sign in again.', {
+  if (user.isLoggedIn && !user.isLoggingIn) {
+    user.isLoggedIn = false;
+    user.isLoggingIn = true;
+    useUserStore().updateUser(user);
+  }
+  toast('The authorization token has expired, please sign in again.', {
     position: toast.POSITION.TOP_CENTER,
     type: toast.TYPE.WARNING,
   });
-  next(`${from.path}login`);
+  next(`/login`);
 }
 
 const checkUserLoggedIn = (next: NavigationGuardNext): void => {
@@ -78,7 +78,7 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async (to, from, next) => {  
+router.beforeEach(async (to, from, next) => {
   if (to.name === 'home' || to.name === 'sudoku') {
     next();
   } else {

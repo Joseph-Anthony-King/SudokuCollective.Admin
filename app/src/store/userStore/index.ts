@@ -47,7 +47,6 @@ export const useUserStore = defineStore('userStore', () => {
 	};
 	const getUserAsync = async (): Promise<void> => {
 		const response: IServicePayload = await UsersService.getUserAsync(user.value.id);
-		console.log(response);
 		if (response.isSuccess) {
 			updateUser(response.user);
 			updateServiceMessage(response.message);

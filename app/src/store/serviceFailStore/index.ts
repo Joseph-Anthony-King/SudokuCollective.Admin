@@ -1,7 +1,15 @@
+
+import { 
+	computed, 
+	ComputedRef, 
+	ref, 
+	Ref 
+} from 'vue';
 import { defineStore } from 'pinia';
-import { ComputedRef, Ref, computed, ref } from 'vue';
 import router from '@/router/index';
 import { useAppStore } from '@/store/appStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import { User } from '@/models/domain/user';
 
 export const useServiceFailStore = defineStore('serviceFailStore', () => {
 	const isSuccess: Ref<boolean | null> = ref(null);
@@ -23,10 +31,11 @@ export const useServiceFailStore = defineStore('serviceFailStore', () => {
 		isSuccess.value = success;
 	};
 	const updateMessage = (param: string): void => {
-		if (param === 'Status Code 403: Invalid request on this token' && appStore.isTokenExpired()) {
-			param = 'Login has expired, please sign in again.';
-			appStore.updateRefreshTokenRedirectUrl(router.currentRoute.value.path);
-			router.push(`${router.currentRoute.value}\\login`);
+		if (param === 'Status Code 401: The authorization token has expired, please sign in again' && appStore.isTokenExpired()) {
+			const user = new User();
+			useUserStore().updateUser(user);
+			appStore.updateRedirectUrl(router.currentRoute.value.path);
+			router.push('/login');
 		}
 		message.value = param;
 	};
