@@ -86,7 +86,7 @@ const obtainMatrix = (): Array<Array<string>> => {
         result[i][j] = puzzle[i][j];
       }
     }
-  } else {
+  } else if (gameState !== null && gameState?.value === GameState.GENERATESUDOKU) {
     const solution = sudokuStore.getSolution;
     result = Array<Array<string>>(9);
 
