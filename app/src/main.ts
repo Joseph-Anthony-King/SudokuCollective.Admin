@@ -9,7 +9,7 @@ import { loadFonts } from '@/plugins/webfontloader';
 
 const ls = new SecureLS({ isCompression: false });
 
-loadFonts()
+loadFonts();
 
 createApp(App)
   .use(router)
@@ -27,4 +27,4 @@ createApp(App)
       setItem: (key, value) => ls.set(key, value),
       removeItem: (key) => ls.remove(key)
     }})))
-  .mount('#app')
+  .mount('#app');
