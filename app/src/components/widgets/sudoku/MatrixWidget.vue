@@ -47,7 +47,7 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
 const sudokuStore = useSudokuStore();
 const matrix = ref(Array<Array<string>>());
-let gameState: DropdownItem | null = sudokuStore.getGameState;
+let gameState: DropdownItem | undefined = sudokuStore.getGameState;
 
 const applyOddRegionStyling = (
   rowIndex: number,
@@ -88,14 +88,14 @@ const validateEntry = (rowIndex: number, cellIndex: number): void => {
 
 const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
   if (gameState !== null) {
-    if (gameState.value === GameState.PLAYGAME) {
+    if (gameState?.value === GameState.PLAYGAME) {
       const initialGame = sudokuStore.getInitialGame;
       if (initialGame[rowIndex][cellIndex] === '') {
         return false;
       } else {
         return true;
       }
-    } else if (gameState.value === GameState.SOLVESUDOKU) {
+    } else if (gameState?.value === GameState.SOLVESUDOKU) {
       return false;
     } else {
       return true;
