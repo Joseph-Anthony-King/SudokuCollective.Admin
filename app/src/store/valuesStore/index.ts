@@ -83,6 +83,4 @@ export const useValuesStore = defineStore('valuesStore', () => {
 		getMissionStatement,
 		initializeStoreAsync
 	}
-}, {
-	persist: true
 });

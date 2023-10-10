@@ -181,6 +181,4 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 		solvePuzzleAsync,
 		generateSolutionAsync
 	}
-}, {
-	persist: true
 });

@@ -3,13 +3,28 @@ import App from '@/App.vue';
 import router from '@/router';
 import vuetify from '@/plugins/vuetify';
 import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import createPersistedState from "pinia-persistedstate";
+import SecureLS from "secure-ls";
 import { loadFonts } from '@/plugins/webfontloader';
+
+const ls = new SecureLS({ isCompression: false });
 
 loadFonts()
 
 createApp(App)
   .use(router)
   .use(vuetify)
-  .use(createPinia().use(piniaPluginPersistedstate))
+  .use(createPinia().use(createPersistedState({
+    key: process.env.VUE_APP_CACHE_KEY,
+    paths: [
+      'appStore', 
+      'serviceFailStore', 
+      'sudokuStore', 
+      'userStore', 
+      'valuesStore'],
+    storage: {
+      getItem: (key) => ls.get(key),
+      setItem: (key, value) => ls.set(key, value),
+      removeItem: (key) => ls.remove(key)
+    }})))
   .mount('#app')

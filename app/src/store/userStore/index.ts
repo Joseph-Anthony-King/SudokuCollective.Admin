@@ -93,6 +93,4 @@ export const useUserStore = defineStore('userStore', () => {
 		confirmUserNameAsync,
 		requestPasswordResetAsync
 	}
-}, {
-	persist: true
 });

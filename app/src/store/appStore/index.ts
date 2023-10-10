@@ -129,6 +129,4 @@ export const useAppStore = defineStore('appStore', () => {
 		isTokenExpired,
 		tokenHasExpired
 	}
-}, {
-	persist: true
 });
