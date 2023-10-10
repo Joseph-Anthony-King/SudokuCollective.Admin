@@ -12,7 +12,7 @@ export default function () {
   const clearStores = (): void => {
     useUserStore().updateUser(new User());
     useAppStore().updateToken();
-    useAppStore().updateExpirationDate();
+    useAppStore().updateTokenExpirationDate();
   };
 
   const repairAutoComplete = (): void => {

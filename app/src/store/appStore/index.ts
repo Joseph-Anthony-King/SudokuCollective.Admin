@@ -19,7 +19,7 @@ import commonUtitlities from '@/utilities/common';
 export const useAppStore = defineStore('appStore', () => {
 	const license: Ref<string | undefined> = ref(process.env.VUE_APP_LICENSE);
 	const token: Ref<string | undefined> = ref(undefined);
-	const expirationDate: Ref<Date | undefined> = ref(undefined);
+	const tokenExpirationDate: Ref<Date | undefined> = ref(undefined);
 	const redirectUrl: Ref<string | undefined> = ref(undefined);
 	const processingMessage: Ref<string | undefined> = ref(undefined);
 	const serviceMessage: Ref<string | undefined> = ref(undefined);
@@ -27,7 +27,7 @@ export const useAppStore = defineStore('appStore', () => {
 
 	const getLicense: ComputedRef<string> = computed(() => license.value ? license.value : '');
 	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
-	const getExpirationDate: ComputedRef<Date | undefined> = computed(() => expirationDate.value);
+	const getTokenExpirationDate: ComputedRef<Date | undefined> = computed(() => tokenExpirationDate.value);
 	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
@@ -36,8 +36,8 @@ export const useAppStore = defineStore('appStore', () => {
 	const updateToken = (param: string | undefined = undefined): void => {
 		token.value = param;
 	};
-	const updateExpirationDate = (param: Date | undefined = undefined): void => {
-		expirationDate.value = param;
+	const updateTokenExpirationDate = (param: Date | undefined = undefined): void => {
+		tokenExpirationDate.value = param;
 	};
 	const updateRedirectUrl = (param: string | undefined = undefined): void => {
 		redirectUrl.value = param;
@@ -57,7 +57,7 @@ export const useAppStore = defineStore('appStore', () => {
 		if (response.isSuccess) {
 			userStore.updateUser(response.user);
 			updateToken(response.token);
-			updateExpirationDate(response.expirationDate);
+			updateTokenExpirationDate(response.tokenExpirationDate);
 			if (redirectUrl.value !== undefined) {
 				window.location.href = redirectUrl.value
 				updateRedirectUrl();
@@ -84,7 +84,7 @@ export const useAppStore = defineStore('appStore', () => {
 	};
 	const isTokenExpired = (): boolean => {
 		let result = false;
-		if (expirationDate.value !== undefined && new Date(expirationDate.value) < new Date()) {
+		if (tokenExpirationDate.value !== undefined && new Date(tokenExpirationDate.value) < new Date()) {
 			redirectUrl.value = router.currentRoute.value.path;
 			const user = new User();
 			useUserStore().updateUser(user);
@@ -104,20 +104,20 @@ export const useAppStore = defineStore('appStore', () => {
 	return {
 		license,
 		token,
-		expirationDate,
+		tokenExpirationDate,
 		redirectUrl,
 		processingMessage,
 		serviceMessage,
 		navDrawerStatus,
 		getLicense,
 		getToken,
-		getExpirationDate,
+		getTokenExpirationDate,
 		getRedirectUrl,
 		getProcessingMessage,
 		getServiceMessage,
 		getNavDrawerStatus,
 		updateToken,
-		updateExpirationDate,
+		updateTokenExpirationDate,
 		updateRedirectUrl,
 		updateProcessingMessage,
 		updateServiceMessage,
