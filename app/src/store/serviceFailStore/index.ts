@@ -43,6 +43,4 @@ export const useServiceFailStore = defineStore('serviceFailStore', () => {
 		updateMessage,
 		updateStatusCode
 	}
- }, {
-	persist: true
-});
+ });
