@@ -7,7 +7,10 @@ import createPersistedState from "pinia-persistedstate";
 import SecureLS from "secure-ls";
 import { loadFonts } from '@/plugins/webfontloader';
 
-const ls = new SecureLS({ isCompression: false });
+const ls = new SecureLS({
+  encodingType: 'des', 
+  isCompression: false, 
+  encryptionSecret: process.env.VUE_APP_CACHE_SECRET});
 
 loadFonts();
 
