@@ -2,20 +2,20 @@ import { IUser } from '@/interfaces/domain/iUser';
 
 export class User implements IUser {
 	id: number;
-	userName: string | null;
-	firstName: string | null;
-	lastName: string | null;
-	nickName: string | null;
-	fullName: string | null;
-	email: string | null;
+	userName: string | undefined;
+	firstName: string | undefined;
+	lastName: string | undefined;
+	nickName: string | undefined;
+	fullName: string | undefined;
+	email: string | undefined;
 	isEmailConfirmed: boolean;
 	receivedRequestToUpdateEmail: boolean;
 	receivedRequestToUpdatePassword: boolean;
 	isActive: boolean;
 	isSuperUser: boolean;
 	isAdmin: boolean;
-	dateCreated: Date | null;
-	dateUpdated: Date | null;
+	dateCreated: Date | undefined;
+	dateUpdated: Date | undefined;
 	isLoggedIn: boolean;
 	isLoggingIn: boolean;
 	isSignedUp: boolean;
@@ -42,55 +42,25 @@ export class User implements IUser {
 		isSignedUp?: boolean,
 	) {
 		id ? this.id = id : this.id = 0;
-		userName ? this.userName = userName : this.userName = null;
-		firstName ? this.firstName = firstName : this.firstName = null;
-		lastName ? this.lastName = lastName : this.lastName = null;
-		nickName ? this.nickName = nickName : this.nickName = null;
-		fullName ? this.fullName = fullName : this.fullName = null;
-		email ? this.email = email : this.email = null;
+		userName ? this.userName = userName : this.userName = undefined;
+		firstName ? this.firstName = firstName : this.firstName = undefined;
+		lastName ? this.lastName = lastName : this.lastName = undefined;
+		nickName ? this.nickName = nickName : this.nickName = undefined;
+		fullName ? this.fullName = fullName : this.fullName = undefined;
+		email ? this.email = email : this.email = undefined;
 		isEmailConfirmed ? this.isEmailConfirmed = isEmailConfirmed : this.isEmailConfirmed = false;
 		receivedRequestToUpdateEmail ? this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail : this.receivedRequestToUpdateEmail = false;
 		receivedRequestToUpdatePassword ? this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword : this.receivedRequestToUpdatePassword = false;
 		isActive ? this.isActive = isActive : this.isActive = false;
 		isSuperUser ? this.isSuperUser = isSuperUser : this.isSuperUser = false;
 		isAdmin ? this.isAdmin = isAdmin : this.isAdmin = false;
-		dateCreated ? this.dateCreated = dateCreated : this.dateCreated = null;
-		dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = null;
+		dateCreated ? this.dateCreated = dateCreated : this.dateCreated = undefined;
+		dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = undefined;
 		isLoggedIn ? this.isLoggedIn = isLoggedIn : this.isLoggedIn = false;
 		isSignedUp ? this.isSignedUp = isSignedUp : this.isSignedUp = false;
 
 		this.isLoggingIn = false;
 		this.isSigningUp = false;
 		this.isEditing = false;
-	}
-}
-
-export class UserMethods {
-	static logout(user: User): User {
-		if (user !== null) {
-			user.isLoggedIn = false;
-			user.isLoggingIn = false;
-			user.isSignedUp = false;
-			user.isSigningUp = false;
-			user.isEmailConfirmed = false;
-			user.receivedRequestToUpdateEmail = false;
-			user.receivedRequestToUpdatePassword = false;
-			user.isActive = false;
-			user.isSuperUser = false;
-			user.isAdmin = false;
-			user.dateCreated = null;
-			user.dateUpdated = null;
-			user.id = 0;
-			user.firstName = null;
-			user.lastName = null;
-			user.nickName = null;
-			user.fullName = null;
-			user.email = null;
-			user.userName = null;
-		} else {
-			user = new User();
-		}
-
-		return user;
 	}
 }

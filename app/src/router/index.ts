@@ -1,7 +1,14 @@
-import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
+import { 
+  createRouter, 
+  createWebHistory, 
+  NavigationGuardNext, 
+  RouteLocationNormalized, 
+  RouteRecordRaw 
+} from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
+import commonUtitlities from '@/utilities/common';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -36,9 +43,8 @@ const routes: Array<RouteRecordRaw> = [
 const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext): void => {
   const user = useUserStore().getUser;
   if (user.isLoggedIn && !user.isLoggingIn) {
-    user.isLoggedIn = false;
-    user.isLoggingIn = true;
-    useUserStore().updateUser(user);
+    const { clearStores } = commonUtitlities();
+    clearStores();
   }
   toast('The authorization token has expired, please sign in again.', {
     position: toast.POSITION.TOP_CENTER,

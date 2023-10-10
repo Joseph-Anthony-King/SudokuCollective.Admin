@@ -5,17 +5,19 @@ import {
 	Ref  
 } from 'vue';
 import { defineStore } from 'pinia';
+import { AxiosResponse } from 'axios';
 import { useUserStore } from '@/store/userStore/index';
 import { LoginService } from '@/services/loginService';
 import { UsersService } from '@/services/usersService';
 import router from '@/router';
-import { User, UserMethods } from '@/models/domain/user';
+import { User } from '@/models/domain/user';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import commonUtitlities from '@/utilities/common';
 
 export const useAppStore = defineStore('appStore', () => {
-	const license: Ref<string> = ref(process.env.VUE_APP_LICENSE);
+	const license: Ref<string | undefined> = ref(process.env.VUE_APP_LICENSE);
 	const token: Ref<string | undefined> = ref(undefined);
 	const expirationDate: Ref<Date | undefined> = ref(undefined);
 	const redirectUrl: Ref<string | undefined> = ref(undefined);
@@ -23,9 +25,9 @@ export const useAppStore = defineStore('appStore', () => {
 	const serviceMessage: Ref<string | undefined> = ref(undefined);
 	const navDrawerStatus: Ref<boolean> = ref(false);
 
-	const getLicense: ComputedRef<string> = computed(() => license.value);
+	const getLicense: ComputedRef<string> = computed(() => license.value ? license.value : '');
 	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
-	const getExpirationDate: ComputedRef<Date> = computed(() => expirationDate.value ? expirationDate.value : new Date());
+	const getExpirationDate: ComputedRef<Date | undefined> = computed(() => expirationDate.value);
 	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
@@ -63,9 +65,8 @@ export const useAppStore = defineStore('appStore', () => {
 		}
 	};
 	const logout = (): void => {
-		const userStore = useUserStore();
-		userStore.updateUser(UserMethods.logout(userStore.getUser));
-		updateExpirationDate()
+		const { clearStores } = commonUtitlities();
+		clearStores();
 	};
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const userStore = useUserStore();
@@ -81,7 +82,6 @@ export const useAppStore = defineStore('appStore', () => {
 			updateServiceMessage(response.message);
 		}
 	};
-
 	const isTokenExpired = (): boolean => {
 		let result = false;
 		if (expirationDate.value !== undefined && new Date(expirationDate.value) < new Date()) {
@@ -91,6 +91,14 @@ export const useAppStore = defineStore('appStore', () => {
 			result = true;
 		}
 		return result;
+	};
+	const tokenHasExpired = (data: AxiosResponse): void => {
+		if (data.status === 401 && isTokenExpired()) {
+			const { clearStores } = commonUtitlities();
+			clearStores();
+			updateRedirectUrl(router.currentRoute.value.path);
+			router.push('/login');
+		}
 	};
 
 	return {
@@ -119,6 +127,7 @@ export const useAppStore = defineStore('appStore', () => {
 		confirmUserNameAsync,
 		requestPasswordResetAsync,
 		isTokenExpired,
+		tokenHasExpired
 	}
 }, {
 	persist: true
