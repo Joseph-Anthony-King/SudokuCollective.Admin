@@ -15,7 +15,7 @@ export const useValuesStore = defineStore('valuesStore', () => {
 	const gameStates: Ref<Array<DropdownItem> | undefined> = ref(undefined);
 	const gallery: Ref<Array<GalleryApp> | undefined> = ref(undefined);
 	const missionStatement: Ref<string | undefined> = ref(undefined);
-	const expirationDate = new Date();
+	const storeExpirationDate: Ref<Date> = ref(new Date());
 
 	const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>
 		difficulties.value !== undefined ? difficulties.value : new Array<Difficulty>());
@@ -31,10 +31,8 @@ export const useValuesStore = defineStore('valuesStore', () => {
 		gallery.value !== undefined ? gallery.value : new Array<GalleryApp>());
 	const getMissionStatement: ComputedRef<string> = computed(() => missionStatement.value ? missionStatement.value : '');
 	
-	const initializeAsync = async (): Promise<void> => {
-
-		if (new Date() > expirationDate) {
-
+	const initializeStoreAsync = async (): Promise<void> => {
+		if (new Date() > storeExpirationDate.value) {
 			const response: IServicePayload = await ValuesService.getValuesAsync();
 
 			if (response.missionStatement) {
@@ -63,7 +61,7 @@ export const useValuesStore = defineStore('valuesStore', () => {
 			
 			gameStates.value = GameStates;
 			
-			expirationDate.setDate((new Date()).getDate() + 1);
+			storeExpirationDate.value?.setDate((new Date()).getDate() + 1);
 		}
 	}
 
@@ -75,6 +73,7 @@ export const useValuesStore = defineStore('valuesStore', () => {
 		gameStates,
 		gallery,
 		missionStatement,
+		storeExpirationDate,
 		getDifficulties,
 		getReleaseEnvironments,
 		getSortValues,
@@ -82,7 +81,7 @@ export const useValuesStore = defineStore('valuesStore', () => {
 		getGameStates,
 		getGallery,
 		getMissionStatement,
-		initializeAsync
+		initializeStoreAsync
 	}
 }, {
 	persist: true
