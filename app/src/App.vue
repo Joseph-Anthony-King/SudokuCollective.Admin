@@ -131,7 +131,6 @@ const logoutHandler = (): void => {
   navDrawerStatus.value = false;
   const userName = user.value.userName;
   appStore.logout();
-  appStore.updateToken('');
   if (router.currentRoute.value.name !== 'home' && router.currentRoute.value.name !== 'sudoku') {
     router.push({ name: 'home' });
   }
