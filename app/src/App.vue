@@ -230,8 +230,8 @@ const resetAppViewPort = (): void => {
 };
 
 // Lifecycle hooks
-onMounted(() => {
-  valuesStore.initializeAsync();
+onMounted(async () => {
+  await valuesStore.initializeStoreAsync();
   sudokuStore.initializeStore();
   resetAppViewPort();
   let resizeTimeout: number | undefined;
