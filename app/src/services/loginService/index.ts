@@ -33,7 +33,7 @@ export class LoginService {
 					response.data.payload[0].user.dateUpdated,
 					true);
 				result.token = response.data.payload[0].token;
-				result.expirationDate = response.data.payload[0].expirationDate;
+				result.tokenExpirationDate = response.data.payload[0].tokenExpirationDate;
 			} else {
 				result.isSuccess = response.data.isSuccess;
 				StaticServiceMethods.processFailedResponse(response);
