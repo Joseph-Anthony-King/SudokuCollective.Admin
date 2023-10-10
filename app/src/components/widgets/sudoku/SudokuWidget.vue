@@ -116,13 +116,13 @@ const valuesStore = useValuesStore();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
-const selectedDifficulty: Ref<Difficulty | null> = ref(
+const selectedDifficulty: Ref<Difficulty | undefined> = ref(
   sudokuStore.getSelectedDifficulty
 );
 /* Game state properties and methods */
 const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
 // eslint-disable-next-line
-const selectedGameState: Ref<DropdownItem | null> = ref(
+const selectedGameState: Ref<DropdownItem | undefined> = ref(
   sudokuStore.getGameState
 );
 const isGameStateSelected: ComputedRef<boolean> = computed(() => {
@@ -133,7 +133,7 @@ const isGameStateSelected: ComputedRef<boolean> = computed(() => {
 const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
   let result: boolean;
   if (sudokuStore.getGameState !== null) {
-    result = sudokuStore.getGameState.value === GameState.PLAYGAME;
+    result = sudokuStore.getGameState?.value === GameState.PLAYGAME;
   } else {
     result = false;
   }
