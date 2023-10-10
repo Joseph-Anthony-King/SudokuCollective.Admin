@@ -66,7 +66,7 @@ const obtainMatrix = (): Array<Array<string>> => {
   const sudokuStore = useSudokuStore();
   let result = initializeMatix();
   const gameState = sudokuStore.getGameState;
-  if (gameState !== undefined && gameState.value === GameState.PLAYGAME) {
+  if (gameState !== null && gameState?.value === GameState.PLAYGAME) {
     const game = sudokuStore.getGame;
     result = Array<Array<string>>(9);
 
@@ -76,7 +76,7 @@ const obtainMatrix = (): Array<Array<string>> => {
         result[i][j] = game[i][j];
       }
     }
-  } else if (gameState !== undefined && gameState.value === GameState.SOLVESUDOKU) {
+  } else if (gameState !== null && gameState?.value === GameState.SOLVESUDOKU) {
     const puzzle = sudokuStore.getPuzzle;
     result = Array<Array<string>>(9);
 

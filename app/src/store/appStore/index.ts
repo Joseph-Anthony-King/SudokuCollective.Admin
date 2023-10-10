@@ -93,7 +93,7 @@ export const useAppStore = defineStore('appStore', () => {
 		return result;
 	};
 	const tokenHasExpired = (data: AxiosResponse): void => {
-		if (data.status === 401 && isTokenExpired()) {
+		if (data.status === 401) {
 			const { clearStores } = commonUtitlities();
 			clearStores();
 			updateRedirectUrl(router.currentRoute.value.path);

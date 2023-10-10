@@ -14,7 +14,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	const gameState: Ref<DropdownItem | undefined> = ref(undefined);
 	const selectedDifficulty: Ref<Difficulty | undefined> = ref(undefined);
 	const serviceResult: Ref<boolean | undefined> = ref(undefined);
-	const serviceMessage: Ref<string> = ref('');
+	const serviceMessage: Ref<string | undefined> = ref(undefined);
 	const processing: Ref<boolean> = ref(false);
 	const isSolveDisabled: Ref<boolean | undefined> = ref(undefined);
 
@@ -30,7 +30,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	const getSelectedDifficulty: ComputedRef<Difficulty | undefined> = computed(() => selectedDifficulty.value);
 	const getServiceResult: ComputedRef<boolean> = computed(() => 
 		serviceResult.value !== undefined ? serviceResult.value : false);
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 	const getProcessing: ComputedRef<boolean> = computed(() => processing.value);
 	const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
 		isSolveDisabled.value !== undefined ? isSolveDisabled.value : false);
