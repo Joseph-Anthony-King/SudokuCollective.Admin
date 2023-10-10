@@ -1,38 +1,51 @@
-import { ComputedRef, Ref, computed, ref } from 'vue';
+import { 
+	computed,
+	ComputedRef, 
+	ref, 
+	Ref  
+} from 'vue';
 import { defineStore } from 'pinia';
+import { AxiosResponse } from 'axios';
 import { useUserStore } from '@/store/userStore/index';
 import { LoginService } from '@/services/loginService';
 import { UsersService } from '@/services/usersService';
-import { UserMethods } from '@/models/domain/user';
+import router from '@/router';
+import { User } from '@/models/domain/user';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import commonUtitlities from '@/utilities/common';
 
 export const useAppStore = defineStore('appStore', () => {
-	const license: Ref<string> = ref('');
-	const token: Ref<string> = ref('');
-	const processingMessage: Ref<string> = ref('');
-	const serviceMessage: Ref<string> = ref('');
+	const license: Ref<string | undefined> = ref(process.env.VUE_APP_LICENSE);
+	const token: Ref<string | undefined> = ref(undefined);
+	const expirationDate: Ref<Date | undefined> = ref(undefined);
+	const redirectUrl: Ref<string | undefined> = ref(undefined);
+	const processingMessage: Ref<string | undefined> = ref(undefined);
+	const serviceMessage: Ref<string | undefined> = ref(undefined);
 	const navDrawerStatus: Ref<boolean> = ref(false);
 
-	const getLicense: ComputedRef<string> = computed(() => license.value);
-	const getToken: ComputedRef<string> = computed(() => token.value);
-	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value);
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+	const getLicense: ComputedRef<string> = computed(() => license.value ? license.value : '');
+	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
+	const getExpirationDate: ComputedRef<Date | undefined> = computed(() => expirationDate.value);
+	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
+	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => navDrawerStatus.value);
-	
-	const addLicense = (param: string): void => {
-		if (param !== '') {
-			license.value = param;
-		}
-	};
-	const updateToken = (param: string): void => {
+
+	const updateToken = (param: string | undefined = undefined): void => {
 		token.value = param;
 	};
-	const updateProcessingMessage = (param: string): void => {
+	const updateExpirationDate = (param: Date | undefined = undefined): void => {
+		expirationDate.value = param;
+	};
+	const updateRedirectUrl = (param: string | undefined = undefined): void => {
+		redirectUrl.value = param;
+	};
+	const updateProcessingMessage = (param: string | undefined = undefined): void => {
 		processingMessage.value = param;
 	};
-	const updateServiceMessage = (param: string): void => {
+	const updateServiceMessage = (param: string | undefined = undefined): void => {
 		serviceMessage.value = param;
 	};
 	const updateNavDrawerStatus = (param: boolean): void => {
@@ -44,11 +57,16 @@ export const useAppStore = defineStore('appStore', () => {
 		if (response.isSuccess) {
 			userStore.updateUser(response.user);
 			updateToken(response.token);
+			updateExpirationDate(response.expirationDate);
+			if (redirectUrl.value !== undefined) {
+				window.location.href = redirectUrl.value
+				updateRedirectUrl();
+			}
 		}
 	};
 	const logout = (): void => {
-		const userStore = useUserStore();
-		userStore.updateUser(UserMethods.logout(userStore.getUser));
+		const { clearStores } = commonUtitlities();
+		clearStores();
 	};
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const userStore = useUserStore();
@@ -64,27 +82,52 @@ export const useAppStore = defineStore('appStore', () => {
 			updateServiceMessage(response.message);
 		}
 	};
+	const isTokenExpired = (): boolean => {
+		let result = false;
+		if (expirationDate.value !== undefined && new Date(expirationDate.value) < new Date()) {
+			redirectUrl.value = router.currentRoute.value.path;
+			const user = new User();
+			useUserStore().updateUser(user);
+			result = true;
+		}
+		return result;
+	};
+	const tokenHasExpired = (data: AxiosResponse): void => {
+		if (data.status === 401) {
+			const { clearStores } = commonUtitlities();
+			clearStores();
+			updateRedirectUrl(router.currentRoute.value.path);
+			router.push('/login');
+		}
+	};
 
 	return {
 		license,
 		token,
+		expirationDate,
+		redirectUrl,
 		processingMessage,
 		serviceMessage,
 		navDrawerStatus,
 		getLicense,
 		getToken,
+		getExpirationDate,
+		getRedirectUrl,
 		getProcessingMessage,
 		getServiceMessage,
 		getNavDrawerStatus,
-		addLicense,
 		updateToken,
+		updateExpirationDate,
+		updateRedirectUrl,
 		updateProcessingMessage,
 		updateServiceMessage,
 		updateNavDrawerStatus,
 		loginAsync,
 		logout,
 		confirmUserNameAsync,
-		requestPasswordResetAsync
+		requestPasswordResetAsync,
+		isTokenExpired,
+		tokenHasExpired
 	}
 }, {
 	persist: true

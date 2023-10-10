@@ -35,9 +35,9 @@ export class GamesService {
 				result.game = game;
 			}
 		} catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
-      }
+			if (process.env.NODE_ENV === 'development') {
+			console.error('error: ', error);
+			}
 			if (error instanceof AxiosError && error.response) {
 				result.isSuccess = error.response.data.isSuccess;
 				StaticServiceMethods.processFailedResponse(error.response);

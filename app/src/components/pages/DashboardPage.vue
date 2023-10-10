@@ -13,4 +13,24 @@
 </template>
 
 <script setup lang='ts'>
+import { onBeforeMount } from 'vue';
+import { useUserStore } from '@/store/userStore';
+import { User } from '@/models/domain/user';
+
+const props = defineProps({
+  action: {
+    type: String,
+    default: ''
+  },
+});
+
+const userStore = useUserStore();
+
+onBeforeMount(() => {
+  const user: User = userStore.getUser;
+  if (props.action.toLowerCase() === 'login') {
+    user.isLoggingIn = true;
+    userStore.updateUser(user)
+  }
+});
 </script>

@@ -12,18 +12,18 @@ import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequest
 
 export const useUserStore = defineStore('userStore', () => {
 	const user: Ref<User> = ref(new User());
-	const confirmedUserName: Ref<string> = ref('');
-	const processingMessage: Ref<string> = ref('');
-	const serviceMessage: Ref<string> = ref('');
+	const confirmedUserName: Ref<string | undefined> = ref(undefined);
+	const processingMessage: Ref<string | undefined> = ref(undefined);
+	const serviceMessage: Ref<string | undefined> = ref(undefined);
 
 	const getUser: ComputedRef<User> = computed(() => user.value);
 	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
 	const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => user.value.isLoggingIn);
 	const getUserIsSignedIn: ComputedRef<boolean> = computed(() => user.value.isSignedUp);
 	const getUserIsSigningUp: ComputedRef<boolean> = computed(() => user.value.isSigningUp);
-	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value);
-	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value);
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value ? confirmedUserName.value : '');
+	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 
 	const updateUser = (param: User): void => {
 		user.value = param;
@@ -47,7 +47,6 @@ export const useUserStore = defineStore('userStore', () => {
 	};
 	const getUserAsync = async (): Promise<void> => {
 		const response: IServicePayload = await UsersService.getUserAsync(user.value.id);
-		console.log(response);
 		if (response.isSuccess) {
 			updateUser(response.user);
 			updateServiceMessage(response.message);

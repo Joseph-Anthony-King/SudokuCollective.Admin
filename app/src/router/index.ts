@@ -1,13 +1,20 @@
-import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
-import { useUserStore } from '@/store/userStore/index';
+import { 
+  createRouter, 
+  createWebHistory, 
+  NavigationGuardNext, 
+  RouteLocationNormalized, 
+  RouteRecordRaw 
+} from 'vue-router';
 import { toast } from 'vue3-toastify';
+import { useAppStore } from '@/store/appStore/index';
+import { useUserStore } from '@/store/userStore/index';
+import commonUtitlities from '@/utilities/common';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import(/* webpackChunkName: 'dashboard' */ '../views/DashboardView.vue'),
-    beforeEnter: checkUserLoggedIn,
   },
   {
     path: '/:action?',
@@ -19,7 +26,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/site-admin',
     name: 'site-admin',
     component: () => import(/* webpackChunkName: 'site-admin' */ '../views/SiteAdminView.vue'),
-    beforeEnter: checkSuperAdmin,
   },
   {
     path: '/sudoku/:action?',
@@ -31,16 +37,23 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user-profile',
     name: 'user-profile',
     component: () => import(/* webpackChunkName: 'user' */ '../views/UserProfileView.vue'),
-    beforeEnter: checkUserLoggedIn,
   }
-]
+];
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-});
+const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext): void => {
+  const user = useUserStore().getUser;
+  if (user.isLoggedIn && !user.isLoggingIn) {
+    const { clearStores } = commonUtitlities();
+    clearStores();
+  }
+  toast('The authorization token has expired, please sign in again.', {
+    position: toast.POSITION.TOP_CENTER,
+    type: toast.TYPE.WARNING,
+  });
+  next(`/login`);
+}
 
-function checkUserLoggedIn (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+const checkUserLoggedIn = (next: NavigationGuardNext): void => {
   const user = useUserStore().getUser;
   if (user.isLoggedIn) {
     next();
@@ -53,7 +66,7 @@ function checkUserLoggedIn (to: RouteLocationNormalized, from: RouteLocationNorm
   }
 }
 
-function checkSuperAdmin (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+const checkSuperAdmin = (next: NavigationGuardNext): void => {
   const user = useUserStore().getUser;
   if (user.isSuperUser) {
     next();
@@ -65,5 +78,26 @@ function checkSuperAdmin (to: RouteLocationNormalized, from: RouteLocationNormal
     next("/");
   }
 }
+
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.name === 'home' || to.name === 'sudoku') {
+    next();
+  } else {
+    if (useAppStore().isTokenExpired()) {
+      refreshToken(from, next);
+    }
+
+    if (to.name === 'site-admin') {
+      checkSuperAdmin(next);
+    } else {
+      checkUserLoggedIn(next);
+    }
+  }
+});
 
 export default router

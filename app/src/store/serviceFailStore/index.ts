@@ -1,5 +1,11 @@
+
+import { 
+	computed, 
+	ComputedRef, 
+	ref, 
+	Ref 
+} from 'vue';
 import { defineStore } from 'pinia';
-import { ComputedRef, Ref, computed, ref } from 'vue';
 
 export const useServiceFailStore = defineStore('serviceFailStore', () => {
 	const isSuccess: Ref<boolean | null> = ref(null);

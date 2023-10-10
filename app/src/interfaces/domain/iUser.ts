@@ -1,19 +1,19 @@
 export interface IUser {
 	id: number;
-	userName: string | null;
-	firstName: string | null;
-	lastName: string | null;
-	nickName: string | null;
-	fullName: string | null;
-	email: string | null;
+	userName: string | undefined;
+	firstName: string | undefined;
+	lastName: string | undefined;
+	nickName: string | undefined;
+	fullName: string | undefined;
+	email: string | undefined;
 	isEmailConfirmed: boolean;
 	receivedRequestToUpdateEmail: boolean;
 	receivedRequestToUpdatePassword: boolean;
 	isActive: boolean;
 	isSuperUser: boolean;
 	isAdmin: boolean;
-	dateCreated: Date | null;
-	dateUpdated: Date | null;
+	dateCreated: Date | undefined;
+	dateUpdated: Date | undefined;
 	isLoggedIn: boolean;
 	isLoggingIn: boolean;
 	isSignedUp: boolean;

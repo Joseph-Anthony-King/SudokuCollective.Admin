@@ -7,33 +7,33 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 
 export const useSudokuStore = defineStore('sudokuStore', () => {
-	const initialGame: Ref<Array<Array<string>> | null> = ref(null);
-	const game: Ref<Array<Array<string>> | null> = ref(null);
-	const puzzle: Ref<Array<Array<string>> | null> = ref(null);
-	const solution: Ref<Array<Array<string>> | null> = ref(null);
-	const gameState: Ref<DropdownItem | null> = ref(null);
-	const selectedDifficulty: Ref<Difficulty | null> = ref(null);
-	const serviceResult: Ref<boolean | null> = ref(null);
-	const serviceMessage: Ref<string> = ref('');
+	const initialGame: Ref<Array<Array<string>> | undefined> = ref(undefined);
+	const game: Ref<Array<Array<string>> | undefined> = ref(undefined);
+	const puzzle: Ref<Array<Array<string>> | undefined> = ref(undefined);
+	const solution: Ref<Array<Array<string>> | undefined> = ref(undefined);
+	const gameState: Ref<DropdownItem | undefined> = ref(undefined);
+	const selectedDifficulty: Ref<Difficulty | undefined> = ref(undefined);
+	const serviceResult: Ref<boolean | undefined> = ref(undefined);
+	const serviceMessage: Ref<string | undefined> = ref(undefined);
 	const processing: Ref<boolean> = ref(false);
-	const isSolveDisabled: Ref<boolean | null> = ref(null);
+	const isSolveDisabled: Ref<boolean | undefined> = ref(undefined);
 
 	const getInitialGame: ComputedRef<Array<Array<string>>> = computed(() => 
-		initialGame.value !== null ? initialGame.value : new Array<Array<string>>());
+		initialGame.value !== undefined ? initialGame.value : new Array<Array<string>>());
 	const getGame: ComputedRef<Array<Array<string>>> = computed(() => 
-		game.value !== null ? game.value : new Array<Array<string>>());
+		game.value !== undefined ? game.value : new Array<Array<string>>());
 	const getPuzzle: ComputedRef<Array<Array<string>>> = computed(() => 
-		puzzle.value !== null ? puzzle.value : new Array<Array<string>>());
+		puzzle.value !== undefined ? puzzle.value : new Array<Array<string>>());
 	const getSolution: ComputedRef<Array<Array<string>>> = computed(() => 
-		solution.value !== null ? solution.value : new Array<Array<string>>());
-	const getGameState: ComputedRef<DropdownItem | null> = computed(() => gameState.value);
-	const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() => selectedDifficulty.value);
+		solution.value !== undefined ? solution.value : new Array<Array<string>>());
+	const getGameState: ComputedRef<DropdownItem | undefined> = computed(() => gameState.value);
+	const getSelectedDifficulty: ComputedRef<Difficulty | undefined> = computed(() => selectedDifficulty.value);
 	const getServiceResult: ComputedRef<boolean> = computed(() => 
-		serviceResult.value !== null ? serviceResult.value : false);
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value);
+		serviceResult.value !== undefined ? serviceResult.value : false);
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 	const getProcessing: ComputedRef<boolean> = computed(() => processing.value);
 	const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
-		isSolveDisabled.value !== null ? isSolveDisabled.value : false);
+		isSolveDisabled.value !== undefined ? isSolveDisabled.value : false);
 	
 	const initializeStore = (): void => {
 		if (game.value === null && puzzle.value === null && solution.value === null) { 
@@ -69,15 +69,15 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	const updateSolution = (param: Array<Array<string>>): void => {
 		solution.value = param;
 	};
-	const updateGameState = (param: DropdownItem | null): void => {
+	const updateGameState = (param: DropdownItem | undefined): void => {
 		gameState.value = param;
 	};
-	const updateSelectedDifficulty = (param: Difficulty | null): void => {
+	const updateSelectedDifficulty = (param: Difficulty | undefined): void => {
 		selectedDifficulty.value = param;
 	};
 	const createGameAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
-		if (selectedDifficulty.value !== null) {
+		if (selectedDifficulty.value !== undefined) {
 			const response: IServicePayload = await GamesService.createGameAsync(selectedDifficulty.value.difficultyLevel);
 			const game: Array<Array<string>> = Array<Array<string>>(9);
 			for (let i = 0; i < 9; i++) {
@@ -95,16 +95,16 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 			}
 			updateInitialGame(initialGame);
 			updateGame(game);
-			serviceResult.value = null;
+			serviceResult.value = undefined;
 			serviceMessage.value = '';
 		}
 		processing.value = !processing.value;
 	};
 	const checkGameAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
-		serviceResult.value = null;
+		serviceResult.value = undefined;
 		serviceMessage.value = '';
-		if (game.value !== null) {
+		if (game.value !== undefined) {
 			const response: IServicePayload = await GamesService.checkGameAsync(game.value);
 			if (response.isSuccess) {
 				const solvedGame = Array<Array<string>>(9);
@@ -123,9 +123,9 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	};
 	const solvePuzzleAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
-		serviceResult.value = null;
+		serviceResult.value = undefined;
 		serviceMessage.value = '';
-		if (puzzle.value !== null) {
+		if (puzzle.value !== undefined) {
 			const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
 			updatePuzzle(response.puzzle);
 			serviceResult.value = response.isSuccess;
@@ -135,7 +135,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	};
 	const generateSolutionAsync = async (): Promise<void> => {
 		processing.value = !processing.value;
-		serviceResult.value = null;
+		serviceResult.value = undefined;
 		serviceMessage.value = '';
 		const response: IServicePayload = await GamesService.generateSolutionAsync();
 		updateSolution(response.solution);

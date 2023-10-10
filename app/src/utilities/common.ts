@@ -1,20 +1,25 @@
 import { ComputedRef, computed } from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+import { useAppStore } from '@/store/appStore';
+import { useUserStore } from '@/store/userStore';
+import { User } from '@/models/domain/user';
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
     return /Chrome/.test(navigator.userAgent);
   });
 
-  const getLicense = (): string => {
-    return process.env.VUE_APP_LICENSE;
-  }
+  const clearStores = (): void => {
+    useUserStore().updateUser(new User());
+    useAppStore().updateToken();
+    useAppStore().updateExpirationDate();
+  };
 
   const repairAutoComplete = (): void => {
     document.querySelectorAll('input[type="text"][autocomplete="off"').forEach((element) => {
       element.setAttribute('autocomplete', 'new-password')
     });
-  }
+  };
 
   const updateUrlWithAction = (
     criteria: boolean,
@@ -31,11 +36,11 @@ export default function () {
       }
       router.push(`${url}${action}`);
     }
-  }
+  };
 
   return {
     isChrome,
-    getLicense,
+    clearStores,
     repairAutoComplete,
     updateUrlWithAction
   }

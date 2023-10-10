@@ -86,7 +86,6 @@ import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
 import SignUpForm from '@/components/forms/SignUpForm.vue';
-import commonUtilities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 
 // Initialize stores
@@ -124,7 +123,6 @@ watch(
 );
 
 // Login/logout functionality
-const { getLicense } = commonUtilities();
 const userObtainingLoginAssistance: Ref<boolean> = ref(false);
 const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
   return user.value?.isLoggingIn;
@@ -133,7 +131,6 @@ const logoutHandler = (): void => {
   navDrawerStatus.value = false;
   const userName = user.value.userName;
   appStore.logout();
-  appStore.updateToken('');
   if (router.currentRoute.value.name !== 'home' && router.currentRoute.value.name !== 'sudoku') {
     router.push({ name: 'home' });
   }
@@ -234,7 +231,6 @@ const resetAppViewPort = (): void => {
 
 // Lifecycle hooks
 onMounted(() => {
-  appStore.addLicense(getLicense());
   valuesStore.initializeAsync();
   sudokuStore.initializeStore();
   resetAppViewPort();
