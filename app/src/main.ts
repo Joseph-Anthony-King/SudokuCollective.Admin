@@ -8,7 +8,7 @@ import SecureLS from "secure-ls";
 import { loadFonts } from '@/plugins/webfontloader';
 
 const ls = new SecureLS({
-  encodingType: 'des', 
+  encodingType: 'aes', 
   isCompression: false, 
   encryptionSecret: process.env.VUE_APP_CACHE_SECRET});
 
