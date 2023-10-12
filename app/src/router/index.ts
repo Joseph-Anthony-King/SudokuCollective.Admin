@@ -46,6 +46,8 @@ const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext):
     const { clearStores } = commonUtitlities();
     clearStores();
   }
+  user.isLoggingIn = true;
+  useUserStore().updateUser(user);
   toast('The authorization token has expired, please sign in again.', {
     position: toast.POSITION.TOP_CENTER,
     type: toast.TYPE.WARNING,

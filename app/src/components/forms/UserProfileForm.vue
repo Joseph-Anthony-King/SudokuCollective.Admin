@@ -93,58 +93,56 @@
         ></v-checkbox>
       </v-col>
     </v-row>
-    <v-card-actions class='text-center'>
-      <v-row dense>
-        <v-col>
-          <v-tooltip location='bottom'>
-            <template v-slot:activator='{ props }'>
-              <v-btn
-                color='blue darken-1'
-                text
-                @click='submitHandler'
-                :disabled='user.isEditing ? !formValid : false'
-                v-bind='props'
-              >
-                {{ submitText }}
-              </v-btn>
-            </template>
-            <span>{{ submitHelperText }}</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip location='bottom' :disabled='user.isEditing'>
-            <template v-slot:activator='{ props }'>
-              <v-btn
-                color='blue darken-1'
-                text
-                @click='refreshHandler'
-                v-bind='props'
-                :disabled='user.isEditing'
-              >
-                Refresh
-              </v-btn>
-            </template>
-            <span>Pull latest values from the API</span>
-          </v-tooltip>
-        </v-col>
-        <v-col>
-          <v-tooltip location='bottom' :disabled='user.isEditing'>
-            <template v-slot:activator='{ props }'>
-              <v-btn
-                color='blue darken-1'
-                text
-                @click='cancelHandler'
-                v-bind='props'
-                :disabled='!user.isEditing'
-              >
-                Cancel
-              </v-btn>
-            </template>
-            <span>Cancel the edit</span>
-          </v-tooltip>
-        </v-col>
-      </v-row>
-    </v-card-actions>
+    <available-actions>
+      <v-col>
+        <v-tooltip location='bottom'>
+          <template v-slot:activator='{ props }'>
+            <v-btn
+              color='blue darken-1'
+              text
+              @click='submitHandler'
+              :disabled='user.isEditing ? !formValid : false'
+              v-bind='props'
+            >
+              {{ submitText }}
+            </v-btn>
+          </template>
+          <span>{{ submitHelperText }}</span>
+        </v-tooltip>
+      </v-col>
+      <v-col>
+        <v-tooltip location='bottom' :disabled='user.isEditing'>
+          <template v-slot:activator='{ props }'>
+            <v-btn
+              color='blue darken-1'
+              text
+              @click='refreshHandler'
+              v-bind='props'
+              :disabled='user.isEditing'
+            >
+              Refresh
+            </v-btn>
+          </template>
+          <span>Pull latest values from the API</span>
+        </v-tooltip>
+      </v-col>
+      <v-col>
+        <v-tooltip location='bottom' :disabled='user.isEditing'>
+          <template v-slot:activator='{ props }'>
+            <v-btn
+              color='blue darken-1'
+              text
+              @click='cancelHandler'
+              v-bind='props'
+              :disabled='!user.isEditing'
+            >
+              Cancel
+            </v-btn>
+          </template>
+          <span>Cancel the edit</span>
+        </v-tooltip>
+      </v-col>
+    </available-actions>
   </v-form>
 </template>
 
@@ -157,12 +155,13 @@ import {
   watch 
 } from 'vue';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
-import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
-import { toast } from 'vue3-toastify';
 
 const props = defineProps({
   formStatus: {
@@ -179,11 +178,11 @@ const userStore = useUserStore();
 const serviceFailStore = useServiceFailStore();
 const { emailRules, requiredRules, userNameRules } = rules();
 const user: Ref<User> = ref(userStore.getUser);
-const userName: Ref<string | null> = ref(user.value.userName);
-const firstName: Ref<string | null> = ref(user.value.firstName);
-const lastName: Ref<string | null> = ref(user.value.lastName);
-const nickName: Ref<string | null> = ref(user.value.nickName);
-const email: Ref<string | null> = ref(user.value.email);
+const userName: Ref<string | undefined> = ref(user.value.userName);
+const firstName: Ref<string | undefined> = ref(user.value.firstName);
+const lastName: Ref<string | undefined> = ref(user.value.lastName);
+const nickName: Ref<string | undefined> = ref(user.value.nickName);
+const email: Ref<string | undefined> = ref(user.value.email);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
 
@@ -198,7 +197,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 const formattedDateCreated: ComputedRef<string | null> = computed(() => {
-  if (user.value.dateCreated === null) {
+  if (user.value.dateCreated === undefined) {
     return null;
   } else {
     return `${new Date(
@@ -210,7 +209,7 @@ const formattedDateCreated: ComputedRef<string | null> = computed(() => {
 });
 
 const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
-  if (user.value.dateUpdated === null) {
+  if (user.value.dateUpdated === undefined) {
     return null;
   } else {
     if (
