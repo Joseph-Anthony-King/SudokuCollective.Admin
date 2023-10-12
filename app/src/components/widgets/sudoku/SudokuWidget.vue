@@ -30,60 +30,51 @@
             </div>
             <matrix-widget />
           </div>
-          <div class='center' v-if='isGameStateSelected'>
-            <v-card-title class='justify-center text-center'
-              >Available Actions</v-card-title
-            >
-            <v-card-actions>
-              <v-container>
-                <v-row dense>
-                  <v-col>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='execute'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      {{ executeButtonText }}
-                    </v-btn>
-                  </v-col>
-                  <v-col v-if='isCurrentGameStatePlayGame'>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='checkGame'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      Check Game
-                    </v-btn>
-                  </v-col>
-                  <v-col v-if='isCurrentGameStatePlayGame'>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='resetGame'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      Reset Game
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='clear'
-                    >
-                      {{ clearButtonText }}
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-actions>
-          </div>
+          <available-actions v-if='isGameStateSelected'>
+            <v-col>
+              <v-btn
+                class='button-full'
+                color='blue darken-1'
+                text
+                @click='execute'
+                :disabled='isExectuteButtonDisabed'
+              >
+                {{ executeButtonText }}
+              </v-btn>
+            </v-col>
+            <v-col v-if='isCurrentGameStatePlayGame'>
+              <v-btn
+                class='button-full'
+                color='blue darken-1'
+                text
+                @click='checkGame'
+                :disabled='isExectuteButtonDisabed'
+              >
+                Check Game
+              </v-btn>
+            </v-col>
+            <v-col v-if='isCurrentGameStatePlayGame'>
+              <v-btn
+                class='button-full'
+                color='blue darken-1'
+                text
+                @click='resetGame'
+                :disabled='isExectuteButtonDisabed'
+              >
+                Reset Game
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                class='button-full'
+                color='blue darken-1'
+                text
+                @click='clear'
+              >
+                {{ clearButtonText }}
+              </v-btn>
+            </v-col>
+          </available-actions>
         </v-container>
       </v-card-text>
     </v-card>
@@ -104,6 +95,7 @@ import 'vue3-toastify/dist/index.css';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
