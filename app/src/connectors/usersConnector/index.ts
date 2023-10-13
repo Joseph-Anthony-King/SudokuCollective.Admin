@@ -34,7 +34,6 @@ export class UsersConnector {
         console.error('error: ', error);
       }
       return error as AxiosError;
-      
     }
   }
 
@@ -64,6 +63,37 @@ export class UsersConnector {
             'nickName': data.nickName,
             'email': data.email
           }
+				}
+      }
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async deleteUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
+    try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: 'delete',
+        url: `${Endpoints.usersEndpoint}/${id}`,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${appStore.getToken}`,
+				},
+				data: {
+					'license': process.env.VUE_APP_LICENSE,
+          'requestorId': userStore.getUser.id,
+          'appId': process.env.VUE_APP_ID,
+          'paginator': {},
+          'payload': { }
 				}
       }
       return axios(config);

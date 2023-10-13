@@ -35,7 +35,7 @@
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class='text-center'>
+      <available-actions>
         <v-row dense>
           <v-col>
             <v-tooltip location='bottom'>
@@ -99,12 +99,14 @@
             </v-tooltip>
           </v-col>
         </v-row>
-      </v-card-actions>
+      </available-actions>
     </v-form>
   </v-card>
   <v-dialog 
     v-model='confirmFormReset' 
-    persistent max-width='600' 
+    persistent 
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
     hide-overlay 
     transition='dialog-top-transition'>
     <ConfirmDialog 
@@ -121,10 +123,11 @@ import {
   Ref,
   computed,
   ComputedRef,
+  toRaw,
+  watch,
   onMounted,
   onUpdated,
-  toRaw,
-  watch
+  onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
@@ -132,6 +135,7 @@ import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
@@ -145,19 +149,29 @@ const props = defineProps({
 });
 const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
 
+// Initialize stores
 const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
-const { isChrome, repairAutoComplete } = commonUtilities();
+
 const { passwordRules, userNameRules } = rules();
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(true);
+const { 
+  isChrome, 
+  repairAutoComplete,
+  resetViewPort } = commonUtilities();
+
 const userName: Ref<string> = ref('');
 const password: Ref<string> = ref('');
 const showPassword: Ref<boolean> = ref(false);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidPasswords: Ref<string[]> = ref([]);
+
+// Form logic
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
@@ -168,6 +182,17 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
+
+// Form actions
+const submitHandler = async (): Promise<void> => {
+  if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
+    const data = new LoginRequestData(userName.value, password.value);
+    await appStore.loginAsync(data);
+    appStore.updateProcessingStatus(false);
+  }
+};
+
 const helpHandler = (): void => {
   emit('obtain-login-assistance', null, null);
 };
@@ -186,19 +211,12 @@ const cancelHandler = (): void => {
   emit('cancel-login', null, null);
 };
 
-const submitHandler = (): void => {
-  if (getFormStatus.value) {
-    const data = new LoginRequestData(userName.value, password.value);
-    appStore.loginAsync(data);
-  }
-};
-
 watch(
   () => serviceFailStore.getIsSuccess,
   () => {
     const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
+    const message = serviceFailStore.getMessage
+    if (!isSuccess && message !== undefined) {
       if (
         message === 'Status Code 404: No user has this user name' &&
         !invalidUserNames.value.includes(userName.value)
@@ -221,6 +239,7 @@ watch(
   }
 );
 
+// Lifecycle hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
@@ -230,11 +249,23 @@ onMounted(() => {
     userName.value = confirmedUserName;
     userStore.updateConfirmedUserName('');
   }
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
 });
-
 onUpdated(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
 });
 </script>

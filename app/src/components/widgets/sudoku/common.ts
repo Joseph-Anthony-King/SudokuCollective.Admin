@@ -115,7 +115,7 @@ const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
 const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const sudokuStore = useSudokuStore();
 
-  const gameState: DropdownItem | undefined = toRaw(
+  const gameState: DropdownItem | null = toRaw(
     sudokuStore.getGameState
   );
   const initialGame: Array<Array<string>> = toRaw(

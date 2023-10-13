@@ -11,8 +11,13 @@ export class UsersService {
 		const result: IServicePayload = {};
 
 		try {
+      const idIsZero: AxiosError | null = StaticServiceMethods.idCannotBeZero(id);
+
+      if (idIsZero !== null) {
+        throw idIsZero;
+      }
+      
 			const response = await UsersConnector.getUserAsync(id) as AxiosResponse;
-			console.log(response);
 			
 			if (response.data.isSuccess) {
 				result.isSuccess = response.data.isSuccess;
@@ -37,22 +42,7 @@ export class UsersService {
 			} else {
 				result.isSuccess = response.data.isSuccess;
 				StaticServiceMethods.processFailedResponse(response);
-			}	
-
-			if (id === 0) {
-				const axiosError = {
-					config: {},
-					request: {},
-					response: {
-						status: 500,
-						data: {
-							isSuccess: false,
-							message: 'Id cannot be zero',
-						}
-					}} as AxiosError;
-				throw axiosError;
-			}
-			
+			}			
 		} catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -111,6 +101,39 @@ export class UsersService {
 		}
 
     return result;
+	}
+	static async deleteUserAsync(id: number): Promise<IServicePayload> {
+		const result: IServicePayload = {};
+
+		try {
+      const idIsZero: AxiosError | null = StaticServiceMethods.idCannotBeZero(id);
+
+      if (idIsZero !== null) {
+        throw idIsZero;
+      }
+
+			const response = await UsersConnector.deleteUserAsync(id) as AxiosResponse;
+			
+			if (response.data.isSuccess) {
+				result.isSuccess = response.data.isSuccess;
+				result.message = response.data.message;
+			} else {
+				result.isSuccess = response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(response);
+			}				
+		} catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+			}
+			if (error instanceof AxiosError && error.response) {
+				result.isSuccess = error.response.data.isSuccess;
+				StaticServiceMethods.processFailedResponse(error.response);
+			} else {
+				result.isSuccess = false;
+			}
+		}
+
+		return result;
 	}
 
 	static async postRequestPasswordResetAsync(data: ILoginAssistanceRequestData): Promise<IServicePayload> {
