@@ -13,7 +13,6 @@ export class StaticServiceMethods {
 		if (response.status === 401) {
 			appStore.tokenHasExpired(response);
 		}
-    appStore.updateProcessingStatus(false);
 	}
 
   static idCannotBeZero(id: number): AxiosError | null {

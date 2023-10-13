@@ -4,7 +4,6 @@ import {
   ComputedRef
 } from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
-import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
 import { useUserStore } from '@/store/userStore';
@@ -38,23 +37,28 @@ export default function () {
     }
   };
   
-  const displayFailedToast = (param: ((message: string) => void) | undefined, form: Ref<VForm | null> | undefined): void => {
+  // Returns true if there was an error so form components can run validation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const displayFailedToast = (param: ((message: string, options: any) => any) | undefined, options: any | undefined): any => {
+    let failed = useServiceFailStore().getIsSuccess;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let paramResult: any | undefined = undefined;
+    failed = failed !== null ? failed : true;
     if (!useServiceFailStore().getIsSuccess) {
       const message = useServiceFailStore().getMessage;
       if (message !== null && message !== '') {
         if (param !== undefined) {
-          param(message);
+          paramResult = param(message, options);
         }
         toast(message, {
           position: toast.POSITION.TOP_CENTER,
           type: toast.TYPE.ERROR,
         });
         useServiceFailStore().initializeStore();
-        if (form !== undefined) {
-          form.value?.validate();
-        }
       }
     }
+    const result = { failed: !failed, paramResult };
+    return result;
   };
 
   const repairAutoComplete = (): void => {

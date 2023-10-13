@@ -3,7 +3,7 @@
 		<v-card-title class='justify-center text-center'>
 			<span class='headline'>Sign Up</span>
 		</v-card-title>
-		<v-form v-model='formValid' ref='form'>
+		<v-form v-model='formValid' ref='form' v-on:submit.prevent='submitHandler'>
 			<v-card-text>
 				<v-container>
 					<v-row>
@@ -171,6 +171,7 @@ import { User } from '@/models/domain/user';
 import { SignupRequestData } from '@/models/requests/signupRequestData';
 import rules from '@/utilities/rules/index';
 import commonUtilities from '@/utilities/common';
+import { toRaw } from 'vue';
 
 const props = defineProps({
 	formStatus: {
@@ -227,7 +228,18 @@ const submitHandler = async (): Promise<void> => {
 		const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
 		await userStore.signupUserAsync(data);
     appStore.updateProcessingStatus(false);
-    displayFailedToast(updateInvalidValues, form);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidEmails.value),
+        userName: user.value.userName,
+        email: user.value.email });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
+      invalidEmails.value = failedToast.paramResult.invalidEmails;
+    }
 	}
 };
 
@@ -249,19 +261,23 @@ const cancelHandler = (): void => {
 	emit('cancel-signup', null, null);
 };
 
-const updateInvalidValues = (message: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: User name not unique' &&
-    !invalidUserNames.value.includes(user.value.userName as string)
+    !options.invalidUserNames.value.includes(options.userName as string)
   ) {
-    invalidUserNames.value.push(user.value.userName as string);
+    options.invalidUserNames.value.push(options.userName as string);
   }
   if (
     message === 'Status Code 404: Email not unique' &&
-    !invalidEmails.value.includes(user.value.email as string)
+    !options.invalidEmails.value.includes(options.email as string)
   ) {
-    invalidEmails.value.push(user.value.email as string);
+    options.invalidEmails.value.push(options.email as string);
   }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidEmails: options.invalidEmails };
 };
 
 // Lifecycle hooks

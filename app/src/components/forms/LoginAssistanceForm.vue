@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'>
+    <v-form v-model='formValid' ref='form'  v-on:submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -114,7 +114,8 @@ import {
   ComputedRef,
   onMounted, 
   onUpdated, 
-  watch 
+  watch, 
+  toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { useAppStore } from '@/store/appStore/index';
@@ -169,7 +170,15 @@ const submitHandler = async (): Promise<void> => {
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.confirmUserNameAsync(data);
     appStore.updateProcessingStatus(false);
-    displayFailedToast(updateInvalidValues, form);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidEmails: toRaw(invalidEmails.value), 
+        email: email.value });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidEmails.value = failedToast.paramResult.invalidEmails;
+    }
   }
 };
 
@@ -179,7 +188,10 @@ const resetPasswordHandlder = async (): Promise<void> => {
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.requestPasswordResetAsync(data);
     appStore.updateProcessingStatus(false);
-    displayFailedToast(undefined, form);
+    const failedToast = displayFailedToast(undefined, undefined);
+    if (failedToast.failed) {
+      form.value?.validate();
+    }
   }
 };
 
@@ -197,13 +209,15 @@ const goBackHandler = (): void => {
   emit('return-to-login', null, null);
 };
 
-const updateInvalidValues = (message: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: No user is using this email' &&
-    !invalidEmails.value.includes(email.value)
+    !options.invalidEmails.includes(options.email)
   ) {
-    invalidEmails.value.push(email.value);
+    options.invalidEmails.push(options.email);
   }
+  return { invalidEmails: options.invalidEmails }
 };
 
 watch(
