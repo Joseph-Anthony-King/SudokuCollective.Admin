@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'  v-on:submit.prevent='submitHandler'>
+    <v-form v-model='formValid' ref='form'  @submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -48,7 +48,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='submitHandler'
+                  @click.prevent='submitHandler'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -119,6 +119,7 @@ import {
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { useAppStore } from '@/store/appStore/index';
+import { useLoginFormStore } from '@/store/loginFormStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
@@ -136,6 +137,7 @@ const emit = defineEmits(['return-to-login']);
 
 // Initialize stores
 const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 
@@ -145,8 +147,8 @@ const {
   repairAutoComplete } = commonUtilities();
 
 const confirmFormReset: Ref<boolean> = ref(false);
-const email: Ref<string> = ref('');
-const invalidEmails: Ref<string[]> = ref([]);
+const email: Ref<string | null> = ref(loginFormStore.getEmail);
+const invalidEmails: Ref<string[]> = ref(loginFormStore.getInvalidEmails);
 
 // Form logic
 const { emailRules } = rules();
@@ -165,7 +167,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 
 // Form actions
 const submitHandler = async (): Promise<void> => {
-  if (getFormStatus.value) {
+  if (getFormStatus.value && email.value !== null) {
     appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.confirmUserNameAsync(data);
@@ -178,12 +180,14 @@ const submitHandler = async (): Promise<void> => {
     if (failedToast.failed) {
       form.value?.validate();
       invalidEmails.value = failedToast.paramResult.invalidEmails;
+      loginFormStore.updateEmail(toRaw(email.value));
+      loginFormStore.updateInvalidEmails(toRaw(invalidEmails.value));
     }
   }
 };
 
 const resetPasswordHandlder = async (): Promise<void> => {
-  if (getFormStatus.value) {
+  if (getFormStatus.value && email.value !== null) {
     appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.requestPasswordResetAsync(data);
@@ -202,6 +206,7 @@ const resetHandler = (): void => {
     form.value?.reset();
     confirmFormReset.value = false;
     serviceFailStore.initializeStore();
+    loginFormStore.initializeAssistance();
   }
 };
 
@@ -234,6 +239,9 @@ watch(
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
+  }
+  if (loginFormStore.getEmailDirty) {
+    form.value?.validate();
   }
 });
 onUpdated(() => {
