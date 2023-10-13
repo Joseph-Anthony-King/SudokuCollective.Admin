@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form' v-on:submit.prevent='submitHandler'>
+    <v-form v-model='formValid' ref='form' @submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -88,7 +88,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='submitHandler'
+                  @click.prevent='submitHandler'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -130,6 +130,7 @@ import {
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { useAppStore } from '@/store/appStore/index';
+import { useLoginFormStore } from '@/store/loginFormStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -148,6 +149,7 @@ const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
 
 // Initialize stores
 const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 
@@ -158,12 +160,12 @@ const {
   repairAutoComplete,
   resetViewPort } = commonUtilities();
 
-const userName: Ref<string> = ref('');
-const password: Ref<string> = ref('');
+const userName: Ref<string | null> = ref(loginFormStore.getUserName);
+const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
 const confirmFormReset: Ref<boolean> = ref(false);
-const invalidUserNames: Ref<string[]> = ref([]);
-const invalidPasswords: Ref<string[]> = ref([]);
+const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
+const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPassword);
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
@@ -183,7 +185,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 
 // Form actions
 const submitHandler = async (): Promise<void> => {
-  if (getFormStatus.value) {
+  if (getFormStatus.value && userName.value !== null && password.value !== null) {
     appStore.updateProcessingStatus(true);
     const data = new LoginRequestData(userName.value, password.value);
     await appStore.loginAsync(data);
@@ -199,6 +201,12 @@ const submitHandler = async (): Promise<void> => {
       form.value?.validate();
       invalidUserNames.value = failedToast.paramResult.invalidUserNames;
       invalidPasswords.value = failedToast.paramResult.invalidPasswords;
+      loginFormStore.updateUserName(toRaw(userName.value));
+      loginFormStore.updatePassword(toRaw(password.value))
+      loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
+      loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
+    } else {
+      loginFormStore.initializeStore();
     }
   }
 };
@@ -215,6 +223,7 @@ const resetHandler = (): void => {
   form.value?.reset();
   confirmFormReset.value = false;
   serviceFailStore.initializeStore();
+  loginFormStore.initializeStore();
 };
 
 const cancelHandler = (): void => {
@@ -258,6 +267,9 @@ onMounted(() => {
       resetViewPort(isSmallViewPort, maxDialogWidth);
     }, 250, 'Resized');
   });
+  if (loginFormStore.getDirty) {
+    form.value?.validate();
+  }
 });
 onUpdated(() => {
   if (isChrome.value) {
@@ -270,3 +282,4 @@ onUnmounted(() => {
   });
 });
 </script>
+@/store/loginFormStore/index
