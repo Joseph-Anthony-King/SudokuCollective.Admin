@@ -1,5 +1,5 @@
 export default function () { 
-	const confirmPasswordRules = (password: string | null) => {
+	const confirmPasswordRules = (password: string | undefined) => {
 		return [
 			(v: string) => !!v || 'Password is required',
 			(v: string) =>

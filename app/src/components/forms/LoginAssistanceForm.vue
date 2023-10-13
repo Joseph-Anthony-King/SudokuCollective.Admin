@@ -135,16 +135,21 @@ const props = defineProps({
 });
 const emit = defineEmits(['return-to-login']);
 
+// Initialize stores
 const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
+
 const { isChrome, repairAutoComplete } = commonUtilities();
-const { emailRules } = rules();
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(true);
+
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string> = ref('');
 const invalidEmails: Ref<string[]> = ref([]);
+
+// Form logic
+const { emailRules } = rules();
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
@@ -156,17 +161,22 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
 
-const submitHandler = (): void => {
+// Form actions
+const submitHandler = async (): Promise<void> => {
   if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
-    appStore.confirmUserNameAsync(data);
+    await appStore.confirmUserNameAsync(data);
+    appStore.updateProcessingStatus(false);
   }
 }
 
-const resetPasswordHandlder = (): void => {
+const resetPasswordHandlder = async (): Promise<void> => {
   if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
-    appStore.requestPasswordResetAsync(data);
+    await appStore.requestPasswordResetAsync(data);
+    appStore.updateProcessingStatus(false);
   }
 }
 
@@ -188,8 +198,8 @@ watch(
   () => serviceFailStore.getIsSuccess,
   () => {
     const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
+    const message = serviceFailStore.getMessage
+    if (!isSuccess && message !== undefined) {
       if (
         message === 'Status Code 404: No user is using this email' &&
         !invalidEmails.value.includes(email.value)
@@ -216,12 +226,12 @@ watch(
   }
 );
 
+// lifecycle hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
 });
-
 onUpdated(() => {
   if (isChrome.value) {
     repairAutoComplete();

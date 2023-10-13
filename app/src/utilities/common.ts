@@ -1,8 +1,12 @@
-import { ComputedRef, computed } from 'vue';
+import {
+  Ref, 
+  computed, 
+  ComputedRef
+} from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import { useAppStore } from '@/store/appStore';
 import { useUserStore } from '@/store/userStore';
-import { User } from '@/models/domain/user';
+import { useServiceFailStore } from '@/store/serviceFailStore';
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
@@ -10,9 +14,9 @@ export default function () {
   });
 
   const clearStores = (): void => {
-    useUserStore().updateUser(new User());
-    useAppStore().updateToken();
-    useAppStore().updateTokenExpirationDate();
+    useAppStore().initializeStore();
+    useUserStore().initializeStore();
+    useServiceFailStore().initializeStore();
   };
 
   const repairAutoComplete = (): void => {
@@ -38,10 +42,21 @@ export default function () {
     }
   };
 
+  const resetViewPort = (isSmallViewPort: Ref<boolean>, maxDialogWidth: Ref<string>): void => {
+    if (window.innerWidth <= 960) {
+      isSmallViewPort.value = true;
+      maxDialogWidth.value = 'auto';
+    } else {
+      isSmallViewPort.value = false;
+      maxDialogWidth.value = '600px';
+    }
+  };
+
   return {
     isChrome,
     clearStores,
     repairAutoComplete,
-    updateUrlWithAction
+    updateUrlWithAction,
+    resetViewPort
   }
 }

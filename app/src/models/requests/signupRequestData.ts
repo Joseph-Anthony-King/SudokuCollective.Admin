@@ -9,12 +9,12 @@ export class SignupRequestData implements ISignupRequestData {
 	password: string;
 
 	constructor(
-		userName: string | null,
-		firstName: string | null,
-		lastName: string | null,
-		nickName: string | null,
-		email: string | null,
-		password: string | null) {
+		userName: string | undefined,
+		firstName: string | undefined,
+		lastName: string | undefined,
+		nickName: string | undefined,
+		email: string | undefined,
+		password: string | undefined) {
 		userName ? this.userName = userName : this.userName = '';
 		firstName ? this.firstName = firstName : this.firstName = '';
 		lastName ? this.lastName = lastName : this.lastName = '';

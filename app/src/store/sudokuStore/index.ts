@@ -26,8 +26,8 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 		puzzle.value !== undefined ? puzzle.value : new Array<Array<string>>());
 	const getSolution: ComputedRef<Array<Array<string>>> = computed(() => 
 		solution.value !== undefined ? solution.value : new Array<Array<string>>());
-	const getGameState: ComputedRef<DropdownItem | undefined> = computed(() => gameState.value);
-	const getSelectedDifficulty: ComputedRef<Difficulty | undefined> = computed(() => selectedDifficulty.value);
+	const getGameState: ComputedRef<DropdownItem | null> = computed(() => gameState.value ? gameState.value : null);
+	const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() => selectedDifficulty.value ? selectedDifficulty.value : null);
 	const getServiceResult: ComputedRef<boolean> = computed(() => 
 		serviceResult.value !== undefined ? serviceResult.value : false);
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
@@ -36,7 +36,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 		isSolveDisabled.value !== undefined ? isSolveDisabled.value : false);
 	
 	const initializeStore = (): void => {
-		if (game.value === null && puzzle.value === null && solution.value === null) { 
+		if (game.value === undefined && puzzle.value === undefined && solution.value === undefined) { 
 			initializeInitialGame();
 			initializeGame();
 			initializePuzzle();
@@ -69,11 +69,11 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	const updateSolution = (param: Array<Array<string>>): void => {
 		solution.value = param;
 	};
-	const updateGameState = (param: DropdownItem | undefined): void => {
-		gameState.value = param;
+	const updateGameState = (param: DropdownItem | null): void => {
+		gameState.value = param ? param : undefined;
 	};
-	const updateSelectedDifficulty = (param: Difficulty | undefined): void => {
-		selectedDifficulty.value = param;
+	const updateSelectedDifficulty = (param: Difficulty | null): void => {
+		selectedDifficulty.value = param ? param : undefined;
 	};
 	const createGameAsync = async (): Promise<void> => {
 		processing.value = !processing.value;

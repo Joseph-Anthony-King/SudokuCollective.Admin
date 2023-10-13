@@ -94,56 +94,89 @@
       </v-col>
     </v-row>
     <available-actions>
-      <v-col>
-        <v-tooltip location='bottom'>
-          <template v-slot:activator='{ props }'>
-            <v-btn
-              color='blue darken-1'
-              text
-              @click='submitHandler'
-              :disabled='user.isEditing ? !formValid : false'
-              v-bind='props'
-            >
-              {{ submitText }}
-            </v-btn>
-          </template>
-          <span>{{ submitHelperText }}</span>
-        </v-tooltip>
-      </v-col>
-      <v-col>
-        <v-tooltip location='bottom' :disabled='user.isEditing'>
-          <template v-slot:activator='{ props }'>
-            <v-btn
-              color='blue darken-1'
-              text
-              @click='refreshHandler'
-              v-bind='props'
-              :disabled='user.isEditing'
-            >
-              Refresh
-            </v-btn>
-          </template>
-          <span>Pull latest values from the API</span>
-        </v-tooltip>
-      </v-col>
-      <v-col>
-        <v-tooltip location='bottom' :disabled='user.isEditing'>
-          <template v-slot:activator='{ props }'>
-            <v-btn
-              color='blue darken-1'
-              text
-              @click='cancelHandler'
-              v-bind='props'
-              :disabled='!user.isEditing'
-            >
-              Cancel
-            </v-btn>
-          </template>
-          <span>Cancel the edit</span>
-        </v-tooltip>
-      </v-col>
+      <v-row dense>
+        <v-col>
+          <v-tooltip location='bottom'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
+                :disabled='formValid'
+                v-bind='props'
+                @click='user.isEditing === false ? user.isEditing = true : confirmEditSubmission = true'
+              >
+                {{ submitText }}
+              </v-btn>
+            </template>
+            <span>{{ submitHelperText }}</span>
+          </v-tooltip>
+        </v-col>
+        <v-col>
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
+                @click='refreshHandler'
+                v-bind='props'
+                :disabled='user.isEditing'
+              >
+                Refresh
+              </v-btn>
+            </template>
+            <span>Pull latest values from the API</span>
+          </v-tooltip>
+        </v-col>
+        <v-col>
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
+                @click='cancelHandler'
+                v-bind='props'
+                :disabled='!user.isEditing'
+              >
+                Cancel
+              </v-btn>
+            </template>
+            <span>Cancel the edit</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='red darken-1'
+                text
+                v-bind='props'
+                :disabled='user.isEditing || user.isSuperUser'
+                @click='confirmDeleteSubmission = true'
+              >
+                Delete
+              </v-btn>
+            </template>
+            <span>Delete your profile</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
     </available-actions>
   </v-form>
+  <v-dialog
+    v-model='confirmDialog'
+    persistent
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
+    hide-overlay
+    transition='dialog-top-transition'>
+    <ConfirmDialog 
+      :title='confirmTitle'
+      :message='confirmMessage'
+      v-on:action-confirmed='actionConfirmedHandler'
+      v-on:action-not-confirmed='actionNotConfirmedHandler'/>
+  </v-dialog>
 </template>
 
 <script setup lang='ts'>
@@ -152,16 +185,23 @@ import {
   Ref,
   computed,
   ComputedRef, 
-  watch 
+  watch, 
+  onMounted,
+  onUnmounted
 } from 'vue';
+import router from '@/router/index';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
+import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
   formStatus: {
@@ -171,12 +211,16 @@ const props = defineProps({
 });
 const emit = defineEmits(['user-updated']);
 
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(false);
-const formTitle: Ref<string> = ref('User Profile');
+// Initialize stores
+const appStore = useAppStore();
 const userStore = useUserStore();
 const serviceFailStore = useServiceFailStore();
-const { emailRules, requiredRules, userNameRules } = rules();
+const { 
+  emailRules, 
+  requiredRules, 
+  userNameRules } = rules();
+const { resetViewPort } = commonUtilities();
+
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
 const firstName: Ref<string | undefined> = ref(user.value.firstName);
@@ -185,6 +229,11 @@ const nickName: Ref<string | undefined> = ref(user.value.nickName);
 const email: Ref<string | undefined> = ref(user.value.email);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
+
+// Form logic
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(false);
+const formTitle: Ref<string> = ref('User Profile');
 
 // eslint-disable-next-line
 const getFormStatus: ComputedRef<boolean> = computed(() => {
@@ -244,26 +293,131 @@ const submitHelperText: ComputedRef<string> = computed(() => {
   }
 });
 
-const submitHandler = (): void => {
-  if (!user.value.isEditing) {
-    user.value.isEditing = true;
-    form.value?.validate();
-  } else {
-    if (getFormStatus.value) {
-      const data = new UpdateUserRequestData(
-        userName.value,
-        firstName.value,
-        lastName.value,
-        nickName.value,
-        email.value
-      );
-      userStore.updateUserAsync(data);
+watch(
+  () => user.value.isEditing,
+  () => {
+    if (user.value.isEditing) {
+      formTitle.value = 'Edit User Profile';
+    } else {
+      formTitle.value = 'User Profile';
     }
+  }
+);
+
+// Confirm dialog logic
+const confirmDialog: Ref<boolean> = ref(false);
+const confirmEditSubmission: Ref<boolean> = ref(false);
+const confirmDeleteSubmission: Ref<boolean> = ref(false);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
+const confirmTitle: ComputedRef<string | undefined> = computed(() => { 
+  if (confirmEditSubmission.value) {
+    return 'Confirm Edit';
+  } else if (confirmDeleteSubmission.value) {
+    return 'Confirm Delete';
+  } else {
+    return undefined;
+  }
+});
+const confirmMessage: ComputedRef<string | undefined> = computed(() => { 
+  if (confirmEditSubmission.value) {
+    return `Are you to submit your edits ${user.value.userName}?`;
+  } else if (confirmDeleteSubmission.value) {
+    return `Are you sure you want to delete your profile ${user.value.userName}?  This action cannot be reversed and will delete all apps and games associated with your profile.`;
+  } else {
+    return undefined;
+  }
+});
+
+const actionConfirmedHandler = async (): Promise<void> => {
+  if (confirmEditSubmission.value) {
+    appStore.updateProcessingStatus(true);
+    const result = await editHandler();
+    if (result) {
+      confirmDialog.value = false;
+      confirmEditSubmission.value = false;
+    }
+  }
+
+  if (confirmDeleteSubmission.value) {
+    appStore.updateProcessingStatus(true);
+    const userName = user.value.userName;
+    const result = await deleteHandler();
+    if (result) {
+      confirmDialog.value = false;
+      confirmDeleteSubmission.value = false;
+      router.push('/');
+      toast(`Sad to see you go ${userName}, your profile has been deleted`, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
+    }
+    appStore.updateProcessingStatus(false);
   }
 };
 
-const refreshHandler = (): void => {
-  userStore.getUserAsync();
+const actionNotConfirmedHandler = (): void => {
+  if (confirmEditSubmission.value) {
+    confirmDialog.value = false;
+    confirmEditSubmission.value = false;
+  }
+
+  if (confirmDeleteSubmission.value) {
+    confirmDialog.value = false;
+    confirmDeleteSubmission.value = false;
+  }
+};
+
+watch(
+  () => confirmEditSubmission.value,
+  () => {
+    if (confirmEditSubmission.value) {
+      confirmDialog.value = confirmEditSubmission.value;
+    }
+  }
+);
+
+watch(
+  () => confirmDeleteSubmission.value,
+  () => {
+    if (confirmDeleteSubmission.value) {
+      confirmDialog.value = confirmDeleteSubmission.value;
+    }
+  }
+);
+
+// Form actions
+const editHandler = async (): Promise<boolean> => {
+  let result = false;
+  if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
+    const data = new UpdateUserRequestData(
+      userName.value,
+      firstName.value,
+      lastName.value,
+      nickName.value,
+      email.value
+    );
+    result = await userStore.updateUserAsync(data);
+    appStore.updateProcessingStatus(false);
+  }
+  return result;
+};
+
+const deleteHandler = async (): Promise<boolean> => {
+  let result = false;
+  if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
+    result = await userStore.deleteUserAsync();
+    appStore.updateProcessingStatus(false);
+  }
+  return result;
+};
+
+const refreshHandler = async (): Promise<void> => {
+  appStore.updateProcessingStatus(true);
+  await userStore.getUserAsync();
+  appStore.updateProcessingStatus(false);
 };
 
 const cancelHandler = (): void => {
@@ -292,28 +446,15 @@ watch(
 );
 
 watch(
-  () => user.value.isEditing,
-  () => {
-    if (user.value.isEditing) {
-      formTitle.value = 'Edit User Profile';
-    } else {
-      formTitle.value = 'User Profile';
-    }
-  }
-);
-
-watch(
   () => userStore.getServiceMessage,
   () => {
-    if (
-      userStore.getServiceMessage !== null &&
-      userStore.getServiceMessage !== ''
-    ) {
-      toast(userStore.getServiceMessage, {
+    const message = userStore.getServiceMessage;
+    if (message !== undefined && message !== '') {
+      toast(message, {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
       });
-      userStore.updateServiceMessage('');
+      userStore.updateServiceMessage();
     }
   }
 );
@@ -322,8 +463,8 @@ watch(
   () => serviceFailStore.getIsSuccess,
   () => {
     const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
+    const message = serviceFailStore.getMessage;
+    if (!isSuccess && message !== undefined) {
       if (
         message === 'Status Code 404: User name not unique' &&
         !invalidUserNames.value.includes(userName.value as string)
@@ -345,4 +486,21 @@ watch(
     }
   }
 );
+
+// Lifecycle hooks
+onMounted(async () => {
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
+});
 </script>
