@@ -124,22 +124,19 @@ import {
   computed,
   ComputedRef,
   toRaw,
-  watch,
   onMounted,
   onUpdated,
   onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { LoginRequestData } from '@/models/requests/loginRequestData';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
-import { LoginRequestData } from '@/models/requests/loginRequestData';
   
 const props = defineProps({
   formStatus: {
@@ -157,6 +154,7 @@ const userStore = useUserStore();
 const { passwordRules, userNameRules } = rules();
 const { 
   isChrome, 
+  displayFailedToast,
   repairAutoComplete,
   resetViewPort } = commonUtilities();
 
@@ -190,6 +188,7 @@ const submitHandler = async (): Promise<void> => {
     const data = new LoginRequestData(userName.value, password.value);
     await appStore.loginAsync(data);
     appStore.updateProcessingStatus(false);
+    displayFailedToast(updateInvalidValues, form);
   }
 };
 
@@ -211,33 +210,20 @@ const cancelHandler = (): void => {
   emit('cancel-login', null, null);
 };
 
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    const message = serviceFailStore.getMessage
-    if (!isSuccess && message !== undefined) {
-      if (
-        message === 'Status Code 404: No user has this user name' &&
-        !invalidUserNames.value.includes(userName.value)
-      ) {
-        invalidUserNames.value.push(userName.value);
-      }
-      if (
-        message === 'Status Code 404: Password is incorrect' &&
-        !invalidPasswords.value.includes(password.value)
-      ) {
-        invalidPasswords.value.push(password.value);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
+const updateInvalidValues = (message: string) => {
+  if (
+    message === 'Status Code 404: No user has this user name' &&
+    !invalidUserNames.value.includes(userName.value)
+  ) {
+    invalidUserNames.value.push(userName.value);
   }
-);
+  if (
+    message === 'Status Code 404: Password is incorrect' &&
+    !invalidPasswords.value.includes(password.value)
+  ) {
+    invalidPasswords.value.push(password.value);
+  }
+};
 
 // Lifecycle hooks
 onMounted(() => {

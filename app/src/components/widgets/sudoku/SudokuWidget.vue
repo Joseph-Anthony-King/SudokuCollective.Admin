@@ -92,23 +92,22 @@ import {
   toRaw,
   watch 
 } from 'vue';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useValuesStore } from '@/store/valuesStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
+import commonUtilities from '@/utilities/common';
 
 /* initialize stores */
 const appStore = useAppStore();
 const sudokuStore = useSudokuStore();
-const serviceFailStore = useServiceFailStore();
 const valuesStore = useValuesStore();
+
+const { displaySuccessfulToast, displayFailedToast } = commonUtilities();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
@@ -183,11 +182,15 @@ const execute = async (): Promise<void> => {
     await sudokuStore.generateSolutionAsync();
   }
   appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const checkGame = (): void => {
   appStore.updateProcessingStatus(true);
   sudokuStore.checkGameAsync();
   appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const resetGame = (): void => {
   appStore.updateProcessingStatus(true);
@@ -201,6 +204,8 @@ const resetGame = (): void => {
   }
   sudokuStore.updateGame(game);
   appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const clear = (): void => {
   if (
@@ -237,34 +242,6 @@ watch(
   () => selectedDifficulty?.value,
   () => {
     sudokuStore.updateSelectedDifficulty(selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null);
-  }
-);
-watch(
-  () => sudokuStore.getServiceResult,
-  () => {
-    if (
-      sudokuStore.getServiceResult !== null &&
-      sudokuStore.getServiceMessage !== ''
-    ) {
-      toast(sudokuStore.getServiceMessage, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.SUCCESS,
-      });
-    }
-  }
-);
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    const message = serviceFailStore.getMessage
-    if (!isSuccess && message !== undefined) {
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-    }
   }
 );
 </script>

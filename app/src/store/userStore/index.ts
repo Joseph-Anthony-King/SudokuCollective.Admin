@@ -13,9 +13,9 @@ import commonUtitlities from '@/utilities/common';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user: Ref<User> = ref(new User());
-	const confirmedUserName: Ref<string | undefined> = ref(undefined);
-	const processingMessage: Ref<string | undefined> = ref(undefined);
-	const serviceMessage: Ref<string | undefined> = ref(undefined);
+	const confirmedUserName: Ref<string | null> = ref(null);
+	const processingMessage: Ref<string | null> = ref(null);
+	const serviceMessage: Ref<string | null> = ref(null);
 
 	const getUser: ComputedRef<User> = computed(() => user.value);
 	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
@@ -30,21 +30,21 @@ export const useUserStore = defineStore('userStore', () => {
 
   const initializeStore = (): void => {
     user.value = new User();
-    confirmedUserName.value = undefined;
-    processingMessage.value = undefined;
-    serviceMessage.value = undefined;
+    confirmedUserName.value = null;
+    processingMessage.value = null;
+    serviceMessage.value = null;
   }
 
 	const updateUser = (param: User): void => {
 		user.value = param;
 	};
-	const updateConfirmedUserName = (param: string | undefined = undefined): void => {
+	const updateConfirmedUserName = (param: string | null = null): void => {
 		confirmedUserName.value = param;
 	};
-	const updateProcessingMessage = (param: string | undefined = undefined): void => {
+	const updateProcessingMessage = (param: string | null = null): void => {
 		processingMessage.value = param;
 	};
-	const updateServiceMessage = (param: string | undefined = undefined): void => {
+	const updateServiceMessage = (param: string | null = null): void => {
 		serviceMessage.value = param;
 	};
 	const signupUserAsync = async (data: ISignupRequestData): Promise<void> => {
@@ -52,6 +52,7 @@ export const useUserStore = defineStore('userStore', () => {
 		if (response.isSuccess) {
 			updateUser(response.user);
 			appStore.updateToken(response.token);
+      appStore.updateTokenExpirationDate(response.tokenExpirationDate);
 		}
 	};
 	const getUserAsync = async (): Promise<void> => {

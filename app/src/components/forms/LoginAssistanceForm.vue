@@ -117,8 +117,6 @@ import {
   watch 
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useUserStore } from '@/store/userStore/index';
@@ -140,7 +138,10 @@ const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 
-const { isChrome, repairAutoComplete } = commonUtilities();
+const { 
+  isChrome, 
+  displayFailedToast, 
+  repairAutoComplete } = commonUtilities();
 
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string> = ref('');
@@ -168,8 +169,9 @@ const submitHandler = async (): Promise<void> => {
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.confirmUserNameAsync(data);
     appStore.updateProcessingStatus(false);
+    displayFailedToast(updateInvalidValues, form);
   }
-}
+};
 
 const resetPasswordHandlder = async (): Promise<void> => {
   if (getFormStatus.value) {
@@ -177,8 +179,9 @@ const resetPasswordHandlder = async (): Promise<void> => {
     const data = new LoginAssistanceRequestData(email.value);
     await appStore.requestPasswordResetAsync(data);
     appStore.updateProcessingStatus(false);
+    displayFailedToast(undefined, form);
   }
-}
+};
 
 const resetHandler = (): void => {
   if (getFormStatus.value) {
@@ -188,33 +191,20 @@ const resetHandler = (): void => {
     confirmFormReset.value = false;
     serviceFailStore.initializeStore();
   }
-}
+};
 
 const goBackHandler = (): void => {
   emit('return-to-login', null, null);
-}
+};
 
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    const message = serviceFailStore.getMessage
-    if (!isSuccess && message !== undefined) {
-      if (
-        message === 'Status Code 404: No user is using this email' &&
-        !invalidEmails.value.includes(email.value)
-      ) {
-        invalidEmails.value.push(email.value);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
+const updateInvalidValues = (message: string) => {
+  if (
+    message === 'Status Code 404: No user is using this email' &&
+    !invalidEmails.value.includes(email.value)
+  ) {
+    invalidEmails.value.push(email.value);
   }
-);
+};
 
 watch(
   () => userStore.getConfirmedUserName,
