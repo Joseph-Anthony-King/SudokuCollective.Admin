@@ -195,7 +195,6 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
@@ -214,12 +213,14 @@ const emit = defineEmits(['user-updated']);
 // Initialize stores
 const appStore = useAppStore();
 const userStore = useUserStore();
-const serviceFailStore = useServiceFailStore();
 const { 
   emailRules, 
   requiredRules, 
   userNameRules } = rules();
-const { resetViewPort } = commonUtilities();
+const { 
+  displaySuccessfulToast, 
+  displayFailedToast, 
+  resetViewPort } = commonUtilities();
 
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
@@ -386,6 +387,21 @@ watch(
   }
 );
 
+const updateInvalidValues = (message: string) => {
+  if (
+    message === 'Status Code 404: User name not unique' &&
+    !invalidUserNames.value.includes(userName.value as string)
+  ) {
+    invalidUserNames.value.push(userName.value as string);
+  }
+  if (
+    message === 'Status Code 404: Email not unique' &&
+    !invalidEmails.value.includes(email.value as string)
+  ) {
+    invalidEmails.value.push(email.value as string);
+  }
+};
+
 // Form actions
 const editHandler = async (): Promise<boolean> => {
   let result = false;
@@ -401,6 +417,8 @@ const editHandler = async (): Promise<boolean> => {
     result = await userStore.updateUserAsync(data);
     appStore.updateProcessingStatus(false);
   }
+  displaySuccessfulToast('userStore');
+  displayFailedToast(updateInvalidValues, form);
   return result;
 };
 
@@ -411,6 +429,7 @@ const deleteHandler = async (): Promise<boolean> => {
     result = await userStore.deleteUserAsync();
     appStore.updateProcessingStatus(false);
   }
+  displayFailedToast(updateInvalidValues, form);
   return result;
 };
 
@@ -418,6 +437,8 @@ const refreshHandler = async (): Promise<void> => {
   appStore.updateProcessingStatus(true);
   await userStore.getUserAsync();
   appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('userStore');
+  displayFailedToast(updateInvalidValues, form);
 };
 
 const cancelHandler = (): void => {
@@ -442,48 +463,6 @@ watch(
     lastName.value = user.value.lastName;
     nickName.value = user.value.nickName;
     email.value = user.value.email;
-  }
-);
-
-watch(
-  () => userStore.getServiceMessage,
-  () => {
-    const message = userStore.getServiceMessage;
-    if (message !== undefined && message !== '') {
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.SUCCESS,
-      });
-      userStore.updateServiceMessage();
-    }
-  }
-);
-
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    const message = serviceFailStore.getMessage;
-    if (!isSuccess && message !== undefined) {
-      if (
-        message === 'Status Code 404: User name not unique' &&
-        !invalidUserNames.value.includes(userName.value as string)
-      ) {
-        invalidUserNames.value.push(userName.value as string);
-      }
-      if (
-        message === 'Status Code 404: Email not unique' &&
-        !invalidEmails.value.includes(email.value as string)
-      ) {
-        invalidEmails.value.push(email.value as string);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
   }
 );
 

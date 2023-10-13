@@ -8,27 +8,27 @@ import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
 
 export const useValuesStore = defineStore('valuesStore', () => {
-	const difficulties: Ref<Array<Difficulty> | undefined> = ref(undefined);
-	const releaseEnvironments: Ref<Array<DropdownItem> | undefined> = ref(undefined);
-	const sortValues: Ref<Array<DropdownItem> | undefined> = ref(undefined);
-	const timeFrames: Ref<Array<DropdownItem> | undefined> = ref(undefined);
-	const gameStates: Ref<Array<DropdownItem> | undefined> = ref(undefined);
-	const gallery: Ref<Array<GalleryApp> | undefined> = ref(undefined);
-	const missionStatement: Ref<string | undefined> = ref(undefined);
+	const difficulties: Ref<Array<Difficulty> | null> = ref(null);
+	const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);
+	const sortValues: Ref<Array<DropdownItem> | null> = ref(null);
+	const timeFrames: Ref<Array<DropdownItem> | null> = ref(null);
+	const gameStates: Ref<Array<DropdownItem> | null> = ref(null);
+	const gallery: Ref<Array<GalleryApp> | null> = ref(null);
+	const missionStatement: Ref<string | null> = ref(null);
 	const storeExpirationDate: Ref<Date> = ref(new Date());
 
 	const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>
-		difficulties.value !== undefined ? difficulties.value : new Array<Difficulty>());
+		difficulties.value !== null ? difficulties.value : new Array<Difficulty>());
 	const getReleaseEnvironments: ComputedRef<Array<DropdownItem>> = computed(() =>
-		releaseEnvironments.value !== undefined ? releaseEnvironments.value : new Array<DropdownItem>());
+		releaseEnvironments.value !== null ? releaseEnvironments.value : new Array<DropdownItem>());
 	const getSortValues: ComputedRef<Array<DropdownItem>> = computed(() =>
-		sortValues.value !== undefined ? sortValues.value : new Array<DropdownItem>());
+		sortValues.value !== null ? sortValues.value : new Array<DropdownItem>());
 	const getTimeFrames: ComputedRef<Array<DropdownItem>> = computed(() => 
-		timeFrames.value !== undefined ? timeFrames.value : new Array<DropdownItem>());
+		timeFrames.value !== null ? timeFrames.value : new Array<DropdownItem>());
 	const getGameStates: ComputedRef<Array<DropdownItem>> = computed(() => 
-		gameStates.value !== undefined ? gameStates.value : new Array<DropdownItem>());
+		gameStates.value !== null ? gameStates.value : new Array<DropdownItem>());
 	const getGallery: ComputedRef<Array<GalleryApp>> = computed(() => 
-		gallery.value !== undefined ? gallery.value : new Array<GalleryApp>());
+		gallery.value !== null ? gallery.value : new Array<GalleryApp>());
 	const getMissionStatement: ComputedRef<string> = computed(() => missionStatement.value ? missionStatement.value : '');
 	
 	const initializeStoreAsync = async (): Promise<void> => {

@@ -157,13 +157,11 @@ import {
   ref,
   Ref,
   computed,
-  ComputedRef,  
-  watch, 
+  ComputedRef, 
   onMounted,
   onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
@@ -188,6 +186,7 @@ const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 const { 
   isChrome, 
+  displayFailedToast,
   repairAutoComplete,
   resetViewPort } = commonUtilities();
 const {
@@ -228,6 +227,7 @@ const submitHandler = async (): Promise<void> => {
 		const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
 		await userStore.signupUserAsync(data);
     appStore.updateProcessingStatus(false);
+    displayFailedToast(updateInvalidValues, form);
 	}
 };
 
@@ -249,33 +249,20 @@ const cancelHandler = (): void => {
 	emit('cancel-signup', null, null);
 };
 
-watch(
-	() => serviceFailStore.getIsSuccess,
-	() => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    const message = serviceFailStore.getMessage
-    if (!isSuccess && message !== undefined) {
-			if (
-				message === 'Status Code 404: User name not unique' &&
-				!invalidUserNames.value.includes(user.value.userName as string)
-			) {
-				invalidUserNames.value.push(user.value.userName as string);
-			}
-			if (
-				message === 'Status Code 404: Email not unique' &&
-				!invalidEmails.value.includes(user.value.email as string)
-			) {
-				invalidEmails.value.push(user.value.email as string);
-			}
-			toast(message, {
-				position: toast.POSITION.TOP_CENTER,
-				type: toast.TYPE.ERROR,
-			});
-			serviceFailStore.initializeStore();
-			form.value?.validate();
-		}
-	}
-);
+const updateInvalidValues = (message: string) => {
+  if (
+    message === 'Status Code 404: User name not unique' &&
+    !invalidUserNames.value.includes(user.value.userName as string)
+  ) {
+    invalidUserNames.value.push(user.value.userName as string);
+  }
+  if (
+    message === 'Status Code 404: Email not unique' &&
+    !invalidEmails.value.includes(user.value.email as string)
+  ) {
+    invalidEmails.value.push(user.value.email as string);
+  }
+};
 
 // Lifecycle hooks
 onMounted(async () => {

@@ -1,4 +1,3 @@
-
 import { 
 	computed, 
 	ComputedRef, 
@@ -8,23 +7,23 @@ import {
 import { defineStore } from 'pinia';
 
 export const useServiceFailStore = defineStore('serviceFailStore', () => {
-	const isSuccess: Ref<boolean | undefined> = ref(undefined);
-	const message: Ref<string| undefined> = ref(undefined);
+	const isSuccess: Ref<boolean | null> = ref(null);
+	const message: Ref<string| null> = ref(null);
 	const statusCode = ref(0);
 
-	const getIsSuccess: ComputedRef<boolean | undefined> = computed(() => isSuccess.value);
-	const getMessage: ComputedRef<string| undefined> = computed(() => message.value);
+	const getIsSuccess: ComputedRef<boolean | null> = computed(() => isSuccess.value);
+	const getMessage: ComputedRef<string| null> = computed(() => message.value);
 	const getStatusCode: ComputedRef<number> = computed(() => statusCode.value);
 
 	const initializeStore = (): void => {
-		isSuccess.value = undefined;
-		message.value = undefined;
+		isSuccess.value = null;
+		message.value = null;
 		statusCode.value = 0;
 	};
-	const updateIsSuccess = (success: boolean | undefined = undefined): void => {
+	const updateIsSuccess = (success: boolean | null = null): void => {
 		isSuccess.value = success;
 	};
-	const updateMessage = (param: string | undefined = undefined): void => {
+	const updateMessage = (param: string | null = null): void => {
 		message.value = param;
 	};
 	// eslint-disable-next-line @typescript-eslint/no-inferrable-types

@@ -47,7 +47,7 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
 const sudokuStore = useSudokuStore();
 const matrix = ref(Array<Array<string>>());
-let gameState: DropdownItem | undefined = sudokuStore.getGameState;
+let gameState: DropdownItem | null = sudokuStore.getGameState;
 
 const applyOddRegionStyling = (
   rowIndex: number,
