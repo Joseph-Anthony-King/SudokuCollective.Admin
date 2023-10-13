@@ -2,7 +2,7 @@
   <v-card-title class='justify-center text-center'>
     <span class='headline'>{{ formTitle }}</span>
   </v-card-title>
-  <v-form v-model='formValid' ref='form'>
+  <v-form v-model='formValid' ref='form' v-on:submit.prevent='actionConfirmedHandler'>
     <v-row>
       <v-col cols='12' lg='6' xl='6'>
         <v-text-field
@@ -103,7 +103,7 @@
                 text
                 :disabled='formValid'
                 v-bind='props'
-                @click='user.isEditing === false ? user.isEditing = true : confirmEditSubmission = true'
+                @click.prevent='user.isEditing === false ? user.isEditing = true : confirmEditSubmission = true'
               >
                 {{ submitText }}
               </v-btn>
@@ -187,7 +187,8 @@ import {
   ComputedRef, 
   watch, 
   onMounted,
-  onUnmounted
+  onUnmounted,
+  toRaw
 } from 'vue';
 import router from '@/router/index';
 import { VForm } from 'vuetify/components';
@@ -387,19 +388,23 @@ watch(
   }
 );
 
-const updateInvalidValues = (message: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: User name not unique' &&
-    !invalidUserNames.value.includes(userName.value as string)
+    !options.invalidUserNames.value.includes(options.userName as string)
   ) {
-    invalidUserNames.value.push(userName.value as string);
+    options.invalidUserNames.value.push(options.userName as string);
   }
   if (
     message === 'Status Code 404: Email not unique' &&
-    !invalidEmails.value.includes(email.value as string)
+    !options.invalidEmails.value.includes(options.email as string)
   ) {
-    invalidEmails.value.push(email.value as string);
+    options.invalidEmails.value.push(options.email as string);
   }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidEmails: options.invalidEmails };
 };
 
 // Form actions
@@ -418,7 +423,18 @@ const editHandler = async (): Promise<boolean> => {
     appStore.updateProcessingStatus(false);
   }
   displaySuccessfulToast('userStore');
-  displayFailedToast(updateInvalidValues, form);
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
   return result;
 };
 
@@ -429,7 +445,18 @@ const deleteHandler = async (): Promise<boolean> => {
     result = await userStore.deleteUserAsync();
     appStore.updateProcessingStatus(false);
   }
-  displayFailedToast(updateInvalidValues, form);
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
   return result;
 };
 
@@ -438,7 +465,18 @@ const refreshHandler = async (): Promise<void> => {
   await userStore.getUserAsync();
   appStore.updateProcessingStatus(false);
   displaySuccessfulToast('userStore');
-  displayFailedToast(updateInvalidValues, form);
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
 };
 
 const cancelHandler = (): void => {

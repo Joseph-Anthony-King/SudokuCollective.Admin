@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'>
+    <v-form v-model='formValid' ref='form' v-on:submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -188,7 +188,18 @@ const submitHandler = async (): Promise<void> => {
     const data = new LoginRequestData(userName.value, password.value);
     await appStore.loginAsync(data);
     appStore.updateProcessingStatus(false);
-    displayFailedToast(updateInvalidValues, form);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidPasswords: toRaw(invalidPasswords.value),
+        userName: userName.value,
+        password: password.value });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
+      invalidPasswords.value = failedToast.paramResult.invalidPasswords;
+    }
   }
 };
 
@@ -210,19 +221,23 @@ const cancelHandler = (): void => {
   emit('cancel-login', null, null);
 };
 
-const updateInvalidValues = (message: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: No user has this user name' &&
-    !invalidUserNames.value.includes(userName.value)
+    !options.invalidUserNames.includes(options.userName)
   ) {
-    invalidUserNames.value.push(userName.value);
+    options.invalidUserNames.push(options.userName);
   }
   if (
     message === 'Status Code 404: Password is incorrect' &&
-    !invalidPasswords.value.includes(password.value)
+    !options.invalidPasswords.includes(options.password)
   ) {
-    invalidPasswords.value.push(password.value);
+    options.invalidPasswords.push(options.password);
   }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidPasswords: options.invalidPasswords };
 };
 
 // Lifecycle hooks
