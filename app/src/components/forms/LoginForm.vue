@@ -200,7 +200,7 @@ watch(
     if (isSuccess !== null && !isSuccess) {
       const message: string = serviceFailStore.getMessage;
       if (
-        message === 'Status Code 404: No user has this user name' &&
+        message === 'Status Code 404: No user is using this user name' &&
         !invalidUserNames.value.includes(userName.value)
       ) {
         invalidUserNames.value.push(userName.value);
