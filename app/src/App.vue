@@ -42,7 +42,7 @@
             v-on:cancel-signup='user.isSigningUp = false'/>
         </v-dialog>
         <v-dialog
-          v-model='userObtainingLoginAssistance'
+          :v-model='userObtainingLoginAssistance && !processingStatus'
           persistent
           :fullscreen='isSmallViewPort'
           :max-width='maxDialogWidth'
