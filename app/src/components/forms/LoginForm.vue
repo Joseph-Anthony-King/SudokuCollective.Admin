@@ -233,7 +233,7 @@ const cancelHandler = (): void => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === 'Status Code 404: No user has this user name' &&
+    message === 'Status Code 404: No user is using this user name' &&
     !options.invalidUserNames.includes(options.userName)
   ) {
     options.invalidUserNames.push(options.userName);
