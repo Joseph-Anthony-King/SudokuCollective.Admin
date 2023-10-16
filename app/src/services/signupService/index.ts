@@ -33,6 +33,7 @@ export class SignupService {
 					true,
 					true);
 				result.token = response.data.payload[0].token;
+        result.tokenExpirationDate = response.data.payload[0].tokenExpirationDate;
 			} else {
 				result.isSuccess = response.data.isSuccess;
 				StaticServiceMethods.processFailedResponse(response);

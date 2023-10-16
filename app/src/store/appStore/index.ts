@@ -10,44 +10,58 @@ import { useUserStore } from '@/store/userStore/index';
 import { LoginService } from '@/services/loginService';
 import { UsersService } from '@/services/usersService';
 import router from '@/router';
-import { User } from '@/models/domain/user';
 import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { User } from '@/models/domain/user';
 import commonUtitlities from '@/utilities/common';
 
 export const useAppStore = defineStore('appStore', () => {
-	const license: Ref<string | undefined> = ref(process.env.VUE_APP_LICENSE);
-	const token: Ref<string | undefined> = ref(undefined);
-	const tokenExpirationDate: Ref<Date | undefined> = ref(undefined);
-	const redirectUrl: Ref<string | undefined> = ref(undefined);
-	const processingMessage: Ref<string | undefined> = ref(undefined);
-	const serviceMessage: Ref<string | undefined> = ref(undefined);
+	const license: Ref<string | null> = ref(process.env.VUE_APP_LICENSE);
+	const token: Ref<string | null> = ref(null);
+	const tokenExpirationDate: Ref<Date | null> = ref(null);
+	const redirectUrl: Ref<string | null> = ref(null);
+	const processingMessage: Ref<string | null> = ref(null);
+	const serviceMessage: Ref<string | null> = ref(null);
+  const processingStatus: Ref<boolean> = ref(false);
 	const navDrawerStatus: Ref<boolean> = ref(false);
 
 	const getLicense: ComputedRef<string> = computed(() => license.value ? license.value : '');
 	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
-	const getTokenExpirationDate: ComputedRef<Date | undefined> = computed(() => tokenExpirationDate.value);
+	const getTokenExpirationDate: ComputedRef<Date | null> = computed(() => tokenExpirationDate.value);
 	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
+  const getProcessingStatus: ComputedRef<boolean> = computed(() => processingStatus.value);
 	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => navDrawerStatus.value);
 
-	const updateToken = (param: string | undefined = undefined): void => {
+  const initializeStore = (): void => {
+    token.value = null;
+    tokenExpirationDate.value = null;
+    redirectUrl.value = null;
+    processingMessage.value = null;
+    serviceMessage.value = null;
+    processingStatus.value = false;
+    navDrawerStatus.value = false;
+  };
+	const updateToken = (param: string | null = null): void => {
 		token.value = param;
 	};
-	const updateTokenExpirationDate = (param: Date | undefined = undefined): void => {
+	const updateTokenExpirationDate = (param: Date | null = null): void => {
 		tokenExpirationDate.value = param;
 	};
-	const updateRedirectUrl = (param: string | undefined = undefined): void => {
+	const updateRedirectUrl = (param: string | null = null): void => {
 		redirectUrl.value = param;
 	};
-	const updateProcessingMessage = (param: string | undefined = undefined): void => {
+	const updateProcessingMessage = (param: string | null = null): void => {
 		processingMessage.value = param;
 	};
-	const updateServiceMessage = (param: string | undefined = undefined): void => {
+	const updateServiceMessage = (param: string | null = null): void => {
 		serviceMessage.value = param;
 	};
+  const updateProcessingStatus = (param: boolean): void => {
+    processingStatus.value = param;
+  }
 	const updateNavDrawerStatus = (param: boolean): void => {
 		navDrawerStatus.value = param;
 	};
@@ -58,8 +72,8 @@ export const useAppStore = defineStore('appStore', () => {
 			userStore.updateUser(response.user);
 			updateToken(response.token);
 			updateTokenExpirationDate(response.tokenExpirationDate);
-			if (redirectUrl.value !== undefined) {
-				window.location.href = redirectUrl.value
+			if (redirectUrl.value !== null) {
+				window.location.href = redirectUrl.value;
 				updateRedirectUrl();
 			}
 		}
@@ -84,7 +98,7 @@ export const useAppStore = defineStore('appStore', () => {
 	};
 	const isTokenExpired = (): boolean => {
 		let result = false;
-		if (tokenExpirationDate.value !== undefined && new Date(tokenExpirationDate.value) < new Date()) {
+		if (tokenExpirationDate.value !== null && new Date(tokenExpirationDate.value) < new Date()) {
 			redirectUrl.value = router.currentRoute.value.path;
 			const user = new User();
 			useUserStore().updateUser(user);
@@ -108,6 +122,7 @@ export const useAppStore = defineStore('appStore', () => {
 		redirectUrl,
 		processingMessage,
 		serviceMessage,
+    processingStatus,
 		navDrawerStatus,
 		getLicense,
 		getToken,
@@ -115,13 +130,16 @@ export const useAppStore = defineStore('appStore', () => {
 		getRedirectUrl,
 		getProcessingMessage,
 		getServiceMessage,
+    getProcessingStatus,
 		getNavDrawerStatus,
+    initializeStore,
 		updateToken,
 		updateTokenExpirationDate,
 		updateRedirectUrl,
 		updateProcessingMessage,
 		updateServiceMessage,
 		updateNavDrawerStatus,
+    updateProcessingStatus,
 		loginAsync,
 		logout,
 		confirmUserNameAsync,

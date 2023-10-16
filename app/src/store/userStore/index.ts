@@ -9,12 +9,13 @@ import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
 import { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
 import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
+import commonUtitlities from '@/utilities/common';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user: Ref<User> = ref(new User());
-	const confirmedUserName: Ref<string | undefined> = ref(undefined);
-	const processingMessage: Ref<string | undefined> = ref(undefined);
-	const serviceMessage: Ref<string | undefined> = ref(undefined);
+	const confirmedUserName: Ref<string | null> = ref(null);
+	const processingMessage: Ref<string | null> = ref(null);
+	const serviceMessage: Ref<string | null> = ref(null);
 
 	const getUser: ComputedRef<User> = computed(() => user.value);
 	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
@@ -25,24 +26,33 @@ export const useUserStore = defineStore('userStore', () => {
 	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
 	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
 
+  const appStore = useAppStore();
+
+  const initializeStore = (): void => {
+    user.value = new User();
+    confirmedUserName.value = null;
+    processingMessage.value = null;
+    serviceMessage.value = null;
+  }
+
 	const updateUser = (param: User): void => {
 		user.value = param;
 	};
-	const updateConfirmedUserName = (param: string): void => {
+	const updateConfirmedUserName = (param: string | null = null): void => {
 		confirmedUserName.value = param;
 	};
-	const updateProcessingMessage = (param: string): void => {
+	const updateProcessingMessage = (param: string | null = null): void => {
 		processingMessage.value = param;
 	};
-	const updateServiceMessage = (param: string): void => {
+	const updateServiceMessage = (param: string | null = null): void => {
 		serviceMessage.value = param;
 	};
 	const signupUserAsync = async (data: ISignupRequestData): Promise<void> => {
-		const appStore = useAppStore();
 		const response: IServicePayload = await SignupService.postAsync(data);
 		if (response.isSuccess) {
 			updateUser(response.user);
 			appStore.updateToken(response.token);
+      appStore.updateTokenExpirationDate(response.tokenExpirationDate);
 		}
 	};
 	const getUserAsync = async (): Promise<void> => {
@@ -52,13 +62,23 @@ export const useUserStore = defineStore('userStore', () => {
 			updateServiceMessage(response.message);
 		}
 	}
-	const updateUserAsync = async (data: IUpdateUserRequestData): Promise<void> => {
+	const updateUserAsync = async (data: IUpdateUserRequestData): Promise<boolean> => {
 		const response: IServicePayload = await UsersService.putUpdateUserAsync(data);
 		if (response.isSuccess) {
 			updateUser(response.user);
 			updateServiceMessage(response.message);
 		}
+    return response.isSuccess;
 	};
+  const deleteUserAsync = async (): Promise<boolean> => {
+		const response: IServicePayload = await UsersService.deleteUserAsync(user.value.id);
+		if (response.isSuccess) {
+      const { clearStores } = commonUtitlities();
+      clearStores();
+			updateServiceMessage(response.message);
+		}
+    return response.isSuccess;
+  };
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
 		const response: IServicePayload = await LoginService.postConfirmUserNameAsync(data);
 		if (response.isSuccess) {
@@ -83,7 +103,9 @@ export const useUserStore = defineStore('userStore', () => {
 		getConfirmedUserName,
 		getProcessingMessage,
 		getServiceMessage,
+    initializeStore,
 		updateUser,
+    deleteUserAsync,
 		updateConfirmedUserName,
 		updateProcessingMessage,
 		updateServiceMessage,

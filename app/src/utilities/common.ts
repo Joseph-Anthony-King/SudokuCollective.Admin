@@ -1,8 +1,14 @@
-import { ComputedRef, computed } from 'vue';
+import {
+  Ref, 
+  computed, 
+  ComputedRef
+} from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
 import { useUserStore } from '@/store/userStore';
-import { User } from '@/models/domain/user';
+import { useSudokuStore } from '@/store/sudokuStore';
+import { useServiceFailStore } from '@/store/serviceFailStore';
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
@@ -10,15 +16,65 @@ export default function () {
   });
 
   const clearStores = (): void => {
-    useUserStore().updateUser(new User());
-    useAppStore().updateToken();
-    useAppStore().updateTokenExpirationDate();
+    useAppStore().initializeStore();
+    useUserStore().initializeStore();
+    useServiceFailStore().initializeStore();
+  };
+
+  const displaySuccessfulToast = (store: string): void => {
+    let message = ''
+    if (store === 'userStore') {
+      message = useUserStore().getServiceMessage;
+    } else if (store === 'sudokuStore') {
+      message = useSudokuStore().getServiceMessage;
+    }
+    if (message !== null && message !== '') {
+      toast(message, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
+      useUserStore().updateServiceMessage();
+    }
+  };
+  
+  // Returns true if there was an error so form components can run validation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const displayFailedToast = (param: ((message: string, options: any) => any) | undefined, options: any | undefined): any => {
+    let failed = useServiceFailStore().getIsSuccess;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let paramResult: any | undefined = undefined;
+    failed = failed !== null ? failed : true;
+    if (!useServiceFailStore().getIsSuccess) {
+      const message = useServiceFailStore().getMessage;
+      if (message !== null && message !== '') {
+        if (param !== undefined) {
+          paramResult = param(message, options);
+        }
+        toast(message, {
+          position: toast.POSITION.TOP_CENTER,
+          type: toast.TYPE.ERROR,
+        });
+        useServiceFailStore().initializeStore();
+      }
+    }
+    const result = { failed: !failed, paramResult };
+    return result;
   };
 
   const repairAutoComplete = (): void => {
     document.querySelectorAll('input[type="text"][autocomplete="off"').forEach((element) => {
       element.setAttribute('autocomplete', 'new-password')
     });
+  };
+
+  const resetViewPort = (isSmallViewPort: Ref<boolean>, maxDialogWidth: Ref<string>): void => {
+    if (window.innerWidth <= 960) {
+      isSmallViewPort.value = true;
+      maxDialogWidth.value = 'auto';
+    } else {
+      isSmallViewPort.value = false;
+      maxDialogWidth.value = '600px';
+    }
   };
 
   const updateUrlWithAction = (
@@ -41,7 +97,10 @@ export default function () {
   return {
     isChrome,
     clearStores,
+    displaySuccessfulToast,
+    displayFailedToast,
     repairAutoComplete,
+    resetViewPort,
     updateUrlWithAction
   }
 }

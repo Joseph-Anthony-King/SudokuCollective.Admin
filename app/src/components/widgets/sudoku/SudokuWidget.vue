@@ -30,60 +30,53 @@
             </div>
             <matrix-widget />
           </div>
-          <div class='center' v-if='isGameStateSelected'>
-            <v-card-title class='justify-center text-center'
-              >Available Actions</v-card-title
-            >
-            <v-card-actions>
-              <v-container>
-                <v-row dense>
-                  <v-col>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='execute'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      {{ executeButtonText }}
-                    </v-btn>
-                  </v-col>
-                  <v-col v-if='isCurrentGameStatePlayGame'>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='checkGame'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      Check Game
-                    </v-btn>
-                  </v-col>
-                  <v-col v-if='isCurrentGameStatePlayGame'>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='resetGame'
-                      :disabled='isExectuteButtonDisabed'
-                    >
-                      Reset Game
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn
-                      class='button-full'
-                      color='blue darken-1'
-                      text
-                      @click='clear'
-                    >
-                      {{ clearButtonText }}
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-actions>
-          </div>
+          <available-actions v-if='isGameStateSelected'>
+            <v-row dense>
+              <v-col>
+                <v-btn
+                  class='button-full'
+                  color='blue darken-1'
+                  text
+                  @click='execute'
+                  :disabled='isExectuteButtonDisabed'
+                >
+                  {{ executeButtonText }}
+                </v-btn>
+              </v-col>
+              <v-col v-if='isCurrentGameStatePlayGame'>
+                <v-btn
+                  class='button-full'
+                  color='blue darken-1'
+                  text
+                  @click='checkGame'
+                  :disabled='isExectuteButtonDisabed'
+                >
+                  Check Game
+                </v-btn>
+              </v-col>
+              <v-col v-if='isCurrentGameStatePlayGame'>
+                <v-btn
+                  class='button-full'
+                  color='blue darken-1'
+                  text
+                  @click='resetGame'
+                  :disabled='isExectuteButtonDisabed'
+                >
+                  Reset Game
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                  class='button-full'
+                  color='blue darken-1'
+                  text
+                  @click='clear'
+                >
+                  {{ clearButtonText }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </available-actions>
         </v-container>
       </v-card-text>
     </v-card>
@@ -99,30 +92,31 @@ import {
   toRaw,
   watch 
 } from 'vue';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
+import commonUtilities from '@/utilities/common';
 
 /* initialize stores */
-const serviceFailStore = useServiceFailStore();
+const appStore = useAppStore();
 const sudokuStore = useSudokuStore();
 const valuesStore = useValuesStore();
 
+const { displaySuccessfulToast, displayFailedToast } = commonUtilities();
+
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
-const selectedDifficulty: Ref<Difficulty | undefined> = ref(
+const selectedDifficulty: Ref<Difficulty | null> = ref(
   sudokuStore.getSelectedDifficulty
 );
 /* Game state properties and methods */
 const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
-// eslint-disable-next-line
-const selectedGameState: Ref<DropdownItem | undefined> = ref(
+const selectedGameState: Ref<DropdownItem | null> = ref(
   sudokuStore.getGameState
 );
 const isGameStateSelected: ComputedRef<boolean> = computed(() => {
@@ -173,24 +167,33 @@ const clearButtonText: ComputedRef<string> = computed(() => {
     return 'Clear Sudoku';
   }
 });
-const execute = (): void => {
+const execute = async (): Promise<void> => {
+  appStore.updateProcessingStatus(true);
   if (
     selectedDifficulty.value !== null &&
     selectedGameState.value?.value === GameState.PLAYGAME
   ) {
-    sudokuStore.createGameAsync();
+    await sudokuStore.createGameAsync();
   } else if (
     selectedGameState.value?.value === GameState.SOLVESUDOKU
   ) {
-    sudokuStore.solvePuzzleAsync();
+    await sudokuStore.solvePuzzleAsync();
   } else {
-    sudokuStore.generateSolutionAsync();
+    await sudokuStore.generateSolutionAsync();
   }
+  appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const checkGame = (): void => {
+  appStore.updateProcessingStatus(true);
   sudokuStore.checkGameAsync();
+  appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const resetGame = (): void => {
+  appStore.updateProcessingStatus(true);
   const initialGame = sudokuStore.getInitialGame;
   const game = Array<Array<string>>(9);
   for (let i = 0; i < 9; i++) {
@@ -200,6 +203,9 @@ const resetGame = (): void => {
     }
   }
   sudokuStore.updateGame(game);
+  appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('sudokuStore');
+  displayFailedToast(undefined, undefined);
 };
 const clear = (): void => {
   if (
@@ -235,35 +241,7 @@ watch(
 watch(
   () => selectedDifficulty?.value,
   () => {
-    sudokuStore.updateSelectedDifficulty(toRaw(selectedDifficulty.value));
-  }
-);
-watch(
-  () => sudokuStore.getServiceResult,
-  () => {
-    if (
-      sudokuStore.getServiceResult !== null &&
-      sudokuStore.getServiceMessage !== ''
-    ) {
-      toast(sudokuStore.getServiceMessage, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.SUCCESS,
-      });
-    }
-  }
-);
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-    }
+    sudokuStore.updateSelectedDifficulty(selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null);
   }
 );
 </script>

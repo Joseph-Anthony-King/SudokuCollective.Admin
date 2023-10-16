@@ -13,7 +13,8 @@
         v-on:update-nav-drawer='updateNavDrawerHandler'
       />
       <v-main>
-        <router-view />
+        <progress-widget v-if="processingStatus" />
+        <router-view v-else />
         <v-dialog
           v-model='userIsLoggingIn'
           persistent
@@ -74,12 +75,13 @@ import {
   defineComponent
 } from 'vue';
 import router from '@/router/index';
-import { toast } from 'vue3-toastify';
 import vuetify from '@/plugins/vuetify';
+import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useUserStore } from '@/store/userStore/index';
+import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
 import AppBar from '@/components/navigation/AppBar.vue';
 import FooterNav from '@/components/navigation/FooterNav.vue';
@@ -87,6 +89,7 @@ import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
 import SignUpForm from '@/components/forms/SignUpForm.vue';
+import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
 import { User } from '@/models/domain/user';
 
 // This vue file uses defineComponent in order to resolve a 'file is not a module' error in main.ts.
@@ -96,6 +99,7 @@ export default defineComponent({
     AppBar,
     FooterNav,
     NavigationDrawer,
+    ProgressWidget,
     LoginForm,
     LoginAssistanceForm,
     SignUpForm
@@ -105,7 +109,10 @@ export default defineComponent({
     const appStore = useAppStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
+    const serviceFailStore = useServiceFailStore();
     const valuesStore = useValuesStore();
+
+    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
 
     // Navbar functionality
     const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
@@ -138,7 +145,7 @@ export default defineComponent({
     // Login/logout functionality
     const userObtainingLoginAssistance: Ref<boolean> = ref(false);
     const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
-      return user.value?.isLoggingIn;
+      return user.value?.isLoggingIn && !processingStatus.value;
     });
     const logoutHandler = (): void => {
       navDrawerStatus.value = false;
@@ -160,6 +167,29 @@ export default defineComponent({
       user.value.isLoggingIn = true;
       userObtainingLoginAssistance.value = false;
     }
+    
+    watch(
+      () => appStore.getProcessingStatus,
+      () => {
+        processingStatus.value = appStore.getProcessingStatus;
+      }
+    );
+    watch(
+      () => appStore.getServiceMessage,
+      () => {
+        const serviceMessage = appStore.getServiceMessage;
+        if (serviceMessage === 'Status Code 200: Processed password reset request' 
+          || serviceMessage === 'Status Code 200: Resent password reset request') {
+          toast(serviceMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          });
+          user.value.isLoggingIn = false;
+          userObtainingLoginAssistance.value = false;
+          appStore.updateServiceMessage('');
+        }
+      }
+    );
     watch(
       () => user.value.isLoggingIn,
       () => {
@@ -198,26 +228,10 @@ export default defineComponent({
         }
       }
     );
-    watch(
-      () => appStore.getServiceMessage,
-      () => {
-        const serviceMessage = appStore.getServiceMessage;
-        if (serviceMessage === 'Status Code 200: Processed password reset request' 
-          || serviceMessage === 'Status Code 200: Resent password reset request') {
-          toast(serviceMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          });
-          user.value.isLoggingIn = false;
-          userObtainingLoginAssistance.value = false;
-          appStore.updateServiceMessage('');
-        }
-      }
-    );
 
     // Sign up functionality
     const userIsSigningUp: ComputedRef<boolean> = computed(() => {
-      return user.value?.isSigningUp;
+      return user.value?.isSigningUp && !processingStatus.value;
     });
     watch(
       () => user.value.isSigningUp,
@@ -229,7 +243,7 @@ export default defineComponent({
     // Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
     const maxDialogWidth: Ref<string> = ref('auto');
-    const resetAppViewPort = (): void => {
+    const resetAppDialogViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
         maxDialogWidth.value = 'auto';
@@ -247,18 +261,19 @@ export default defineComponent({
     onMounted(async () => {
       await valuesStore.initializeStoreAsync();
       sudokuStore.initializeStore();
-      resetAppViewPort();
+      serviceFailStore.initializeStore();
+      resetAppDialogViewPort();
       let resizeTimeout: number | undefined;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-          resetAppViewPort();
+          resetAppDialogViewPort();
         }, 250, 'Resized');
       });
     });
     onUnmounted(() => {
       window.removeEventListener('resize', () => {
-        resetAppViewPort();
+        resetAppDialogViewPort();
       });
     });
 
@@ -266,6 +281,7 @@ export default defineComponent({
       isSmallViewPort,
       maxDialogWidth,
       user,
+      processingStatus,
       navDrawerStatus,
       closeNavDrawerHandler,
       userObtainingLoginAssistance,
@@ -274,7 +290,7 @@ export default defineComponent({
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
-      updateNavDrawerHandler,
+      updateNavDrawerHandler
     };
   }
 });

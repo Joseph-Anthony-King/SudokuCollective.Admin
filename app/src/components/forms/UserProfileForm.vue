@@ -2,7 +2,7 @@
   <v-card-title class='justify-center text-center'>
     <span class='headline'>{{ formTitle }}</span>
   </v-card-title>
-  <v-form v-model='formValid' ref='form'>
+  <v-form v-model='formValid' ref='form' v-on:submit.prevent='actionConfirmedHandler'>
     <v-row>
       <v-col cols='12' lg='6' xl='6'>
         <v-text-field
@@ -93,7 +93,7 @@
         ></v-checkbox>
       </v-col>
     </v-row>
-    <v-card-actions class='text-center'>
+    <available-actions>
       <v-row dense>
         <v-col>
           <v-tooltip location='bottom'>
@@ -101,9 +101,9 @@
               <v-btn
                 color='blue darken-1'
                 text
-                @click='submitHandler'
-                :disabled='user.isEditing ? !formValid : false'
+                :disabled='formValid'
                 v-bind='props'
+                @click.prevent='user.isEditing === false ? user.isEditing = true : confirmEditSubmission = true'
               >
                 {{ submitText }}
               </v-btn>
@@ -144,8 +144,39 @@
           </v-tooltip>
         </v-col>
       </v-row>
-    </v-card-actions>
+      <v-row dense>
+        <v-col>
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='red darken-1'
+                text
+                v-bind='props'
+                :disabled='user.isEditing || user.isSuperUser'
+                @click='confirmDeleteSubmission = true'
+              >
+                Delete
+              </v-btn>
+            </template>
+            <span>Delete your profile</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
+    </available-actions>
   </v-form>
+  <v-dialog
+    v-model='confirmDialog'
+    persistent
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
+    hide-overlay
+    transition='dialog-top-transition'>
+    <ConfirmDialog 
+      :title='confirmTitle'
+      :message='confirmMessage'
+      v-on:action-confirmed='actionConfirmedHandler'
+      v-on:action-not-confirmed='actionNotConfirmedHandler'/>
+  </v-dialog>
 </template>
 
 <script setup lang='ts'>
@@ -154,15 +185,23 @@ import {
   Ref,
   computed,
   ComputedRef, 
-  watch 
+  watch, 
+  onMounted,
+  onUnmounted,
+  toRaw
 } from 'vue';
+import router from '@/router/index';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
-import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
-import { toast } from 'vue3-toastify';
+import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
   formStatus: {
@@ -172,20 +211,31 @@ const props = defineProps({
 });
 const emit = defineEmits(['user-updated']);
 
+// Initialize stores
+const appStore = useAppStore();
+const userStore = useUserStore();
+const { 
+  emailRules, 
+  requiredRules, 
+  userNameRules } = rules();
+const { 
+  displaySuccessfulToast, 
+  displayFailedToast, 
+  resetViewPort } = commonUtilities();
+
+const user: Ref<User> = ref(userStore.getUser);
+const userName: Ref<string | undefined> = ref(user.value.userName);
+const firstName: Ref<string | undefined> = ref(user.value.firstName);
+const lastName: Ref<string | undefined> = ref(user.value.lastName);
+const nickName: Ref<string | undefined> = ref(user.value.nickName);
+const email: Ref<string | undefined> = ref(user.value.email);
+const invalidUserNames: Ref<string[]> = ref([]);
+const invalidEmails: Ref<string[]> = ref([]);
+
+// Form logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
 const formTitle: Ref<string> = ref('User Profile');
-const userStore = useUserStore();
-const serviceFailStore = useServiceFailStore();
-const { emailRules, requiredRules, userNameRules } = rules();
-const user: Ref<User> = ref(userStore.getUser);
-const userName: Ref<string | null> = ref(user.value.userName);
-const firstName: Ref<string | null> = ref(user.value.firstName);
-const lastName: Ref<string | null> = ref(user.value.lastName);
-const nickName: Ref<string | null> = ref(user.value.nickName);
-const email: Ref<string | null> = ref(user.value.email);
-const invalidUserNames: Ref<string[]> = ref([]);
-const invalidEmails: Ref<string[]> = ref([]);
 
 // eslint-disable-next-line
 const getFormStatus: ComputedRef<boolean> = computed(() => {
@@ -198,7 +248,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 const formattedDateCreated: ComputedRef<string | null> = computed(() => {
-  if (user.value.dateCreated === null) {
+  if (user.value.dateCreated === undefined) {
     return null;
   } else {
     return `${new Date(
@@ -210,7 +260,7 @@ const formattedDateCreated: ComputedRef<string | null> = computed(() => {
 });
 
 const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
-  if (user.value.dateUpdated === null) {
+  if (user.value.dateUpdated === undefined) {
     return null;
   } else {
     if (
@@ -245,26 +295,188 @@ const submitHelperText: ComputedRef<string> = computed(() => {
   }
 });
 
-const submitHandler = (): void => {
-  if (!user.value.isEditing) {
-    user.value.isEditing = true;
-    form.value?.validate();
-  } else {
-    if (getFormStatus.value) {
-      const data = new UpdateUserRequestData(
-        userName.value,
-        firstName.value,
-        lastName.value,
-        nickName.value,
-        email.value
-      );
-      userStore.updateUserAsync(data);
+watch(
+  () => user.value.isEditing,
+  () => {
+    if (user.value.isEditing) {
+      formTitle.value = 'Edit User Profile';
+    } else {
+      formTitle.value = 'User Profile';
     }
+  }
+);
+
+// Confirm dialog logic
+const confirmDialog: Ref<boolean> = ref(false);
+const confirmEditSubmission: Ref<boolean> = ref(false);
+const confirmDeleteSubmission: Ref<boolean> = ref(false);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
+const confirmTitle: ComputedRef<string | undefined> = computed(() => { 
+  if (confirmEditSubmission.value) {
+    return 'Confirm Edit';
+  } else if (confirmDeleteSubmission.value) {
+    return 'Confirm Delete';
+  } else {
+    return undefined;
+  }
+});
+const confirmMessage: ComputedRef<string | undefined> = computed(() => { 
+  if (confirmEditSubmission.value) {
+    return `Are you to submit your edits ${user.value.userName}?`;
+  } else if (confirmDeleteSubmission.value) {
+    return `Are you sure you want to delete your profile ${user.value.userName}?  This action cannot be reversed and will delete all apps and games associated with your profile.`;
+  } else {
+    return undefined;
+  }
+});
+
+const actionConfirmedHandler = async (): Promise<void> => {
+  if (confirmEditSubmission.value) {
+    appStore.updateProcessingStatus(true);
+    const result = await editHandler();
+    if (result) {
+      confirmDialog.value = false;
+      confirmEditSubmission.value = false;
+    }
+  }
+
+  if (confirmDeleteSubmission.value) {
+    appStore.updateProcessingStatus(true);
+    const userName = user.value.userName;
+    const result = await deleteHandler();
+    if (result) {
+      confirmDialog.value = false;
+      confirmDeleteSubmission.value = false;
+      router.push('/');
+      toast(`Sad to see you go ${userName}, your profile has been deleted`, {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.SUCCESS,
+      });
+    }
+    appStore.updateProcessingStatus(false);
   }
 };
 
-const refreshHandler = (): void => {
-  userStore.getUserAsync();
+const actionNotConfirmedHandler = (): void => {
+  if (confirmEditSubmission.value) {
+    confirmDialog.value = false;
+    confirmEditSubmission.value = false;
+  }
+
+  if (confirmDeleteSubmission.value) {
+    confirmDialog.value = false;
+    confirmDeleteSubmission.value = false;
+  }
+};
+
+watch(
+  () => confirmEditSubmission.value,
+  () => {
+    if (confirmEditSubmission.value) {
+      confirmDialog.value = confirmEditSubmission.value;
+    }
+  }
+);
+
+watch(
+  () => confirmDeleteSubmission.value,
+  () => {
+    if (confirmDeleteSubmission.value) {
+      confirmDialog.value = confirmDeleteSubmission.value;
+    }
+  }
+);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === 'Status Code 404: User name not unique' &&
+    !options.invalidUserNames.value.includes(options.userName as string)
+  ) {
+    options.invalidUserNames.value.push(options.userName as string);
+  }
+  if (
+    message === 'Status Code 404: Email not unique' &&
+    !options.invalidEmails.value.includes(options.email as string)
+  ) {
+    options.invalidEmails.value.push(options.email as string);
+  }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidEmails: options.invalidEmails };
+};
+
+// Form actions
+const editHandler = async (): Promise<boolean> => {
+  let result = false;
+  if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
+    const data = new UpdateUserRequestData(
+      userName.value,
+      firstName.value,
+      lastName.value,
+      nickName.value,
+      email.value
+    );
+    result = await userStore.updateUserAsync(data);
+    appStore.updateProcessingStatus(false);
+  }
+  displaySuccessfulToast('userStore');
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
+  return result;
+};
+
+const deleteHandler = async (): Promise<boolean> => {
+  let result = false;
+  if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
+    result = await userStore.deleteUserAsync();
+    appStore.updateProcessingStatus(false);
+  }
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
+  return result;
+};
+
+const refreshHandler = async (): Promise<void> => {
+  appStore.updateProcessingStatus(true);
+  await userStore.getUserAsync();
+  appStore.updateProcessingStatus(false);
+  displaySuccessfulToast('userStore');
+  const failedToast = displayFailedToast(
+    updateInvalidValues, 
+    { 
+      invalidUserNames: toRaw(invalidUserNames.value), 
+      invalidEmails: toRaw(invalidUserNames.value),
+      userName: userName.value,
+      email: email.value });
+  if (failedToast.failed) {
+    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    form.value?.validate();
+  }
 };
 
 const cancelHandler = (): void => {
@@ -292,58 +504,20 @@ watch(
   }
 );
 
-watch(
-  () => user.value.isEditing,
-  () => {
-    if (user.value.isEditing) {
-      formTitle.value = 'Edit User Profile';
-    } else {
-      formTitle.value = 'User Profile';
-    }
-  }
-);
-
-watch(
-  () => userStore.getServiceMessage,
-  () => {
-    if (
-      userStore.getServiceMessage !== null &&
-      userStore.getServiceMessage !== ''
-    ) {
-      toast(userStore.getServiceMessage, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.SUCCESS,
-      });
-      userStore.updateServiceMessage('');
-    }
-  }
-);
-
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
-      if (
-        message === 'Status Code 404: User name not unique' &&
-        !invalidUserNames.value.includes(userName.value as string)
-      ) {
-        invalidUserNames.value.push(userName.value as string);
-      }
-      if (
-        message === 'Status Code 404: Email not unique' &&
-        !invalidEmails.value.includes(email.value as string)
-      ) {
-        invalidEmails.value.push(email.value as string);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
-  }
-);
+// Lifecycle hooks
+onMounted(async () => {
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
+});
 </script>

@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'>
+    <v-form v-model='formValid' ref='form' @submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -35,7 +35,7 @@
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class='text-center'>
+      <available-actions>
         <v-row dense>
           <v-col>
             <v-tooltip location='bottom'>
@@ -88,7 +88,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='submitHandler'
+                  @click.prevent='submitHandler'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -99,12 +99,14 @@
             </v-tooltip>
           </v-col>
         </v-row>
-      </v-card-actions>
+      </available-actions>
     </v-form>
   </v-card>
   <v-dialog 
     v-model='confirmFormReset' 
-    persistent max-width='600' 
+    persistent 
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
     hide-overlay 
     transition='dialog-top-transition'>
     <ConfirmDialog 
@@ -121,21 +123,21 @@ import {
   Ref,
   computed,
   ComputedRef,
+  toRaw,
   onMounted,
   onUpdated,
-  toRaw,
-  watch
+  onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
+import { useLoginFormStore } from '@/store/loginFormStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { LoginRequestData } from '@/models/requests/loginRequestData';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
-import { LoginRequestData } from '@/models/requests/loginRequestData';
   
 const props = defineProps({
   formStatus: {
@@ -145,19 +147,31 @@ const props = defineProps({
 });
 const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
 
+// Initialize stores
 const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
-const { isChrome, repairAutoComplete } = commonUtilities();
+
 const { passwordRules, userNameRules } = rules();
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(true);
-const userName: Ref<string> = ref('');
-const password: Ref<string> = ref('');
+const { 
+  isChrome, 
+  displayFailedToast,
+  repairAutoComplete,
+  resetViewPort } = commonUtilities();
+
+const userName: Ref<string | null> = ref(loginFormStore.getUserName);
+const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
 const confirmFormReset: Ref<boolean> = ref(false);
-const invalidUserNames: Ref<string[]> = ref([]);
-const invalidPasswords: Ref<string[]> = ref([]);
+const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
+const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPassword);
+
+// Form logic
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
@@ -168,6 +182,35 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
+
+// Form actions
+const submitHandler = async (): Promise<void> => {
+  if (getFormStatus.value && userName.value !== null && password.value !== null) {
+    appStore.updateProcessingStatus(true);
+    const data = new LoginRequestData(userName.value, password.value);
+    await appStore.loginAsync(data);
+    appStore.updateProcessingStatus(false);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidPasswords: toRaw(invalidPasswords.value),
+        userName: userName.value,
+        password: password.value });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
+      invalidPasswords.value = failedToast.paramResult.invalidPasswords;
+      loginFormStore.updateUserName(toRaw(userName.value));
+      loginFormStore.updatePassword(toRaw(password.value))
+      loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
+      loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
+    } else {
+      loginFormStore.initializeStore();
+    }
+  }
+};
+
 const helpHandler = (): void => {
   emit('obtain-login-assistance', null, null);
 };
@@ -180,47 +223,33 @@ const resetHandler = (): void => {
   form.value?.reset();
   confirmFormReset.value = false;
   serviceFailStore.initializeStore();
+  loginFormStore.initializeStore();
 };
 
 const cancelHandler = (): void => {
   emit('cancel-login', null, null);
 };
 
-const submitHandler = (): void => {
-  if (getFormStatus.value) {
-    const data = new LoginRequestData(userName.value, password.value);
-    appStore.loginAsync(data);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === 'Status Code 404: No user has this user name' &&
+    !options.invalidUserNames.includes(options.userName)
+  ) {
+    options.invalidUserNames.push(options.userName);
   }
+  if (
+    message === 'Status Code 404: Password is incorrect' &&
+    !options.invalidPasswords.includes(options.password)
+  ) {
+    options.invalidPasswords.push(options.password);
+  }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidPasswords: options.invalidPasswords };
 };
 
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
-      if (
-        message === 'Status Code 404: No user is using this user name' &&
-        !invalidUserNames.value.includes(userName.value)
-      ) {
-        invalidUserNames.value.push(userName.value);
-      }
-      if (
-        message === 'Status Code 404: Password is incorrect' &&
-        !invalidPasswords.value.includes(password.value)
-      ) {
-        invalidPasswords.value.push(password.value);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
-  }
-);
-
+// Lifecycle hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
@@ -230,11 +259,27 @@ onMounted(() => {
     userName.value = confirmedUserName;
     userStore.updateConfirmedUserName('');
   }
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
+  if (loginFormStore.getDirty) {
+    form.value?.validate();
+  }
 });
-
 onUpdated(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
 });
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
+});
 </script>
+@/store/loginFormStore/index

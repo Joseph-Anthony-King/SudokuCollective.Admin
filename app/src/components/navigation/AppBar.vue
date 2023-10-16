@@ -141,7 +141,8 @@
   <v-dialog
     v-model='confirmUserLogout'
     persistent
-    max-width='600'
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
     hide-overlay
     transition='dialog-top-transition'>
     <ConfirmDialog 
@@ -159,14 +160,17 @@ import {
   computed,
   ComputedRef,  
   toRaw, 
-  watch 
+  watch, 
+  onMounted,
+  onUnmounted
 } from 'vue';
 import { useUserStore } from '@/store/userStore/index';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
-import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
-import { InteriorLinks } from '@/utilities/links/interiorLinks';
 import { User } from '@/models/domain/user';
 import { MenuItem } from '@/models/infrastructure/menuItem';
+import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
+import { InteriorLinks } from '@/utilities/links/interiorLinks';
+import commonUtilities from '@/utilities/common';
 
 const emit = defineEmits([
   'user-logging-in', 
@@ -175,14 +179,23 @@ const emit = defineEmits([
   'update-nav-drawer'
 ]);
 
+// Initialize stores
 const userStore = useUserStore();
+
+const { resetViewPort } = commonUtilities();
+
+const user: Ref<User> = ref(userStore.getUser);
 const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
 const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
-const user: Ref<User> = ref(userStore.getUser);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
+
 const confirmUserLogout: Ref<boolean> = ref(false);
 const confirmMessage: ComputedRef<string> = computed(() => { 
   return `Are you sure you want to log out ${user.value.userName}?`;
 });
+
+// Actions
 const loginHandler = (): void => {
   emit('user-logging-in', null, null);
 };
@@ -196,12 +209,30 @@ const signUpHandler = (): void => {
 const updateNavDrawerHandler = (): void => {
   emit('update-nav-drawer', null, null);
 };
+
 watch(
   () => userStore.getUser,
   () => {
     user.value = toRaw(userStore.getUser);
   }
 );
+
+// Lifecycle hooks
+onMounted(async () => {
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
+});
 </script>
 
 <style lang='scss' scoped>

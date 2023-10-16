@@ -3,7 +3,7 @@
 		<v-card-title class='justify-center text-center'>
 			<span class='headline'>Sign Up</span>
 		</v-card-title>
-		<v-form v-model='formValid' ref='form'>
+		<v-form v-model='formValid' ref='form' v-on:submit.prevent='submitHandler'>
 			<v-card-text>
 				<v-container>
 					<v-row>
@@ -86,7 +86,7 @@
 					</v-row>
 				</v-container>
 			</v-card-text>
-			<v-card-actions class='text-center'>
+      <available-actions>
 				<v-row dense>
 					<v-col>
 						<v-tooltip location='bottom'>
@@ -134,12 +134,14 @@
 						</v-tooltip>
 					</v-col>
 				</v-row>
-			</v-card-actions>
+      </available-actions>
 		</v-form>
 	</v-card>
 	<v-dialog 
 		v-model='confirmFormReset' 
-		persistent max-width='600' 
+		persistent 
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
 		hide-overlay 
 		transition='dialog-top-transition'>
 		<ConfirmDialog 
@@ -155,17 +157,21 @@ import {
   ref,
   Ref,
   computed,
-  ComputedRef,  
-  watch 
+  ComputedRef, 
+  onMounted,
+  onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
+import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { User } from '@/models/domain/user';
-import rules from '@/utilities/rules/index';
 import { SignupRequestData } from '@/models/requests/signupRequestData';
+import rules from '@/utilities/rules/index';
+import commonUtilities from '@/utilities/common';
+import { toRaw } from 'vue';
 
 const props = defineProps({
 	formStatus: {
@@ -175,23 +181,35 @@ const props = defineProps({
 });
 const emit = defineEmits(['cancel-signup']);
 
+// Initialize stores
+const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
+const { 
+  isChrome, 
+  displayFailedToast,
+  repairAutoComplete,
+  resetViewPort } = commonUtilities();
 const {
 	confirmPasswordRules,
 	emailRules,
 	requiredRules,
 	passwordRules,
 	userNameRules } = rules();
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(true);
+
 const user: Ref<User> = ref(userStore.getUser);
-const password: Ref<string | null> = ref(null);
+const password: Ref<string | undefined> = ref(undefined);
 const confirmPassword: Ref<string | null> = ref(null);
 const showPassword: Ref<boolean> = ref(false);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
+
+// Form logic
+const form: Ref<VForm | null> = ref(null);
+const formValid: Ref<boolean> = ref(true);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
 	return props.formStatus;
@@ -203,20 +221,35 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 	return !props.formStatus;
 });
 
-const submitHandler = (): void => {
+// Form actions
+const submitHandler = async (): Promise<void> => {
 	if (getFormStatus.value) {
+    appStore.updateProcessingStatus(true);
 		const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
-		userStore.signupUserAsync(data);
+		await userStore.signupUserAsync(data);
+    appStore.updateProcessingStatus(false);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidEmails.value),
+        userName: user.value.userName,
+        email: user.value.email });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
+      invalidEmails.value = failedToast.paramResult.invalidEmails;
+    }
 	}
 };
 
 const resetHandler = (): void => {
-	user.value.userName = null;
-	user.value.firstName = null;
-	user.value.lastName = null;
-	user.value.nickName = null;
-	user.value.email = null;
-	password.value = null;
+	user.value.userName = undefined;
+	user.value.firstName = undefined;
+	user.value.lastName = undefined;
+	user.value.nickName = undefined;
+	user.value.email = undefined;
+	password.value = undefined;
 	confirmPassword.value = null;
 	invalidUserNames.value = [];
 	form.value?.reset();
@@ -228,31 +261,42 @@ const cancelHandler = (): void => {
 	emit('cancel-signup', null, null);
 };
 
-watch(
-	() => serviceFailStore.getIsSuccess,
-	() => {
-		const isSuccess = serviceFailStore.getIsSuccess;
-		if (isSuccess !== null && !isSuccess) {
-			const message: string = serviceFailStore.getMessage;
-			if (
-				message === 'Status Code 404: User name not unique' &&
-				!invalidUserNames.value.includes(user.value.userName as string)
-			) {
-				invalidUserNames.value.push(user.value.userName as string);
-			}
-			if (
-				message === 'Status Code 404: Email not unique' &&
-				!invalidEmails.value.includes(user.value.email as string)
-			) {
-				invalidEmails.value.push(user.value.email as string);
-			}
-			toast(message, {
-				position: toast.POSITION.TOP_CENTER,
-				type: toast.TYPE.ERROR,
-			});
-			serviceFailStore.initializeStore();
-			form.value?.validate();
-		}
-	}
-);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === 'Status Code 404: User name not unique' &&
+    !options.invalidUserNames.value.includes(options.userName as string)
+  ) {
+    options.invalidUserNames.value.push(options.userName as string);
+  }
+  if (
+    message === 'Status Code 404: Email not unique' &&
+    !options.invalidEmails.value.includes(options.email as string)
+  ) {
+    options.invalidEmails.value.push(options.email as string);
+  }
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidEmails: options.invalidEmails };
+};
+
+// Lifecycle hooks
+onMounted(async () => {
+  if (isChrome.value) {
+    repairAutoComplete();
+  }
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
+});
 </script>

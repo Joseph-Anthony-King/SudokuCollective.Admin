@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'>
+    <v-form v-model='formValid' ref='form'  @submit.prevent='submitHandler'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -48,7 +48,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='submitHandler'
+                  @click.prevent='submitHandler'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -114,12 +114,12 @@ import {
   ComputedRef,
   onMounted, 
   onUpdated, 
-  watch 
+  watch, 
+  toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore/index';
+import { useLoginFormStore } from '@/store/loginFormStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
@@ -135,16 +135,25 @@ const props = defineProps({
 });
 const emit = defineEmits(['return-to-login']);
 
+// Initialize stores
 const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
-const { isChrome, repairAutoComplete } = commonUtilities();
+
+const { 
+  isChrome, 
+  displayFailedToast, 
+  repairAutoComplete } = commonUtilities();
+
+const confirmFormReset: Ref<boolean> = ref(false);
+const email: Ref<string | null> = ref(loginFormStore.getEmail);
+const invalidEmails: Ref<string[]> = ref(loginFormStore.getInvalidEmails);
+
+// Form logic
 const { emailRules } = rules();
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
-const confirmFormReset: Ref<boolean> = ref(false);
-const email: Ref<string> = ref('');
-const invalidEmails: Ref<string[]> = ref([]);
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
@@ -156,19 +165,39 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
 
-const submitHandler = (): void => {
-  if (getFormStatus.value) {
+// Form actions
+const submitHandler = async (): Promise<void> => {
+  if (getFormStatus.value && email.value !== null) {
+    appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
-    appStore.confirmUserNameAsync(data);
+    await appStore.confirmUserNameAsync(data);
+    appStore.updateProcessingStatus(false);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidEmails: toRaw(invalidEmails.value), 
+        email: email.value });
+    if (failedToast.failed) {
+      form.value?.validate();
+      invalidEmails.value = failedToast.paramResult.invalidEmails;
+      loginFormStore.updateEmail(toRaw(email.value));
+      loginFormStore.updateInvalidEmails(toRaw(invalidEmails.value));
+    }
   }
-}
+};
 
-const resetPasswordHandlder = (): void => {
-  if (getFormStatus.value) {
+const resetPasswordHandlder = async (): Promise<void> => {
+  if (getFormStatus.value && email.value !== null) {
+    appStore.updateProcessingStatus(true);
     const data = new LoginAssistanceRequestData(email.value);
-    appStore.requestPasswordResetAsync(data);
+    await appStore.requestPasswordResetAsync(data);
+    appStore.updateProcessingStatus(false);
+    const failedToast = displayFailedToast(undefined, undefined);
+    if (failedToast.failed) {
+      form.value?.validate();
+    }
   }
-}
+};
 
 const resetHandler = (): void => {
   if (getFormStatus.value) {
@@ -177,34 +206,24 @@ const resetHandler = (): void => {
     form.value?.reset();
     confirmFormReset.value = false;
     serviceFailStore.initializeStore();
+    loginFormStore.initializeAssistance();
   }
-}
+};
 
 const goBackHandler = (): void => {
   emit('return-to-login', null, null);
-}
+};
 
-watch(
-  () => serviceFailStore.getIsSuccess,
-  () => {
-    const isSuccess = serviceFailStore.getIsSuccess;
-    if (isSuccess !== null && !isSuccess) {
-      const message: string = serviceFailStore.getMessage;
-      if (
-        message === 'Status Code 404: No user is using this email' &&
-        !invalidEmails.value.includes(email.value)
-      ) {
-        invalidEmails.value.push(email.value);
-      }
-      toast(message, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
-      serviceFailStore.initializeStore();
-      form.value?.validate();
-    }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === 'Status Code 404: No user is using this email' &&
+    !options.invalidEmails.includes(options.email)
+  ) {
+    options.invalidEmails.push(options.email);
   }
-);
+  return { invalidEmails: options.invalidEmails }
+};
 
 watch(
   () => userStore.getConfirmedUserName,
@@ -216,12 +235,15 @@ watch(
   }
 );
 
+// lifecycle hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
+  if (loginFormStore.getEmailDirty) {
+    form.value?.validate();
+  }
 });
-
 onUpdated(() => {
   if (isChrome.value) {
     repairAutoComplete();
