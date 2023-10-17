@@ -62,7 +62,7 @@ const progressPadding = (outerColumn: boolean): number => {
   let result: number;
   if (outerColumn) {
     if (
-      progressMessage.value === 'processing, please do not navigate away'
+      progressMessage.value === 'processing, please wait'
     ) {
       if (windowWidth.value >= 1904) {
         result = 4;
@@ -90,7 +90,7 @@ const progressPadding = (outerColumn: boolean): number => {
     }
   } else {
     if (
-      progressMessage.value === 'processing, please do not navigate away'
+      progressMessage.value === 'processing, please wait'
     ) {
       if (windowWidth.value >= 1264) {
         return 6;
