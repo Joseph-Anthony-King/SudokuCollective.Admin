@@ -62,7 +62,7 @@ export default function () {
     return result;
   };
   
-  const isAsync = (fn: () => unknown): boolean => {
+  const isAsyncFunction = (fn: () => unknown): boolean => {
     return fn.constructor.name === 'AsyncFunction';
   };
 
@@ -85,9 +85,8 @@ export default function () {
   const updateAppProcessingAsync = async (method: () => unknown): Promise<void | unknown> => {
     useAppStore().updateProcessingStatus(true);
     let result: unknown;
-    if (isAsync(method)) {
+    if (isAsyncFunction(method)) {
       result = await method();
-      console.warn(`isAsync: ${isAsync(method)}, result: ${result}`);
     } else {
       result = method();
     }
@@ -119,7 +118,7 @@ export default function () {
     clearStores,
     displaySuccessfulToast,
     displayFailedToast,
-    isAsync,
+    isAsyncFunction,
     repairAutoComplete,
     resetViewPort,
     updateAppProcessingAsync,
