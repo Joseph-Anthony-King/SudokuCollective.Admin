@@ -123,5 +123,5 @@ export default function () {
     resetViewPort,
     updateAppProcessingAsync,
     updateUrlWithAction,
-  }
+  };
 }
