@@ -1,10 +1,11 @@
-import { defineStore } from 'pinia';
 import { 
   Ref,
   ref,
   ComputedRef,
   computed,
+  toRaw
 } from 'vue';
+import { defineStore } from 'pinia';
 import { Methods } from '@/store/sudokuStore/common';
 import { GamesService } from '@/services/gamesService';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
@@ -24,21 +25,21 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
 	const isSolveDisabled: Ref<boolean | null> = ref(null);
 
 	const getInitialGame: ComputedRef<Array<Array<string>>> = computed(() => 
-		initialGame.value !== null ? initialGame.value : new Array<Array<string>>());
+		initialGame.value !== null ? toRaw(initialGame.value) : new Array<Array<string>>());
 	const getGame: ComputedRef<Array<Array<string>>> = computed(() => 
-		game.value !== null ? game.value : new Array<Array<string>>());
+		game.value !== null ? toRaw(game.value) : new Array<Array<string>>());
 	const getPuzzle: ComputedRef<Array<Array<string>>> = computed(() => 
-		puzzle.value !== null ? puzzle.value : new Array<Array<string>>());
+		puzzle.value !== null ? toRaw(puzzle.value) : new Array<Array<string>>());
 	const getSolution: ComputedRef<Array<Array<string>>> = computed(() => 
-		solution.value !== null ? solution.value : new Array<Array<string>>());
-	const getGameState: ComputedRef<DropdownItem | null> = computed(() => gameState.value ? gameState.value : null);
-	const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() => selectedDifficulty.value ? selectedDifficulty.value : null);
+		solution.value !== null ? toRaw(solution.value) : new Array<Array<string>>());
+	const getGameState: ComputedRef<DropdownItem | null> = computed(() => gameState.value ? toRaw(gameState.value) : null);
+	const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() => selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null);
 	const getServiceResult: ComputedRef<boolean> = computed(() => 
-		serviceResult.value !== null ? serviceResult.value : false);
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
-	const getProcessing: ComputedRef<boolean> = computed(() => processing.value);
+		serviceResult.value !== null ? toRaw(serviceResult.value) : false);
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? toRaw(serviceMessage.value) : '');
+	const getProcessing: ComputedRef<boolean> = computed(() => toRaw(processing.value));
 	const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
-		isSolveDisabled.value !== null ? isSolveDisabled.value : false);
+		isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false);
 	
 	const initializeStore = (): void => {
 		if (game.value === null && puzzle.value === null && solution.value === null) { 

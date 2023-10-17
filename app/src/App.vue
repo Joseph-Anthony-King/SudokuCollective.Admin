@@ -70,7 +70,6 @@ import {
   computed,
   onMounted,
   onUnmounted,
-  toRaw,
   watch,
   defineComponent
 } from 'vue';
@@ -91,6 +90,7 @@ import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
 import SignUpForm from '@/components/forms/SignUpForm.vue';
 import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
 import { User } from '@/models/domain/user';
+import commonUtilities from '@/utilities/common';
 
 // This vue file uses defineComponent in order to resolve a 'file is not a module' error in main.ts.
 export default defineComponent({
@@ -112,6 +112,8 @@ export default defineComponent({
     const serviceFailStore = useServiceFailStore();
     const valuesStore = useValuesStore();
 
+    const { clearStores } = commonUtilities();
+
     const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
 
     // Navbar functionality
@@ -132,13 +134,11 @@ export default defineComponent({
     };
 
     // User set up
-    const user: Ref<User> = ref(
-      toRaw(userStore.getUser)
-    );
+    const user: Ref<User> = ref(userStore.getUser);
     watch(
       () => userStore.getUser,
       () => {
-        user.value = toRaw(userStore.getUser);
+        user.value = userStore.getUser;
       }
     );
 
@@ -199,12 +199,12 @@ export default defineComponent({
     watch(
       () => userStore.getUserIsLoggedIn,
       () => {
-        const isLoggedIn = toRaw(userStore.getUserIsLoggedIn);
-        const isSignedUp = toRaw(userStore.getUserIsSignedIn);
+        const isLoggedIn = userStore.getUserIsLoggedIn;
+        const isSignedUp = userStore.getUserIsSignedIn;
         if (isLoggedIn) {
           updateNavDrawerHandler();
           let toastMessage: string;
-          user.value = toRaw(userStore.getUser);
+          user.value = userStore.getUser;
           if (!isSignedUp) {
             toastMessage = `Welcome back ${user.value.userName}!`;
           } else {
@@ -270,6 +270,12 @@ export default defineComponent({
         resizeTimeout = setTimeout(() => {
           resetAppDialogViewPort();
         }, 250, 'Resized');
+      });
+      window.addEventListener('beforeunload', (e) => {
+        e.preventDefault();
+        if (!appStore.getStayedLoggedIn) {
+          clearStores();
+        }
       });
     });
     onUnmounted(() => {

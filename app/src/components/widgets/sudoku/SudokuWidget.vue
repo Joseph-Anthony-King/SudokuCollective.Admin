@@ -198,7 +198,7 @@ const checkGameAsync = async (event: Event | null = null): Promise<void>=> {
 };
 const resetGameAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     const initialGame = sudokuStore.getInitialGame;
     const game = Array<Array<string>>(9);
     for (let i = 0; i < 9; i++) {
@@ -229,7 +229,7 @@ const clear = (event: Event | null = null): void => {
 watch(
   () => valuesStore.getGameStates,
   () => {
-    gameStates.value = toRaw(valuesStore.getGameStates);
+    gameStates.value = valuesStore.getGameStates;
   }
 );
 watch(
@@ -241,7 +241,7 @@ watch(
 watch(
   () => valuesStore.getDifficulties,
   () => {
-    difficulties.value = toRaw(valuesStore.getDifficulties);
+    difficulties.value = valuesStore.getDifficulties;
   }
 );
 watch(

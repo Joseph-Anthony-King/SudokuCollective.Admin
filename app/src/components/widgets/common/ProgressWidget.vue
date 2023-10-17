@@ -26,7 +26,6 @@ import {
   computed,
   onMounted,
   onUnmounted,
-  toRaw,
   watch,
 } from 'vue';
 import { useAppStore } from '@/store/appStore';
@@ -121,7 +120,7 @@ const resetProgressMessagePadding = (): void => {
 watch(
   () => appStore.getProcessingMessage,
   () => {
-    progressMessage.value = toRaw(appStore.getProcessingMessage);
+    progressMessage.value = appStore.getProcessingMessage;
   }
 );
 onMounted(() => {

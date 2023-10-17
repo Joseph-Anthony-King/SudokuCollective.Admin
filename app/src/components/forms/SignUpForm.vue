@@ -14,7 +14,7 @@
 								prepend-icon='mdi-account-plus'
 								:rules='userNameRules(invalidUserNames, "User name not unique")'
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -24,7 +24,7 @@
 								prepend-icon='mdi-account-plus'
 								:rules="requiredRules('First Name')"
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -34,7 +34,7 @@
 								prepend-icon='mdi-account-plus'
 								:rules="requiredRules('Last Name')"
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -42,7 +42,7 @@
 								v-model='user.nickName'
 								label='Nickname (Not Required)'
 								prepend-icon='mdi-account-plus'
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -52,7 +52,7 @@
 								prepend-icon='mdi-email'
 								:rules='emailRules(invalidEmails, "Email not unique")'
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -66,7 +66,7 @@
 								autocomplete='new-password'
 								:rules='passwordRules()'
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
@@ -80,9 +80,22 @@
 								autocomplete='new-password'
 								:rules='confirmPasswordRules(password)'
 								required
-								color="primary"
+								color='primary'
 							></v-text-field>
 						</v-col>
+            <v-col cols='12'>
+              <v-tooltip location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-checkbox
+                    v-model='stayLoggedIn'
+                    label='Stay Logged in for 30 Days'
+                    color='primary'
+                    v-bind='props'
+                  ></v-checkbox>
+                </template>
+                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
+              </v-tooltip>
+            </v-col>
 					</v-row>
 				</v-container>
 			</v-card-text>
@@ -159,9 +172,11 @@ import {
   ComputedRef,
   computed,
   onMounted,
-  onUnmounted
+  onUnmounted,
+  toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
+import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -170,7 +185,6 @@ import { User } from '@/models/domain/user';
 import { SignupRequestData } from '@/models/requests/signupRequestData';
 import rules from '@/utilities/rules/index';
 import commonUtilities from '@/utilities/common';
-import { toRaw } from 'vue';
 
 const props = defineProps({
 	formStatus: {
@@ -181,8 +195,10 @@ const props = defineProps({
 const emit = defineEmits(['cancel-signup']);
 
 // Initialize stores
+const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
+
 const { 
   isChrome, 
   displayFailedToastAsync,
@@ -200,6 +216,7 @@ const user: Ref<User> = ref(userStore.getUser);
 const password: Ref<string | undefined> = ref(undefined);
 const confirmPassword: Ref<string | null> = ref(null);
 const showPassword: Ref<boolean> = ref(false);
+const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
@@ -225,15 +242,23 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value) {
-      const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
+      const data = new SignupRequestData(
+        user.value.userName, 
+        user.value.firstName, 
+        user.value.lastName, 
+        user.value.nickName, 
+        user.value.email, 
+        password.value,
+        stayLoggedIn.value);
       await userStore.signupUserAsync(data);
       const failedToast = await displayFailedToastAsync(
         updateInvalidValues, 
         { 
           invalidUserNames: toRaw(invalidUserNames.value), 
           invalidEmails: toRaw(invalidEmails.value),
-          userName: user.value.userName,
-          email: user.value.email });
+          userName: toRaw(user.value.userName),
+          email: toRaw(user.value.email)
+        });
       if (failedToast.failed) {
         form.value?.validate();
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
@@ -253,6 +278,7 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
     user.value.email = undefined;
     password.value = undefined;
     confirmPassword.value = null;
+    stayLoggedIn.value = true;
     invalidUserNames.value = [];
     form.value?.reset();
     confirmFormReset.value = false;
@@ -271,15 +297,15 @@ const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => 
 const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: User name not unique' &&
-    !options.invalidUserNames.value.includes(options.userName as string)
+    !options.invalidUserNames.includes(options.userName as string)
   ) {
-    options.invalidUserNames.value.push(options.userName as string);
+    options.invalidUserNames.push(options.userName as string);
   }
   if (
     message === 'Status Code 404: Email not unique' &&
-    !options.invalidEmails.value.includes(options.email as string)
+    !options.invalidEmails.includes(options.email as string)
   ) {
-    options.invalidEmails.value.push(options.email as string);
+    options.invalidEmails.push(options.email as string);
   }
   return { 
     invalidUserNames: options.invalidUserNames, 

@@ -14,7 +14,7 @@
                 prepend-icon='mdi-account-circle'
                 :rules='userNameRules(invalidUserNames, "No user is using this user name")'
                 autocomplete='off'
-                color="primary"
+                color='primary'
               >
               </v-text-field>
             </v-col>
@@ -28,9 +28,22 @@
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append='showPassword = !showPassword'
                 autocomplete='off'
-                color="primary"
+                color='primary'
               >
               </v-text-field>
+            </v-col>
+            <v-col cols='12'>
+              <v-tooltip location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-checkbox
+                    v-model='stayLoggedIn'
+                    label='Stay Logged in for 30 Days'
+                    color='primary'
+                    v-bind='props'
+                  ></v-checkbox>
+                </template>
+                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
+              </v-tooltip>
             </v-col>
           </v-row>
         </v-container>
@@ -164,6 +177,7 @@ const {
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
+const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
 const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPassword);
@@ -189,15 +203,19 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && userName.value !== null && password.value !== null) {
-      const data = new LoginRequestData(userName.value, password.value);
+      const data = new LoginRequestData(
+        userName.value, 
+        password.value,
+        stayLoggedIn.value);
       await appStore.loginAsync(data);
       const failedToast = await displayFailedToastAsync(
         updateInvalidValues, 
         { 
           invalidUserNames: toRaw(invalidUserNames.value), 
           invalidPasswords: toRaw(invalidPasswords.value),
-          userName: userName.value,
-          password: password.value });
+          userName: toRaw(userName.value),
+          password: toRaw(password.value) 
+        });
       if (failedToast.failed) {
         form.value?.validate();
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
@@ -224,6 +242,7 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   await updateAppProcessingAsync(() => {
     userName.value = '';
     password.value = '';
+    stayLoggedIn.value = true;
     invalidUserNames.value = [];
     invalidPasswords.value = [];
     form.value?.reset();
@@ -264,7 +283,7 @@ onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
-  const confirmedUserName = toRaw(userStore.getConfirmedUserName);
+  const confirmedUserName = userStore.getConfirmedUserName;
   if (confirmedUserName !== '') {
     userName.value = confirmedUserName;
     userStore.updateConfirmedUserName('');

@@ -159,7 +159,6 @@ import {
   ref,
   ComputedRef,
   computed, 
-  toRaw, 
   watch, 
   onMounted,
   onUnmounted
@@ -213,7 +212,7 @@ const updateNavDrawerHandler = (): void => {
 watch(
   () => userStore.getUser,
   () => {
-    user.value = toRaw(userStore.getUser);
+    user.value = userStore.getUser;
   }
 );
 

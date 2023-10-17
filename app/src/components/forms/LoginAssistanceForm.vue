@@ -15,7 +15,7 @@
                 required
                 :rules='emailRules(invalidEmails, "No user is using this email")'
                 autocomplete='off'
-                color="primary"
+                color='primary'
               ></v-text-field>
             </v-col>
           </v-row>
@@ -184,7 +184,8 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         updateInvalidValues, 
         { 
           invalidEmails: toRaw(invalidEmails.value), 
-          email: email.value });
+          email: toRaw(email.value)
+        });
       if (failedToast.failed) {
         form.value?.validate();
         invalidEmails.value = failedToast.methodResult.invalidEmails;

@@ -5,4 +5,5 @@ export interface ISignupRequestData {
 	nickName: string,
 	email: string,
 	password: string,
+  stayLoggedIn: boolean,
 }

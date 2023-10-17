@@ -33,7 +33,6 @@
 import { 
   ref, 
   onBeforeMount, 
-  toRaw, 
   watch 
 } from 'vue';
 import { useSudokuStore } from '@/store/sudokuStore/index';
@@ -108,7 +107,7 @@ const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
 watch(
   () => sudokuStore.getGameState,
   () => {
-    gameState = toRaw(sudokuStore.getGameState);
+    gameState = sudokuStore.getGameState;
     matrix.value = obtainMatrix();
   }
 );
