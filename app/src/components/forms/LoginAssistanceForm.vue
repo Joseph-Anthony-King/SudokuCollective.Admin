@@ -29,7 +29,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='resetPasswordHandlder($event)'
+                  @click='resetPasswordHandlerAsync($event)'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -48,7 +48,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click ='submitHandler($event)'
+                  @click ='submitHandlerAsync($event)'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -80,7 +80,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='goBackHandler'
+                  @click='goBackHandlerAsync'
                   v-bind='props'
                 >
                   Go Back
@@ -103,7 +103,7 @@
     <ConfirmDialog 
       title='Reset Form' 
       message='Are you sure you want to reset this form?' 
-      v-on:action-confirmed='resetHandler'
+      v-on:action-confirmed='resetHandlerAsync'
       v-on:action-not-confirmed='confirmFormReset = false' />
   </v-dialog>
 </template>
@@ -147,7 +147,7 @@ const userStore = useUserStore();
 
 const { 
   isChrome, 
-  displayFailedToast, 
+  displayFailedToastAsync, 
   resetViewPort,
   repairAutoComplete,
   updateAppProcessingAsync } = commonUtilities();
@@ -174,13 +174,13 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandler = async (event: Event | null = null): Promise<void> => {
+const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
       const data = new LoginAssistanceRequestData(email.value);
       await appStore.confirmUserNameAsync(data);
-      const failedToast = displayFailedToast(
+      const failedToast = await displayFailedToastAsync(
         updateInvalidValues, 
         { 
           invalidEmails: toRaw(invalidEmails.value), 
@@ -195,13 +195,13 @@ const submitHandler = async (event: Event | null = null): Promise<void> => {
   });
 };
 
-const resetPasswordHandlder = async (event: Event | null = null): Promise<void> => {
+const resetPasswordHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
       const data = new LoginAssistanceRequestData(email.value);
       await appStore.requestPasswordResetAsync(data);
-      const failedToast = displayFailedToast(undefined, undefined);
+      const failedToast = await displayFailedToastAsync(undefined, undefined);
       if (failedToast.failed) {
         form.value?.validate();
       }
@@ -209,9 +209,9 @@ const resetPasswordHandlder = async (event: Event | null = null): Promise<void> 
   });
 };
 
-const resetHandler = (event: Event | null = null): void => {
+const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  await updateAppProcessingAsync(() => {
     if (getFormStatus.value) {
       email.value = '';
       invalidEmails.value = [];
@@ -223,9 +223,9 @@ const resetHandler = (event: Event | null = null): void => {
   });
 };
 
-const goBackHandler = (event: Event | null = null): void => {
+const goBackHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  await updateAppProcessingAsync(() => {
     emit('return-to-login', null, null);
   });
 };

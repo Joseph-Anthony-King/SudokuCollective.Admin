@@ -117,7 +117,7 @@
               <v-btn
                 color='blue darken-1'
                 text
-                @click='refreshHandler($event)'
+                @click='refreshHandlerAsync($event)'
                 v-bind='props'
                 :disabled='user.isEditing'
               >
@@ -174,7 +174,7 @@
     <ConfirmDialog 
       :title='confirmTitle'
       :message='confirmMessage'
-      v-on:action-confirmed='actionConfirmedHandler'
+      v-on:action-confirmed='actionConfirmedHandlerAsync'
       v-on:action-not-confirmed='actionNotConfirmedHandler'/>
   </v-dialog>
 </template>
@@ -219,7 +219,7 @@ const {
   userNameRules } = rules();
 const { 
   displaySuccessfulToast, 
-  displayFailedToast, 
+  displayFailedToastAsync, 
   resetViewPort,
   updateAppProcessingAsync } = commonUtilities();
 
@@ -331,11 +331,11 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
   }
 });
 
-const actionConfirmedHandler = async (event: Event | null = null): Promise<void> => {
+const actionConfirmedHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     if (confirmEditSubmission.value) {
-      const result = await editHandler();
+      const result = await editHandlerAsync();
       if (result) {
         confirmDialog.value = false;
         confirmEditSubmission.value = false;
@@ -344,7 +344,7 @@ const actionConfirmedHandler = async (event: Event | null = null): Promise<void>
 
     if (confirmDeleteSubmission.value) {
       const userName = user.value.userName;
-      const result = await deleteHandler();
+      const result = await deleteHandlerAsync();
       if (result) {
         confirmDialog.value = false;
         confirmDeleteSubmission.value = false;
@@ -357,9 +357,9 @@ const actionConfirmedHandler = async (event: Event | null = null): Promise<void>
     }});
 };
 
-const actionNotConfirmedHandler = (event: Event | null = null): void => {
+const actionNotConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  await updateAppProcessingAsync(() => {
     if (confirmEditSubmission.value) {
       confirmDialog.value = false;
       confirmEditSubmission.value = false;
@@ -409,9 +409,9 @@ const updateInvalidValues = (message: string, options: any): any => {
 };
 
 // Form actions
-const editHandler = async (event: Event | null = null): Promise<boolean> => {
+const editHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
-  return updateAppProcessingAsync(async () => {
+  return await updateAppProcessingAsync(async () => {
     let result = false;
     if (getFormStatus.value) {
       const data = new UpdateUserRequestData(
@@ -424,7 +424,7 @@ const editHandler = async (event: Event | null = null): Promise<boolean> => {
       result = await userStore.updateUserAsync(data);
     }
     displaySuccessfulToast(StoreType.USERSTORE);
-    const failedToast = displayFailedToast(
+    const failedToast = await displayFailedToastAsync(
       updateInvalidValues, 
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 
@@ -439,14 +439,14 @@ const editHandler = async (event: Event | null = null): Promise<boolean> => {
     return result;}) as Promise<boolean>;
 };
 
-const deleteHandler = async (event: Event | null = null): Promise<boolean> => {
+const deleteHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
-  return updateAppProcessingAsync(async () => {
+  return await updateAppProcessingAsync(async () => {
     let result = false;
     if (getFormStatus.value) {
       result = await userStore.deleteUserAsync();
     }
-    const failedToast = displayFailedToast(
+    const failedToast = await displayFailedToastAsync(
       updateInvalidValues, 
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 
@@ -462,12 +462,12 @@ const deleteHandler = async (event: Event | null = null): Promise<boolean> => {
   }) as Promise<boolean>;
 };
 
-const refreshHandler = async (event: Event | null = null): Promise<void> => {
+const refreshHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     await userStore.getUserAsync();
     displaySuccessfulToast(StoreType.USERSTORE);
-    const failedToast = displayFailedToast(
+    const failedToast = await displayFailedToastAsync(
       updateInvalidValues, 
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 

@@ -109,7 +109,7 @@
 								<v-btn 
 									color='blue darken-1' 
 									text 
-									@click='cancelHandler($event)' 
+									@click='cancelHandlerAsync($event)' 
 									v-bind='props'>
 									Cancel
 								</v-btn>
@@ -123,7 +123,7 @@
 								<v-btn
 									color='blue darken-1'
 									text
-									@click='submitHandler($event)'
+									@click='submitHandlerAsync($event)'
 									:disabled='!formValid'
 									v-bind='props'
 								>
@@ -147,7 +147,7 @@
 		<ConfirmDialog 
 			title='Reset Form' 
 			message='Are you sure you want to reset this form?' 
-			v-on:action-confirmed='resetHandler'
+			v-on:action-confirmed='resetHandlerAsync'
 			v-on:action-not-confirmed='confirmFormReset = false' />
 	</v-dialog>
 </template>
@@ -185,7 +185,7 @@ const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 const { 
   isChrome, 
-  displayFailedToast,
+  displayFailedToastAsync,
   repairAutoComplete,
   resetViewPort,
   updateAppProcessingAsync } = commonUtilities();
@@ -221,13 +221,13 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandler = async (event: Event | null = null): Promise<void> => {
+const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  await updateAppProcessingAsync(async () => {
     if (getFormStatus.value) {
       const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
       await userStore.signupUserAsync(data);
-      const failedToast = displayFailedToast(
+      const failedToast = await displayFailedToastAsync(
         updateInvalidValues, 
         { 
           invalidUserNames: toRaw(invalidUserNames.value), 
@@ -243,9 +243,9 @@ const submitHandler = async (event: Event | null = null): Promise<void> => {
   });
 };
 
-const resetHandler = (event: Event | null = null): void => {
+const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  await updateAppProcessingAsync(() => {
     user.value.userName = undefined;
     user.value.firstName = undefined;
     user.value.lastName = undefined;
@@ -260,9 +260,9 @@ const resetHandler = (event: Event | null = null): void => {
   });
 };
 
-const cancelHandler = (event: Event | null = null): void => {
+const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  await updateAppProcessingAsync(() => {
     emit('cancel-signup', null, null);
   });
 };
