@@ -7,7 +7,7 @@ export class StaticServiceMethods {
     const appStore = useAppStore();
 		const serviceFailStore = useServiceFailStore();
 		serviceFailStore.updateIsSuccess(response.data.isSuccess);
-		serviceFailStore.updateMessage(response.data.message);
+		serviceFailStore.updateServiceMessage(response.data.message);
 		serviceFailStore.updateStatusCode(response.status);
 
 		if (response.status === 401) {

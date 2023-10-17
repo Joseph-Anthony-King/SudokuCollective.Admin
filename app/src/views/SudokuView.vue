@@ -1,5 +1,5 @@
 <template>
-  <sudoku-page :action='action'/>
+  <SudokuPage :action='action'/>
 </template>
 
 <script lang='ts'>

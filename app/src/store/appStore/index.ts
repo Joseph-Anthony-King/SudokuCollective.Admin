@@ -1,8 +1,8 @@
 import { 
-	computed,
-	ComputedRef, 
-	ref, 
-	Ref  
+  Ref,
+  ref,
+  ComputedRef,
+  computed
 } from 'vue';
 import { defineStore } from 'pinia';
 import { AxiosResponse } from 'axios';
@@ -66,9 +66,9 @@ export const useAppStore = defineStore('appStore', () => {
 		navDrawerStatus.value = param;
 	};
 	const loginAsync = async (data: ILoginRequestData): Promise<void> => {
-		const userStore = useUserStore();
 		const response: IServicePayload = await LoginService.postLoginAsync(data);
 		if (response.isSuccess) {
+      const userStore = useUserStore();
 			userStore.updateUser(response.user);
 			updateToken(response.token);
 			updateTokenExpirationDate(response.tokenExpirationDate);
@@ -83,9 +83,9 @@ export const useAppStore = defineStore('appStore', () => {
 		clearStores();
 	};
 	const confirmUserNameAsync = async (data: ILoginAssistanceRequestData): Promise<void> => {
-		const userStore = useUserStore();
 		const response: IServicePayload = await LoginService.postConfirmUserNameAsync(data);
 		if (response.isSuccess) {
+      const userStore = useUserStore();
 			userStore.updateConfirmedUserName(response.confirmedUserName);
 			updateToken(response.token);
 		}

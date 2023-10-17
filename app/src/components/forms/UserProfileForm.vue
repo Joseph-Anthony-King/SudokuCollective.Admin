@@ -2,7 +2,7 @@
   <v-card-title class='justify-center text-center'>
     <span class='headline'>{{ formTitle }}</span>
   </v-card-title>
-  <v-form v-model='formValid' ref='form' v-on:submit.prevent='actionConfirmedHandler'>
+  <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
     <v-row>
       <v-col cols='12' lg='6' xl='6'>
         <v-text-field
@@ -93,7 +93,7 @@
         ></v-checkbox>
       </v-col>
     </v-row>
-    <available-actions>
+    <AvailableActions>
       <v-row dense>
         <v-col>
           <v-tooltip location='bottom'>
@@ -117,7 +117,7 @@
               <v-btn
                 color='blue darken-1'
                 text
-                @click='refreshHandler'
+                @click='refreshHandler($event)'
                 v-bind='props'
                 :disabled='user.isEditing'
               >
@@ -133,7 +133,7 @@
               <v-btn
                 color='blue darken-1'
                 text
-                @click='cancelHandler'
+                @click='cancelHandler($event)'
                 v-bind='props'
                 :disabled='!user.isEditing'
               >
@@ -162,7 +162,7 @@
           </v-tooltip>
         </v-col>
       </v-row>
-    </available-actions>
+    </AvailableActions>
   </v-form>
   <v-dialog
     v-model='confirmDialog'
@@ -181,10 +181,10 @@
 
 <script setup lang='ts'>
 import { 
-  ref,
   Ref,
+  ref,
+  ComputedRef,
   computed,
-  ComputedRef, 
   watch, 
   onMounted,
   onUnmounted,
@@ -194,7 +194,6 @@ import router from '@/router/index';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
@@ -213,7 +212,6 @@ const props = defineProps({
 const emit = defineEmits(['user-updated']);
 
 // Initialize stores
-const appStore = useAppStore();
 const userStore = useUserStore();
 const { 
   emailRules, 
@@ -222,7 +220,8 @@ const {
 const { 
   displaySuccessfulToast, 
   displayFailedToast, 
-  resetViewPort } = commonUtilities();
+  resetViewPort,
+  updateAppProcessing } = commonUtilities();
 
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
@@ -332,43 +331,44 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
   }
 });
 
-const actionConfirmedHandler = async (): Promise<void> => {
-  if (confirmEditSubmission.value) {
-    appStore.updateProcessingStatus(true);
-    const result = await editHandler();
-    if (result) {
+const actionConfirmedHandler = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (confirmEditSubmission.value) {
+      const result = await editHandler();
+      if (result) {
+        confirmDialog.value = false;
+        confirmEditSubmission.value = false;
+      }
+    }
+
+    if (confirmDeleteSubmission.value) {
+      const userName = user.value.userName;
+      const result = await deleteHandler();
+      if (result) {
+        confirmDialog.value = false;
+        confirmDeleteSubmission.value = false;
+        router.push('/');
+        toast(`Sad to see you go ${userName}, your profile has been deleted`, {
+          position: toast.POSITION.TOP_CENTER,
+          type: toast.TYPE.SUCCESS,
+        });
+      }
+    }});
+};
+
+const actionNotConfirmedHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    if (confirmEditSubmission.value) {
       confirmDialog.value = false;
       confirmEditSubmission.value = false;
     }
-  }
 
-  if (confirmDeleteSubmission.value) {
-    appStore.updateProcessingStatus(true);
-    const userName = user.value.userName;
-    const result = await deleteHandler();
-    if (result) {
+    if (confirmDeleteSubmission.value) {
       confirmDialog.value = false;
       confirmDeleteSubmission.value = false;
-      router.push('/');
-      toast(`Sad to see you go ${userName}, your profile has been deleted`, {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.SUCCESS,
-      });
-    }
-    appStore.updateProcessingStatus(false);
-  }
-};
-
-const actionNotConfirmedHandler = (): void => {
-  if (confirmEditSubmission.value) {
-    confirmDialog.value = false;
-    confirmEditSubmission.value = false;
-  }
-
-  if (confirmDeleteSubmission.value) {
-    confirmDialog.value = false;
-    confirmDeleteSubmission.value = false;
-  }
+    }});
 };
 
 watch(
@@ -409,88 +409,93 @@ const updateInvalidValues = (message: string, options: any): any => {
 };
 
 // Form actions
-const editHandler = async (): Promise<boolean> => {
-  let result = false;
-  if (getFormStatus.value) {
-    appStore.updateProcessingStatus(true);
-    const data = new UpdateUserRequestData(
-      userName.value,
-      firstName.value,
-      lastName.value,
-      nickName.value,
-      email.value
-    );
-    result = await userStore.updateUserAsync(data);
-    appStore.updateProcessingStatus(false);
-  }
-  displaySuccessfulToast(StoreType.USERSTORE);
-  const failedToast = displayFailedToast(
-    updateInvalidValues, 
-    { 
-      invalidUserNames: toRaw(invalidUserNames.value), 
-      invalidEmails: toRaw(invalidUserNames.value),
-      userName: userName.value,
-      email: email.value });
-  if (failedToast.failed) {
-    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
-    form.value?.validate();
-  }
-  return result;
+const editHandler = async (event: Event | null = null): Promise<boolean> => {
+  event?.preventDefault();
+  return updateAppProcessing(async () => {
+    let result = false;
+    if (getFormStatus.value) {
+      const data = new UpdateUserRequestData(
+        userName.value,
+        firstName.value,
+        lastName.value,
+        nickName.value,
+        email.value
+      );
+      result = await userStore.updateUserAsync(data);
+    }
+    displaySuccessfulToast(StoreType.USERSTORE);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidUserNames.value),
+        userName: userName.value,
+        email: email.value });
+    if (failedToast.failed) {
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      form.value?.validate();
+    }
+    return result;}) as Promise<boolean>;
 };
 
-const deleteHandler = async (): Promise<boolean> => {
-  let result = false;
-  if (getFormStatus.value) {
-    appStore.updateProcessingStatus(true);
-    result = await userStore.deleteUserAsync();
-    appStore.updateProcessingStatus(false);
-  }
-  const failedToast = displayFailedToast(
-    updateInvalidValues, 
-    { 
-      invalidUserNames: toRaw(invalidUserNames.value), 
-      invalidEmails: toRaw(invalidUserNames.value),
-      userName: userName.value,
-      email: email.value });
-  if (failedToast.failed) {
-    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
-    form.value?.validate();
-  }
-  return result;
+const deleteHandler = async (event: Event | null = null): Promise<boolean> => {
+  event?.preventDefault();
+  return updateAppProcessing(async () => {
+    let result = false;
+    if (getFormStatus.value) {
+      result = await userStore.deleteUserAsync();
+    }
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidUserNames.value),
+        userName: userName.value,
+        email: email.value });
+    if (failedToast.failed) {
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      form.value?.validate();
+    }
+    return result;
+  }) as Promise<boolean>;
 };
 
-const refreshHandler = async (): Promise<void> => {
-  appStore.updateProcessingStatus(true);
-  await userStore.getUserAsync();
-  appStore.updateProcessingStatus(false);
-  displaySuccessfulToast(StoreType.USERSTORE);
-  const failedToast = displayFailedToast(
-    updateInvalidValues, 
-    { 
-      invalidUserNames: toRaw(invalidUserNames.value), 
-      invalidEmails: toRaw(invalidUserNames.value),
-      userName: userName.value,
-      email: email.value });
-  if (failedToast.failed) {
-    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
-    form.value?.validate();
-  }
+const refreshHandler = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    await userStore.getUserAsync();
+    displaySuccessfulToast(StoreType.USERSTORE);
+    const failedToast = displayFailedToast(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidUserNames.value),
+        userName: userName.value,
+        email: email.value });
+    if (failedToast.failed) {
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      form.value?.validate();
+    }
+  });
 };
 
-const cancelHandler = (): void => {
-  user.value.isEditing = false;
-  invalidUserNames.value = [];
-  invalidEmails.value = [];
-  form.value?.resetValidation();
-  userName.value = user.value.userName;
-  firstName.value = user.value.firstName;
-  lastName.value = user.value.lastName;
-  nickName.value = user.value.nickName;
-  email.value = user.value.email;
-  emit('user-updated', null);
+const cancelHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    user.value.isEditing = false;
+    invalidUserNames.value = [];
+    invalidEmails.value = [];
+    form.value?.resetValidation();
+    userName.value = user.value.userName;
+    firstName.value = user.value.firstName;
+    lastName.value = user.value.lastName;
+    nickName.value = user.value.nickName;
+    email.value = user.value.email;
+    emit('user-updated', null);
+  });
 };
 
 watch(

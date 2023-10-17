@@ -1,4 +1,9 @@
-import { ComputedRef, Ref, computed, ref } from 'vue';
+import { 
+  Ref,
+  ref,
+  ComputedRef,
+  computed,
+} from 'vue';
 import { defineStore } from 'pinia';
 import { ValuesService } from '@/services/valuesService';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';

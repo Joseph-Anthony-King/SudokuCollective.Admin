@@ -1,7 +1,7 @@
 import {
-  Ref, 
-  computed, 
-  ComputedRef
+  Ref,
+  ComputedRef,
+  computed,
 } from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -46,7 +46,7 @@ export default function () {
     let methodResult: any | undefined = undefined;
     failed = failed !== null ? failed : true;
     if (!useServiceFailStore().getIsSuccess) {
-      const message = useServiceFailStore().getMessage;
+      const message = useServiceFailStore().getServiceMessage;
       if (message !== null && message !== '') {
         if (method !== undefined) {
           methodResult = method(message, options);
@@ -60,6 +60,10 @@ export default function () {
     }
     const result = { failed: !failed, methodResult };
     return result;
+  };
+  
+  const isAsync = (fn: () => unknown): boolean => {
+    return fn.constructor.name === 'AsyncFunction';
   };
 
   const repairAutoComplete = (): void => {
@@ -75,6 +79,21 @@ export default function () {
     } else {
       isSmallViewPort.value = false;
       maxDialogWidth.value = '600px';
+    }
+  };
+
+  const updateAppProcessing = async (method: () => unknown): Promise<void | unknown> => {
+    useAppStore().updateProcessingStatus(true);
+    let result: unknown;
+    if (isAsync(method)) {
+      result = await method();
+      console.warn(`isAsync: ${isAsync(method)}, result: ${result}`);
+    } else {
+      result = method();
+    }
+    useAppStore().updateProcessingStatus(false);
+    if (result !== undefined) {
+      return result;
     }
   };
 
@@ -100,8 +119,10 @@ export default function () {
     clearStores,
     displaySuccessfulToast,
     displayFailedToast,
+    isAsync,
     repairAutoComplete,
     resetViewPort,
-    updateUrlWithAction
+    updateAppProcessing,
+    updateUrlWithAction,
   }
 }

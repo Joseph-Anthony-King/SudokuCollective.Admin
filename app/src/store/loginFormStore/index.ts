@@ -61,7 +61,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const updateInvalidEmails = (emails: string[]) => {
     emailDirty.value = true;
     invalidEmails.value = emails;
-  }
+  };
 
   return {
     dirty,

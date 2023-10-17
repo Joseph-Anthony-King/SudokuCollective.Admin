@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
-import { ComputedRef, Ref, computed, ref } from 'vue';
+import { 
+  Ref,
+  ref,
+  ComputedRef,
+  computed,
+} from 'vue';
 import { Methods } from '@/store/sudokuStore/common';
 import { GamesService } from '@/services/gamesService';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';

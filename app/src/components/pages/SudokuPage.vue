@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class='app-responsive-viewport'>
-    <sudoku-widget />
+    <SudokuWidget />
   </v-container>
 </template>
 
@@ -11,8 +11,6 @@ import {
 } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router/index';
-import { useAppStore } from '@/store/appStore/index';
-import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
 import commonUtitlities from '@/utilities/common';
@@ -25,17 +23,9 @@ const props = defineProps({
   },
 });
 
-const appStore = useAppStore();
-const sudokuStore = useSudokuStore();
 const userStore = useUserStore();
 const route = useRoute();
 const { updateUrlWithAction } = commonUtitlities();
-watch(
-  () => sudokuStore.getProcessing,
-  () => {
-    appStore.updateProcessingStatus(sudokuStore.getProcessing);
-  }
-);
 watch(
   () => userStore.getUserIsLoggingIn,
   () => {
@@ -61,15 +51,15 @@ watch(
   }
 );
 onBeforeMount(() => {
-  appStore.updateProcessingMessage('processing, please do not navigate away');
-  if (props.action.toLowerCase() === 'login') {
+  if (router.options.history.state.position === 1) {
     const user: User = userStore.getUser;
-    user.isLoggingIn = true;
-    userStore.updateUser(user)
-  } else if (props.action.toLowerCase() === 'signup') {
-    const user = new User();
-    user.isSigningUp = true;
-    userStore.updateUser(user);
+    if (props.action.toLowerCase() === 'login') {
+      user.isLoggingIn = true;
+      userStore.updateUser(user)
+    } else if (props.action.toLowerCase() === 'signup') {
+      user.isSigningUp = true;
+      userStore.updateUser(user);
+    }
   }
 });
 </script>

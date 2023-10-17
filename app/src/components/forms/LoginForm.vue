@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form' @submit.prevent='submitHandler'>
+    <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -35,7 +35,7 @@
           </v-row>
         </v-container>
       </v-card-text>
-      <available-actions>
+      <AvailableActions>
         <v-row dense>
           <v-col>
             <v-tooltip location='bottom'>
@@ -43,7 +43,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='helpHandler'
+                  @click='helpHandler($event)'
                   v-bind='props'
                 >
                   Help
@@ -73,7 +73,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='cancelHandler'
+                  @click='cancelHandler($event)'
                   v-bind='props'
                 >
                   Cancel
@@ -88,7 +88,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click.prevent='submitHandler'
+                  @click.prevent='submitHandler($event)'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -99,7 +99,7 @@
             </v-tooltip>
           </v-col>
         </v-row>
-      </available-actions>
+      </AvailableActions>
     </v-form>
   </v-card>
   <v-dialog 
@@ -119,10 +119,10 @@
 
 <script setup lang='ts'>
 import {
-  ref,
   Ref,
-  computed,
+  ref,
   ComputedRef,
+  computed,
   toRaw,
   onMounted,
   onUpdated,
@@ -158,7 +158,8 @@ const {
   isChrome, 
   displayFailedToast,
   repairAutoComplete,
-  resetViewPort } = commonUtilities();
+  resetViewPort,
+  updateAppProcessing } = commonUtilities();
 
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
@@ -184,50 +185,59 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandler = async (): Promise<void> => {
-  if (getFormStatus.value && userName.value !== null && password.value !== null) {
-    appStore.updateProcessingStatus(true);
-    const data = new LoginRequestData(userName.value, password.value);
-    await appStore.loginAsync(data);
-    appStore.updateProcessingStatus(false);
-    const failedToast = displayFailedToast(
-      updateInvalidValues, 
-      { 
-        invalidUserNames: toRaw(invalidUserNames.value), 
-        invalidPasswords: toRaw(invalidPasswords.value),
-        userName: userName.value,
-        password: password.value });
-    if (failedToast.failed) {
-      form.value?.validate();
-      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
-      invalidPasswords.value = failedToast.methodResult.invalidPasswords;
-      loginFormStore.updateUserName(toRaw(userName.value));
-      loginFormStore.updatePassword(toRaw(password.value))
-      loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
-      loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
-    } else {
-      loginFormStore.initializeStore();
-    }
-  }
+const submitHandler = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (getFormStatus.value && userName.value !== null && password.value !== null) {
+      const data = new LoginRequestData(userName.value, password.value);
+      await appStore.loginAsync(data);
+      const failedToast = displayFailedToast(
+        updateInvalidValues, 
+        { 
+          invalidUserNames: toRaw(invalidUserNames.value), 
+          invalidPasswords: toRaw(invalidPasswords.value),
+          userName: userName.value,
+          password: password.value });
+      if (failedToast.failed) {
+        form.value?.validate();
+        invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+        invalidPasswords.value = failedToast.methodResult.invalidPasswords;
+        loginFormStore.updateUserName(toRaw(userName.value));
+        loginFormStore.updatePassword(toRaw(password.value))
+        loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
+        loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
+      } else {
+        loginFormStore.initializeStore();
+      }
+    }});
 };
 
-const helpHandler = (): void => {
-  emit('obtain-login-assistance', null, null);
+const helpHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    emit('obtain-login-assistance', null, null);
+  });
 };
 
-const resetHandler = (): void => {
-  userName.value = '';
-  password.value = '';
-  invalidUserNames.value = [];
-  invalidPasswords.value = [];
-  form.value?.reset();
-  confirmFormReset.value = false;
-  serviceFailStore.initializeStore();
-  loginFormStore.initializeStore();
+const resetHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    userName.value = '';
+    password.value = '';
+    invalidUserNames.value = [];
+    invalidPasswords.value = [];
+    form.value?.reset();
+    confirmFormReset.value = false;
+    serviceFailStore.initializeStore();
+    loginFormStore.initializeStore();
+  });
 };
 
-const cancelHandler = (): void => {
-  emit('cancel-login', null, null);
+const cancelHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    emit('cancel-login', null, null);
+  });
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -282,4 +292,3 @@ onUnmounted(() => {
   });
 });
 </script>
-@/store/loginFormStore/index

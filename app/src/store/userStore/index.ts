@@ -1,4 +1,9 @@
-import { ComputedRef, Ref, computed, ref } from 'vue';
+import { 
+  Ref,
+  ref,
+  ComputedRef,
+  computed, 
+} from 'vue';
 import { defineStore } from 'pinia';
 import { useAppStore } from '@/store/appStore/index';
 import { LoginService } from '@/services/loginService';

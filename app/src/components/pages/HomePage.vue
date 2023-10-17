@@ -1,7 +1,6 @@
 <template>
   <v-container fluid class='app-responsive-viewport'>
-    <ProgressWidget v-if='loading' />
-    <v-card elevation='6' class='mx-16' v-show='!loading'>
+    <v-card elevation='6' class='mx-16'>
       <v-row class='text-center home-banner'>
         <v-col cols='12'>
           <h1 class='text-center centered-welcome-message text-padding'>
@@ -33,16 +32,13 @@
 <script setup lang='ts'>
 import { 
   ref,
-  computed, 
   onBeforeMount, 
   watch 
 } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router/index';
-import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
-import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
 import commonUtitlities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 
@@ -53,7 +49,6 @@ const props = defineProps({
   },
 });
 
-const appStore = useAppStore();
 const userStore = useUserStore();
 const valuesStore = useValuesStore();
 const route = useRoute();
@@ -61,9 +56,7 @@ const { updateUrlWithAction } = commonUtitlities();
 const missionStatement = ref(
   valuesStore.getMissionStatement
 );
-const loading = computed(() => {
-  return missionStatement.value === '';
-});
+
 watch(
   () => valuesStore.getMissionStatement,
   () => {
@@ -96,7 +89,6 @@ watch(
   }
 );
 onBeforeMount(() => {
-  appStore.updateProcessingMessage('processing, please wait');
   /* Ensures this logic only runs on first navigation, 
      this allows bookmarks for login and signup to work correctly*/
   if (router.options.history.state.position === 1) {

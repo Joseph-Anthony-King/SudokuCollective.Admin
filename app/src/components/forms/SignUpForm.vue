@@ -3,7 +3,7 @@
 		<v-card-title class='justify-center text-center'>
 			<span class='headline'>Sign Up</span>
 		</v-card-title>
-		<v-form v-model='formValid' ref='form' v-on:submit.prevent='submitHandler'>
+		<v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
 			<v-card-text>
 				<v-container>
 					<v-row>
@@ -86,7 +86,7 @@
 					</v-row>
 				</v-container>
 			</v-card-text>
-      <available-actions>
+      <AvailableActions>
 				<v-row dense>
 					<v-col>
 						<v-tooltip location='bottom'>
@@ -109,7 +109,7 @@
 								<v-btn 
 									color='blue darken-1' 
 									text 
-									@click='cancelHandler' 
+									@click='cancelHandler($event)' 
 									v-bind='props'>
 									Cancel
 								</v-btn>
@@ -123,7 +123,7 @@
 								<v-btn
 									color='blue darken-1'
 									text
-									@click='submitHandler'
+									@click='submitHandler($event)'
 									:disabled='!formValid'
 									v-bind='props'
 								>
@@ -134,7 +134,7 @@
 						</v-tooltip>
 					</v-col>
 				</v-row>
-      </available-actions>
+      </AvailableActions>
 		</v-form>
 	</v-card>
 	<v-dialog 
@@ -154,15 +154,14 @@
 
 <script setup lang='ts'>
 import { 
-  ref,
   Ref,
+  ref,
+  ComputedRef,
   computed,
-  ComputedRef, 
   onMounted,
   onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { useAppStore } from '@/store/appStore/index';
 import { useUserStore } from '@/store/userStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -182,14 +181,14 @@ const props = defineProps({
 const emit = defineEmits(['cancel-signup']);
 
 // Initialize stores
-const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 const { 
   isChrome, 
   displayFailedToast,
   repairAutoComplete,
-  resetViewPort } = commonUtilities();
+  resetViewPort,
+  updateAppProcessing } = commonUtilities();
 const {
 	confirmPasswordRules,
 	emailRules,
@@ -222,43 +221,50 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandler = async (): Promise<void> => {
-	if (getFormStatus.value) {
-    appStore.updateProcessingStatus(true);
-		const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
-		await userStore.signupUserAsync(data);
-    appStore.updateProcessingStatus(false);
-    const failedToast = displayFailedToast(
-      updateInvalidValues, 
-      { 
-        invalidUserNames: toRaw(invalidUserNames.value), 
-        invalidEmails: toRaw(invalidEmails.value),
-        userName: user.value.userName,
-        email: user.value.email });
-    if (failedToast.failed) {
-      form.value?.validate();
-      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
-      invalidEmails.value = failedToast.methodResult.invalidEmails;
+const submitHandler = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (getFormStatus.value) {
+      const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
+      await userStore.signupUserAsync(data);
+      const failedToast = displayFailedToast(
+        updateInvalidValues, 
+        { 
+          invalidUserNames: toRaw(invalidUserNames.value), 
+          invalidEmails: toRaw(invalidEmails.value),
+          userName: user.value.userName,
+          email: user.value.email });
+      if (failedToast.failed) {
+        form.value?.validate();
+        invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+        invalidEmails.value = failedToast.methodResult.invalidEmails;
+      }
     }
-	}
+  });
 };
 
-const resetHandler = (): void => {
-	user.value.userName = undefined;
-	user.value.firstName = undefined;
-	user.value.lastName = undefined;
-	user.value.nickName = undefined;
-	user.value.email = undefined;
-	password.value = undefined;
-	confirmPassword.value = null;
-	invalidUserNames.value = [];
-	form.value?.reset();
-	confirmFormReset.value = false;
-	serviceFailStore.initializeStore();
+const resetHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    user.value.userName = undefined;
+    user.value.firstName = undefined;
+    user.value.lastName = undefined;
+    user.value.nickName = undefined;
+    user.value.email = undefined;
+    password.value = undefined;
+    confirmPassword.value = null;
+    invalidUserNames.value = [];
+    form.value?.reset();
+    confirmFormReset.value = false;
+    serviceFailStore.initializeStore();
+  });
 };
 
-const cancelHandler = (): void => {
-	emit('cancel-signup', null, null);
+const cancelHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    emit('cancel-signup', null, null);
+  });
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,5 +1,5 @@
 <template>
-	<site-admin-page />
+	<SiteAdminPage />
 </template>
 
 <script lang='ts'>
