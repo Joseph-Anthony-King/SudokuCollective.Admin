@@ -431,8 +431,8 @@ const editHandler = async (): Promise<boolean> => {
       userName: userName.value,
       email: email.value });
   if (failedToast.failed) {
-    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
     form.value?.validate();
   }
   return result;
@@ -453,8 +453,8 @@ const deleteHandler = async (): Promise<boolean> => {
       userName: userName.value,
       email: email.value });
   if (failedToast.failed) {
-    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
     form.value?.validate();
   }
   return result;
@@ -473,8 +473,8 @@ const refreshHandler = async (): Promise<void> => {
       userName: userName.value,
       email: email.value });
   if (failedToast.failed) {
-    invalidUserNames.value = failedToast.paramResult.invalidUserNames.value;
-    invalidEmails.value = failedToast.paramResult.invalidEmails.value;
+    invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
+    invalidEmails.value = failedToast.methodResult.invalidEmails.value;
     form.value?.validate();
   }
 };

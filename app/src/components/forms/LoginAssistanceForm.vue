@@ -179,7 +179,7 @@ const submitHandler = async (): Promise<void> => {
         email: email.value });
     if (failedToast.failed) {
       form.value?.validate();
-      invalidEmails.value = failedToast.paramResult.invalidEmails;
+      invalidEmails.value = failedToast.methodResult.invalidEmails;
       loginFormStore.updateEmail(toRaw(email.value));
       loginFormStore.updateInvalidEmails(toRaw(invalidEmails.value));
     }

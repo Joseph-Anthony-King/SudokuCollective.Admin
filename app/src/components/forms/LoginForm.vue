@@ -199,8 +199,8 @@ const submitHandler = async (): Promise<void> => {
         password: password.value });
     if (failedToast.failed) {
       form.value?.validate();
-      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
-      invalidPasswords.value = failedToast.paramResult.invalidPasswords;
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+      invalidPasswords.value = failedToast.methodResult.invalidPasswords;
       loginFormStore.updateUserName(toRaw(userName.value));
       loginFormStore.updatePassword(toRaw(password.value))
       loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
