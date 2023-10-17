@@ -30,14 +30,14 @@
             </div>
             <matrix-widget />
           </div>
-          <available-actions v-if='isGameStateSelected'>
+          <AvailableActions v-if='isGameStateSelected'>
             <v-row dense>
               <v-col>
                 <v-btn
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='execute'
+                  @click='execute($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   {{ executeButtonText }}
@@ -48,7 +48,7 @@
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='checkGame'
+                  @click='checkGame($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   Check Game
@@ -59,7 +59,7 @@
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='resetGame'
+                  @click='resetGame($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   Reset Game
@@ -76,7 +76,7 @@
                 </v-btn>
               </v-col>
             </v-row>
-          </available-actions>
+          </AvailableActions>
         </v-container>
       </v-card-text>
     </v-card>
@@ -85,14 +85,13 @@
 
 <script setup lang='ts'>
 import { 
-  ref,
   Ref,
-  computed,
+  ref,
   ComputedRef,
+  computed,
   toRaw,
   watch 
 } from 'vue';
-import { useAppStore } from '@/store/appStore/index';
 import { useSudokuStore } from '@/store/sudokuStore/index';
 import { useValuesStore } from '@/store/valuesStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -104,11 +103,13 @@ import { Difficulty } from '@/models/domain/difficulty';
 import commonUtilities from '@/utilities/common';
 
 /* initialize stores */
-const appStore = useAppStore();
 const sudokuStore = useSudokuStore();
 const valuesStore = useValuesStore();
 
-const { displaySuccessfulToast, displayFailedToast } = commonUtilities();
+const { 
+  displaySuccessfulToast, 
+  displayFailedToast,
+  updateAppProcessing } = commonUtilities();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
@@ -168,47 +169,51 @@ const clearButtonText: ComputedRef<string> = computed(() => {
     return 'Clear Sudoku';
   }
 });
-const execute = async (): Promise<void> => {
-  appStore.updateProcessingStatus(true);
-  if (
-    selectedDifficulty.value !== null &&
-    selectedGameState.value?.value === GameState.PLAYGAME
-  ) {
-    await sudokuStore.createGameAsync();
-  } else if (
-    selectedGameState.value?.value === GameState.SOLVESUDOKU
-  ) {
-    await sudokuStore.solvePuzzleAsync();
-  } else {
-    await sudokuStore.generateSolutionAsync();
-  }
-  appStore.updateProcessingStatus(false);
-  displaySuccessfulToast(StoreType.SUDOKUSTORE);
-  displayFailedToast(undefined, undefined);
-};
-const checkGame = (): void => {
-  appStore.updateProcessingStatus(true);
-  sudokuStore.checkGameAsync();
-  appStore.updateProcessingStatus(false);
-  displaySuccessfulToast(StoreType.SUDOKUSTORE);
-  displayFailedToast(undefined, undefined);
-};
-const resetGame = (): void => {
-  appStore.updateProcessingStatus(true);
-  const initialGame = sudokuStore.getInitialGame;
-  const game = Array<Array<string>>(9);
-  for (let i = 0; i < 9; i++) {
-    game[i] = [];
-    for (let j = 0; j < 9; j++) {
-      game[i][j] = initialGame[i][j];
+const execute = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (
+      selectedDifficulty.value !== null &&
+      selectedGameState.value?.value === GameState.PLAYGAME
+    ) {
+      await sudokuStore.createGameAsync();
+    } else if (
+      selectedGameState.value?.value === GameState.SOLVESUDOKU
+    ) {
+      await sudokuStore.solvePuzzleAsync();
+    } else {
+      await sudokuStore.generateSolutionAsync();
     }
-  }
-  sudokuStore.updateGame(game);
-  appStore.updateProcessingStatus(false);
-  displaySuccessfulToast(StoreType.SUDOKUSTORE);
-  displayFailedToast(undefined, undefined);
+    displaySuccessfulToast(StoreType.SUDOKUSTORE);
+    displayFailedToast(undefined, undefined);
+  });
 };
-const clear = (): void => {
+const checkGame = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    sudokuStore.checkGameAsync();
+    displaySuccessfulToast(StoreType.SUDOKUSTORE);
+    displayFailedToast(undefined, undefined);
+  });
+};
+const resetGame = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    const initialGame = sudokuStore.getInitialGame;
+    const game = Array<Array<string>>(9);
+    for (let i = 0; i < 9; i++) {
+      game[i] = [];
+      for (let j = 0; j < 9; j++) {
+        game[i][j] = initialGame[i][j];
+      }
+    }
+    sudokuStore.updateGame(game);
+    displaySuccessfulToast(StoreType.SUDOKUSTORE);
+    displayFailedToast(undefined, undefined);
+  });
+};
+const clear = (event: Event | null = null): void => {
+  event?.preventDefault();
   if (
     selectedGameState.value?.value === GameState.PLAYGAME
   ) {

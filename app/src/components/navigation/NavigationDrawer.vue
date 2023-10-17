@@ -32,8 +32,8 @@
 
 <script setup lang='ts'>
 import { 
-	ref, 
-	Ref, 
+  Ref,
+  ref,
 	watch 
 } from 'vue';
 import { onBeforeMount } from 'vue';

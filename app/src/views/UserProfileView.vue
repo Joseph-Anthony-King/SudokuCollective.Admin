@@ -1,5 +1,5 @@
 <template>
-	<user-profile-page />
+	<UserProfilePage />
 </template>
 
 <script lang='ts'>

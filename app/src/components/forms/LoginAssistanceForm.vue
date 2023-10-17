@@ -3,7 +3,7 @@
     <v-card-title class='justify-center text-center'>
       <span class='headline'>Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form'  @submit.prevent='submitHandler'>
+    <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
       <v-card-text>
         <v-container>
           <v-row>
@@ -21,7 +21,7 @@
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class='text-center'>
+      <AvailableActions>
         <v-row dense>
           <v-col>
             <v-tooltip location='bottom'>
@@ -29,7 +29,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click='resetPasswordHandlder'
+                  @click='resetPasswordHandlder($event)'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -48,7 +48,7 @@
                 <v-btn
                   color='blue darken-1'
                   text
-                  @click.prevent='submitHandler'
+                  @click ='submitHandler($event)'
                   :disabled='!formValid'
                   v-bind='props'
                 >
@@ -90,12 +90,14 @@
             </v-tooltip>
           </v-col>
         </v-row>
-      </v-card-actions>
+      </AvailableActions>
     </v-form>
   </v-card>
   <v-dialog 
     v-model='confirmFormReset' 
-    persistent max-width='600' 
+    persistent 
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
     hide-overlay 
     transition='dialog-top-transition'>
     <ConfirmDialog 
@@ -108,12 +110,13 @@
 
 <script setup lang='ts'>
 import { 
-  ref,
   Ref,
-  computed,
+  ref,
   ComputedRef,
+  computed,
   onMounted, 
   onUpdated, 
+  onUnmounted,
   watch, 
   toRaw
 } from 'vue';
@@ -122,6 +125,7 @@ import { useAppStore } from '@/store/appStore/index';
 import { useLoginFormStore } from '@/store/loginFormStore/index';
 import { useServiceFailStore } from '@/store/serviceFailStore/index';
 import { useUserStore } from '@/store/userStore/index';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
@@ -144,7 +148,9 @@ const userStore = useUserStore();
 const { 
   isChrome, 
   displayFailedToast, 
-  repairAutoComplete } = commonUtilities();
+  resetViewPort,
+  repairAutoComplete,
+  updateAppProcessing } = commonUtilities();
 
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string | null> = ref(loginFormStore.getEmail);
@@ -154,6 +160,8 @@ const invalidEmails: Ref<string[]> = ref(loginFormStore.getInvalidEmails);
 const { emailRules } = rules();
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
+const isSmallViewPort: Ref<boolean> = ref(true);
+const maxDialogWidth: Ref<string> = ref('auto');
 
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
@@ -166,52 +174,60 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandler = async (): Promise<void> => {
-  if (getFormStatus.value && email.value !== null) {
-    appStore.updateProcessingStatus(true);
-    const data = new LoginAssistanceRequestData(email.value);
-    await appStore.confirmUserNameAsync(data);
-    appStore.updateProcessingStatus(false);
-    const failedToast = displayFailedToast(
-      updateInvalidValues, 
-      { 
-        invalidEmails: toRaw(invalidEmails.value), 
-        email: email.value });
-    if (failedToast.failed) {
-      form.value?.validate();
-      invalidEmails.value = failedToast.methodResult.invalidEmails;
-      loginFormStore.updateEmail(toRaw(email.value));
-      loginFormStore.updateInvalidEmails(toRaw(invalidEmails.value));
+const submitHandler = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (getFormStatus.value && email.value !== null) {
+      const data = new LoginAssistanceRequestData(email.value);
+      await appStore.confirmUserNameAsync(data);
+      const failedToast = displayFailedToast(
+        updateInvalidValues, 
+        { 
+          invalidEmails: toRaw(invalidEmails.value), 
+          email: email.value });
+      if (failedToast.failed) {
+        form.value?.validate();
+        invalidEmails.value = failedToast.methodResult.invalidEmails;
+        loginFormStore.updateEmail(toRaw(email.value));
+        loginFormStore.updateInvalidEmails(toRaw(invalidEmails.value));
+      }
     }
-  }
+  });
 };
 
-const resetPasswordHandlder = async (): Promise<void> => {
-  if (getFormStatus.value && email.value !== null) {
-    appStore.updateProcessingStatus(true);
-    const data = new LoginAssistanceRequestData(email.value);
-    await appStore.requestPasswordResetAsync(data);
-    appStore.updateProcessingStatus(false);
-    const failedToast = displayFailedToast(undefined, undefined);
-    if (failedToast.failed) {
-      form.value?.validate();
+const resetPasswordHandlder = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  updateAppProcessing(async () => {
+    if (getFormStatus.value && email.value !== null) {
+      const data = new LoginAssistanceRequestData(email.value);
+      await appStore.requestPasswordResetAsync(data);
+      const failedToast = displayFailedToast(undefined, undefined);
+      if (failedToast.failed) {
+        form.value?.validate();
+      }
     }
-  }
+  });
 };
 
-const resetHandler = (): void => {
-  if (getFormStatus.value) {
-    email.value = '';
-    invalidEmails.value = [];
-    form.value?.reset();
-    confirmFormReset.value = false;
-    serviceFailStore.initializeStore();
-    loginFormStore.initializeAssistance();
-  }
+const resetHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    if (getFormStatus.value) {
+      email.value = '';
+      invalidEmails.value = [];
+      form.value?.reset();
+      confirmFormReset.value = false;
+      serviceFailStore.initializeStore();
+      loginFormStore.initializeAssistance();
+    }
+  });
 };
 
-const goBackHandler = (): void => {
-  emit('return-to-login', null, null);
+const goBackHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessing(() => {
+    emit('return-to-login', null, null);
+  });
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -243,10 +259,23 @@ onMounted(() => {
   if (loginFormStore.getEmailDirty) {
     form.value?.validate();
   }
+  resetViewPort(isSmallViewPort, maxDialogWidth);
+  let resizeTimeout: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
+  });
 });
 onUpdated(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    resetViewPort(isSmallViewPort, maxDialogWidth);
+  });
 });
 </script>

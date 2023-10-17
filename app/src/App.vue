@@ -6,7 +6,7 @@
       @update:modelValue="(modelValue: boolean) => closeNavDrawerHandler(modelValue)"
     />
     <v-content>
-      <app-bar
+      <AppBar
         v-on:user-logging-in='user.isLoggingIn = true'
         v-on:user-logging-out='logoutHandler'
         v-on:user-signing-up='user.isSigningUp = true'
@@ -29,6 +29,19 @@
             v-on:obtain-login-assistance='openLoginAssistanceHandler'
           />
         </v-dialog>
+        <v-dialog
+          v-model='userObtainingLoginAssistance'
+          persistent
+          :fullscreen='isSmallViewPort'
+          :max-width='maxDialogWidth'
+          hide-overlay
+          transition='dialog-top-transition'
+        >
+          <LoginAssistanceForm
+            :formStatus='userObtainingLoginAssistance'
+            v-on:return-to-login='closeLoginAssistanceHandler'
+          />
+        </v-dialog>
         <v-dialog 
           v-model='userIsSigningUp' 
           persistent 
@@ -41,33 +54,20 @@
             :formStatus='userIsSigningUp'
             v-on:cancel-signup='user.isSigningUp = false'/>
         </v-dialog>
-        <v-dialog
-          :v-model='userObtainingLoginAssistance && !processingStatus'
-          persistent
-          :fullscreen='isSmallViewPort'
-          :max-width='maxDialogWidth'
-          hide-overlay
-          transition='dialog-top-transition'
-        >
-          <LoginAssistanceForm
-            :formStatus='userObtainingLoginAssistance'
-            v-on:return-to-login='closeLoginAssistanceHandler'
-          />
-        </v-dialog>
       </v-main>
     </v-content>
     <v-footer app inset>
-      <footer-nav />
+      <FooterNav />
     </v-footer>
   </v-app>
 </template>
 
 <script lang='ts'>
 import {
-  ref,
   Ref,
-  computed,
+  ref,
   ComputedRef,
+  computed,
   onMounted,
   onUnmounted,
   toRaw,

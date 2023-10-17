@@ -1,5 +1,5 @@
 <template>
-  <home-page :action='action' />
+  <HomePage :action='action' />
 </template>
 
 <script lang='ts'>
