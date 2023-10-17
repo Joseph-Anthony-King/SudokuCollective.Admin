@@ -259,6 +259,7 @@ export default defineComponent({
 
     // Lifecycle hooks
     onMounted(async () => {
+      appStore.updateProcessingMessage('Processing, please wait')
       await valuesStore.initializeStoreAsync();
       sudokuStore.initializeStore();
       serviceFailStore.initializeStore();
