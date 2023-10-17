@@ -199,6 +199,7 @@ import { useUserStore } from '@/store/userStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
+import { StoreType } from '@/enums/storeTypes';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
 import commonUtilities from '@/utilities/common';
@@ -422,7 +423,7 @@ const editHandler = async (): Promise<boolean> => {
     result = await userStore.updateUserAsync(data);
     appStore.updateProcessingStatus(false);
   }
-  displaySuccessfulToast('userStore');
+  displaySuccessfulToast(StoreType.USERSTORE);
   const failedToast = displayFailedToast(
     updateInvalidValues, 
     { 
@@ -464,7 +465,7 @@ const refreshHandler = async (): Promise<void> => {
   appStore.updateProcessingStatus(true);
   await userStore.getUserAsync();
   appStore.updateProcessingStatus(false);
-  displaySuccessfulToast('userStore');
+  displaySuccessfulToast(StoreType.USERSTORE);
   const failedToast = displayFailedToast(
     updateInvalidValues, 
     { 
