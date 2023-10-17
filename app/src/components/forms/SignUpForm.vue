@@ -237,8 +237,8 @@ const submitHandler = async (): Promise<void> => {
         email: user.value.email });
     if (failedToast.failed) {
       form.value?.validate();
-      invalidUserNames.value = failedToast.paramResult.invalidUserNames;
-      invalidEmails.value = failedToast.paramResult.invalidEmails;
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+      invalidEmails.value = failedToast.methodResult.invalidEmails;
     }
 	}
 };

@@ -39,16 +39,16 @@ export default function () {
   
   // Returns true if there was an error so form components can run validation
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const displayFailedToast = (param: ((message: string, options: any) => any) | undefined, options: any | undefined): any => {
+  const displayFailedToast = (method: ((message: string, options: any) => any) | undefined, options: any | undefined): any => {
     let failed = useServiceFailStore().getIsSuccess;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let paramResult: any | undefined = undefined;
+    let methodResult: any | undefined = undefined;
     failed = failed !== null ? failed : true;
     if (!useServiceFailStore().getIsSuccess) {
       const message = useServiceFailStore().getMessage;
       if (message !== null && message !== '') {
-        if (param !== undefined) {
-          paramResult = param(message, options);
+        if (method !== undefined) {
+          methodResult = method(message, options);
         }
         toast(message, {
           position: toast.POSITION.TOP_CENTER,
@@ -57,7 +57,7 @@ export default function () {
         useServiceFailStore().initializeStore();
       }
     }
-    const result = { failed: !failed, paramResult };
+    const result = { failed: !failed, methodResult };
     return result;
   };
 
