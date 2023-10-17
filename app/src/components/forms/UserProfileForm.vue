@@ -49,6 +49,7 @@
           label='Admin Privileges'
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
         <v-checkbox
           v-if='user.isSuperUser'
@@ -56,6 +57,7 @@
           label='Super User Privileges'
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
       </v-col>
       <v-col cols='12' lg='6' xl='6'>
@@ -90,6 +92,7 @@
           label='Email Confirmed'
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
       </v-col>
     </v-row>
@@ -393,15 +396,15 @@ watch(
 const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === 'Status Code 404: User name not unique' &&
-    !options.invalidUserNames.value.includes(options.userName as string)
+    !options.invalidUserNames.includes(options.userName as string)
   ) {
-    options.invalidUserNames.value.push(options.userName as string);
+    options.invalidUserNames.push(options.userName as string);
   }
   if (
     message === 'Status Code 404: Email not unique' &&
-    !options.invalidEmails.value.includes(options.email as string)
+    !options.invalidEmails.includes(options.email as string)
   ) {
-    options.invalidEmails.value.push(options.email as string);
+    options.invalidEmails.push(options.email as string);
   }
   return { 
     invalidUserNames: options.invalidUserNames, 
@@ -429,11 +432,12 @@ const editHandlerAsync = async (event: Event | null = null): Promise<boolean> =>
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 
         invalidEmails: toRaw(invalidUserNames.value),
-        userName: userName.value,
-        email: email.value });
+        userName: toRaw(userName.value),
+        email: toRaw(email.value)
+      });
     if (failedToast.failed) {
-      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+      invalidEmails.value = failedToast.methodResult.invalidEmails;
       form.value?.validate();
     }
     return result;}) as Promise<boolean>;
@@ -451,11 +455,12 @@ const deleteHandlerAsync = async (event: Event | null = null): Promise<boolean> 
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 
         invalidEmails: toRaw(invalidUserNames.value),
-        userName: userName.value,
-        email: email.value });
+        userName: toRaw(userName.value),
+        email: toRaw(email.value)
+      });
     if (failedToast.failed) {
-      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+      invalidEmails.value = failedToast.methodResult.invalidEmails;
       form.value?.validate();
     }
     return result;
@@ -472,11 +477,12 @@ const refreshHandlerAsync = async (event: Event | null = null): Promise<void> =>
       { 
         invalidUserNames: toRaw(invalidUserNames.value), 
         invalidEmails: toRaw(invalidUserNames.value),
-        userName: userName.value,
-        email: email.value });
+        userName: toRaw(userName.value),
+        email: toRaw(email.value)
+      });
     if (failedToast.failed) {
-      invalidUserNames.value = failedToast.methodResult.invalidUserNames.value;
-      invalidEmails.value = failedToast.methodResult.invalidEmails.value;
+      invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+      invalidEmails.value = failedToast.methodResult.invalidEmails;
       form.value?.validate();
     }
   });

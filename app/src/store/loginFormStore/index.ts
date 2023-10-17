@@ -2,7 +2,8 @@ import {
   ref,
   Ref, 
   computed,
-  ComputedRef 
+  ComputedRef, 
+  toRaw
 } from "vue";
 import { defineStore } from "pinia";
 
@@ -16,14 +17,14 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const invalidPasswords: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
 
-  const getDirty: ComputedRef<boolean> = computed(() => dirty.value);
-  const getEmailDirty: Ref<boolean> = ref(false);
-  const getUserName: ComputedRef<string | null> = computed(() => userName.value);
-  const getPassword: ComputedRef<string | null> = computed(() => password.value);
-  const getEmail: ComputedRef<string | null> = computed(() => email.value);
-  const getInvalidUserNames: ComputedRef<string[]> = computed(() => invalidUserNames.value);
-  const getInvalidPassword: ComputedRef<string[]> = computed(() => invalidPasswords.value);
-  const getInvalidEmails: ComputedRef<string[]> = computed(() => invalidEmails.value);
+  const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
+  const getEmailDirty: ComputedRef<boolean> = computed(() => toRaw(emailDirty.value));
+  const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
+  const getPassword: ComputedRef<string | null> = computed(() => toRaw(password.value));
+  const getEmail: ComputedRef<string | null> = computed(() => toRaw(email.value));
+  const getInvalidUserNames: ComputedRef<string[]> = computed(() => toRaw(invalidUserNames.value));
+  const getInvalidPassword: ComputedRef<string[]> = computed(() => toRaw(invalidPasswords.value));
+  const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
 
   const initializeStore = (): void => {
     dirty.value = false;

@@ -3,6 +3,7 @@ import {
   ref,
   ComputedRef,
   computed, 
+  toRaw
 } from 'vue';
 import { defineStore } from 'pinia';
 import { useAppStore } from '@/store/appStore/index';
@@ -22,14 +23,14 @@ export const useUserStore = defineStore('userStore', () => {
 	const processingMessage: Ref<string | null> = ref(null);
 	const serviceMessage: Ref<string | null> = ref(null);
 
-	const getUser: ComputedRef<User> = computed(() => user.value);
-	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => user.value.isLoggedIn);
-	const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => user.value.isLoggingIn);
-	const getUserIsSignedIn: ComputedRef<boolean> = computed(() => user.value.isSignedUp);
-	const getUserIsSigningUp: ComputedRef<boolean> = computed(() => user.value.isSigningUp);
-	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value ? confirmedUserName.value : '');
-	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
+	const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
+	const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn));
+	const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggingIn));
+	const getUserIsSignedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isSignedUp));
+	const getUserIsSigningUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSigningUp));
+	const getConfirmedUserName: ComputedRef<string> = computed(() => confirmedUserName.value ? toRaw(confirmedUserName.value) : '');
+	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? toRaw(processingMessage.value) : '');
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? toRaw(serviceMessage.value) : '');
 
   const appStore = useAppStore();
 
@@ -58,6 +59,7 @@ export const useUserStore = defineStore('userStore', () => {
 			updateUser(response.user);
 			appStore.updateToken(response.token);
       appStore.updateTokenExpirationDate(response.tokenExpirationDate);
+      appStore.updateStayLoggedIn(data.stayLoggedIn);
 		}
 	};
 	const getUserAsync = async (): Promise<void> => {

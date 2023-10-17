@@ -2,7 +2,8 @@ import {
   Ref,
   ref,
   ComputedRef,
-  computed
+  computed,
+  toRaw
 } from 'vue';
 import { defineStore } from 'pinia';
 import { AxiosResponse } from 'axios';
@@ -25,15 +26,17 @@ export const useAppStore = defineStore('appStore', () => {
 	const serviceMessage: Ref<string | null> = ref(null);
   const processingStatus: Ref<boolean> = ref(false);
 	const navDrawerStatus: Ref<boolean> = ref(false);
+  const stayLoggedIn: Ref<boolean> = ref(true);
 
-	const getLicense: ComputedRef<string> = computed(() => license.value ? license.value : '');
-	const getToken: ComputedRef<string> = computed(() => token.value ? token.value : '');
-	const getTokenExpirationDate: ComputedRef<Date | null> = computed(() => tokenExpirationDate.value);
-	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? redirectUrl.value : '');
-	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? processingMessage.value : '');
-	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? serviceMessage.value : '');
-  const getProcessingStatus: ComputedRef<boolean> = computed(() => processingStatus.value);
-	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => navDrawerStatus.value);
+	const getLicense: ComputedRef<string> = computed(() => license.value ? toRaw(license.value) : '');
+	const getToken: ComputedRef<string> = computed(() => token.value ? toRaw(token.value) : '');
+	const getTokenExpirationDate: ComputedRef<Date | null> = computed(() => toRaw(tokenExpirationDate.value));
+	const getRedirectUrl: ComputedRef<string> = computed(() => redirectUrl.value ? toRaw(redirectUrl.value) : '');
+	const getProcessingMessage: ComputedRef<string> = computed(() => processingMessage.value ? toRaw(processingMessage.value) : '');
+	const getServiceMessage: ComputedRef<string> = computed(() => serviceMessage.value ? toRaw(serviceMessage.value) : '');
+  const getProcessingStatus: ComputedRef<boolean> = computed(() => toRaw(processingStatus.value));
+	const getNavDrawerStatus: ComputedRef<boolean> = computed(() => toRaw(navDrawerStatus.value));
+  const getStayedLoggedIn: ComputedRef<boolean> = computed(() => toRaw(stayLoggedIn.value));
 
   const initializeStore = (): void => {
     token.value = null;
@@ -43,6 +46,7 @@ export const useAppStore = defineStore('appStore', () => {
     serviceMessage.value = null;
     processingStatus.value = false;
     navDrawerStatus.value = false;
+    stayLoggedIn.value = true;
   };
 	const updateToken = (param: string | null = null): void => {
 		token.value = param;
@@ -61,10 +65,13 @@ export const useAppStore = defineStore('appStore', () => {
 	};
   const updateProcessingStatus = (param: boolean): void => {
     processingStatus.value = param;
-  }
+  };
 	const updateNavDrawerStatus = (param: boolean): void => {
 		navDrawerStatus.value = param;
 	};
+  const updateStayLoggedIn = (param: boolean): void => {
+    stayLoggedIn.value = param;
+  };
 	const loginAsync = async (data: ILoginRequestData): Promise<void> => {
 		const response: IServicePayload = await LoginService.postLoginAsync(data);
 		if (response.isSuccess) {
@@ -72,6 +79,7 @@ export const useAppStore = defineStore('appStore', () => {
 			userStore.updateUser(response.user);
 			updateToken(response.token);
 			updateTokenExpirationDate(response.tokenExpirationDate);
+      updateStayLoggedIn(data.stayLoggedIn);
 			if (redirectUrl.value !== null) {
 				window.location.href = redirectUrl.value;
 				updateRedirectUrl();
@@ -124,6 +132,7 @@ export const useAppStore = defineStore('appStore', () => {
 		serviceMessage,
     processingStatus,
 		navDrawerStatus,
+    stayLoggedIn,
 		getLicense,
 		getToken,
 		getTokenExpirationDate,
@@ -132,6 +141,7 @@ export const useAppStore = defineStore('appStore', () => {
 		getServiceMessage,
     getProcessingStatus,
 		getNavDrawerStatus,
+    getStayedLoggedIn,
     initializeStore,
 		updateToken,
 		updateTokenExpirationDate,
@@ -140,6 +150,7 @@ export const useAppStore = defineStore('appStore', () => {
 		updateServiceMessage,
 		updateNavDrawerStatus,
     updateProcessingStatus,
+    updateStayLoggedIn,
 		loginAsync,
 		logout,
 		confirmUserNameAsync,

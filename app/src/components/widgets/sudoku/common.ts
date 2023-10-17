@@ -1,4 +1,3 @@
-import { toRaw } from 'vue';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { useSudokuStore } from '@/store/sudokuStore';
@@ -115,12 +114,8 @@ const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
 const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const sudokuStore = useSudokuStore();
 
-  const gameState: DropdownItem | null = toRaw(
-    sudokuStore.getGameState
-  );
-  const initialGame: Array<Array<string>> = toRaw(
-    sudokuStore.getInitialGame
-  );
+  const gameState: DropdownItem | null = sudokuStore.getGameState;
+  const initialGame: Array<Array<string>> = sudokuStore.getInitialGame;
   const isOddRegion = applyOddRegion(rowIndex, cellIndex);
 
   if (gameState?.value === GameState.PLAYGAME) {
