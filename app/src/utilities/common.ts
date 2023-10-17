@@ -82,7 +82,7 @@ export default function () {
     }
   };
 
-  const updateAppProcessing = async (method: () => unknown): Promise<void | unknown> => {
+  const updateAppProcessingAsync = async (method: () => unknown): Promise<void | unknown> => {
     useAppStore().updateProcessingStatus(true);
     let result: unknown;
     if (isAsync(method)) {
@@ -122,7 +122,7 @@ export default function () {
     isAsync,
     repairAutoComplete,
     resetViewPort,
-    updateAppProcessing,
+    updateAppProcessingAsync,
     updateUrlWithAction,
   }
 }

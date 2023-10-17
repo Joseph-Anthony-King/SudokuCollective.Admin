@@ -221,7 +221,7 @@ const {
   displaySuccessfulToast, 
   displayFailedToast, 
   resetViewPort,
-  updateAppProcessing } = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
@@ -333,7 +333,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
 
 const actionConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (confirmEditSubmission.value) {
       const result = await editHandler();
       if (result) {
@@ -359,7 +359,7 @@ const actionConfirmedHandler = async (event: Event | null = null): Promise<void>
 
 const actionNotConfirmedHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     if (confirmEditSubmission.value) {
       confirmDialog.value = false;
       confirmEditSubmission.value = false;
@@ -411,7 +411,7 @@ const updateInvalidValues = (message: string, options: any): any => {
 // Form actions
 const editHandler = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
-  return updateAppProcessing(async () => {
+  return updateAppProcessingAsync(async () => {
     let result = false;
     if (getFormStatus.value) {
       const data = new UpdateUserRequestData(
@@ -441,7 +441,7 @@ const editHandler = async (event: Event | null = null): Promise<boolean> => {
 
 const deleteHandler = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
-  return updateAppProcessing(async () => {
+  return updateAppProcessingAsync(async () => {
     let result = false;
     if (getFormStatus.value) {
       result = await userStore.deleteUserAsync();
@@ -464,7 +464,7 @@ const deleteHandler = async (event: Event | null = null): Promise<boolean> => {
 
 const refreshHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     await userStore.getUserAsync();
     displaySuccessfulToast(StoreType.USERSTORE);
     const failedToast = displayFailedToast(
@@ -484,7 +484,7 @@ const refreshHandler = async (event: Event | null = null): Promise<void> => {
 
 const cancelHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     user.value.isEditing = false;
     invalidUserNames.value = [];
     invalidEmails.value = [];
