@@ -37,7 +37,7 @@
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='execute($event)'
+                  @click='executeAsync($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   {{ executeButtonText }}
@@ -48,7 +48,7 @@
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='checkGame($event)'
+                  @click='checkGameAsync($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   Check Game
@@ -59,7 +59,7 @@
                   class='button-full'
                   color='blue darken-1'
                   text
-                  @click='resetGame($event)'
+                  @click='resetGameAsync($event)'
                   :disabled='isExectuteButtonDisabed'
                 >
                   Reset Game
@@ -108,7 +108,7 @@ const valuesStore = useValuesStore();
 
 const { 
   displaySuccessfulToast, 
-  displayFailedToast,
+  displayFailedToastAsync,
   updateAppProcessingAsync } = commonUtilities();
 
 /* difficulty properties and methods */
@@ -169,7 +169,7 @@ const clearButtonText: ComputedRef<string> = computed(() => {
     return 'Clear Sudoku';
   }
 });
-const execute = async (event: Event | null = null): Promise<void> => {
+const executeAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   updateAppProcessingAsync(async () => {
     if (
@@ -185,20 +185,20 @@ const execute = async (event: Event | null = null): Promise<void> => {
       await sudokuStore.generateSolutionAsync();
     }
     displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    displayFailedToast(undefined, undefined);
+    await displayFailedToastAsync(undefined, undefined);
   });
 };
-const checkGame = (event: Event | null = null): void => {
+const checkGameAsync = async (event: Event | null = null): Promise<void>=> {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  updateAppProcessingAsync(async () => {
     sudokuStore.checkGameAsync();
     displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    displayFailedToast(undefined, undefined);
+    await displayFailedToastAsync(undefined, undefined);
   });
 };
-const resetGame = (event: Event | null = null): void => {
+const resetGameAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessingAsync(() => {
+  updateAppProcessingAsync(async () => {
     const initialGame = sudokuStore.getInitialGame;
     const game = Array<Array<string>>(9);
     for (let i = 0; i < 9; i++) {
@@ -209,7 +209,7 @@ const resetGame = (event: Event | null = null): void => {
     }
     sudokuStore.updateGame(game);
     displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    displayFailedToast(undefined, undefined);
+    await displayFailedToastAsync(undefined, undefined);
   });
 };
 const clear = (event: Event | null = null): void => {

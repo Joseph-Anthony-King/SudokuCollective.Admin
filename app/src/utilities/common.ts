@@ -40,7 +40,7 @@ export default function () {
   
   // Returns true if there was an error so form components can run validation
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const displayFailedToast = (method: ((message: string, options: any) => any) | undefined, options: any | undefined): any => {
+  const displayFailedToastAsync = async (method: ((message: string, options: any) => any) | undefined, options: any | undefined): Promise<any> => {
     let failed = useServiceFailStore().getIsSuccess;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let methodResult: any | undefined = undefined;
@@ -49,7 +49,11 @@ export default function () {
       const message = useServiceFailStore().getServiceMessage;
       if (message !== null && message !== '') {
         if (method !== undefined) {
-          methodResult = method(message, options);
+          if (isAsyncFunction(method)) {
+            methodResult = await method(message, options)
+          } else {
+            methodResult = method(message, options);
+          }
         }
         toast(message, {
           position: toast.POSITION.TOP_CENTER,
@@ -62,7 +66,8 @@ export default function () {
     return result;
   };
   
-  const isAsyncFunction = (fn: () => unknown): boolean => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isAsyncFunction = (fn: (() => unknown) | ((message: string, options: any) => any)): boolean => {
     return fn.constructor.name === 'AsyncFunction';
   };
 
@@ -117,7 +122,7 @@ export default function () {
     isChrome,
     clearStores,
     displaySuccessfulToast,
-    displayFailedToast,
+    displayFailedToastAsync,
     isAsyncFunction,
     repairAutoComplete,
     resetViewPort,
