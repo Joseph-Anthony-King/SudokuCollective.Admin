@@ -150,7 +150,7 @@ const {
   displayFailedToast, 
   resetViewPort,
   repairAutoComplete,
-  updateAppProcessing } = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string | null> = ref(loginFormStore.getEmail);
@@ -176,7 +176,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 // Form actions
 const submitHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
       const data = new LoginAssistanceRequestData(email.value);
       await appStore.confirmUserNameAsync(data);
@@ -197,7 +197,7 @@ const submitHandler = async (event: Event | null = null): Promise<void> => {
 
 const resetPasswordHandlder = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
       const data = new LoginAssistanceRequestData(email.value);
       await appStore.requestPasswordResetAsync(data);
@@ -211,7 +211,7 @@ const resetPasswordHandlder = async (event: Event | null = null): Promise<void> 
 
 const resetHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     if (getFormStatus.value) {
       email.value = '';
       invalidEmails.value = [];
@@ -225,7 +225,7 @@ const resetHandler = (event: Event | null = null): void => {
 
 const goBackHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     emit('return-to-login', null, null);
   });
 };

@@ -188,7 +188,7 @@ const {
   displayFailedToast,
   repairAutoComplete,
   resetViewPort,
-  updateAppProcessing } = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 const {
 	confirmPasswordRules,
 	emailRules,
@@ -223,7 +223,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 // Form actions
 const submitHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (getFormStatus.value) {
       const data = new SignupRequestData(user.value.userName, user.value.firstName, user.value.lastName, user.value.nickName, user.value.email, password.value);
       await userStore.signupUserAsync(data);
@@ -245,7 +245,7 @@ const submitHandler = async (event: Event | null = null): Promise<void> => {
 
 const resetHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     user.value.userName = undefined;
     user.value.firstName = undefined;
     user.value.lastName = undefined;
@@ -262,7 +262,7 @@ const resetHandler = (event: Event | null = null): void => {
 
 const cancelHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     emit('cancel-signup', null, null);
   });
 };

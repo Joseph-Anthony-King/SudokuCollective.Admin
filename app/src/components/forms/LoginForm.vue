@@ -159,7 +159,7 @@ const {
   displayFailedToast,
   repairAutoComplete,
   resetViewPort,
-  updateAppProcessing } = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
@@ -187,7 +187,7 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 // Form actions
 const submitHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (getFormStatus.value && userName.value !== null && password.value !== null) {
       const data = new LoginRequestData(userName.value, password.value);
       await appStore.loginAsync(data);
@@ -214,14 +214,14 @@ const submitHandler = async (event: Event | null = null): Promise<void> => {
 
 const helpHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     emit('obtain-login-assistance', null, null);
   });
 };
 
 const resetHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     userName.value = '';
     password.value = '';
     invalidUserNames.value = [];
@@ -235,7 +235,7 @@ const resetHandler = (event: Event | null = null): void => {
 
 const cancelHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     emit('cancel-login', null, null);
   });
 };

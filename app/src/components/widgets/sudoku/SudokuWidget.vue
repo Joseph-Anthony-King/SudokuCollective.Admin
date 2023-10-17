@@ -109,7 +109,7 @@ const valuesStore = useValuesStore();
 const { 
   displaySuccessfulToast, 
   displayFailedToast,
-  updateAppProcessing } = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
@@ -171,7 +171,7 @@ const clearButtonText: ComputedRef<string> = computed(() => {
 });
 const execute = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  updateAppProcessing(async () => {
+  updateAppProcessingAsync(async () => {
     if (
       selectedDifficulty.value !== null &&
       selectedGameState.value?.value === GameState.PLAYGAME
@@ -190,7 +190,7 @@ const execute = async (event: Event | null = null): Promise<void> => {
 };
 const checkGame = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     sudokuStore.checkGameAsync();
     displaySuccessfulToast(StoreType.SUDOKUSTORE);
     displayFailedToast(undefined, undefined);
@@ -198,7 +198,7 @@ const checkGame = (event: Event | null = null): void => {
 };
 const resetGame = (event: Event | null = null): void => {
   event?.preventDefault();
-  updateAppProcessing(() => {
+  updateAppProcessingAsync(() => {
     const initialGame = sudokuStore.getInitialGame;
     const game = Array<Array<string>>(9);
     for (let i = 0; i < 9; i++) {
