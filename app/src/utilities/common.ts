@@ -9,6 +9,7 @@ import { useAppStore } from '@/store/appStore';
 import { useUserStore } from '@/store/userStore';
 import { useSudokuStore } from '@/store/sudokuStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import { StoreType } from '@/enums/storeTypes';
 
 export default function () {
   const isChrome: ComputedRef<boolean> = computed(() => {
@@ -21,11 +22,11 @@ export default function () {
     useServiceFailStore().initializeStore();
   };
 
-  const displaySuccessfulToast = (store: string): void => {
+  const displaySuccessfulToast = (store: StoreType): void => {
     let message = ''
-    if (store === 'userStore') {
+    if (store === StoreType.USERSTORE) {
       message = useUserStore().getServiceMessage;
-    } else if (store === 'sudokuStore') {
+    } else if (store === StoreType.SUDOKUSTORE) {
       message = useSudokuStore().getServiceMessage;
     }
     if (message !== null && message !== '') {

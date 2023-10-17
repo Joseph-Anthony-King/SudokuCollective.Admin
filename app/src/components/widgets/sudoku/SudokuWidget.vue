@@ -98,6 +98,7 @@ import { useValuesStore } from '@/store/valuesStore/index';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
 import { GameState } from '@/enums/gameState';
+import { StoreType } from '@/enums/storeTypes';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 import commonUtilities from '@/utilities/common';
@@ -182,14 +183,14 @@ const execute = async (): Promise<void> => {
     await sudokuStore.generateSolutionAsync();
   }
   appStore.updateProcessingStatus(false);
-  displaySuccessfulToast('sudokuStore');
+  displaySuccessfulToast(StoreType.SUDOKUSTORE);
   displayFailedToast(undefined, undefined);
 };
 const checkGame = (): void => {
   appStore.updateProcessingStatus(true);
   sudokuStore.checkGameAsync();
   appStore.updateProcessingStatus(false);
-  displaySuccessfulToast('sudokuStore');
+  displaySuccessfulToast(StoreType.SUDOKUSTORE);
   displayFailedToast(undefined, undefined);
 };
 const resetGame = (): void => {
@@ -204,7 +205,7 @@ const resetGame = (): void => {
   }
   sudokuStore.updateGame(game);
   appStore.updateProcessingStatus(false);
-  displaySuccessfulToast('sudokuStore');
+  displaySuccessfulToast(StoreType.SUDOKUSTORE);
   displayFailedToast(undefined, undefined);
 };
 const clear = (): void => {
