@@ -163,7 +163,7 @@ import {
   onMounted,
   onUnmounted
 } from 'vue';
-import { useUserStore } from '@/store/userStore/index';
+import { useUserStore } from '@/store/userStore';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { User } from '@/models/domain/user';
 import { MenuItem } from '@/models/infrastructure/menuItem';

@@ -154,9 +154,9 @@ import {
   onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { useAppStore } from '@/store/appStore/index';
-import { useLoginFormStore } from '@/store/loginFormStore/index';
-import { useUserStore } from '@/store/userStore/index';
+import { useAppStore } from '@/store/appStore';
+import { useLoginFormStore } from '@/store/loginFormStore';
+import { useUserStore } from '@/store/userStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';

@@ -176,9 +176,9 @@ import {
   toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { useAppStore } from '@/store/appStore/index';
-import { useUserStore } from '@/store/userStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore/index';
+import { useAppStore } from '@/store/appStore';
+import { useUserStore } from '@/store/userStore';
+import { useServiceFailStore } from '@/store/serviceFailStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { User } from '@/models/domain/user';

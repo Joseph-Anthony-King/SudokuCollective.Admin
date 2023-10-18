@@ -121,10 +121,10 @@ import {
   toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
-import { useAppStore } from '@/store/appStore/index';
-import { useLoginFormStore } from '@/store/loginFormStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore/index';
-import { useUserStore } from '@/store/userStore/index';
+import { useAppStore } from '@/store/appStore';
+import { useLoginFormStore } from '@/store/loginFormStore';
+import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useUserStore } from '@/store/userStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import commonUtilities from '@/utilities/common';

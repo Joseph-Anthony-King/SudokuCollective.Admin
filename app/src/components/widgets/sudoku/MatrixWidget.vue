@@ -35,7 +35,7 @@ import {
   onBeforeMount, 
   watch 
 } from 'vue';
-import { useSudokuStore } from '@/store/sudokuStore/index';
+import { useSudokuStore } from '@/store/sudokuStore';
 import {
   obtainMatrix,
   applyOddRegion,

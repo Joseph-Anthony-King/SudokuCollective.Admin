@@ -7,7 +7,7 @@ import {
 } from 'vue';
 import { defineStore } from 'pinia';
 import { AxiosResponse } from 'axios';
-import { useUserStore } from '@/store/userStore/index';
+import { useUserStore } from '@/store/userStore';
 import { LoginService } from '@/services/loginService';
 import { UsersService } from '@/services/usersService';
 import router from '@/router';
