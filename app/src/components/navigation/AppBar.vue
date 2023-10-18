@@ -107,7 +107,7 @@
                     <v-list class='menu-link-list'>
                       <!-- outside links -->
                       <div v-for='(link, index) in exteriorLinks' :key='index'>
-                        <v-tooltip bottom v-if='link.condition'>
+                        <v-tooltip open-delay='2000' location='start' v-if='link.condition'>
                           <template v-slot:activator='{ props }'>
                             <v-list-item v-bind='props'>
                               <v-list-item-content>
