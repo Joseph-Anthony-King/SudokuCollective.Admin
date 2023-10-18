@@ -8,29 +8,41 @@
         <v-container>
           <v-row>
             <v-col cols='12'>
-              <v-text-field
-                label='User Name'
-                v-model='userName'
-                prepend-icon='mdi-account-circle'
-                :rules='userNameRules(invalidUserNames, "No user is using this user name")'
-                autocomplete='off'
-                color='primary'
-              >
-              </v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    label='User Name'
+                    v-model='userName'
+                    prepend-icon='mdi-account-circle'
+                    :rules='userNameRules(invalidUserNames, "No user is using this user name")'
+                    autocomplete='off'
+                    color='primary'
+                    v-bind='props'
+                  >
+                  </v-text-field>
+                </template>
+                <span>{{ RulesMessages.userNameRegexMessage }}</span>
+              </v-tooltip>
             </v-col>
             <v-col cols='12'>
-              <v-text-field
-                label='Password'
-                v-model='password'
-                :type="showPassword ? 'text' : 'password'"
-                :rules='passwordRules(invalidPasswords)'
-                prepend-icon='mdi-lock'
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append='showPassword = !showPassword'
-                autocomplete='off'
-                color='primary'
-              >
-              </v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    label='Password'
+                    v-model='password'
+                    :type="showPassword ? 'text' : 'password'"
+                    :rules='passwordRules(invalidPasswords)'
+                    prepend-icon='mdi-lock'
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append='showPassword = !showPassword'
+                    autocomplete='off'
+                    color='primary'
+                    v-bind='props'
+                  >
+                  </v-text-field>
+                </template>
+                <span>{{ RulesMessages.passwordRegexMessage }}</span>
+              </v-tooltip>
             </v-col>
             <v-col cols='12'>
               <v-tooltip location='bottom'>
@@ -151,6 +163,7 @@ import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { LoginRequestData } from '@/models/requests/loginRequestData';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
   
 const props = defineProps({
   formStatus: {

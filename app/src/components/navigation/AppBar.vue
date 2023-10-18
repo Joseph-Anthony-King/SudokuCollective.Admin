@@ -29,7 +29,7 @@
           </template>
           <v-list>
             <div v-for='(link, index) in interiorLinks' :key='index'>
-              <v-tooltip bottom v-if='link.condition'>
+              <v-tooltip open-delay='2000' location='start' v-if='link.condition'>
                 <template v-slot:activator='{ props }'>
                   <v-list-item v-bind='props'>
                     <v-list-item-content>
@@ -49,7 +49,7 @@
                 <span>{{ link.tooltip }}</span>
               </v-tooltip>
             </div>
-            <v-tooltip bottom v-if='!user.isLoggedIn'>
+            <v-tooltip open-delay='2000' location='start' v-if='!user.isLoggedIn'>
               <template v-slot:activator='{ props }'>
                 <v-list-item v-bind='props'>
                   <v-list-item-content>
@@ -64,7 +64,7 @@
               </template>
               <span>Login to SudokuCollective.com</span>
             </v-tooltip>
-            <v-tooltip bottom v-if='!user.isLoggedIn'>
+            <v-tooltip open-delay='2000' location='start' v-if='!user.isLoggedIn'>
               <template v-slot:activator='{ props }'>
                 <v-list-item v-bind='props'>
                   <v-list-item-content>
@@ -79,7 +79,7 @@
               </template>
               <span>Sign up with SudokuCollective.com</span>
             </v-tooltip>
-            <v-tooltip bottom v-if='user.isLoggedIn'>
+            <v-tooltip open-delay='2000' location='start' v-if='user.isLoggedIn'>
               <template v-slot:activator='{ props }'>
                 <v-list-item v-bind='props'>
                   <v-list-item-content>
@@ -95,7 +95,7 @@
               <span>Log out of SudokuCollective.com</span>
             </v-tooltip>
             <hr v-if='exteriorLinks.length > 1' class='mx-2' />
-            <v-tooltip bottom>
+            <v-tooltip open-delay='2000' location='start'>
               <template v-slot:activator='{ props }'>
                 <v-list-item v-if='exteriorLinks.length > 1' v-bind='props'>
                   <v-menu left bottom>
