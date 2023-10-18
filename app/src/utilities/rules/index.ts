@@ -1,52 +1,47 @@
-export default function () { 
-	const confirmPasswordRules = (password: string | undefined) => {
-		return [
-			(v: string) => !!v || 'Password is required',
-			(v: string) =>
-				/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
-					v
-				) ||
-				'Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,',
-			(v: string) => v === password || 'Password and confirm password must match',
-		];
-	};
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
-	const emailRules = (invalidEmails: string[], invalidMessage: string) => {
+export default function () { 
+	const emailRules = (invalidEmails: string[], invalidMessage: string | undefined = undefined) => {
+    if (invalidMessage === undefined) {
+      invalidMessage = RulesMessages.emailNotUniqueMessage;
+    }
 		return [
-			(v: string) => !!v || 'Email is required',
-			(v: string) =>
-				/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-				'Email must be in a valid format',
+			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Email'),
+			(v: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || RulesMessages.emailInvalidMessage,
 			(v: string) => !invalidEmails.includes(v) || invalidMessage,
 		];
 	};
 
 	const passwordRules = (invalidPasswords: string[] = new Array<string>()) => {
 		return [
-			(v: string) => !!v || 'Password is required',
-			(v: string) =>
-				/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(
-					v
-				) ||
-				'Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of ! @ # $ % ^ & * + = ? - _ . ,',
-			(v: string) => !invalidPasswords.includes(v) || 'Password is incorrect',
+			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Password'),
+			(v: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(v) || RulesMessages.passwordRegexMessage,
+			(v: string) => !invalidPasswords.includes(v) || RulesMessages.passwordInvalidMessage,
+		];
+	};
+
+	const confirmPasswordRules = (password: string | undefined) => {
+		return [
+			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Confirm Password'),
+			(v: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(v) || RulesMessages.passwordRegexMessage,
+			(v: string) => v === password || RulesMessages.passwordMatchMesssage,
 		];
 	};
 
 	const requiredRules = (value: string) => {
 		return [
-			(v: string) => !!v || `${value} is required`
+			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', value),
 		];
 	};
 	
-	const userNameRules = (invalidUserNames: string[] = new Array<string>(), invalidMessage = '') => {
+	const userNameRules = (invalidUserNames: string[] = new Array<string>(), invalidMessage: string | undefined = undefined) => {
+    if (invalidMessage === undefined) {
+      invalidMessage = RulesMessages.userNameNotUniqueMessage;
+    }
 		return [
-			(v: string) => !!v || 'User Name is required',
-			(v: string) =>
-				/^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$/.test(v) ||
-				'User name must be at least 4 characters and can contain alphanumeric characters and special characters of [! @ # $ % ^ & * + = ? - _ . ,]',
-			(v: string) =>
-				!invalidUserNames.includes(v) || invalidMessage,
+			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'User Name'),
+			(v: string) => /^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$/.test(v) || RulesMessages.userNameRegexMessage,
+			(v: string) => !invalidUserNames.includes(v) || invalidMessage,
 		];
 	};
 	
