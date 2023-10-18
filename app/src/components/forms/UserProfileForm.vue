@@ -214,7 +214,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['user-updated']);
 
-// Initialize stores
+// Instantiate the stores
 const userStore = useUserStore();
 const { 
   emailRules, 

@@ -194,7 +194,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['cancel-signup']);
 
-// Initialize stores
+// Instantiate the stores
 const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();

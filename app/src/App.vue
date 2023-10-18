@@ -105,16 +105,22 @@ export default defineComponent({
     SignUpForm
   },
   setup() {
-    // Initialize stores
+    // Instantiate the stores
     const appStore = useAppStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
     const serviceFailStore = useServiceFailStore();
     const valuesStore = useValuesStore();
 
+    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
+      
     const { clearStores } = commonUtilities();
 
-    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
+    const clearStoresIfUserIsNotLoggedIn = (): void => {
+      if (!appStore.getStayedLoggedIn) {
+        clearStores();
+      }
+    };
 
     // Navbar functionality
     const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
@@ -259,12 +265,22 @@ export default defineComponent({
 
     // Lifecycle hooks
     onMounted(async () => {
-      appStore.updateProcessingMessage('Processing, please do not navigate away')
+      // Set the app processing message
+      appStore.updateProcessingMessage('Processing, please do not navigate away');
+
+      // Initialize the value, sudoku and serviceFailure stores
       await valuesStore.initializeStoreAsync();
       sudokuStore.initializeStore();
       serviceFailStore.initializeStore();
+
+      // Especially for mobile, if the user rejected a 30 day sign in clear the stores
+      clearStoresIfUserIsNotLoggedIn();
+
+      // Set the app dialog viewport for mobil or desktop
       resetAppDialogViewPort();
       let resizeTimeout: number | undefined;
+
+      // Add event listeners
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
@@ -273,13 +289,15 @@ export default defineComponent({
       });
       window.addEventListener('beforeunload', (e) => {
         e.preventDefault();
-        if (!appStore.getStayedLoggedIn) {
-          clearStores();
-        }
+        clearStoresIfUserIsNotLoggedIn();
       });
     });
     onUnmounted(() => {
+      // Remove event listeners
       window.removeEventListener('resize', () => {
+        resetAppDialogViewPort();
+      });
+      window.removeEventListener('beforeunload', () => {
         resetAppDialogViewPort();
       });
     });
