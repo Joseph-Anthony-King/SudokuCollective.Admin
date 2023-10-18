@@ -37,8 +37,8 @@ import {
 } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router/index';
-import { useUserStore } from '@/store/userStore/index';
-import { useValuesStore } from '@/store/valuesStore/index';
+import { useUserStore } from '@/store/userStore';
+import { useValuesStore } from '@/store/valuesStore';
 import commonUtitlities from '@/utilities/common';
 import { User } from '@/models/domain/user';
 

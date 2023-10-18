@@ -77,11 +77,11 @@ import router from '@/router/index';
 import vuetify from '@/plugins/vuetify';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { useAppStore } from '@/store/appStore/index';
-import { useSudokuStore } from '@/store/sudokuStore/index';
-import { useUserStore } from '@/store/userStore/index';
-import { useServiceFailStore } from '@/store/serviceFailStore/index';
-import { useValuesStore } from '@/store/valuesStore/index';
+import { useAppStore } from '@/store/appStore';
+import { useSudokuStore } from '@/store/sudokuStore';
+import { useUserStore } from '@/store/userStore';
+import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useValuesStore } from '@/store/valuesStore';
 import AppBar from '@/components/navigation/AppBar.vue';
 import FooterNav from '@/components/navigation/FooterNav.vue';
 import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
@@ -298,7 +298,7 @@ export default defineComponent({
         resetAppDialogViewPort();
       });
       window.removeEventListener('beforeunload', () => {
-        resetAppDialogViewPort();
+        clearStoresIfUserIsNotLoggedIn();
       });
     });
 
