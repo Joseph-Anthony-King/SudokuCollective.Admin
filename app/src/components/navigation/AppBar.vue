@@ -178,7 +178,7 @@ const emit = defineEmits([
   'update-nav-drawer'
 ]);
 
-// Initialize stores
+// Instantiate the stores
 const userStore = useUserStore();
 
 const { resetViewPort } = commonUtilities();

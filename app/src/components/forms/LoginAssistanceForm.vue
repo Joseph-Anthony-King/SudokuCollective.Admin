@@ -139,7 +139,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['return-to-login']);
 
-// Initialize stores
+// Instantiate the stores
 const appStore = useAppStore();
 const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
