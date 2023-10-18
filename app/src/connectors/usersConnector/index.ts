@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from "@/connectors/usersConnector/endpoints";
 import { ILoginAssistanceRequestData } from "@/interfaces/requests/ilLoginAssistanceRequestData";
 import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
-import { useAppStore} from '@/store/appStore/index';
+import { useAppStore} from '@/store/appStore';
 import { useUserStore } from '@/store/userStore/index'
 
 export class UsersConnector {

@@ -92,8 +92,8 @@ import {
   toRaw,
   watch 
 } from 'vue';
-import { useSudokuStore } from '@/store/sudokuStore/index';
-import { useValuesStore } from '@/store/valuesStore/index';
+import { useSudokuStore } from '@/store/sudokuStore';
+import { useValuesStore } from '@/store/valuesStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
 import { GameState } from '@/enums/gameState';

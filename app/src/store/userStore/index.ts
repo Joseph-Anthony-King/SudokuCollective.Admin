@@ -6,7 +6,7 @@ import {
   toRaw
 } from 'vue';
 import { defineStore } from 'pinia';
-import { useAppStore } from '@/store/appStore/index';
+import { useAppStore } from '@/store/appStore';
 import { LoginService } from '@/services/loginService';
 import { SignupService } from '@/services/signupService';
 import { UsersService } from '@/services/usersService';

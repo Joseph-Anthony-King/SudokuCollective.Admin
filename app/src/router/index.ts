@@ -6,8 +6,8 @@ import {
   RouteRecordRaw 
 } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { useAppStore } from '@/store/appStore/index';
-import { useUserStore } from '@/store/userStore/index';
+import { useAppStore } from '@/store/appStore';
+import { useUserStore } from '@/store/userStore';
 import commonUtitlities from '@/utilities/common';
 
 const routes: Array<RouteRecordRaw> = [
