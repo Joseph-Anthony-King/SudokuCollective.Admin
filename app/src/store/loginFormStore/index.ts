@@ -23,7 +23,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const getPassword: ComputedRef<string | null> = computed(() => toRaw(password.value));
   const getEmail: ComputedRef<string | null> = computed(() => toRaw(email.value));
   const getInvalidUserNames: ComputedRef<string[]> = computed(() => toRaw(invalidUserNames.value));
-  const getInvalidPassword: ComputedRef<string[]> = computed(() => toRaw(invalidPasswords.value));
+  const getInvalidPasswords: ComputedRef<string[]> = computed(() => toRaw(invalidPasswords.value));
   const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
 
   const initializeStore = (): void => {
@@ -38,7 +38,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const initializeAssistance = (): void => {
     email.value = null;
     invalidEmails.value = [];
-  }
+  };
   const updateUserName = (name: string | null) => {
     dirty.value = true;
     userName.value = name;
@@ -50,8 +50,8 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const updateEmail = (mail: string | null) => {
     emailDirty.value = true;
     email.value = mail;
-  }
-  const updateInvalidUserName = (names: string[]) => {
+  };
+  const updateInvalidUserNames = (names: string[]) => {
     dirty.value = true;
     invalidUserNames.value = names;
   };
@@ -79,14 +79,14 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     getPassword,
     getEmail,
     getInvalidUserNames,
-    getInvalidPassword,
+    getInvalidPasswords,
     getInvalidEmails,
     initializeStore,
     initializeAssistance,
     updateUserName,
     updatePassword,
     updateEmail,
-    updateInvalidUserName,
+    updateInvalidUserNames,
     updateInvalidPasswords,
     updateInvalidEmails
   }
