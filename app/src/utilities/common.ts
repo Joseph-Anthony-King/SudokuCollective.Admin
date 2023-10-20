@@ -6,9 +6,11 @@ import {
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
-import { useUserStore } from '@/store/userStore';
-import { useSudokuStore } from '@/store/sudokuStore';
+import { useLoginFormStore } from '@/store/loginFormStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useSignUpFormStore } from '@/store/signUpFormStore';
+import { useSudokuStore } from '@/store/sudokuStore';
+import { useUserStore } from '@/store/userStore';
 import { StoreType } from '@/enums/storeTypes';
 
 export default function () {
@@ -18,8 +20,10 @@ export default function () {
 
   const clearStores = (): void => {
     useAppStore().initializeStore();
-    useUserStore().initializeStore();
+    useLoginFormStore().initializeStore();
     useServiceFailStore().initializeStore();
+    useSignUpFormStore().initializeStore();
+    useUserStore().initializeStore();
   };
 
   const displaySuccessfulToast = (store: StoreType): void => {

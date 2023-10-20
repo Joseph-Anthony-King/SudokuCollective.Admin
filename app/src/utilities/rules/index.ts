@@ -21,7 +21,7 @@ export default function () {
 		];
 	};
 
-	const confirmPasswordRules = (password: string | undefined): ((v: string) => string | true)[] => {
+	const confirmPasswordRules = (password: string | null): ((v: string) => string | true)[] => {
 		return [
 			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Confirm Password'),
 			(v: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(v) || RulesMessages.passwordRegexMessage,

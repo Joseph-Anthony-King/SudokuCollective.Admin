@@ -154,10 +154,11 @@ import {
   onUnmounted
 } from 'vue';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
 import { useLoginFormStore } from '@/store/loginFormStore';
-import { useUserStore } from '@/store/userStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useUserStore } from '@/store/userStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { LoginRequestData } from '@/models/requests/loginRequestData';
@@ -193,7 +194,7 @@ const showPassword: Ref<boolean> = ref(false);
 const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
-const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPassword);
+const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPasswords);
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
@@ -230,17 +231,23 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
           password: toRaw(password.value) 
         });
       if (failedToast.failed) {
-        form.value?.validate();
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
         invalidPasswords.value = failedToast.methodResult.invalidPasswords;
         loginFormStore.updateUserName(toRaw(userName.value));
         loginFormStore.updatePassword(toRaw(password.value))
-        loginFormStore.updateInvalidUserName(toRaw(invalidUserNames.value));
+        loginFormStore.updateInvalidUserNames(toRaw(invalidUserNames.value));
         loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
+        form.value?.validate();
       } else {
         loginFormStore.initializeStore();
       }
-    }});
+    } else {
+      toast('Login form is invalid', {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
+    }
+  });
 };
 
 const helpHandlerAsync = async (event: Event | null = null): Promise<void> => {
@@ -253,21 +260,22 @@ const helpHandlerAsync = async (event: Event | null = null): Promise<void> => {
 const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
-    userName.value = '';
-    password.value = '';
-    stayLoggedIn.value = true;
-    invalidUserNames.value = [];
-    invalidPasswords.value = [];
-    form.value?.reset();
-    confirmFormReset.value = false;
     serviceFailStore.initializeStore();
     loginFormStore.initializeStore();
+    userName.value = loginFormStore.getUserName;
+    password.value = loginFormStore.getPassword;
+    stayLoggedIn.value = true;
+    invalidUserNames.value = loginFormStore.getInvalidUserNames;
+    invalidPasswords.value = loginFormStore.getInvalidEmails;
+    form.value?.reset();
+    confirmFormReset.value = false;
   });
 };
 
 const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
+    loginFormStore.initializeStore();
     emit('cancel-login', null, null);
   });
 };

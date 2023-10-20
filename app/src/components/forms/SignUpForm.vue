@@ -9,7 +9,7 @@
 					<v-row>
 						<v-col cols='12'>
 							<v-text-field
-								v-model='user.userName'
+								v-model='userName'
 								label='User Name'
 								prepend-icon='mdi-account-plus'
 								:rules='userNameRules(invalidUserNames, "User name not unique")'
@@ -19,7 +19,7 @@
 						</v-col>
 						<v-col cols='12'>
 							<v-text-field
-								v-model='user.firstName'
+								v-model='firstName'
 								label='First Name'
 								prepend-icon='mdi-account-plus'
 								:rules="requiredRules('First Name')"
@@ -29,7 +29,7 @@
 						</v-col>
 						<v-col cols='12'>
 							<v-text-field
-								v-model='user.lastName'
+								v-model='lastName'
 								label='Last Name'
 								prepend-icon='mdi-account-plus'
 								:rules="requiredRules('Last Name')"
@@ -39,7 +39,7 @@
 						</v-col>
 						<v-col cols='12'>
 							<v-text-field
-								v-model='user.nickName'
+								v-model='nickName'
 								label='Nickname (Not Required)'
 								prepend-icon='mdi-account-plus'
 								color='primary'
@@ -47,7 +47,7 @@
 						</v-col>
 						<v-col cols='12'>
 							<v-text-field
-								v-model='user.email'
+								v-model='email'
 								label='Email'
 								prepend-icon='mdi-email'
 								:rules='emailRules(invalidEmails, "Email not unique")'
@@ -176,12 +176,13 @@ import {
   toRaw
 } from 'vue';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
-import { useUserStore } from '@/store/userStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
+import { useSignUpFormStore } from '@/store/signUpFormStore';
+import { useUserStore } from '@/store/userStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
-import { User } from '@/models/domain/user';
 import { SignupRequestData } from '@/models/requests/signupRequestData';
 import rules from '@/utilities/rules/index';
 import commonUtilities from '@/utilities/common';
@@ -197,6 +198,7 @@ const emit = defineEmits(['cancel-signup']);
 // Instantiate the stores
 const appStore = useAppStore();
 const serviceFailStore = useServiceFailStore();
+const signUpFormStore = useSignUpFormStore();
 const userStore = useUserStore();
 
 const { 
@@ -212,14 +214,18 @@ const {
 	passwordRules,
 	userNameRules } = rules();
 
-const user: Ref<User> = ref(userStore.getUser);
-const password: Ref<string | undefined> = ref(undefined);
-const confirmPassword: Ref<string | null> = ref(null);
+const userName: Ref<string | null> = ref(signUpFormStore.getUserName);
+const firstName: Ref<string | null> = ref(signUpFormStore.getFirstName);
+const lastName: Ref<string | null> = ref(signUpFormStore.getLastName);
+const nickName: Ref<string | null> = ref(signUpFormStore.getNickName);
+const email: Ref<string | null> = ref(signUpFormStore.getEmail);
+const password: Ref<string | null> = ref(signUpFormStore.getPassword);
+const confirmPassword: Ref<string | null> = ref(signUpFormStore.getConfirmPassword);
 const showPassword: Ref<boolean> = ref(false);
 const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
-const invalidUserNames: Ref<string[]> = ref([]);
-const invalidEmails: Ref<string[]> = ref([]);
+const invalidUserNames: Ref<string[]> = ref(signUpFormStore.getInvalidUserNames);
+const invalidEmails: Ref<string[]> = ref(signUpFormStore.getInvalidEmails);
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
@@ -242,13 +248,21 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value) {
+      signUpFormStore.updateUserName(toRaw(userName.value));
+      signUpFormStore.updateFirstName(toRaw(firstName.value));
+      signUpFormStore.updateLastName(toRaw(lastName.value));
+      signUpFormStore.updateNickName(toRaw(nickName.value));
+      signUpFormStore.updateEmail(toRaw(email.value));
+      signUpFormStore.updatePassword(toRaw(password.value));
+      signUpFormStore.updateConfirmPassword(toRaw(confirmPassword.value));
+
       const data = new SignupRequestData(
-        user.value.userName, 
-        user.value.firstName, 
-        user.value.lastName, 
-        user.value.nickName, 
-        user.value.email, 
-        password.value,
+        userName.value ? userName.value : '',
+        firstName.value ? firstName.value : '',
+        lastName.value ? lastName.value : '',
+        nickName.value ? nickName.value : '',
+        email.value ? email.value : '', 
+        password.value ? password.value: '',
         stayLoggedIn.value);
       await userStore.signupUserAsync(data);
       const failedToast = await displayFailedToastAsync(
@@ -256,14 +270,23 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         { 
           invalidUserNames: toRaw(invalidUserNames.value), 
           invalidEmails: toRaw(invalidEmails.value),
-          userName: toRaw(user.value.userName),
-          email: toRaw(user.value.email)
+          userName: toRaw(userName.value),
+          email: toRaw(email.value)
         });
       if (failedToast.failed) {
         form.value?.validate();
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+        signUpFormStore.updateInvalidUserNames(failedToast.methodResult.invalidUserNames);
         invalidEmails.value = failedToast.methodResult.invalidEmails;
+        signUpFormStore.updateInvalidEmails(failedToast.methodResult.invalidEmails);
+      } else {
+        signUpFormStore.initializeStore();
       }
+    } else {
+      toast('Sign up form is invalid', {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
     }
   });
 };
@@ -271,24 +294,27 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
 const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
-    user.value.userName = undefined;
-    user.value.firstName = undefined;
-    user.value.lastName = undefined;
-    user.value.nickName = undefined;
-    user.value.email = undefined;
-    password.value = undefined;
-    confirmPassword.value = null;
+    serviceFailStore.initializeStore();
+    signUpFormStore.initializeStore();
+    userName.value = signUpFormStore.getUserName;
+    firstName.value = signUpFormStore.getFirstName;
+    lastName.value = signUpFormStore.getLastName;
+    nickName.value = signUpFormStore.getNickName;
+    email.value = signUpFormStore.getEmail;
+    password.value = signUpFormStore.getPassword;
+    confirmPassword.value = signUpFormStore.getConfirmPassword;
     stayLoggedIn.value = true;
     invalidUserNames.value = [];
+    invalidEmails.value = [];
     form.value?.reset();
     confirmFormReset.value = false;
-    serviceFailStore.initializeStore();
   });
 };
 
 const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
+    signUpFormStore.initializeStore();
     emit('cancel-signup', null, null);
   });
 };
@@ -325,6 +351,9 @@ onMounted(async () => {
       resetViewPort(isSmallViewPort, maxDialogWidth);
     }, 250, 'Resized');
   });
+  if (signUpFormStore.getDirty) {
+    form.value?.validate();
+  }
 });
 onUnmounted(() => {
   window.removeEventListener('resize', () => {

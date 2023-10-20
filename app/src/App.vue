@@ -78,9 +78,9 @@ import vuetify from '@/plugins/vuetify';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useAppStore } from '@/store/appStore';
+import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useSudokuStore } from '@/store/sudokuStore';
 import { useUserStore } from '@/store/userStore';
-import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useValuesStore } from '@/store/valuesStore';
 import AppBar from '@/components/navigation/AppBar.vue';
 import FooterNav from '@/components/navigation/FooterNav.vue';
@@ -107,9 +107,9 @@ export default defineComponent({
   setup() {
     // Instantiate the stores
     const appStore = useAppStore();
+    const serviceFailStore = useServiceFailStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
-    const serviceFailStore = useServiceFailStore();
     const valuesStore = useValuesStore();
 
     const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
