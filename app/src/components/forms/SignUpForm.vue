@@ -8,34 +8,52 @@
 				<v-container>
 					<v-row>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='userName'
-								label='User Name'
-								prepend-icon='mdi-account-plus'
-								:rules='userNameRules(invalidUserNames, "User name not unique")'
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='userName'
+                    label='User Name'
+                    prepend-icon='mdi-account-plus'
+                    :rules='userNameRules(invalidUserNames, "User name not unique")'
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ RulesMessages.userNameRegexMessage }}</span>
+              </v-tooltip>
 						</v-col>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='firstName'
-								label='First Name'
-								prepend-icon='mdi-account-plus'
-								:rules="requiredRules('First Name')"
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='firstName'
+                    label='First Name'
+                    prepend-icon='mdi-account-plus'
+                    :rules="requiredRules('First Name')"
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ firstNameTooltip }}</span>
+              </v-tooltip>
 						</v-col>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='lastName'
-								label='Last Name'
-								prepend-icon='mdi-account-plus'
-								:rules="requiredRules('Last Name')"
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='lastName'
+                    label='Last Name'
+                    prepend-icon='mdi-account-plus'
+                    :rules="requiredRules('Last Name')"
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ lastNameTooltip }}</span>
+              </v-tooltip>
 						</v-col>
 						<v-col cols='12'>
 							<v-text-field
@@ -46,42 +64,60 @@
 							></v-text-field>
 						</v-col>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='email'
-								label='Email'
-								prepend-icon='mdi-email'
-								:rules='emailRules(invalidEmails, "Email not unique")'
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='email'
+                    label='Email'
+                    prepend-icon='mdi-email'
+                    :rules='emailRules(invalidEmails, "Email not unique")'
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ RulesMessages.emailInvalidMessage }}</span>
+              </v-tooltip>
 						</v-col>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='password'
-								label='Password'
-								:type="showPassword ? 'text' : 'password'"
-								prepend-icon='mdi-account-key'
-								:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-								@click:append="showPassword = !showPassword"
-								autocomplete='new-password'
-								:rules='passwordRules()'
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='password'
+                    label='Password'
+                    :type="showPassword ? 'text' : 'password'"
+                    prepend-icon='mdi-account-key'
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
+                    autocomplete='new-password'
+                    :rules='passwordRules()'
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ RulesMessages.passwordRegexMessage }}</span>
+              </v-tooltip>
 						</v-col>
 						<v-col cols='12'>
-							<v-text-field
-								v-model='confirmPassword'
-								label='Confirm Password'
-								:type="showPassword ? 'text' : 'password'"
-								prepend-icon='mdi-account-key'
-								:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-								@click:append='showPassword = !showPassword'
-								autocomplete='new-password'
-								:rules='confirmPasswordRules(password)'
-								required
-								color='primary'
-							></v-text-field>
+              <v-tooltip open-delay='2000' location='bottom'>
+                <template v-slot:activator='{ props }'>
+                  <v-text-field
+                    v-model='confirmPassword'
+                    label='Confirm Password'
+                    :type="showPassword ? 'text' : 'password'"
+                    prepend-icon='mdi-account-key'
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append='showPassword = !showPassword'
+                    autocomplete='new-password'
+                    :rules='confirmPasswordRules(password)'
+                    required
+                    color='primary'
+                    v-bind='props'
+                  ></v-text-field>
+                </template>
+                <span>{{ RulesMessages.passwordMatchMesssage }}</span>
+              </v-tooltip>
 						</v-col>
             <v-col cols='12'>
               <v-tooltip location='bottom'>
@@ -185,6 +221,7 @@ import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 import { SignupRequestData } from '@/models/requests/signupRequestData';
 import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
 import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
@@ -226,6 +263,9 @@ const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(signUpFormStore.getInvalidUserNames);
 const invalidEmails: Ref<string[]> = ref(signUpFormStore.getInvalidEmails);
+
+const firstNameTooltip: ComputedRef<string> = computed(() => RulesMessages.requiredMessage.replace('{{value}}', 'First Name'));
+const lastNameTooltip: ComputedRef<string> = computed(() => RulesMessages.requiredMessage.replace('{{value}}', 'Last Name'));
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
