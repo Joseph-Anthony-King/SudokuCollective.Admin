@@ -10,12 +10,12 @@ export class SignupRequestData implements ISignupRequestData {
   stayLoggedIn: boolean;
 
 	constructor(
-		userName: string | undefined,
-		firstName: string | undefined,
-		lastName: string | undefined,
-		nickName: string | undefined,
-		email: string | undefined,
-		password: string | undefined,
+		userName: string,
+		firstName: string,
+		lastName: string,
+		nickName: string,
+		email: string,
+		password: string,
     stayLoggedIn: boolean) {
 		userName ? this.userName = userName : this.userName = '';
 		firstName ? this.firstName = firstName : this.firstName = '';
