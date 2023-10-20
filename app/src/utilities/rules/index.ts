@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
 export default function () { 
-	const emailRules = (invalidEmails: string[], invalidMessage: string | undefined = undefined) => {
+	const emailRules = (invalidEmails: string[], invalidMessage: string | undefined = undefined): any => {
     if (invalidMessage === undefined) {
       invalidMessage = RulesMessages.emailNotUniqueMessage;
     }
@@ -12,7 +13,7 @@ export default function () {
 		];
 	};
 
-	const passwordRules = (invalidPasswords: string[] = new Array<string>()) => {
+	const passwordRules = (invalidPasswords: string[] = new Array<string>()): ((v: string) => string | true)[] => {
 		return [
 			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Password'),
 			(v: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(v) || RulesMessages.passwordRegexMessage,
@@ -20,7 +21,7 @@ export default function () {
 		];
 	};
 
-	const confirmPasswordRules = (password: string | undefined) => {
+	const confirmPasswordRules = (password: string | undefined): ((v: string) => string | true)[] => {
 		return [
 			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', 'Confirm Password'),
 			(v: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$/.test(v) || RulesMessages.passwordRegexMessage,
@@ -28,13 +29,13 @@ export default function () {
 		];
 	};
 
-	const requiredRules = (value: string) => {
+	const requiredRules = (value: string): ((v: string) => string | true)[] => {
 		return [
 			(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', value),
 		];
 	};
 	
-	const userNameRules = (invalidUserNames: string[] = new Array<string>(), invalidMessage: string | undefined = undefined) => {
+	const userNameRules = (invalidUserNames: string[] = new Array<string>(), invalidMessage: string | undefined = undefined): any => {
     if (invalidMessage === undefined) {
       invalidMessage = RulesMessages.userNameNotUniqueMessage;
     }
