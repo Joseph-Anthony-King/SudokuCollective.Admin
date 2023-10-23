@@ -1,5 +1,5 @@
-import { IndexConnector } from '@/connectors/indexConnector';
-import { ValuesConnector } from '@/connectors/valuesConnector';
+import { IndexPort } from '@/ports/indexPort';
+import { ValuesPort } from '@/ports/valuesPort';
 import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
@@ -12,9 +12,11 @@ export class ValuesService {
     const result: IServicePayload = {};
 
     try {
-      const indexResponse = await IndexConnector.getMissionStatementAsync() as AxiosResponse;
-      const valuesResponse = await ValuesConnector.getValuesAsync() as AxiosResponse;
-      
+      const indexResponse =
+        (await IndexPort.getMissionStatementAsync()) as AxiosResponse;
+      const valuesResponse =
+        (await ValuesPort.getValuesAsync()) as AxiosResponse;
+
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
           '/swagger/index.html',
@@ -135,12 +137,12 @@ export class ValuesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-			if (error instanceof AxiosError && error.response) {
-				result.isSuccess = error.response.data.isSuccess;
-				StaticServiceMethods.processFailedResponse(error.response);
-			} else {
-				result.isSuccess = false;
-			}
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
     }
 
     return result;

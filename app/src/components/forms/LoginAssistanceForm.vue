@@ -1,21 +1,23 @@
 <template>
   <v-card>
-    <v-card-title class='justify-center text-center'>
-      <span class='headline'>Login Assistance Form</span>
+    <v-card-title class="justify-center text-center">
+      <span class="headline">Login Assistance Form</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
+    <v-form v-model="formValid" ref="form" onsubmit="event.preventDefault();">
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols='12'>
+            <v-col cols="12">
               <v-text-field
-                v-model='email'
-                label='Please enter your email to confirm your user name'
-                prepend-icon='mdi-email'
+                v-model="email"
+                label="Please enter your email to confirm your user name"
+                prepend-icon="mdi-email"
                 required
-                :rules='emailRules(invalidEmails, "No user is using this email")'
-                autocomplete='off'
-                color='primary'
+                :rules="
+                  emailRules(invalidEmails, 'No user is using this email')
+                "
+                autocomplete="off"
+                color="primary"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -24,14 +26,14 @@
       <AvailableActions>
         <v-row dense>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='resetPasswordHandlerAsync($event)'
-                  :disabled='!formValid'
-                  v-bind='props'
+                  @click="resetPasswordHandlerAsync($event)"
+                  :disabled="!formValid"
+                  v-bind="props"
                 >
                   Reset Password
                 </v-btn>
@@ -43,30 +45,35 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click ='submitHandlerAsync($event)'
-                  :disabled='!formValid'
-                  v-bind='props'
+                  @click="submitHandlerAsync($event)"
+                  :disabled="!formValid"
+                  v-bind="props"
                 >
                   Confirm User Name
                 </v-btn>
               </template>
-              <span>Obtain your user name if your email has been confirmed</span>
+              <span
+                >Obtain your user name if your email has been confirmed</span
+              >
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='confirmFormReset = true'
-                  :disabled='(email === "" || email === null) && invalidEmails.length === 0'
-                  v-bind='props'
+                  @click="confirmFormReset = true"
+                  :disabled="
+                    (email === '' || email === null) &&
+                    invalidEmails.length === 0
+                  "
+                  v-bind="props"
                 >
                   Reset
                 </v-btn>
@@ -75,13 +82,13 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='goBackHandlerAsync'
-                  v-bind='props'
+                  @click="goBackHandlerAsync"
+                  v-bind="props"
                 >
                   Go Back
                 </v-btn>
@@ -93,36 +100,38 @@
       </AvailableActions>
     </v-form>
   </v-card>
-  <v-dialog 
-    v-model='confirmFormReset' 
-    persistent 
-    :fullscreen='isSmallViewPort'
-    :max-width='maxDialogWidth'
-    hide-overlay 
-    transition='dialog-top-transition'>
-    <ConfirmDialog 
-      title='Reset Form' 
-      message='Are you sure you want to reset this form?' 
-      v-on:action-confirmed='resetHandlerAsync'
-      v-on:action-not-confirmed='confirmFormReset = false' />
+  <v-dialog
+    v-model="confirmFormReset"
+    persistent
+    :fullscreen="isSmallViewPort"
+    :max-width="maxDialogWidth"
+    hide-overlay
+    transition="dialog-top-transition"
+  >
+    <ConfirmDialog
+      title="Reset Form"
+      message="Are you sure you want to reset this form?"
+      v-on:action-confirmed="resetHandlerAsync"
+      v-on:action-not-confirmed="confirmFormReset = false"
+    />
   </v-dialog>
 </template>
 
-<script setup lang='ts'>
-import { 
+<script setup lang="ts">
+import {
   Ref,
   ref,
   ComputedRef,
   computed,
-  onMounted, 
-  onUpdated, 
+  onMounted,
+  onUpdated,
   onUnmounted,
-  watch, 
-  toRaw
+  watch,
+  toRaw,
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { useAppStore } from '@/store/appStore';
-import { useLoginFormStore } from '@/store/loginFormStore';
+import { useLoginFormStore } from '@/store/forms/loginFormStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useUserStore } from '@/store/userStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -134,8 +143,8 @@ import { LoginAssistanceRequestData } from '@/models/requests/loginAssistanceReq
 const props = defineProps({
   formStatus: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 const emit = defineEmits(['return-to-login']);
 
@@ -145,12 +154,13 @@ const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 
-const { 
-  isChrome, 
-  displayFailedToastAsync, 
+const {
+  isChrome,
+  displayFailedToastAsync,
   resetViewPort,
   repairAutoComplete,
-  updateAppProcessingAsync } = commonUtilities();
+  updateAppProcessingAsync,
+} = commonUtilities();
 
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string | null> = ref(loginFormStore.getEmail);
@@ -174,18 +184,18 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const submitHandlerAsync = async (
+  event: Event | null = null
+): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
       const data = new LoginAssistanceRequestData(email.value);
       await appStore.confirmUserNameAsync(data);
-      const failedToast = await displayFailedToastAsync(
-        updateInvalidValues, 
-        { 
-          invalidEmails: toRaw(invalidEmails.value), 
-          email: toRaw(email.value)
-        });
+      const failedToast = await displayFailedToastAsync(updateInvalidValues, {
+        invalidEmails: toRaw(invalidEmails.value),
+        email: toRaw(email.value),
+      });
       if (failedToast.failed) {
         form.value?.validate();
         invalidEmails.value = failedToast.methodResult.invalidEmails;
@@ -196,7 +206,9 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
   });
 };
 
-const resetPasswordHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const resetPasswordHandlerAsync = async (
+  event: Event | null = null
+): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
@@ -224,7 +236,9 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   });
 };
 
-const goBackHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const goBackHandlerAsync = async (
+  event: Event | null = null
+): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     emit('return-to-login', null, null);
@@ -239,7 +253,7 @@ const updateInvalidValues = (message: string, options: any): any => {
   ) {
     options.invalidEmails.push(options.email);
   }
-  return { invalidEmails: options.invalidEmails }
+  return { invalidEmails: options.invalidEmails };
 };
 
 watch(
@@ -264,9 +278,13 @@ onMounted(() => {
   let resizeTimeout: number | undefined;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      resetViewPort(isSmallViewPort, maxDialogWidth);
-    }, 250, 'Resized');
+    resizeTimeout = setTimeout(
+      () => {
+        resetViewPort(isSmallViewPort, maxDialogWidth);
+      },
+      250,
+      'Resized'
+    );
   });
 });
 onUpdated(() => {
@@ -280,3 +298,4 @@ onUnmounted(() => {
   });
 });
 </script>
+@/store/forms/loginFormStore
