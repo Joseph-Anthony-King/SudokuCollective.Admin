@@ -1,60 +1,68 @@
 <template>
   <v-card>
-    <v-card-title class='justify-center text-center'>
-      <span class='headline'>Login</span>
+    <v-card-title class="justify-center text-center">
+      <span class="headline">Login</span>
     </v-card-title>
-    <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
+    <v-form v-model="formValid" ref="form" onsubmit="event.preventDefault();">
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols='12'>
-              <v-tooltip open-delay='2000' location='bottom'>
-                <template v-slot:activator='{ props }'>
+            <v-col cols="12">
+              <v-tooltip open-delay="2000" location="bottom">
+                <template v-slot:activator="{ props }">
                   <v-text-field
-                    label='User Name'
-                    v-model='userName'
-                    prepend-icon='mdi-account-circle'
-                    :rules='userNameRules(invalidUserNames, "No user is using this user name")'
-                    autocomplete='off'
-                    color='primary'
-                    v-bind='props'
+                    label="User Name"
+                    v-model="userName"
+                    prepend-icon="mdi-account-circle"
+                    :rules="
+                      userNameRules(
+                        invalidUserNames,
+                        'No user is using this user name'
+                      )
+                    "
+                    autocomplete="off"
+                    color="primary"
+                    v-bind="props"
                   >
                   </v-text-field>
                 </template>
                 <span>{{ RulesMessages.userNameRegexMessage }}</span>
               </v-tooltip>
             </v-col>
-            <v-col cols='12'>
-              <v-tooltip open-delay='2000' location='bottom'>
-                <template v-slot:activator='{ props }'>
+            <v-col cols="12">
+              <v-tooltip open-delay="2000" location="bottom">
+                <template v-slot:activator="{ props }">
                   <v-text-field
-                    label='Password'
-                    v-model='password'
+                    label="Password"
+                    v-model="password"
                     :type="showPassword ? 'text' : 'password'"
-                    :rules='passwordRules(invalidPasswords)'
-                    prepend-icon='mdi-lock'
+                    :rules="passwordRules(invalidPasswords)"
+                    prepend-icon="mdi-lock"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append='showPassword = !showPassword'
-                    autocomplete='off'
-                    color='primary'
-                    v-bind='props'
+                    @click:append="showPassword = !showPassword"
+                    autocomplete="off"
+                    color="primary"
+                    v-bind="props"
                   >
                   </v-text-field>
                 </template>
                 <span>{{ RulesMessages.passwordRegexMessage }}</span>
               </v-tooltip>
             </v-col>
-            <v-col cols='12'>
-              <v-tooltip location='bottom'>
-                <template v-slot:activator='{ props }'>
+            <v-col cols="12">
+              <v-tooltip location="bottom">
+                <template v-slot:activator="{ props }">
                   <v-checkbox
-                    v-model='stayLoggedIn'
-                    label='Stay Logged in for 30 Days'
-                    color='primary'
-                    v-bind='props'
+                    v-model="stayLoggedIn"
+                    label="Stay Logged in for 30 Days"
+                    color="primary"
+                    v-bind="props"
                   ></v-checkbox>
                 </template>
-                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
+                <span
+                  >If set to false this will clear your authorization token when
+                  you navigate away from the app</span
+                >
               </v-tooltip>
             </v-col>
           </v-row>
@@ -63,28 +71,31 @@
       <AvailableActions>
         <v-row dense>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='helpHandlerAsync($event)'
-                  v-bind='props'
+                  @click="helpHandlerAsync($event)"
+                  v-bind="props"
                 >
                   Help
                 </v-btn>
               </template>
-              <span>Get assistance to verify your user name or change password</span>
+              <span
+                >Get assistance to verify your user name or change
+                password</span
+              >
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='confirmFormReset = true'
-                  v-bind='props'
+                  @click="confirmFormReset = true"
+                  v-bind="props"
                 >
                   Reset
                 </v-btn>
@@ -93,13 +104,13 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click='cancelHandlerAsync($event)'
-                  v-bind='props'
+                  @click="cancelHandlerAsync($event)"
+                  v-bind="props"
                 >
                   Cancel
                 </v-btn>
@@ -108,14 +119,14 @@
             </v-tooltip>
           </v-col>
           <v-col>
-            <v-tooltip location='bottom'>
-              <template v-slot:activator='{ props }'>
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  color='blue darken-1'
+                  color="blue darken-1"
                   text
-                  @click.prevent='submitHandlerAsync($event)'
-                  :disabled='!formValid'
-                  v-bind='props'
+                  @click.prevent="submitHandlerAsync($event)"
+                  :disabled="!formValid"
+                  v-bind="props"
                 >
                   Submit
                 </v-btn>
@@ -127,22 +138,24 @@
       </AvailableActions>
     </v-form>
   </v-card>
-  <v-dialog 
-    v-model='confirmFormReset' 
-    persistent 
-    :fullscreen='isSmallViewPort'
-    :max-width='maxDialogWidth'
-    hide-overlay 
-    transition='dialog-top-transition'>
-    <ConfirmDialog 
-      title='Reset Form' 
-      message='Are you sure you want to reset this form?' 
-      v-on:action-confirmed='resetHandlerAsync'
-      v-on:action-not-confirmed='confirmFormReset = false' />
+  <v-dialog
+    v-model="confirmFormReset"
+    persistent
+    :fullscreen="isSmallViewPort"
+    :max-width="maxDialogWidth"
+    hide-overlay
+    transition="dialog-top-transition"
+  >
+    <ConfirmDialog
+      title="Reset Form"
+      message="Are you sure you want to reset this form?"
+      v-on:action-confirmed="resetHandlerAsync"
+      v-on:action-not-confirmed="confirmFormReset = false"
+    />
   </v-dialog>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import {
   Ref,
   ref,
@@ -151,12 +164,12 @@ import {
   toRaw,
   onMounted,
   onUpdated,
-  onUnmounted
+  onUnmounted,
 } from 'vue';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
-import { useLoginFormStore } from '@/store/loginFormStore';
+import { useLoginFormStore } from '@/store/forms/loginFormStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
 import { useUserStore } from '@/store/userStore';
 import AvailableActions from '@/components/buttons/AvailableActions.vue';
@@ -165,12 +178,12 @@ import { LoginRequestData } from '@/models/requests/loginRequestData';
 import commonUtilities from '@/utilities/common';
 import rules from '@/utilities/rules/index';
 import { RulesMessages } from '@/utilities/rules/rulesMessages';
-  
+
 const props = defineProps({
   formStatus: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
 
@@ -181,17 +194,18 @@ const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
 
 const { passwordRules, userNameRules } = rules();
-const { 
-  isChrome, 
+const {
+  isChrome,
   displayFailedToastAsync,
   repairAutoComplete,
   resetViewPort,
-  updateAppProcessingAsync } = commonUtilities();
+  updateAppProcessingAsync,
+} = commonUtilities();
 
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
-const stayLoggedIn: Ref<boolean> =ref(appStore.getStayedLoggedIn);
+const stayLoggedIn: Ref<boolean> = ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
 const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPasswords);
@@ -213,28 +227,33 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 
 // Form actions
-const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const submitHandlerAsync = async (
+  event: Event | null = null
+): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
-    if (getFormStatus.value && userName.value !== null && password.value !== null) {
+    if (
+      getFormStatus.value &&
+      userName.value !== null &&
+      password.value !== null
+    ) {
       const data = new LoginRequestData(
-        userName.value, 
+        userName.value,
         password.value,
-        stayLoggedIn.value);
+        stayLoggedIn.value
+      );
       await appStore.loginAsync(data);
-      const failedToast = await displayFailedToastAsync(
-        updateInvalidValues, 
-        { 
-          invalidUserNames: toRaw(invalidUserNames.value), 
-          invalidPasswords: toRaw(invalidPasswords.value),
-          userName: toRaw(userName.value),
-          password: toRaw(password.value) 
-        });
+      const failedToast = await displayFailedToastAsync(updateInvalidValues, {
+        invalidUserNames: toRaw(invalidUserNames.value),
+        invalidPasswords: toRaw(invalidPasswords.value),
+        userName: toRaw(userName.value),
+        password: toRaw(password.value),
+      });
       if (failedToast.failed) {
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
         invalidPasswords.value = failedToast.methodResult.invalidPasswords;
         loginFormStore.updateUserName(toRaw(userName.value));
-        loginFormStore.updatePassword(toRaw(password.value))
+        loginFormStore.updatePassword(toRaw(password.value));
         loginFormStore.updateInvalidUserNames(toRaw(invalidUserNames.value));
         loginFormStore.updateInvalidPasswords(toRaw(invalidPasswords.value));
         form.value?.validate();
@@ -272,7 +291,9 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   });
 };
 
-const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const cancelHandlerAsync = async (
+  event: Event | null = null
+): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     loginFormStore.initializeStore();
@@ -294,9 +315,10 @@ const updateInvalidValues = (message: string, options: any): any => {
   ) {
     options.invalidPasswords.push(options.password);
   }
-  return { 
-    invalidUserNames: options.invalidUserNames, 
-    invalidPasswords: options.invalidPasswords };
+  return {
+    invalidUserNames: options.invalidUserNames,
+    invalidPasswords: options.invalidPasswords,
+  };
 };
 
 // Lifecycle hooks
@@ -313,9 +335,13 @@ onMounted(() => {
   let resizeTimeout: number | undefined;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      resetViewPort(isSmallViewPort, maxDialogWidth);
-    }, 250, 'Resized');
+    resizeTimeout = setTimeout(
+      () => {
+        resetViewPort(isSmallViewPort, maxDialogWidth);
+      },
+      250,
+      'Resized'
+    );
   });
   if (loginFormStore.getDirty) {
     form.value?.validate();
@@ -332,3 +358,4 @@ onUnmounted(() => {
   });
 });
 </script>
+@/store/forms/loginFormStore
