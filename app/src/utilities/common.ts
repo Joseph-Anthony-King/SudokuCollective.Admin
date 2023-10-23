@@ -1,14 +1,11 @@
-import {
-  Ref,
-  ComputedRef,
-  computed,
-} from 'vue';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Ref, ComputedRef, computed } from 'vue';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/store/appStore';
-import { useLoginFormStore } from '@/store/loginFormStore';
+import { useLoginFormStore } from '@/store/forms/loginFormStore';
 import { useServiceFailStore } from '@/store/serviceFailStore';
-import { useSignUpFormStore } from '@/store/signUpFormStore';
+import { useSignUpFormStore } from '@/store/forms/signUpFormStore';
 import { useSudokuStore } from '@/store/sudokuStore';
 import { useUserStore } from '@/store/userStore';
 import { StoreType } from '@/enums/storeTypes';
@@ -27,7 +24,7 @@ export default function () {
   };
 
   const displaySuccessfulToast = (store: StoreType): void => {
-    let message = ''
+    let message = '';
     if (store === StoreType.USERSTORE) {
       message = useUserStore().getServiceMessage;
     } else if (store === StoreType.SUDOKUSTORE) {
@@ -41,12 +38,13 @@ export default function () {
       useUserStore().updateServiceMessage();
     }
   };
-  
+
   // Returns true if there was an error so form components can run validation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const displayFailedToastAsync = async (method: ((message: string, options: any) => any) | undefined, options: any | undefined): Promise<any> => {
+  const displayFailedToastAsync = async (
+    method: ((message: string, options: any) => any) | undefined,
+    options: any | undefined
+  ): Promise<any> => {
     let failed = useServiceFailStore().getIsSuccess;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let methodResult: any | undefined = undefined;
     failed = failed !== null ? failed : true;
     if (!useServiceFailStore().getIsSuccess) {
@@ -54,7 +52,7 @@ export default function () {
       if (message !== null && message !== '') {
         if (method !== undefined) {
           if (isAsyncFunction(method)) {
-            methodResult = await method(message, options)
+            methodResult = await method(message, options);
           } else {
             methodResult = method(message, options);
           }
@@ -69,19 +67,25 @@ export default function () {
     const result = { failed: !failed, methodResult };
     return result;
   };
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isAsyncFunction = (fn: (() => unknown) | ((message: string, options: any) => any)): boolean => {
+
+  const isAsyncFunction = (
+    fn: (() => unknown) | ((message: string, options: any) => any)
+  ): boolean => {
     return fn.constructor.name === 'AsyncFunction';
   };
 
   const repairAutoComplete = (): void => {
-    document.querySelectorAll('input[type="text"][autocomplete="off"').forEach((element) => {
-      element.setAttribute('autocomplete', 'new-password')
-    });
+    document
+      .querySelectorAll('input[type="text"][autocomplete="off"')
+      .forEach((element) => {
+        element.setAttribute('autocomplete', 'new-password');
+      });
   };
 
-  const resetViewPort = (isSmallViewPort: Ref<boolean>, maxDialogWidth: Ref<string>): void => {
+  const resetViewPort = (
+    isSmallViewPort: Ref<boolean>,
+    maxDialogWidth: Ref<string>
+  ): void => {
     if (window.innerWidth <= 960) {
       isSmallViewPort.value = true;
       maxDialogWidth.value = 'auto';
@@ -91,7 +95,9 @@ export default function () {
     }
   };
 
-  const updateAppProcessingAsync = async (method: () => unknown): Promise<void | unknown> => {
+  const updateAppProcessingAsync = async (
+    method: () => unknown
+  ): Promise<void | unknown> => {
     useAppStore().updateProcessingStatus(true);
     let result: unknown;
     if (isAsyncFunction(method)) {
