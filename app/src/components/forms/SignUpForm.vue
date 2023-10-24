@@ -8,7 +8,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="userName"
@@ -24,7 +24,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="firstName !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="firstName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="firstName"
@@ -40,7 +40,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="lastName !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="lastName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="lastName"
@@ -64,7 +64,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -80,7 +80,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -100,7 +100,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="confirmPassword !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="confirmPassword !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -120,7 +120,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip location="bottom">
+              <v-tooltip location="bottom" :disabled="isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-checkbox
                     v-model="stayLoggedIn"
@@ -138,7 +138,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -153,7 +153,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -168,7 +168,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
