@@ -115,7 +115,7 @@ export default defineComponent({
 
     const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
 
-    const { clearStores } = commonUtilities();
+    const { clearStores, updateAppProcessingAsync } = commonUtilities();
 
     const clearStoresIfUserIsNotLoggedIn = (): void => {
       if (!appStore.getStayedLoggedIn) {
@@ -275,37 +275,34 @@ export default defineComponent({
 
     // Lifecycle hooks
     onMounted(async () => {
-      // Set the app processing message
-      appStore.updateProcessingMessage(
-        "Processing, please do not navigate away"
-      );
+      updateAppProcessingAsync(async () => {
+        // Initialize the value, sudoku and serviceFailure stores
+        await valuesStore.initializeStoreAsync();
+        sudokuStore.initializeStore();
+        serviceFailStore.initializeStore();
 
-      // Initialize the value, sudoku and serviceFailure stores
-      await valuesStore.initializeStoreAsync();
-      sudokuStore.initializeStore();
-      serviceFailStore.initializeStore();
-
-      // Especially for mobile, if the user rejected a 30 day sign in clear the stores
-      clearStoresIfUserIsNotLoggedIn();
-
-      // Set the app dialog viewport for mobil or desktop
-      resetAppDialogViewPort();
-      let resizeTimeout: number | undefined;
-
-      // Add event listeners
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(
-          () => {
-            resetAppDialogViewPort();
-          },
-          250,
-          "Resized"
-        );
-      });
-      window.addEventListener("beforeunload", (e) => {
-        e.preventDefault();
+        // Especially for mobile, if the user rejected a 30 day sign in clear the stores
         clearStoresIfUserIsNotLoggedIn();
+
+        // Set the app dialog viewport for mobil or desktop
+        resetAppDialogViewPort();
+        let resizeTimeout: number | undefined;
+
+        // Add event listeners
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(
+            () => {
+              resetAppDialogViewPort();
+            },
+            250,
+            "Resized"
+          );
+        });
+        window.addEventListener("beforeunload", (e) => {
+          e.preventDefault();
+          clearStoresIfUserIsNotLoggedIn();
+        });
       });
     });
     onUnmounted(() => {
