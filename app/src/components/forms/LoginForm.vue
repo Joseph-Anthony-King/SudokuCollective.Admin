@@ -8,7 +8,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="User Name"
@@ -25,7 +25,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="Password"
@@ -63,7 +63,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="3">
-            <v-tooltip open-delay="5000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -78,7 +78,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="5000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -93,7 +93,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="5000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -108,7 +108,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="5000" location="bottom" :disabled="!formValid">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
