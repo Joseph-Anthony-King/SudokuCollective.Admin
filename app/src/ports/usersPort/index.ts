@@ -17,12 +17,12 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${appStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
-          requestorId: userStore.getUser.id,
-          appId: process.env.VUE_APP_ID,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
           paginator: {},
           payload: {},
         },
@@ -48,12 +48,12 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${appStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
-          requestorId: userStore.getUser.id,
-          appId: process.env.VUE_APP_ID,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
           paginator: {},
           payload: {
             userName: data.userName,
@@ -85,12 +85,43 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${appStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
-          requestorId: userStore.getUser.id,
-          appId: process.env.VUE_APP_ID,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
+          paginator: {},
+          payload: {},
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
+    try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: "put",
+        url: `${Endpoints.cancelEmailConfirmationRequestEndpoint}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": `Bearer ${appStore.getToken}`,
+        },
+        data: {
+          license: process.env.VUE_APP_LICENSE,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
           paginator: {},
           payload: {},
         },
@@ -128,22 +159,79 @@ export class UsersPort {
     }
   }
 
-  static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
+  static async putResendPasswordResetAsync(userId: number): Promise<AxiosResponse | AxiosError> {
     try {
-      const userStore = useUserStore();
-
       const config = {
-        method: "put",
-        url: `${Endpoints.cancelEmailConfirmationRequestEndpoint}`,
+        method: "post",
+        url: `${Endpoints.resendPasswordResetEndpoint}`,
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
         data: {
+          userId,
+          appId: process.env.VUE_APP_ID as number,
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putCancelPasswordResetAsync(): Promise<AxiosResponse | AxiosError> {
+    try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: "put",
+        url: `${Endpoints.cancelPasswordResetEndpoint}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": `Bearer ${appStore.getToken}`,
+        },
+        data: {
           license: process.env.VUE_APP_LICENSE,
-          requestorId: userStore.getUser.id,
-          appId: process.env.VUE_APP_ID,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
+          paginator: {},
+          payload: {},
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putCancelAllEmailRequestsAsync(): Promise<AxiosResponse | AxiosError> {
+    try {
+      const appStore = useAppStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: "put",
+        url: `${Endpoints.cancelAllEmailRequestsEndpoint}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": `Bearer ${appStore.getToken}`,
+        },
+        data: {
+          license: process.env.VUE_APP_LICENSE,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VUE_APP_ID as number,
           paginator: {},
           payload: {},
         },
