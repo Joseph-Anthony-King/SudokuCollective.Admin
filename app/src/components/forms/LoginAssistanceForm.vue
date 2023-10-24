@@ -25,7 +25,7 @@
       </v-card-text>
       <AvailableActions>
         <v-row dense>
-          <v-col>
+          <v-col cols="3">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -44,7 +44,7 @@
               >
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col cols="3">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -62,7 +62,7 @@
               >
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col cols="3">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -81,7 +81,7 @@
               <span>Reset this form</span>
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col cols="3">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
