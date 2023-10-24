@@ -13,7 +13,7 @@
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
         ></v-text-field>
-        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+        <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || userName !== null">
           <template v-slot:activator="{ props }">
             <v-text-field
               v-model='userName'
@@ -27,7 +27,7 @@
           </template>
           <span>{{ RulesMessages.userNameRegexMessage }}</span>
         </v-tooltip>
-        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+        <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || firstName !== null">
           <template v-slot:activator="{ props }">
             <v-text-field
               v-model='firstName'
@@ -41,7 +41,7 @@
           </template>
           <span>{{ firstNameTooltip }}</span>
         </v-tooltip>
-        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+        <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || lastName !== null">
           <template v-slot:activator="{ props }">
             <v-text-field
               v-model='lastName'
@@ -97,7 +97,7 @@
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
         ></v-text-field>
-        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+        <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || email !== null">
           <template v-slot:activator="{ props }">
             <v-text-field
               v-model='email'
@@ -123,7 +123,7 @@
     <AvailableActions>
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='formValid'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='formValid'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -139,7 +139,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -155,7 +155,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -171,7 +171,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || user.isSuperUser'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='user.isEditing || user.isSuperUser'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='red darken-1'
@@ -187,7 +187,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -203,7 +203,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
+          <v-tooltip open-delay="3000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'

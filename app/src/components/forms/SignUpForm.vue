@@ -8,7 +8,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="userName"
@@ -24,7 +24,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="firstName !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="firstName"
@@ -40,7 +40,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="lastName !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="lastName"
@@ -64,7 +64,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -80,7 +80,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -100,7 +100,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="5000" location="bottom">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="confirmPassword !== null">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -129,10 +129,7 @@
                     v-bind="props"
                   ></v-checkbox>
                 </template>
-                <span
-                  >If set to false this will clear your authorization token when
-                  you navigate away from the app</span
-                >
+                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
               </v-tooltip>
             </v-col>
           </v-row>
@@ -141,7 +138,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="4">
-            <v-tooltip open-delay="5000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -156,7 +153,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="5000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -171,7 +168,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="5000" location="bottom" :disabled="!formValid">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
