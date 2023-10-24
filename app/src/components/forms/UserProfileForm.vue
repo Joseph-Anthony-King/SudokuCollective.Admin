@@ -1,17 +1,17 @@
 <template>
-  <v-card-title class="justify-center text-center">
-    <span class="headline">{{ formTitle }}</span>
+  <v-card-title class='justify-center text-center'>
+    <span class='headline'>{{ formTitle }}</span>
   </v-card-title>
-  <v-form v-model="formValid" ref="form" onsubmit="event.preventDefault();">
+  <v-form v-model='formValid' ref='form' onsubmit='event.preventDefault();'>
     <v-row>
-      <v-col cols="12" lg="6" xl="6">
+      <v-col cols='12' lg='6' xl='6'>
         <v-text-field
-          v-model="user.id"
-          type="number"
-          label="Id"
-          prepend-icon="mdi-account-circle"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
+          v-model='user.id'
+          type='number'
+          label='Id'
+          prepend-icon='mdi-account-circle'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
         ></v-text-field>
         <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || userName !== null">
           <template v-slot:activator="{ props }">
@@ -56,46 +56,46 @@
           <span>{{ lastNameTooltip }}</span>
         </v-tooltip>
         <v-text-field
-          v-model="nickName"
-          label="Nickname (not required)"
-          prepend-icon="mdi-account-circle"
-          :readonly="!user.isEditing"
-          :color="!user.isEditing ? '' : 'primary'"
+          v-model='nickName'
+          label='Nickname (not required)'
+          prepend-icon='mdi-account-circle'
+          :readonly='!user.isEditing'
+          :color='!user.isEditing ? "" : "primary"'
         ></v-text-field>
         <v-checkbox
-          v-model="user.isAdmin"
-          label="Admin Privileges"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
-          color="primary"
+          v-model='user.isAdmin'
+          label='Admin Privileges'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
         <v-checkbox
-          v-if="user.isSuperUser"
-          v-model="user.isSuperUser"
-          label="Super User Privileges"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
-          color="primary"
+          v-if='user.isSuperUser'
+          v-model='user.isSuperUser'
+          label='Super User Privileges'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
       </v-col>
-      <v-col cols="12" lg="6" xl="6">
+      <v-col cols='12' lg='6' xl='6'>
         <v-text-field
-          v-model="formattedDateCreated"
-          label="Date Created"
-          hint="MM/DD/YYYY format"
+          v-model='formattedDateCreated'
+          label='Date Created'
+          hint='MM/DD/YYYY format'
           persistent-hint
-          prepend-icon="mdi-calendar"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
+          prepend-icon='mdi-calendar'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
         ></v-text-field>
         <v-text-field
-          v-model="formattedDateUpdated"
-          label="Date Updated"
-          hint="MM/DD/YYYY format"
+          v-model='formattedDateUpdated'
+          label='Date Updated'
+          hint='MM/DD/YYYY format'
           persistent-hint
-          prepend-icon="mdi-calendar"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
+          prepend-icon='mdi-calendar'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
         ></v-text-field>
         <v-tooltip open-delay="3000" location="bottom" :disabled="!user.isEditing || email !== null">
           <template v-slot:activator="{ props }">
@@ -112,11 +112,11 @@
           <span>{{ RulesMessages.emailInvalidMessage }}</span>
         </v-tooltip>
         <v-checkbox
-          v-model="user.isEmailConfirmed"
-          label="Email Confirmed"
-          :readonly="!user.isEditing"
-          :disabled="user.isEditing"
-          color="primary"
+          v-model='user.isEmailConfirmed'
+          label='Email Confirmed'
+          :readonly='!user.isEditing'
+          :disabled='user.isEditing'
+          color='primary'
         ></v-checkbox>
       </v-col>
     </v-row>
@@ -222,32 +222,30 @@
     </AvailableActions>
   </v-form>
   <v-dialog
-    v-model="confirmDialog"
+    v-model='confirmDialog'
     persistent
-    :fullscreen="isSmallViewPort"
-    :max-width="maxDialogWidth"
+    :fullscreen='isSmallViewPort'
+    :max-width='maxDialogWidth'
     hide-overlay
-    transition="dialog-top-transition"
-  >
-    <ConfirmDialog
-      :title="confirmTitle"
-      :message="confirmMessage"
-      v-on:action-confirmed="actionConfirmedHandlerAsync"
-      v-on:action-not-confirmed="actionNotConfirmedHandler"
-    />
+    transition='dialog-top-transition'>
+    <ConfirmDialog 
+      :title='confirmTitle'
+      :message='confirmMessage'
+      v-on:action-confirmed='actionConfirmedHandlerAsync'
+      v-on:action-not-confirmed='actionNotConfirmedHandler'/>
   </v-dialog>
 </template>
 
-<script setup lang="ts">
-import {
+<script setup lang='ts'>
+import { 
   Ref,
   ref,
   ComputedRef,
   computed,
-  watch,
+  watch, 
   onMounted,
   onUnmounted,
-  toRaw,
+  toRaw
 } from 'vue';
 import router from '@/router/index';
 import { VForm } from 'vuetify/components';
@@ -267,19 +265,21 @@ const props = defineProps({
   formStatus: {
     type: Boolean,
     default: true,
-  },
+  }
 });
 const emit = defineEmits(['user-updated']);
 
 // Instantiate the stores
 const userStore = useUserStore();
-const { emailRules, requiredRules, userNameRules } = rules();
-const {
-  displaySuccessfulToast,
-  displayFailedToastAsync,
+const { 
+  emailRules, 
+  requiredRules, 
+  userNameRules } = rules();
+const { 
+  displaySuccessfulToast, 
+  displayFailedToastAsync, 
   resetViewPort,
-  updateAppProcessingAsync,
-} = commonUtilities();
+  updateAppProcessingAsync } = commonUtilities();
 
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
@@ -312,7 +312,9 @@ const formattedDateCreated: ComputedRef<string | null> = computed(() => {
   if (user.value.dateCreated === undefined) {
     return null;
   } else {
-    return `${new Date(user.value.dateCreated).toLocaleDateString()} ${new Date(
+    return `${new Date(
+      user.value.dateCreated
+    ).toLocaleDateString()} ${new Date(
       user.value.dateCreated
     ).toLocaleTimeString()}`;
   }
@@ -367,7 +369,7 @@ const confirmEditSubmission: Ref<boolean> = ref(false);
 const confirmDeleteSubmission: Ref<boolean> = ref(false);
 const isSmallViewPort: Ref<boolean> = ref(true);
 const maxDialogWidth: Ref<string> = ref('auto');
-const confirmTitle: ComputedRef<string | undefined> = computed(() => {
+const confirmTitle: ComputedRef<string | undefined> = computed(() => { 
   if (confirmEditSubmission.value) {
     return 'Confirm Edit';
   } else if (confirmDeleteSubmission.value) {
@@ -376,7 +378,7 @@ const confirmTitle: ComputedRef<string | undefined> = computed(() => {
     return undefined;
   }
 });
-const confirmMessage: ComputedRef<string | undefined> = computed(() => {
+const confirmMessage: ComputedRef<string | undefined> = computed(() => { 
   if (confirmEditSubmission.value) {
     return `Are you to submit your edits ${user.value.userName}?`;
   } else if (confirmDeleteSubmission.value) {
@@ -408,8 +410,7 @@ const actionConfirmedHandlerAsync = async (event: Event | null = null): Promise<
           type: toast.TYPE.SUCCESS,
         });
       }
-    }
-  });
+    }});
 };
 const actionNotConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
@@ -422,8 +423,7 @@ const actionNotConfirmedHandler = async (event: Event | null = null): Promise<vo
     if (confirmDeleteSubmission.value) {
       confirmDialog.value = false;
       confirmDeleteSubmission.value = false;
-    }
-  });
+    }});
 };
 watch(
   () => confirmEditSubmission.value,
@@ -455,18 +455,15 @@ const updateInvalidValues = (message: string, options: any): any => {
   ) {
     options.invalidEmails.push(options.email as string);
   }
-  return {
-    invalidUserNames: options.invalidUserNames,
-    invalidEmails: options.invalidEmails,
-  };
+  return { 
+    invalidUserNames: options.invalidUserNames, 
+    invalidEmails: options.invalidEmails };
 };
 
 // Form actions
-const editHandlerAsync = async (
-  event: Event | null = null
-): Promise<boolean> => {
+const editHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
-  return (await updateAppProcessingAsync(async () => {
+  return await updateAppProcessingAsync(async () => {
     let result = false;
     if (getFormStatus.value) {
       const data = new UpdateUserRequestData(
@@ -492,8 +489,7 @@ const editHandlerAsync = async (
       invalidEmails.value = failedToast.methodResult.invalidEmails;
       form.value?.validate();
     }
-    return result;
-  }) as Promise<boolean>);
+    return result;}) as Promise<boolean>;
 };
 const deleteHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
@@ -523,12 +519,14 @@ const refreshHandlerAsync = async (event: Event | null = null): Promise<void> =>
   await updateAppProcessingAsync(async () => {
     await userStore.getUserAsync();
     displaySuccessfulToast(StoreType.USERSTORE);
-    const failedToast = await displayFailedToastAsync(updateInvalidValues, {
-      invalidUserNames: toRaw(invalidUserNames.value),
-      invalidEmails: toRaw(invalidUserNames.value),
-      userName: toRaw(userName.value),
-      email: toRaw(email.value),
-    });
+    const failedToast = await displayFailedToastAsync(
+      updateInvalidValues, 
+      { 
+        invalidUserNames: toRaw(invalidUserNames.value), 
+        invalidEmails: toRaw(invalidUserNames.value),
+        userName: toRaw(userName.value),
+        email: toRaw(email.value)
+      });
     if (failedToast.failed) {
       invalidUserNames.value = failedToast.methodResult.invalidUserNames;
       invalidEmails.value = failedToast.methodResult.invalidEmails;
@@ -584,13 +582,9 @@ onMounted(async () => {
   let resizeTimeout: number | undefined;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(
-      () => {
-        resetViewPort(isSmallViewPort, maxDialogWidth);
-      },
-      250,
-      'Resized'
-    );
+    resizeTimeout = setTimeout(() => {
+      resetViewPort(isSmallViewPort, maxDialogWidth);
+    }, 250, 'Resized');
   });
 });
 onUnmounted(() => {
