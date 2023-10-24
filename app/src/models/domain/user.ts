@@ -1,46 +1,46 @@
-import { IUser } from '@/interfaces/domain/iUser';
+import { IUser } from "@/interfaces/domain/iUser";
 
 export class User implements IUser {
-	id: number;
-	userName: string | undefined;
-	firstName: string | undefined;
-	lastName: string | undefined;
-	nickName: string | undefined;
-	fullName: string | undefined;
-	email: string | undefined;
-	isEmailConfirmed: boolean;
-	receivedRequestToUpdateEmail: boolean;
-	receivedRequestToUpdatePassword: boolean;
-	isActive: boolean;
-	isSuperUser: boolean;
-	isAdmin: boolean;
-	dateCreated: Date | undefined;
-	dateUpdated: Date | undefined;
-	isLoggedIn: boolean;
-	isLoggingIn: boolean;
-	isSignedUp: boolean;
-	isSigningUp: boolean;
-	isEditing: boolean;
-	
-	constructor(
-		id?: number,
-		userName?: string,
-		firstName?: string,
-		lastName?: string,
-		nickName?: string,
-		fullName?: string,
-		email?: string,
-		isEmailConfirmed?: boolean,
-		receivedRequestToUpdateEmail?: boolean,
-		receivedRequestToUpdatePassword?: boolean,
-		isActive?: boolean,
-		isSuperUser?: boolean,
-		isAdmin?: boolean,
-		dateCreated?: Date,
-		dateUpdated?: Date,
-		isLoggedIn?: boolean,
-		isSignedUp?: boolean,
-	) {
+  id: number;
+  userName: string | undefined;
+  firstName: string | undefined;
+  lastName: string | undefined;
+  nickName: string | undefined;
+  fullName: string | undefined;
+  email: string | undefined;
+  isEmailConfirmed: boolean;
+  receivedRequestToUpdateEmail: boolean;
+  receivedRequestToUpdatePassword: boolean;
+  isActive: boolean;
+  isSuperUser: boolean;
+  isAdmin: boolean;
+  dateCreated: Date | undefined;
+  dateUpdated: Date | undefined;
+  isLoggedIn: boolean;
+  isLoggingIn: boolean;
+  isSignedUp: boolean;
+  isSigningUp: boolean;
+  isEditing: boolean;
+
+  constructor(
+    id?: number,
+    userName?: string,
+    firstName?: string,
+    lastName?: string,
+    nickName?: string,
+    fullName?: string,
+    email?: string,
+    isEmailConfirmed?: boolean,
+    receivedRequestToUpdateEmail?: boolean,
+    receivedRequestToUpdatePassword?: boolean,
+    isActive?: boolean,
+    isSuperUser?: boolean,
+    isAdmin?: boolean,
+    dateCreated?: Date,
+    dateUpdated?: Date,
+    isLoggedIn?: boolean,
+    isSignedUp?: boolean
+  ) {
 		id ? this.id = id : this.id = 0;
 		userName ? this.userName = userName : this.userName = undefined;
 		firstName ? this.firstName = firstName : this.firstName = undefined;
@@ -62,5 +62,5 @@ export class User implements IUser {
 		this.isLoggingIn = false;
 		this.isSigningUp = false;
 		this.isEditing = false;
-	}
+  }
 }

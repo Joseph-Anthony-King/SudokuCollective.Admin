@@ -1,27 +1,27 @@
 <template>
-  <v-container fluid class='app-responsive-viewport'>
-    <v-card elevation='6' class='mx-16'>
-      <v-row class='text-center home-banner'>
-        <v-col cols='12'>
-          <h1 class='text-center centered-welcome-message text-padding'>
+  <v-container fluid class="app-responsive-viewport">
+    <v-card elevation="6" class="mx-16">
+      <v-row class="text-center home-banner">
+        <v-col cols="12">
+          <h1 class="text-center centered-welcome-message text-padding">
             Welcome to Sudoku Collective Admin Vue
           </h1>
           <v-img
-            src='/images/logo.png'
-            class='my-3 centered-logo'
+            src="/images/logo.png"
+            class="my-3 centered-logo"
             contain
-            height='200'
+            height="200"
           />
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols='12'>
-          <p class='motto text-center text-padding'>
+        <v-col cols="12">
+          <p class="motto text-center text-padding">
             Code... Create... Inspire...
           </p>
           <p
-            class='description text-center text-padding'
-            v-html='missionStatement'
+            class="description text-center text-padding"
+            v-html="missionStatement"
           ></p>
         </v-col>
       </v-row>
@@ -29,23 +29,19 @@
   </v-container>
 </template>
 
-<script setup lang='ts'>
-import { 
-  ref,
-  onBeforeMount, 
-  watch 
-} from 'vue';
-import { useRoute } from 'vue-router';
-import router from '@/router/index';
-import { useUserStore } from '@/store/userStore';
-import { useValuesStore } from '@/store/valuesStore';
-import commonUtitlities from '@/utilities/common';
-import { User } from '@/models/domain/user';
+<script setup lang="ts">
+import { ref, onBeforeMount, watch } from "vue";
+import { useRoute } from "vue-router";
+import router from "@/router/index";
+import { useUserStore } from "@/store/userStore";
+import { useValuesStore } from "@/store/valuesStore";
+import commonUtitlities from "@/utilities/common";
+import { User } from "@/models/domain/user";
 
 const props = defineProps({
   action: {
     type: String,
-    default: ''
+    default: "",
   },
 });
 
@@ -53,50 +49,38 @@ const userStore = useUserStore();
 const valuesStore = useValuesStore();
 const route = useRoute();
 const { updateUrlWithAction } = commonUtitlities();
-const missionStatement = ref(
-  valuesStore.getMissionStatement
-);
+const missionStatement = ref(valuesStore.getMissionStatement);
 
 watch(
   () => valuesStore.getMissionStatement,
   () => {
-    missionStatement.value =
-      valuesStore.getMissionStatement;
+    missionStatement.value = valuesStore.getMissionStatement;
   }
 );
 watch(
   () => userStore.getUserIsLoggingIn,
   () => {
     const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-    updateUrlWithAction(
-      userIsLoggingIn,
-      '/',
-      'login',
-      router,
-      route);
+    updateUrlWithAction(userIsLoggingIn, "/", "login", router, route);
   }
 );
 watch(
   () => userStore.getUserIsSigningUp,
   () => {
     const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-    updateUrlWithAction(
-      userIsSigningUp,
-      '/',
-      'signup',
-      router,
-      route);
+    updateUrlWithAction(userIsSigningUp, "/", "signup", router, route);
   }
 );
+// Lifecycle hooks
 onBeforeMount(() => {
   /* Ensures this logic only runs on first navigation, 
      this allows bookmarks for login and signup to work correctly*/
   if (router.options.history.state.position === 1) {
     const user: User = userStore.getUser;
-    if (props.action.toLowerCase() === 'login') {
+    if (props.action.toLowerCase() === "login") {
       user.isLoggingIn = true;
-      userStore.updateUser(user)
-    } else if (props.action.toLowerCase() === 'signup') {
+      userStore.updateUser(user);
+    } else if (props.action.toLowerCase() === "signup") {
       user.isSigningUp = true;
       userStore.updateUser(user);
     }
@@ -104,7 +88,7 @@ onBeforeMount(() => {
 });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-card {
   @media (max-width: 600px) {
     padding: 0 0 0 0 !important;
@@ -125,7 +109,7 @@ onBeforeMount(() => {
   border: 0;
   border-color: transparent;
   min-height: 500px;
-  background-image: url('@/assets/banner.jpg');
+  background-image: url("@/assets/banner.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -151,7 +135,7 @@ onBeforeMount(() => {
   color: var(--v-secondary);
   font-size: 2.5em;
   font-weight: 500;
-  font-family: 'SegoeUI-BoldItalic', sans-serif;
+  font-family: "SegoeUI-BoldItalic", sans-serif;
 }
 .description {
   color: var(--v-secondary);

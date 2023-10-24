@@ -1,15 +1,12 @@
-import { AxiosError, AxiosResponse } from 'axios';
-import { LoginPort } from '@/ports/loginPort';
-import { StaticServiceMethods } from '../common';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { User } from '@/models/domain/user';
-import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
-import { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+import { AxiosResponse, AxiosError } from "axios";
+import { LoginPort } from "@/ports/loginPort";
+import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { User } from "@/models/domain/user";
+import { StaticServiceMethods } from "@/services/common";
 
 export class LoginService {
-  static async postLoginAsync(
-    data: ILoginRequestData
-  ): Promise<IServicePayload> {
+  static async postLoginAsync(data: ILoginRequestData): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -43,8 +40,8 @@ export class LoginService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -57,15 +54,17 @@ export class LoginService {
     return result;
   }
 
-  static async postConfirmUserNameAsync(
-    data: ILoginAssistanceRequestData
-  ): Promise<IServicePayload> {
+  static async postConfirmUserNameAsync(email: string): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const response = (await LoginPort.postConfirmUserNameAsync(
-        data
-      )) as AxiosResponse;
+      const stringIsNullOrEmpty = StaticServiceMethods.stringCannotBeEmptyOrNull(email);
+
+      if (stringIsNullOrEmpty !== null) {
+        throw stringIsNullOrEmpty;
+      }
+      
+      const response = (await LoginPort.postConfirmUserNameAsync(email)) as AxiosResponse;
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -75,8 +74,8 @@ export class LoginService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;

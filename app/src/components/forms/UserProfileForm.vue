@@ -13,30 +13,48 @@
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
         ></v-text-field>
-        <v-text-field
-          v-model='userName'
-          label='User Name'
-          prepend-icon='mdi-account-circle'
-          :rules='userNameRules(invalidUserNames, "User name not unique")'
-          :readonly='!user.isEditing'
-          :color='!user.isEditing ? "" : "primary:"'
-        ></v-text-field>
-        <v-text-field
-          v-model='firstName'
-          label='First Name'
-          prepend-icon='mdi-account-circle'
-          :rule='requiredRules("First Name")'
-          :readonly='!user.isEditing'
-          :color='!user.isEditing ? "" : "primary"'
-        ></v-text-field>
-        <v-text-field
-          v-model='lastName'
-          label='Last Name'
-          prepend-icon='mdi-account-circle'
-          :rules='requiredRules("Last Name")'
-          :readonly='!user.isEditing'
-          :color='!user.isEditing ? "" : "primary"'
-        ></v-text-field>
+        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model='userName'
+              label='User Name'
+              prepend-icon='mdi-account-circle'
+              :rules='userNameRules(invalidUserNames, "User name not unique")'
+              :readonly='!user.isEditing'
+              :color='!user.isEditing ? "" : "primary:"'
+              v-bind="props"
+            ></v-text-field>
+          </template>
+          <span>{{ RulesMessages.userNameRegexMessage }}</span>
+        </v-tooltip>
+        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model='firstName'
+              label='First Name'
+              prepend-icon='mdi-account-circle'
+              :rule='requiredRules("First Name")'
+              :readonly='!user.isEditing'
+              :color='!user.isEditing ? "" : "primary"'
+              v-bind="props"
+            ></v-text-field>
+          </template>
+          <span>{{ firstNameTooltip }}</span>
+        </v-tooltip>
+        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model='lastName'
+              label='Last Name'
+              prepend-icon='mdi-account-circle'
+              :rules='requiredRules("Last Name")'
+              :readonly='!user.isEditing'
+              :color='!user.isEditing ? "" : "primary"'
+              v-bind="props"
+            ></v-text-field>
+          </template>
+          <span>{{ lastNameTooltip }}</span>
+        </v-tooltip>
         <v-text-field
           v-model='nickName'
           label='Nickname (not required)'
@@ -79,14 +97,20 @@
           :readonly='!user.isEditing'
           :disabled='user.isEditing'
         ></v-text-field>
-        <v-text-field
-          v-model='email'
-          label='Email'
-          prepend-icon='mdi-email'
-          :rules='emailRules(invalidEmails, "Email not unique")'
-          :readonly='!user.isEditing'
-          :color='!user.isEditing ? "" : "primary"'
-        ></v-text-field>
+        <v-tooltip open-delay="5000" location="bottom" :disabled="!user.isEditing">
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model='email'
+              label='Email'
+              prepend-icon='mdi-email'
+              :rules='emailRules(invalidEmails, "Email not unique")'
+              :readonly='!user.isEditing'
+              :color='!user.isEditing ? "" : "primary"'
+              v-bind="props"
+            ></v-text-field>
+          </template>
+          <span>{{ RulesMessages.emailInvalidMessage }}</span>
+        </v-tooltip>
         <v-checkbox
           v-model='user.isEmailConfirmed'
           label='Email Confirmed'
@@ -99,7 +123,7 @@
     <AvailableActions>
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location='bottom'>
+          <v-tooltip open-delay="5000" location='bottom' :disabled='formValid'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -115,7 +139,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location='bottom' :disabled='user.isEditing'>
+          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -131,7 +155,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location='bottom' :disabled='user.isEditing'>
+          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='blue darken-1'
@@ -147,7 +171,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location='bottom' :disabled='user.isEditing'>
+          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || user.isSuperUser'>
             <template v-slot:activator='{ props }'>
               <v-btn
                 color='red darken-1'
@@ -160,6 +184,38 @@
               </v-btn>
             </template>
             <span>Delete your profile</span>
+          </v-tooltip>
+        </v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
+                v-bind='props'
+                :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'
+                @click='resendEmailConfirmationHandlerAsync'
+              >
+                Resend Email
+              </v-btn>
+            </template>
+            <span>Resend the last email confirmation you requested</span>
+          </v-tooltip>
+        </v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+          <v-tooltip open-delay="5000" location='bottom' :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'>
+            <template v-slot:activator='{ props }'>
+              <v-btn
+                color='blue darken-1'
+                text
+                v-bind='props'
+                :disabled='user.isEditing || !user.receivedRequestToUpdateEmail'
+                @click='cancelEmailConfirmationHandlerAsync'
+              >
+                Cancel Email
+              </v-btn>
+            </template>
+            <span>Cancel the last email confirmation you requested</span>
           </v-tooltip>
         </v-col>
       </v-row>
@@ -202,6 +258,7 @@ import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { StoreType } from '@/enums/storeTypes';
 import { User } from '@/models/domain/user';
 import rules from '@/utilities/rules/index';
+import { RulesMessages } from "@/utilities/rules/rulesMessages";
 import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
@@ -232,22 +289,25 @@ const nickName: Ref<string | undefined> = ref(user.value.nickName);
 const email: Ref<string | undefined> = ref(user.value.email);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
+const firstNameTooltip: ComputedRef<string> = computed(() =>
+  RulesMessages.requiredMessage.replace("{{value}}", "First Name")
+);
+const lastNameTooltip: ComputedRef<string> = computed(() =>
+  RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
+);
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
 const formTitle: Ref<string> = ref('User Profile');
-
 // eslint-disable-next-line
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-
 // eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
-
 const formattedDateCreated: ComputedRef<string | null> = computed(() => {
   if (user.value.dateCreated === undefined) {
     return null;
@@ -259,7 +319,6 @@ const formattedDateCreated: ComputedRef<string | null> = computed(() => {
     ).toLocaleTimeString()}`;
   }
 });
-
 const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
   if (user.value.dateUpdated === undefined) {
     return null;
@@ -279,7 +338,6 @@ const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
     }
   }
 });
-
 const submitText: ComputedRef<string> = computed(() => {
   if (!user.value.isEditing) {
     return 'Edit';
@@ -287,15 +345,13 @@ const submitText: ComputedRef<string> = computed(() => {
     return 'Submit';
   }
 });
-
 const submitHelperText: ComputedRef<string> = computed(() => {
-  if (user.value.isEditing) {
+  if (!user.value.isEditing) {
     return 'Edit your profile';
   } else {
     return 'Submit your changes';
   }
 });
-
 watch(
   () => user.value.isEditing,
   () => {
@@ -331,7 +387,6 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
     return undefined;
   }
 });
-
 const actionConfirmedHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
@@ -357,7 +412,6 @@ const actionConfirmedHandlerAsync = async (event: Event | null = null): Promise<
       }
     }});
 };
-
 const actionNotConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
@@ -371,7 +425,6 @@ const actionNotConfirmedHandler = async (event: Event | null = null): Promise<vo
       confirmDeleteSubmission.value = false;
     }});
 };
-
 watch(
   () => confirmEditSubmission.value,
   () => {
@@ -380,7 +433,6 @@ watch(
     }
   }
 );
-
 watch(
   () => confirmDeleteSubmission.value,
   () => {
@@ -389,7 +441,6 @@ watch(
     }
   }
 );
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
@@ -440,7 +491,6 @@ const editHandlerAsync = async (event: Event | null = null): Promise<boolean> =>
     }
     return result;}) as Promise<boolean>;
 };
-
 const deleteHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
   return await updateAppProcessingAsync(async () => {
@@ -464,7 +514,6 @@ const deleteHandlerAsync = async (event: Event | null = null): Promise<boolean> 
     return result;
   }) as Promise<boolean>;
 };
-
 const refreshHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
@@ -485,7 +534,6 @@ const refreshHandlerAsync = async (event: Event | null = null): Promise<void> =>
     }
   });
 };
-
 const cancelHandler = (event: Event | null = null): void => {
   event?.preventDefault();
   updateAppProcessingAsync(() => {
@@ -501,7 +549,22 @@ const cancelHandler = (event: Event | null = null): void => {
     emit('user-updated', null);
   });
 };
-
+const resendEmailConfirmationHandlerAsync = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  await updateAppProcessingAsync(async () => {
+    await userStore.resendEmailConfirmationRequestAsync();
+    displaySuccessfulToast(StoreType.USERSTORE);
+    await displayFailedToastAsync(undefined, undefined);
+  })
+};
+const cancelEmailConfirmationHandlerAsync = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  await updateAppProcessingAsync(async () => {
+    await userStore.cancelEmailConfirmationRequestAsync();
+    displaySuccessfulToast(StoreType.USERSTORE);
+    await displayFailedToastAsync(undefined, undefined);
+  })
+};
 watch(
   () => userStore.getUser,
   () => {
@@ -513,7 +576,6 @@ watch(
     email.value = user.value.email;
   }
 );
-
 // Lifecycle hooks
 onMounted(async () => {
   resetViewPort(isSmallViewPort, maxDialogWidth);

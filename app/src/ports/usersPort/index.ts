@@ -1,9 +1,8 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { Endpoints } from '@/ports/usersPort/endpoints';
-import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
-import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
-import { useAppStore } from '@/store/appStore';
-import { useUserStore } from '@/store/userStore/index';
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { Endpoints } from "@/ports/usersPort/endpoints";
+import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
+import { useAppStore } from "@/store/appStore";
+import { useUserStore } from "@/store/userStore/index";
 
 export class UsersPort {
   static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
@@ -12,12 +11,12 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: 'post',
+        method: "post",
         url: `${Endpoints.usersEndpoint}/${id}`,
         headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
           Authorization: `Bearer ${appStore.getToken}`,
         },
         data: {
@@ -30,27 +29,25 @@ export class UsersPort {
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       return error as AxiosError;
     }
   }
 
-  static async putUpdateUserAsync(
-    data: IUpdateUserRequestData
-  ): Promise<AxiosResponse | AxiosError> {
+  static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<AxiosResponse | AxiosError> {
     try {
       const appStore = useAppStore();
       const userStore = useUserStore();
 
       const config = {
-        method: 'put',
+        method: "put",
         url: `${Endpoints.usersEndpoint}/${userStore.getUser.id}`,
         headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
           Authorization: `Bearer ${appStore.getToken}`,
         },
         data: {
@@ -69,27 +66,25 @@ export class UsersPort {
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       return error as AxiosError;
     }
   }
 
-  static async deleteUserAsync(
-    id: number
-  ): Promise<AxiosResponse | AxiosError> {
+  static async deleteUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
     try {
       const appStore = useAppStore();
       const userStore = useUserStore();
 
       const config = {
-        method: 'delete',
+        method: "delete",
         url: `${Endpoints.usersEndpoint}/${id}`,
         headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
           Authorization: `Bearer ${appStore.getToken}`,
         },
         data: {
@@ -102,34 +97,61 @@ export class UsersPort {
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       return error as AxiosError;
     }
   }
 
-  static async postRequestPasswordResetAsync(
-    data: ILoginAssistanceRequestData
-  ): Promise<AxiosResponse | AxiosError> {
+  static async postRequestPasswordResetAsync(email: string): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: 'post',
+        method: "post",
         url: `${Endpoints.requestPasswordResetEndpoint}`,
         headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
-          email: data.email,
+          email: email,
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
+    try {
+      const userStore = useUserStore();
+
+      const config = {
+        method: "put",
+        url: `${Endpoints.cancelEmailConfirmationRequestEndpoint}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        data: {
+          license: process.env.VUE_APP_LICENSE,
+          requestorId: userStore.getUser.id,
+          appId: process.env.VUE_APP_ID,
+          paginator: {},
+          payload: {},
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       return error as AxiosError;
     }

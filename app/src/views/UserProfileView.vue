@@ -1,15 +1,15 @@
 <template>
-	<UserProfilePage />
+  <UserProfilePage />
 </template>
 
-<script lang='ts'>
-import { defineComponent } from 'vue';
-import UserProfilePage from '@/components/pages/UserProfilePage.vue';
+<script lang="ts">
+import { defineComponent } from "vue";
+import UserProfilePage from "@/components/pages/UserProfilePage.vue";
 
 export default defineComponent({
-	name: 'UserProfileView',
-	components: {
-		UserProfilePage
-	},
+  name: "UserProfileView",
+  components: {
+    UserProfilePage,
+  },
 });
 </script>
