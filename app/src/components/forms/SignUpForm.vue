@@ -8,15 +8,13 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="userName"
                     label="User Name"
                     prepend-icon="mdi-account-plus"
-                    :rules="
-                      userNameRules(invalidUserNames, 'User name not unique')
-                    "
+                    :rules="userNameRules(invalidUserNames, 'User name not unique')"
                     required
                     color="primary"
                     v-bind="props"
@@ -26,7 +24,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="firstName"
@@ -42,7 +40,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="lastName"
@@ -66,7 +64,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -82,7 +80,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -102,7 +100,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -143,7 +141,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="4">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -158,7 +156,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -173,7 +171,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom" :disabled="!formValid">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -218,19 +216,19 @@ import {
   onMounted,
   onUnmounted,
   toRaw,
-} from 'vue';
-import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import { useAppStore } from '@/store/appStore';
-import { useServiceFailStore } from '@/store/serviceFailStore';
-import { useSignUpFormStore } from '@/store/forms/signUpFormStore';
-import { useUserStore } from '@/store/userStore';
-import AvailableActions from '@/components/buttons/AvailableActions.vue';
-import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
-import { SignupRequestData } from '@/models/requests/signupRequestData';
-import rules from '@/utilities/rules/index';
-import { RulesMessages } from '@/utilities/rules/rulesMessages';
-import commonUtilities from '@/utilities/common';
+} from "vue";
+import { VForm } from "vuetify/components";
+import { toast } from "vue3-toastify";
+import { useAppStore } from "@/store/appStore";
+import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
+import { useUserStore } from "@/store/userStore";
+import AvailableActions from "@/components/buttons/AvailableActions.vue";
+import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
+import { SignupRequestData } from "@/models/requests/signupRequestData";
+import rules from "@/utilities/rules/index";
+import { RulesMessages } from "@/utilities/rules/rulesMessages";
+import commonUtilities from "@/utilities/common";
 
 const props = defineProps({
   formStatus: {
@@ -238,7 +236,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(['cancel-signup']);
+const emit = defineEmits(["cancel-signup"]);
 
 // Instantiate the stores
 const appStore = useAppStore();
@@ -277,34 +275,28 @@ const invalidUserNames: Ref<string[]> = ref(
   signUpFormStore.getInvalidUserNames
 );
 const invalidEmails: Ref<string[]> = ref(signUpFormStore.getInvalidEmails);
-
 const firstNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace('{{value}}', 'First Name')
+  RulesMessages.requiredMessage.replace("{{value}}", "First Name")
 );
 const lastNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace('{{value}}', 'Last Name')
+  RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
 );
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref('auto');
-
+const maxDialogWidth: Ref<string> = ref("auto");
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-
-// the following line is used by vuetify to reset the form
 // eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
 
 // Form actions
-const submitHandlerAsync = async (
-  event: Event | null = null
-): Promise<void> => {
+const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value) {
@@ -317,12 +309,12 @@ const submitHandlerAsync = async (
       signUpFormStore.updateConfirmPassword(toRaw(confirmPassword.value));
 
       const data = new SignupRequestData(
-        userName.value ? userName.value : '',
-        firstName.value ? firstName.value : '',
-        lastName.value ? lastName.value : '',
-        nickName.value ? nickName.value : '',
-        email.value ? email.value : '',
-        password.value ? password.value : '',
+        userName.value ? userName.value : "",
+        firstName.value ? firstName.value : "",
+        lastName.value ? lastName.value : "",
+        nickName.value ? nickName.value : "",
+        email.value ? email.value : "",
+        password.value ? password.value : "",
         stayLoggedIn.value
       );
       await userStore.signupUserAsync(data);
@@ -346,14 +338,13 @@ const submitHandlerAsync = async (
         signUpFormStore.initializeStore();
       }
     } else {
-      toast('Sign up form is invalid', {
+      toast("Sign up form is invalid", {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });
     }
   });
 };
-
 const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
@@ -373,27 +364,23 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
     confirmFormReset.value = false;
   });
 };
-
-const cancelHandlerAsync = async (
-  event: Event | null = null
-): Promise<void> => {
+const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     signUpFormStore.initializeStore();
-    emit('cancel-signup', null, null);
+    emit("cancel-signup", null, null);
   });
 };
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === 'Status Code 404: User name not unique' &&
+    message === "Status Code 404: User name not unique" &&
     !options.invalidUserNames.includes(options.userName as string)
   ) {
     options.invalidUserNames.push(options.userName as string);
   }
   if (
-    message === 'Status Code 404: Email not unique' &&
+    message === "Status Code 404: Email not unique" &&
     !options.invalidEmails.includes(options.email as string)
   ) {
     options.invalidEmails.push(options.email as string);
@@ -403,7 +390,6 @@ const updateInvalidValues = (message: string, options: any): any => {
     invalidEmails: options.invalidEmails,
   };
 };
-
 // Lifecycle hooks
 onMounted(async () => {
   if (isChrome.value) {
@@ -411,14 +397,14 @@ onMounted(async () => {
   }
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      'Resized'
+      "Resized"
     );
   });
   if (signUpFormStore.getDirty) {
@@ -426,9 +412,8 @@ onMounted(async () => {
   }
 });
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
+  window.removeEventListener("resize", () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
 </script>
-@/store/forms/signUpFormStore

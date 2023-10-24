@@ -1,13 +1,7 @@
-import {  
-  ref,
-  Ref, 
-  computed,
-  ComputedRef, 
-  toRaw
-} from "vue";
+import { ref, Ref, computed, ComputedRef, toRaw } from "vue";
 import { defineStore } from "pinia";
 
-export const useLoginFormStore = defineStore('loginFormStore', () => {
+export const useLoginFormStore = defineStore("loginFormStore", () => {
   const dirty: Ref<boolean> = ref(false);
   const emailDirty: Ref<boolean> = ref(false);
   const userName: Ref<string | null> = ref(null);
@@ -18,13 +12,27 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const invalidEmails: Ref<string[]> = ref([]);
 
   const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
-  const getEmailDirty: ComputedRef<boolean> = computed(() => toRaw(emailDirty.value));
-  const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
-  const getPassword: ComputedRef<string | null> = computed(() => toRaw(password.value));
-  const getEmail: ComputedRef<string | null> = computed(() => toRaw(email.value));
-  const getInvalidUserNames: ComputedRef<string[]> = computed(() => toRaw(invalidUserNames.value));
-  const getInvalidPasswords: ComputedRef<string[]> = computed(() => toRaw(invalidPasswords.value));
-  const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
+  const getEmailDirty: ComputedRef<boolean> = computed(() =>
+    toRaw(emailDirty.value)
+  );
+  const getUserName: ComputedRef<string | null> = computed(() =>
+    toRaw(userName.value)
+  );
+  const getPassword: ComputedRef<string | null> = computed(() =>
+    toRaw(password.value)
+  );
+  const getEmail: ComputedRef<string | null> = computed(() =>
+    toRaw(email.value)
+  );
+  const getInvalidUserNames: ComputedRef<string[]> = computed(() =>
+    toRaw(invalidUserNames.value)
+  );
+  const getInvalidPasswords: ComputedRef<string[]> = computed(() =>
+    toRaw(invalidPasswords.value)
+  );
+  const getInvalidEmails: ComputedRef<string[]> = computed(() =>
+    toRaw(invalidEmails.value)
+  );
 
   const initializeStore = (): void => {
     dirty.value = false;
@@ -88,6 +96,6 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     updateEmail,
     updateInvalidUserNames,
     updateInvalidPasswords,
-    updateInvalidEmails
-  }
+    updateInvalidEmails,
+  };
 });

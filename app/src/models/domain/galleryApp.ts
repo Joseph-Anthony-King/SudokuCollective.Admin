@@ -1,6 +1,5 @@
-import { IGalleryApp } from '@/interfaces/domain/iGalleryApp';
+import { IGalleryApp } from "@/interfaces/domain/iGalleryApp";
 
-// state...
 export class GalleryApp implements IGalleryApp {
   id: number;
   name: string;
@@ -11,7 +10,16 @@ export class GalleryApp implements IGalleryApp {
   dateCreated: Date;
   dateUpdated: Date;
 
-  constructor(id?: number, name?: string, url?: string, sourceCodeUrl?: string, createdBy?: string, userCount?: number, dateCreated?: string, dateUpdated?: string) {
+  constructor(
+    id?: number,
+    name?: string,
+    url?: string,
+    sourceCodeUrl?: string,
+    createdBy?: string,
+    userCount?: number,
+    dateCreated?: string,
+    dateUpdated?: string
+  ) {
     id ? this.id = id : this.id = 0;
     name ? this.name = name : this.name = '';
     url ? this.url = url : this.url = '';

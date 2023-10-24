@@ -8,18 +8,13 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="User Name"
                     v-model="userName"
                     prepend-icon="mdi-account-circle"
-                    :rules="
-                      userNameRules(
-                        invalidUserNames,
-                        'No user is using this user name'
-                      )
-                    "
+                    :rules="userNameRules(invalidUserNames,'No user is using this user name')"
                     autocomplete="off"
                     color="primary"
                     v-bind="props"
@@ -30,7 +25,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom">
+              <v-tooltip open-delay="5000" location="bottom">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="Password"
@@ -59,10 +54,7 @@
                     v-bind="props"
                   ></v-checkbox>
                 </template>
-                <span
-                  >If set to false this will clear your authorization token when
-                  you navigate away from the app</span
-                >
+                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
               </v-tooltip>
             </v-col>
           </v-row>
@@ -71,7 +63,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="3">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -82,14 +74,11 @@
                   Help
                 </v-btn>
               </template>
-              <span
-                >Get assistance to verify your user name or change
-                password</span
-              >
+              <span>Get assistance to verify your user name or change password</span>
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -104,7 +93,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -119,7 +108,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip location="bottom">
+            <v-tooltip open-delay="5000" location="bottom" :disabled="!formValid">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -165,19 +154,19 @@ import {
   onMounted,
   onUpdated,
   onUnmounted,
-} from 'vue';
-import { VForm } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import { useAppStore } from '@/store/appStore';
-import { useLoginFormStore } from '@/store/forms/loginFormStore';
-import { useServiceFailStore } from '@/store/serviceFailStore';
-import { useUserStore } from '@/store/userStore';
-import AvailableActions from '@/components/buttons/AvailableActions.vue';
-import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
-import { LoginRequestData } from '@/models/requests/loginRequestData';
-import commonUtilities from '@/utilities/common';
-import rules from '@/utilities/rules/index';
-import { RulesMessages } from '@/utilities/rules/rulesMessages';
+} from "vue";
+import { VForm } from "vuetify/components";
+import { toast } from "vue3-toastify";
+import { useAppStore } from "@/store/appStore";
+import { useLoginFormStore } from "@/store/forms/loginFormStore";
+import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useUserStore } from "@/store/userStore";
+import AvailableActions from "@/components/buttons/AvailableActions.vue";
+import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
+import { LoginRequestData } from "@/models/requests/loginRequestData";
+import commonUtilities from "@/utilities/common";
+import rules from "@/utilities/rules/index";
+import { RulesMessages } from "@/utilities/rules/rulesMessages";
 
 const props = defineProps({
   formStatus: {
@@ -185,7 +174,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(['obtain-login-assistance', 'cancel-login']);
+const emit = defineEmits(["obtain-login-assistance", "cancel-login"]);
 
 // Instantiate the stores
 const appStore = useAppStore();
@@ -214,22 +203,17 @@ const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPasswords);
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref('auto');
-
+const maxDialogWidth: Ref<string> = ref("auto");
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-
-// the following line is used by vuetify to reset the form
 // eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
 
 // Form actions
-const submitHandlerAsync = async (
-  event: Event | null = null
-): Promise<void> => {
+const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (
@@ -261,21 +245,19 @@ const submitHandlerAsync = async (
         loginFormStore.initializeStore();
       }
     } else {
-      toast('Login form is invalid', {
+      toast("Login form is invalid", {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });
     }
   });
 };
-
 const helpHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
-    emit('obtain-login-assistance', null, null);
+    emit("obtain-login-assistance", null, null);
   });
 };
-
 const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
@@ -290,27 +272,23 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
     confirmFormReset.value = false;
   });
 };
-
-const cancelHandlerAsync = async (
-  event: Event | null = null
-): Promise<void> => {
+const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     loginFormStore.initializeStore();
-    emit('cancel-login', null, null);
+    emit("cancel-login", null, null);
   });
 };
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === 'Status Code 404: No user is using this user name' &&
+    message === "Status Code 404: No user is using this user name" &&
     !options.invalidUserNames.includes(options.userName)
   ) {
     options.invalidUserNames.push(options.userName);
   }
   if (
-    message === 'Status Code 404: Password is incorrect' &&
+    message === "Status Code 404: Password is incorrect" &&
     !options.invalidPasswords.includes(options.password)
   ) {
     options.invalidPasswords.push(options.password);
@@ -320,27 +298,26 @@ const updateInvalidValues = (message: string, options: any): any => {
     invalidPasswords: options.invalidPasswords,
   };
 };
-
 // Lifecycle hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
   }
   const confirmedUserName = userStore.getConfirmedUserName;
-  if (confirmedUserName !== '') {
+  if (confirmedUserName !== "") {
     userName.value = confirmedUserName;
-    userStore.updateConfirmedUserName('');
+    userStore.updateConfirmedUserName("");
   }
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      'Resized'
+      "Resized"
     );
   });
   if (loginFormStore.getDirty) {
@@ -353,9 +330,8 @@ onUpdated(() => {
   }
 });
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
+  window.removeEventListener("resize", () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
 </script>
-@/store/forms/loginFormStore

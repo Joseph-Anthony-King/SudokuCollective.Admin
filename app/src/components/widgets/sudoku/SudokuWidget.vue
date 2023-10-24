@@ -1,76 +1,74 @@
 <template>
   <v-container fluid>
-    <v-card elevation='6' class='mx-auto'>
+    <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
-          <div class='center'>
+          <div class="center">
             <v-card-title>Game Modes</v-card-title>
             <v-select
-              :items='gameStates'
-              v-model='selectedGameState'
-              item-title='label'
-              item-value='value'
-              label='Please make a selection'
-              v-bind="{'return-object':true}"
+              :items="gameStates"
+              v-model="selectedGameState"
+              item-title="label"
+              item-value="value"
+              label="Please make a selection"
+              v-bind="{ 'return-object': true }"
               single-line
             ></v-select>
-            <div v-if='isCurrentGameStatePlayGame'>
-              <v-card-title class='justify-center'
-                >Difficulty Level</v-card-title
-              >
+            <div v-if="isCurrentGameStatePlayGame">
+              <v-card-title class="justify-center">Difficulty Level</v-card-title>
               <v-select
-                :items='difficulties'
-                v-model='selectedDifficulty'
-                item-title='displayName'
-                item-value='difficultyLevel'
-                label='Please make a selection'
-                v-bind="{'return-object':true}"
+                :items="difficulties"
+                v-model="selectedDifficulty"
+                item-title="displayName"
+                item-value="difficultyLevel"
+                label="Please make a selection"
+                v-bind="{ 'return-object': true }"
                 single-line
               ></v-select>
             </div>
             <matrix-widget />
           </div>
-          <AvailableActions v-if='isGameStateSelected'>
+          <AvailableActions v-if="isGameStateSelected">
             <v-row dense>
               <v-col>
                 <v-btn
-                  class='button-full'
-                  color='blue darken-1'
+                  class="button-full"
+                  color="blue darken-1"
                   text
-                  @click='executeAsync($event)'
-                  :disabled='isExectuteButtonDisabed'
+                  @click="executeAsync($event)"
+                  :disabled="isExectuteButtonDisabed"
                 >
                   {{ executeButtonText }}
                 </v-btn>
               </v-col>
-              <v-col v-if='isCurrentGameStatePlayGame'>
+              <v-col v-if="isCurrentGameStatePlayGame">
                 <v-btn
-                  class='button-full'
-                  color='blue darken-1'
+                  class="button-full"
+                  color="blue darken-1"
                   text
-                  @click='checkGameAsync($event)'
-                  :disabled='isExectuteButtonDisabed'
+                  @click="checkGameAsync($event)"
+                  :disabled="isExectuteButtonDisabed"
                 >
                   Check Game
                 </v-btn>
               </v-col>
-              <v-col v-if='isCurrentGameStatePlayGame'>
+              <v-col v-if="isCurrentGameStatePlayGame">
                 <v-btn
-                  class='button-full'
-                  color='blue darken-1'
+                  class="button-full"
+                  color="blue darken-1"
                   text
-                  @click='resetGameAsync($event)'
-                  :disabled='isExectuteButtonDisabed'
+                  @click="resetGameAsync($event)"
+                  :disabled="isExectuteButtonDisabed"
                 >
                   Reset Game
                 </v-btn>
               </v-col>
               <v-col>
                 <v-btn
-                  class='button-full'
-                  color='blue darken-1'
+                  class="button-full"
+                  color="blue darken-1"
                   text
-                  @click='clear'
+                  @click="clear"
                 >
                   {{ clearButtonText }}
                 </v-btn>
@@ -83,33 +81,27 @@
   </v-container>
 </template>
 
-<script setup lang='ts'>
-import { 
-  Ref,
-  ref,
-  ComputedRef,
-  computed,
-  toRaw,
-  watch 
-} from 'vue';
-import { useSudokuStore } from '@/store/sudokuStore';
-import { useValuesStore } from '@/store/valuesStore';
-import AvailableActions from '@/components/buttons/AvailableActions.vue';
-import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
-import { GameState } from '@/enums/gameState';
-import { StoreType } from '@/enums/storeTypes';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
-import { Difficulty } from '@/models/domain/difficulty';
-import commonUtilities from '@/utilities/common';
+<script setup lang="ts">
+import { Ref, ref, ComputedRef, computed, toRaw, watch } from "vue";
+import { useSudokuStore } from "@/store/sudokuStore";
+import { useValuesStore } from "@/store/valuesStore";
+import AvailableActions from "@/components/buttons/AvailableActions.vue";
+import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
+import { GameState } from "@/enums/gameState";
+import { StoreType } from "@/enums/storeTypes";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { Difficulty } from "@/models/domain/difficulty";
+import commonUtilities from "@/utilities/common";
 
 /* initialize stores */
 const sudokuStore = useSudokuStore();
 const valuesStore = useValuesStore();
 
-const { 
-  displaySuccessfulToast, 
+const {
+  displaySuccessfulToast,
   displayFailedToastAsync,
-  updateAppProcessingAsync } = commonUtilities();
+  updateAppProcessingAsync,
+} = commonUtilities();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
@@ -142,9 +134,7 @@ const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
     } else {
       return false;
     }
-  } else if (
-    selectedGameState.value?.value === GameState.SOLVESUDOKU
-  ) {
+  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
     return sudokuStore.getIsSolvedDisabled;
   } else {
     return false;
@@ -152,11 +142,11 @@ const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
 });
 const executeButtonText: ComputedRef<string> = computed(() => {
   if (selectedGameState.value?.value === GameState.PLAYGAME) {
-    return 'Create Game';
+    return "Create Game";
   } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-    return 'Solve Sudoku';
+    return "Solve Sudoku";
   } else {
-    return 'Generate Sudoku';
+    return "Generate Sudoku";
   }
 });
 const clearButtonText: ComputedRef<string> = computed(() => {
@@ -164,9 +154,9 @@ const clearButtonText: ComputedRef<string> = computed(() => {
     selectedDifficulty.value !== null &&
     selectedGameState.value?.value === GameState.PLAYGAME
   ) {
-    return 'Clear Game';
+    return "Clear Game";
   } else {
-    return 'Clear Sudoku';
+    return "Clear Sudoku";
   }
 });
 const executeAsync = async (event: Event | null = null): Promise<void> => {
@@ -177,9 +167,7 @@ const executeAsync = async (event: Event | null = null): Promise<void> => {
       selectedGameState.value?.value === GameState.PLAYGAME
     ) {
       await sudokuStore.createGameAsync();
-    } else if (
-      selectedGameState.value?.value === GameState.SOLVESUDOKU
-    ) {
+    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
       await sudokuStore.solvePuzzleAsync();
     } else {
       await sudokuStore.generateSolutionAsync();
@@ -188,7 +176,7 @@ const executeAsync = async (event: Event | null = null): Promise<void> => {
     await displayFailedToastAsync(undefined, undefined);
   });
 };
-const checkGameAsync = async (event: Event | null = null): Promise<void>=> {
+const checkGameAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   updateAppProcessingAsync(async () => {
     sudokuStore.checkGameAsync();
@@ -214,13 +202,9 @@ const resetGameAsync = async (event: Event | null = null): Promise<void> => {
 };
 const clear = (event: Event | null = null): void => {
   event?.preventDefault();
-  if (
-    selectedGameState.value?.value === GameState.PLAYGAME
-  ) {
+  if (selectedGameState.value?.value === GameState.PLAYGAME) {
     sudokuStore.initializeGame();
-  } else if (
-    selectedGameState.value?.value === GameState.SOLVESUDOKU
-  ) {
+  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
     sudokuStore.initializePuzzle();
   } else {
     sudokuStore.initializeSolution();
@@ -247,12 +231,14 @@ watch(
 watch(
   () => selectedDifficulty?.value,
   () => {
-    sudokuStore.updateSelectedDifficulty(selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null);
+    sudokuStore.updateSelectedDifficulty(
+      selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null
+    );
   }
 );
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-card {
   @media (max-width: 600px) {
     padding: 0 0 0 0 !important;

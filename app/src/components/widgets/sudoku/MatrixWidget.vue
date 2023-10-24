@@ -1,50 +1,45 @@
 <template>
-  <v-card-title class='justify-center text-center'
+  <v-card-title class="justify-center text-center"
     >Sudoku Collective</v-card-title
   >
   <div>
     <v-row
-      v-for='(row, rowIndex) in matrix'
-      :key='rowIndex'
-      cols='12'
-      class='ma-0 pa-0 justify-center'
+      v-for="(row, rowIndex) in matrix"
+      :key="rowIndex"
+      cols="12"
+      class="ma-0 pa-0 justify-center"
     >
       <v-text-field
-        v-for='(cell, cellIndex) in row'
-        :key='cellIndex'
-        variant='outlined'
-        v-model='row[cellIndex]'
-        @blur='validateEntry(rowIndex, cellIndex)'
-        type='number'
-        min='1'
-        max='9'
-        :bg-color="
-          applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'
-        "
-        :class='applyTextColorStyling(rowIndex, cellIndex)'
-        class='sudoku-cell ma-0 pa-0'
-        :readonly='isReadOnly(rowIndex, cellIndex)'
+        v-for="(cell, cellIndex) in row"
+        :key="cellIndex"
+        variant="outlined"
+        v-model="row[cellIndex]"
+        @blur="validateEntry(rowIndex, cellIndex)"
+        type="number"
+        min="1"
+        max="9"
+        :bg-color="applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'"
+        :class="applyTextColorStyling(rowIndex, cellIndex)"
+        class="sudoku-cell ma-0 pa-0"
+        :readonly="isReadOnly(rowIndex, cellIndex)"
       ></v-text-field>
     </v-row>
   </div>
 </template>
 
-<script setup lang='ts'>
-import { 
-  ref, 
-  onBeforeMount, 
-  watch 
-} from 'vue';
-import { useSudokuStore } from '@/store/sudokuStore';
+<script setup lang="ts">
+import { ref, onBeforeMount, watch } from "vue";
+import { useSudokuStore } from "@/store/sudokuStore";
 import {
   obtainMatrix,
   applyOddRegion,
   applyTextColor,
-} from '@/components/widgets/sudoku/common';
-import { GameState } from '@/enums/gameState';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+} from "@/components/widgets/sudoku/common";
+import { GameState } from "@/enums/gameState";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 
 const sudokuStore = useSudokuStore();
+
 const matrix = ref(Array<Array<string>>());
 let gameState: DropdownItem | null = sudokuStore.getGameState;
 
@@ -54,19 +49,14 @@ const applyOddRegionStyling = (
 ): boolean => {
   return applyOddRegion(rowIndex, cellIndex);
 };
-
-const applyTextColorStyling = (
-  rowIndex: number,
-  cellIndex: number
-): string => {
+const applyTextColorStyling = (rowIndex: number, cellIndex: number): string => {
   return applyTextColor(rowIndex, cellIndex);
 };
-
 const validateEntry = (rowIndex: number, cellIndex: number): void => {
   var entry = parseInt(matrix.value[rowIndex][cellIndex]);
 
   if (entry < 1 || entry > 9) {
-    matrix.value[rowIndex][cellIndex] = '';
+    matrix.value[rowIndex][cellIndex] = "";
   } else {
     matrix.value[rowIndex][cellIndex] =
       matrix.value[rowIndex][cellIndex].toString();
@@ -84,12 +74,11 @@ const validateEntry = (rowIndex: number, cellIndex: number): void => {
     }
   }
 };
-
 const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
   if (gameState !== null) {
     if (gameState?.value === GameState.PLAYGAME) {
       const initialGame = sudokuStore.getInitialGame;
-      if (initialGame[rowIndex][cellIndex] === '') {
+      if (initialGame[rowIndex][cellIndex] === "") {
         return false;
       } else {
         return true;
@@ -103,7 +92,6 @@ const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
     return true;
   }
 };
-
 watch(
   () => sudokuStore.getGameState,
   () => {
@@ -111,7 +99,6 @@ watch(
     matrix.value = obtainMatrix();
   }
 );
-
 watch(
   () => sudokuStore.getGame,
   () => {
@@ -128,7 +115,6 @@ watch(
     }
   }
 );
-
 watch(
   () => sudokuStore.getPuzzle,
   () => {
@@ -145,7 +131,6 @@ watch(
     }
   }
 );
-
 watch(
   () => sudokuStore.getSolution,
   () => {
@@ -162,13 +147,13 @@ watch(
     }
   }
 );
-
+// Lifecycle hooks
 onBeforeMount(() => {
   matrix.value = obtainMatrix();
 });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @media only screen and (max-width: 311px) {
   .v-text-field {
     max-width: 20px;
@@ -433,7 +418,7 @@ onBeforeMount(() => {
   flex-shrink: auto;
 }
 .sudoku-cell
-  :deep(input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button) {
+  :deep(input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button) {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;

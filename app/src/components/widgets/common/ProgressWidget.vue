@@ -1,24 +1,24 @@
 <template>
   <v-container>
-    <v-row class='d-flex pa-12 justify-center' cols="12">
+    <v-row class="d-flex pa-12 justify-center" cols="12">
       <v-progress-circular
         indeterminate
-        color='primary'
-        :size='progressSize'
-        :width='progressWidth'
-        class='progress-circular'
+        color="primary"
+        :size="progressSize"
+        :width="progressWidth"
+        class="progress-circular"
       ></v-progress-circular>
     </v-row>
-    <v-row :cols='progressPadding(true)' />
-    <v-row class='d-flex pa-12 justify-center' cols="12">
-      <v-col class='d-flex pa-3 ma-3' :cols='progressPadding(false)'>
-        <h1 class='progress-message'>{{ progressMessage }}</h1>
+    <v-row :cols="progressPadding(true)" />
+    <v-row class="d-flex pa-12 justify-center" cols="12">
+      <v-col class="d-flex pa-3 ma-3" :cols="progressPadding(false)">
+        <h1 class="progress-message">{{ progressMessage }}</h1>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import {
   Ref,
   ref,
@@ -27,14 +27,13 @@ import {
   onMounted,
   onUnmounted,
   watch,
-} from 'vue';
-import { useAppStore } from '@/store/appStore';
+} from "vue";
+import { useAppStore } from "@/store/appStore";
 
 const appStore = useAppStore();
+
 let windowWidth: Ref<number> = ref(window.innerWidth);
-let progressMessage: Ref<string> = ref(
-  appStore.getProcessingMessage
-);
+let progressMessage: Ref<string> = ref(appStore.getProcessingMessage);
 const progressSize: ComputedRef<number> = computed(() => {
   if (windowWidth.value > 1920) {
     return 150;
@@ -60,9 +59,7 @@ const progressWidth: ComputedRef<number> = computed(() => {
 const progressPadding = (outerColumn: boolean): number => {
   let result: number;
   if (outerColumn) {
-    if (
-      progressMessage.value === 'Processing, please do not navigate away'
-    ) {
+    if (progressMessage.value === "Processing, please do not navigate away") {
       if (windowWidth.value >= 1904) {
         result = 4;
       } else if (windowWidth.value < 1904 && windowWidth.value >= 1264) {
@@ -88,9 +85,7 @@ const progressPadding = (outerColumn: boolean): number => {
       }
     }
   } else {
-    if (
-      progressMessage.value === 'Processing, please do not navigate away'
-    ) {
+    if (progressMessage.value === "Processing, please do not navigate away") {
       if (windowWidth.value >= 1264) {
         return 6;
       } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
@@ -125,18 +120,18 @@ watch(
 );
 onMounted(() => {
   resetProgressMessagePadding();
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     resetProgressMessagePadding();
   });
 });
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
+  window.removeEventListener("resize", () => {
     resetProgressMessagePadding();
   });
 });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @media only screen and (max-width: 809px) {
   .progress-message {
     font-size: 15px;
@@ -163,7 +158,7 @@ onUnmounted(() => {
   vertical-align: bottom;
   -webkit-animation: ellipsis steps(4, end) 900ms infinite;
   animation: ellipsis steps(4, end) 900ms infinite;
-  content: '\2026';
+  content: "\2026";
   /* ascii code for the ellipsis character */
   width: 0px;
 }

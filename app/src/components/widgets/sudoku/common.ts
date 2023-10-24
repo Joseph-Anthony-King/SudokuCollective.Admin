@@ -1,6 +1,6 @@
-import { GameState } from '@/enums/gameState';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
-import { useSudokuStore } from '@/store/sudokuStore';
+import { GameState } from "@/enums/gameState";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { useSudokuStore } from "@/store/sudokuStore";
 
 const oddRegionIndexes: Array<{ row: number; cell: number }> = [
   { row: 0, cell: 0 },
@@ -49,7 +49,6 @@ const oddRegionIndexes: Array<{ row: number; cell: number }> = [
   { row: 8, cell: 7 },
   { row: 8, cell: 8 },
 ];
-
 const initializeMatix = (): Array<Array<string>> => {
   const matrix = Array<Array<string>>(9);
   for (let i = 0; i < 9; i++) {
@@ -60,7 +59,6 @@ const initializeMatix = (): Array<Array<string>> => {
   }
   return matrix;
 };
-
 const obtainMatrix = (): Array<Array<string>> => {
   const sudokuStore = useSudokuStore();
   let result = initializeMatix();
@@ -85,7 +83,10 @@ const obtainMatrix = (): Array<Array<string>> => {
         result[i][j] = puzzle[i][j];
       }
     }
-  } else if (gameState !== null && gameState?.value === GameState.GENERATESUDOKU) {
+  } else if (
+    gameState !== null &&
+    gameState?.value === GameState.GENERATESUDOKU
+  ) {
     const solution = sudokuStore.getSolution;
     result = Array<Array<string>>(9);
 
@@ -98,7 +99,6 @@ const obtainMatrix = (): Array<Array<string>> => {
   }
   return result;
 };
-
 const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
   let result = false;
 
@@ -110,7 +110,6 @@ const applyOddRegion = (rowIndex: number, cellIndex: number): boolean => {
 
   return result;
 };
-
 const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const sudokuStore = useSudokuStore();
 
@@ -119,24 +118,24 @@ const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const isOddRegion = applyOddRegion(rowIndex, cellIndex);
 
   if (gameState?.value === GameState.PLAYGAME) {
-    if (initialGame[rowIndex][cellIndex] === '') {
+    if (initialGame[rowIndex][cellIndex] === "") {
       if (isOddRegion) {
-        return 'text-white';
+        return "text-white";
       } else {
-        return 'text-black';
+        return "text-black";
       }
     } else {
       if (isOddRegion) {
-        return 'text-yellow';
+        return "text-yellow";
       } else {
-        return 'text-red';
+        return "text-red";
       }
     }
   } else {
     if (isOddRegion) {
-      return 'text-white';
+      return "text-white";
     } else {
-      return 'text-black';
+      return "text-black";
     }
   }
 };
