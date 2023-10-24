@@ -60,7 +60,7 @@ export const useUserStore = defineStore("userStore", () => {
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
-  const signupUserAsync = async (data: ISignupRequestData): Promise<void> => {
+  const signupUserAsync = async (data: ISignupRequestData): Promise<boolean> => {
     const response: IServicePayload = await SignupService.postAsync(data);
     if (response.isSuccess) {
       updateUser(response.user);
@@ -68,8 +68,9 @@ export const useUserStore = defineStore("userStore", () => {
       appStore.updateTokenExpirationDate(response.tokenExpirationDate);
       appStore.updateStayLoggedIn(data.stayLoggedIn);
     }
+    return response.isSuccess;
   };
-  const getUserAsync = async (): Promise<void> => {
+  const getUserAsync = async (): Promise<boolean> => {
     const response: IServicePayload = await UsersService.getUserAsync(
       user.value.id
     );
@@ -77,10 +78,9 @@ export const useUserStore = defineStore("userStore", () => {
       updateUser(response.user);
       updateServiceMessage(response.message);
     }
+    return response.isSuccess;
   };
-  const updateUserAsync = async (
-    data: IUpdateUserRequestData
-  ): Promise<boolean> => {
+  const updateUserAsync = async (data: IUpdateUserRequestData): Promise<boolean> => {
     const response: IServicePayload = await UsersService.putUpdateUserAsync(
       data
     );
@@ -101,27 +101,61 @@ export const useUserStore = defineStore("userStore", () => {
     }
     return response.isSuccess;
   };
-  const confirmUserNameAsync = async (email: string): Promise<void> => {
+  const confirmUserNameAsync = async (email: string): Promise<boolean> => {
     const response: IServicePayload =
       await LoginService.postConfirmUserNameAsync(email);
     if (response.isSuccess) {
       updateUser(response.user);
     }
+    return response.isSuccess;
   };
-  const resendEmailConfirmationRequestAsync = async (): Promise<void> => {
+  const resendEmailConfirmationRequestAsync = async (): Promise<boolean> => {
     const response: IServicePayload =
       await UsersService.putResendEmailConfirmationAsync(user.value.id);
     updateServiceMessage(response.message);
+    return response.isSuccess;
   };
-  const cancelEmailConfirmationRequestAsync = async (): Promise<void> => {
+  const cancelEmailConfirmationRequestAsync = async (): Promise<boolean> => {
     const response: IServicePayload =
       await UsersService.putCancelResendEmailConfirmationAsync();
+    if (response.isSuccess) {
+      updateUser(response.user);
+    }
     updateServiceMessage(response.message);
+    return response.isSuccess;
   };
-  const requestPasswordResetAsync = async (email: string): Promise<void> => {
+  const requestPasswordResetAsync = async (email: string): Promise<boolean> => {
     const response: IServicePayload =
       await UsersService.postRequestPasswordResetAsync(email);
+    if (response.isSuccess) {
+      updateUser(response.user);
+    }
     updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
+  const resendPasswordResetAsync = async (): Promise<boolean> => {
+    const response: IServicePayload =
+      await UsersService.putResendPasswordResetAsync(user.value.id);
+    updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
+  const cancelPasswordResetAsync = async (): Promise<boolean> => {
+    const response: IServicePayload =
+      await UsersService.putCancelPasswordResetAsync();
+    if (response.isSuccess) {
+      updateUser(response.user);
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
+  const cancelAllEmailRequestsAsync = async (): Promise<boolean> => {
+    const response: IServicePayload =
+      await UsersService.putCancelAllEmailRequestsAsync();
+    if (response.isSuccess) {
+      updateUser(response.user);
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
   };
 
   return {
@@ -150,5 +184,8 @@ export const useUserStore = defineStore("userStore", () => {
     resendEmailConfirmationRequestAsync,
     cancelEmailConfirmationRequestAsync,
     requestPasswordResetAsync,
+    resendPasswordResetAsync,
+    cancelPasswordResetAsync,
+    cancelAllEmailRequestsAsync,
   };
 });

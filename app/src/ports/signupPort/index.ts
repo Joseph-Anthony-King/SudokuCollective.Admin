@@ -45,7 +45,7 @@ export class SignupPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId,
-          appId: process.env.VUE_APP_ID,
+          appId: process.env.VUE_APP_ID as number,
         },
       };
       return axios(config);

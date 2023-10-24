@@ -19,15 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Ref,
-  ref,
-  ComputedRef,
-  computed,
-  onMounted,
-  onUnmounted,
-  watch,
-} from "vue";
+import { Ref, ref, ComputedRef, computed, onMounted, onUnmounted } from "vue";
 import { useAppStore } from "@/store/appStore";
 
 const appStore = useAppStore();
@@ -112,12 +104,6 @@ const progressPadding = (outerColumn: boolean): number => {
 const resetProgressMessagePadding = (): void => {
   windowWidth.value = window.innerWidth;
 };
-watch(
-  () => appStore.getProcessingMessage,
-  () => {
-    progressMessage.value = appStore.getProcessingMessage;
-  }
-);
 onMounted(() => {
   resetProgressMessagePadding();
   window.addEventListener("resize", () => {

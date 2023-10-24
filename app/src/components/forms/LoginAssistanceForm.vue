@@ -202,7 +202,7 @@ const resetPasswordHandlerAsync = async (event: Event | null = null): Promise<vo
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
-      await appStore.requestPasswordResetAsync(toRaw(email.value));
+      await userStore.requestPasswordResetAsync(toRaw(email.value));
       const failedToast = await displayFailedToastAsync(undefined, undefined);
       if (failedToast.failed) {
         form.value?.validate();
