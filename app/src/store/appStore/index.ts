@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import { AxiosResponse } from "axios";
 import { useUserStore } from "@/store/userStore";
 import { LoginService } from "@/services/loginService";
-import { UsersService } from "@/services/usersService";
 import router from "@/router";
 import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
@@ -107,13 +106,6 @@ export const useAppStore = defineStore("appStore", () => {
       updateToken(response.token);
     }
   };
-  const requestPasswordResetAsync = async (email: string): Promise<void> => {
-    const response: IServicePayload =
-      await UsersService.postRequestPasswordResetAsync(email);
-    if (response.isSuccess) {
-      updateServiceMessage(response.message);
-    }
-  };
   const isTokenExpired = (): boolean => {
     let result = false;
     if (
@@ -166,7 +158,6 @@ export const useAppStore = defineStore("appStore", () => {
     loginAsync,
     logout,
     confirmUserNameAsync,
-    requestPasswordResetAsync,
     isTokenExpired,
     tokenHasExpired,
   };
