@@ -99,18 +99,14 @@
     <AvailableActions>
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location="bottom">
-            <template v-slot:activator="{ props }">
+          <v-tooltip location='bottom'>
+            <template v-slot:activator='{ props }'>
               <v-btn
-                color="blue darken-1"
+                color='blue darken-1'
                 text
-                :disabled="formValid"
-                v-bind="props"
-                @click.prevent="
-                  user.isEditing === false
-                    ? (user.isEditing = true)
-                    : (confirmEditSubmission = true)
-                "
+                :disabled='formValid'
+                v-bind='props'
+                @click.prevent='user.isEditing === false ? user.isEditing = true : confirmEditSubmission = true'
               >
                 {{ submitText }}
               </v-btn>
@@ -119,14 +115,14 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location="bottom" :disabled="user.isEditing">
-            <template v-slot:activator="{ props }">
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
               <v-btn
-                color="blue darken-1"
+                color='blue darken-1'
                 text
-                @click="refreshHandlerAsync($event)"
-                v-bind="props"
-                :disabled="user.isEditing"
+                @click='refreshHandlerAsync($event)'
+                v-bind='props'
+                :disabled='user.isEditing'
               >
                 Refresh
               </v-btn>
@@ -135,14 +131,14 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location="bottom" :disabled="user.isEditing">
-            <template v-slot:activator="{ props }">
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
               <v-btn
-                color="blue darken-1"
+                color='blue darken-1'
                 text
-                @click="cancelHandler($event)"
-                v-bind="props"
-                :disabled="!user.isEditing"
+                @click='cancelHandler($event)'
+                v-bind='props'
+                :disabled='!user.isEditing'
               >
                 Cancel
               </v-btn>
@@ -151,14 +147,14 @@
           </v-tooltip>
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip location="bottom" :disabled="user.isEditing">
-            <template v-slot:activator="{ props }">
+          <v-tooltip location='bottom' :disabled='user.isEditing'>
+            <template v-slot:activator='{ props }'>
               <v-btn
-                color="red darken-1"
+                color='red darken-1'
                 text
-                v-bind="props"
-                :disabled="user.isEditing || user.isSuperUser"
-                @click="confirmDeleteSubmission = true"
+                v-bind='props'
+                :disabled='user.isEditing || user.isSuperUser'
+                @click='confirmDeleteSubmission = true'
               >
                 Delete
               </v-btn>
