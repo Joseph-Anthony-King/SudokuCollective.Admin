@@ -25,7 +25,7 @@
               prepend-icon="mdi-account-circle"
               :rules="userNameRules(invalidUserNames, 'User name not unique')"
               :readonly="!user.isEditing"
-              :color="!user.isEditing ? '' : 'primary:'"
+              :color="!user.isEditing ? '' : 'primary'"
               v-bind="props"
             ></v-text-field>
           </template>
