@@ -8,7 +8,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null">
+              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -32,7 +32,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -48,7 +48,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -64,7 +64,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="(email === '' || email === null) && invalidEmails.length === 0">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="(email === '' || email === null) && invalidEmails.length === 0 || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -80,7 +80,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom">
+            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"

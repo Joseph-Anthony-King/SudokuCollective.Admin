@@ -16,7 +16,7 @@
         <v-tooltip
           open-delay="3000"
           location="bottom"
-          :disabled="!user.isEditing || userName !== null"
+          :disabled="!user.isEditing || userName !== null || isSmallViewPort"
         >
           <template v-slot:activator="{ props }">
             <v-text-field
@@ -34,7 +34,7 @@
         <v-tooltip
           open-delay="3000"
           location="bottom"
-          :disabled="!user.isEditing || firstName !== null"
+          :disabled="!user.isEditing || firstName !== null || isSmallViewPort"
         >
           <template v-slot:activator="{ props }">
             <v-text-field
