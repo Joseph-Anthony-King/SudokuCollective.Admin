@@ -34,6 +34,7 @@
                 open-delay="2000"
                 location="start"
                 v-if="link.condition"
+                :disabled="isSmallViewPort"
               >
                 <template v-slot:activator="{ props }">
                   <v-list-item v-bind="props">
@@ -58,6 +59,7 @@
               open-delay="2000"
               location="start"
               v-if="!user.isLoggedIn"
+              :disabled="isSmallViewPort"
             >
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
@@ -77,6 +79,7 @@
               open-delay="2000"
               location="start"
               v-if="!user.isLoggedIn"
+              :disabled="isSmallViewPort"
             >
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
@@ -96,6 +99,7 @@
               open-delay="2000"
               location="start"
               v-if="user.isLoggedIn"
+              :disabled="isSmallViewPort"
             >
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
@@ -112,7 +116,7 @@
               <span>Log out of SudokuCollective.com</span>
             </v-tooltip>
             <hr v-if="exteriorLinks.length > 1" class="mx-2" />
-            <v-tooltip open-delay="2000" location="start">
+            <v-tooltip open-delay="2000" location="start" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-list-item v-if="exteriorLinks.length > 1" v-bind="props">
                   <v-menu left bottom>
@@ -128,6 +132,7 @@
                           open-delay="2000"
                           location="start"
                           v-if="link.condition"
+                          :disabled="isSmallViewPort"
                         >
                           <template v-slot:activator="{ props }">
                             <v-list-item v-bind="props">
