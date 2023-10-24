@@ -15,7 +15,7 @@ export const useAppStore = defineStore("appStore", () => {
   const token: Ref<string | null> = ref(null);
   const tokenExpirationDate: Ref<Date | null> = ref(null);
   const redirectUrl: Ref<string | null> = ref(null);
-  const processingMessage: Ref<string | null> = ref(null);
+  const processingMessage: Ref<string | null> = ref("Processing, please do not navigate away");
   const serviceMessage: Ref<string | null> = ref(null);
   const processingStatus: Ref<boolean> = ref(false);
   const navDrawerStatus: Ref<boolean> = ref(false);
@@ -67,9 +67,6 @@ export const useAppStore = defineStore("appStore", () => {
   };
   const updateRedirectUrl = (param: string | null = null): void => {
     redirectUrl.value = param;
-  };
-  const updateProcessingMessage = (param: string | null = null): void => {
-    processingMessage.value = param;
   };
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
@@ -162,7 +159,6 @@ export const useAppStore = defineStore("appStore", () => {
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,
-    updateProcessingMessage,
     updateServiceMessage,
     updateNavDrawerStatus,
     updateProcessingStatus,
