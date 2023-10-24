@@ -98,7 +98,7 @@
     </v-row>
     <AvailableActions>
       <v-row dense>
-        <v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip location='bottom'>
             <template v-slot:activator='{ props }'>
               <v-btn
@@ -114,7 +114,7 @@
             <span>{{ submitHelperText }}</span>
           </v-tooltip>
         </v-col>
-        <v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
@@ -130,7 +130,7 @@
             <span>Pull latest values from the API</span>
           </v-tooltip>
         </v-col>
-        <v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn
@@ -146,9 +146,7 @@
             <span>Cancel the edit</span>
           </v-tooltip>
         </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col>
+        <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip location='bottom' :disabled='user.isEditing'>
             <template v-slot:activator='{ props }'>
               <v-btn

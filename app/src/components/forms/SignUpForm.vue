@@ -142,7 +142,7 @@
       </v-card-text>
       <AvailableActions>
         <v-row dense>
-          <v-col>
+          <v-col cols="4">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -157,7 +157,7 @@
               <span>Reset the sign up form</span>
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col cols="4">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -172,7 +172,7 @@
               <span>Cancel the sign up process</span>
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col cols="4">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
