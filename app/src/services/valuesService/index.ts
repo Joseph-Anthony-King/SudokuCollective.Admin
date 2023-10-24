@@ -1,25 +1,23 @@
-import { IndexPort } from '@/ports/indexPort';
-import { ValuesPort } from '@/ports/valuesPort';
-import { Difficulty } from '@/models/domain/difficulty';
-import { GalleryApp } from '@/models/domain/galleryApp';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { AxiosResponse, AxiosError } from 'axios';
-import { StaticServiceMethods } from '../common';
+import { IndexPort } from "@/ports/indexPort";
+import { ValuesPort } from "@/ports/valuesPort";
+import { Difficulty } from "@/models/domain/difficulty";
+import { GalleryApp } from "@/models/domain/galleryApp";
+import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { AxiosResponse, AxiosError } from "axios";
+import { StaticServiceMethods } from "../common";
 
 export class ValuesService {
   static async getValuesAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const indexResponse =
-        (await IndexPort.getMissionStatementAsync()) as AxiosResponse;
-      const valuesResponse =
-        (await ValuesPort.getValuesAsync()) as AxiosResponse;
+      const indexResponse = (await IndexPort.getMissionStatementAsync()) as AxiosResponse;
+      const valuesResponse = (await ValuesPort.getValuesAsync()) as AxiosResponse;
 
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
-          '/swagger/index.html',
+          "/swagger/index.html",
           `${process.env.VUE_APP_API_URL}swagger/index.html`
         );
       }
@@ -134,8 +132,8 @@ export class ValuesService {
         result.gallery = gallery;
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;

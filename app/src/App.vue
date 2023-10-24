@@ -1,58 +1,59 @@
 <template>
   <v-app>
     <NavigationDrawer
-      :navDrawerStatus='navDrawerStatus'
-      :userLoggedIn='user.isLoggedIn'
+      :navDrawerStatus="navDrawerStatus"
+      :userLoggedIn="user.isLoggedIn"
       @update:modelValue="(modelValue: boolean) => closeNavDrawerHandler(modelValue)"
     />
     <v-content>
       <AppBar
-        v-on:user-logging-in='user.isLoggingIn = true'
-        v-on:user-logging-out='logoutHandler'
-        v-on:user-signing-up='user.isSigningUp = true'
-        v-on:update-nav-drawer='updateNavDrawerHandler'
+        v-on:user-logging-in="user.isLoggingIn = true"
+        v-on:user-logging-out="logoutHandler"
+        v-on:user-signing-up="user.isSigningUp = true"
+        v-on:update-nav-drawer="updateNavDrawerHandler"
       />
       <v-main>
         <progress-widget v-if="processingStatus" />
         <router-view v-else />
         <v-dialog
-          v-model='userIsLoggingIn'
+          v-model="userIsLoggingIn"
           persistent
-          :fullscreen='isSmallViewPort'
-          :max-width='maxDialogWidth'
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
           hide-overlay
-          transition='dialog-top-transition'
+          transition="dialog-top-transition"
         >
           <LoginForm
-            :formStatus='userIsLoggingIn'
-            v-on:cancel-login='user.isLoggingIn = false'
-            v-on:obtain-login-assistance='openLoginAssistanceHandler'
+            :formStatus="userIsLoggingIn"
+            v-on:cancel-login="user.isLoggingIn = false"
+            v-on:obtain-login-assistance="openLoginAssistanceHandler"
           />
         </v-dialog>
         <v-dialog
-          v-model='userObtainingLoginAssistance'
+          v-model="userObtainingLoginAssistance"
           persistent
-          :fullscreen='isSmallViewPort'
-          :max-width='maxDialogWidth'
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
           hide-overlay
-          transition='dialog-top-transition'
+          transition="dialog-top-transition"
         >
           <LoginAssistanceForm
-            :formStatus='userObtainingLoginAssistance'
-            v-on:return-to-login='closeLoginAssistanceHandler'
+            :formStatus="userObtainingLoginAssistance"
+            v-on:return-to-login="closeLoginAssistanceHandler"
           />
         </v-dialog>
-        <v-dialog 
-          v-model='userIsSigningUp' 
-          persistent 
-          :fullscreen='isSmallViewPort' 
-          :max-width='maxDialogWidth' 
+        <v-dialog
+          v-model="userIsSigningUp"
+          persistent
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
           hide-overlay
-          transition='dialog-top-transition'
+          transition="dialog-top-transition"
         >
           <SignUpForm
-            :formStatus='userIsSigningUp'
-            v-on:cancel-signup='user.isSigningUp = false'/>
+            :formStatus="userIsSigningUp"
+            v-on:cancel-signup="user.isSigningUp = false"
+          />
         </v-dialog>
       </v-main>
     </v-content>
@@ -62,7 +63,7 @@
   </v-app>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import {
   Ref,
   ref,
@@ -71,30 +72,30 @@ import {
   onMounted,
   onUnmounted,
   watch,
-  defineComponent
-} from 'vue';
-import router from '@/router/index';
-import vuetify from '@/plugins/vuetify';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import { useAppStore } from '@/store/appStore';
-import { useServiceFailStore } from '@/store/serviceFailStore';
-import { useSudokuStore } from '@/store/sudokuStore';
-import { useUserStore } from '@/store/userStore';
-import { useValuesStore } from '@/store/valuesStore';
-import AppBar from '@/components/navigation/AppBar.vue';
-import FooterNav from '@/components/navigation/FooterNav.vue';
-import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
-import LoginForm from '@/components/forms/LoginForm.vue';
-import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
-import SignUpForm from '@/components/forms/SignUpForm.vue';
-import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
-import { User } from '@/models/domain/user';
-import commonUtilities from '@/utilities/common';
+  defineComponent,
+} from "vue";
+import router from "@/router/index";
+import vuetify from "@/plugins/vuetify";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import { useAppStore } from "@/store/appStore";
+import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useSudokuStore } from "@/store/sudokuStore";
+import { useUserStore } from "@/store/userStore";
+import { useValuesStore } from "@/store/valuesStore";
+import AppBar from "@/components/navigation/AppBar.vue";
+import FooterNav from "@/components/navigation/FooterNav.vue";
+import NavigationDrawer from "@/components/navigation/NavigationDrawer.vue";
+import LoginForm from "@/components/forms/LoginForm.vue";
+import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
+import SignUpForm from "@/components/forms/SignUpForm.vue";
+import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
+import { User } from "@/models/domain/user";
+import commonUtilities from "@/utilities/common";
 
 // This vue file uses defineComponent in order to resolve a 'file is not a module' error in main.ts.
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
     AppBar,
     FooterNav,
@@ -102,7 +103,7 @@ export default defineComponent({
     ProgressWidget,
     LoginForm,
     LoginAssistanceForm,
-    SignUpForm
+    SignUpForm,
   },
   setup() {
     // Instantiate the stores
@@ -113,8 +114,8 @@ export default defineComponent({
     const valuesStore = useValuesStore();
 
     const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
-      
-    const { clearStores } = commonUtilities();
+
+    const { clearStores, updateAppProcessingAsync } = commonUtilities();
 
     const clearStoresIfUserIsNotLoggedIn = (): void => {
       if (!appStore.getStayedLoggedIn) {
@@ -153,27 +154,33 @@ export default defineComponent({
     const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
       return user.value?.isLoggingIn && !processingStatus.value;
     });
-    const logoutHandler = (): void => {
+    const logoutHandler = (event: Event | null = null): void => {
+      event?.preventDefault();
       navDrawerStatus.value = false;
       const userName = user.value.userName;
       appStore.logout();
-      if (router.currentRoute.value.name !== 'home' && router.currentRoute.value.name !== 'sudoku') {
-        router.push({ name: 'home' });
+      if (
+        router.currentRoute.value.name !== "home" &&
+        router.currentRoute.value.name !== "sudoku"
+      ) {
+        router.push({ name: "home" });
       }
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
       });
     };
-    const openLoginAssistanceHandler = (): void => {
+    const openLoginAssistanceHandler = (event: Event | null = null): void => {
+      event?.preventDefault();
       user.value.isLoggingIn = false;
       userObtainingLoginAssistance.value = true;
-    }
-    const closeLoginAssistanceHandler = (): void => {
+    };
+    const closeLoginAssistanceHandler = (event: Event | null = null): void => {
+      event?.preventDefault();
       user.value.isLoggingIn = true;
       userObtainingLoginAssistance.value = false;
-    }
-    
+    };
+
     watch(
       () => appStore.getProcessingStatus,
       () => {
@@ -184,15 +191,18 @@ export default defineComponent({
       () => appStore.getServiceMessage,
       () => {
         const serviceMessage = appStore.getServiceMessage;
-        if (serviceMessage === 'Status Code 200: Processed password reset request' 
-          || serviceMessage === 'Status Code 200: Resent password reset request') {
+        if (
+          serviceMessage ===
+            "Status Code 200: Processed password reset request" ||
+          serviceMessage === "Status Code 200: Resent password reset request"
+        ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
             type: toast.TYPE.ERROR,
           });
           user.value.isLoggingIn = false;
           userObtainingLoginAssistance.value = false;
-          appStore.updateServiceMessage('');
+          appStore.updateServiceMessage("");
         }
       }
     );
@@ -229,7 +239,7 @@ export default defineComponent({
       () => userStore.getConfirmedUserName,
       () => {
         const confirmedUserName = userStore.getConfirmedUserName;
-        if (confirmedUserName !== '') {
+        if (confirmedUserName !== "") {
           closeLoginAssistanceHandler();
         }
       }
@@ -248,16 +258,16 @@ export default defineComponent({
 
     // Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
-    const maxDialogWidth: Ref<string> = ref('auto');
+    const maxDialogWidth: Ref<string> = ref("auto");
     const resetAppDialogViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
-        maxDialogWidth.value = 'auto';
+        maxDialogWidth.value = "auto";
         navDrawerStatus.value = false;
         appStore.updateNavDrawerStatus(navDrawerStatus.value);
       } else {
         isSmallViewPort.value = false;
-        maxDialogWidth.value = '960px';
+        maxDialogWidth.value = "960px";
         navDrawerStatus.value = true;
         appStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
@@ -265,39 +275,42 @@ export default defineComponent({
 
     // Lifecycle hooks
     onMounted(async () => {
-      // Set the app processing message
-      appStore.updateProcessingMessage('Processing, please do not navigate away');
+      updateAppProcessingAsync(async () => {
+        // Initialize the value, sudoku and serviceFailure stores
+        await valuesStore.initializeStoreAsync();
+        sudokuStore.initializeStore();
+        serviceFailStore.initializeStore();
 
-      // Initialize the value, sudoku and serviceFailure stores
-      await valuesStore.initializeStoreAsync();
-      sudokuStore.initializeStore();
-      serviceFailStore.initializeStore();
-
-      // Especially for mobile, if the user rejected a 30 day sign in clear the stores
-      clearStoresIfUserIsNotLoggedIn();
-
-      // Set the app dialog viewport for mobil or desktop
-      resetAppDialogViewPort();
-      let resizeTimeout: number | undefined;
-
-      // Add event listeners
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          resetAppDialogViewPort();
-        }, 250, 'Resized');
-      });
-      window.addEventListener('beforeunload', (e) => {
-        e.preventDefault();
+        // Especially for mobile, if the user rejected a 30 day sign in clear the stores
         clearStoresIfUserIsNotLoggedIn();
+
+        // Set the app dialog viewport for mobil or desktop
+        resetAppDialogViewPort();
+        let resizeTimeout: number | undefined;
+
+        // Add event listeners
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(
+            () => {
+              resetAppDialogViewPort();
+            },
+            250,
+            "Resized"
+          );
+        });
+        window.addEventListener("beforeunload", (e) => {
+          e.preventDefault();
+          clearStoresIfUserIsNotLoggedIn();
+        });
       });
     });
     onUnmounted(() => {
       // Remove event listeners
-      window.removeEventListener('resize', () => {
+      window.removeEventListener("resize", () => {
         resetAppDialogViewPort();
       });
-      window.removeEventListener('beforeunload', () => {
+      window.removeEventListener("beforeunload", () => {
         clearStoresIfUserIsNotLoggedIn();
       });
     });
@@ -315,12 +328,12 @@ export default defineComponent({
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
-      updateNavDrawerHandler
+      updateNavDrawerHandler,
     };
-  }
+  },
 });
 </script>
 
-<style lang='scss'>
-@import '@/assets/styles/site.scss';
+<style lang="scss">
+@import "@/assets/styles/site.scss";
 </style>

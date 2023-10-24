@@ -1,9 +1,9 @@
+import { AxiosError, AxiosResponse } from 'axios';
+import { SignupPort } from '@/ports/signupPort';
 import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
-import { AxiosError, AxiosResponse } from 'axios';
-import { StaticServiceMethods } from '@/services/common';
-import { SignupPort } from '@/ports/signupPort';
 import { User } from '@/models/domain/user';
+import { StaticServiceMethods } from '@/services/common';
 
 export class SignupService {
   static async postAsync(data: ISignupRequestData): Promise<IServicePayload> {

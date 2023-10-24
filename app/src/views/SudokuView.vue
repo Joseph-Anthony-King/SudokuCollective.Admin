@@ -1,17 +1,17 @@
 <template>
-  <SudokuPage :action='action'/>
+  <SudokuPage :action="action" />
 </template>
 
-<script lang='ts'>
-import { defineComponent } from 'vue';
-import SudokuPage from '@/components/pages/SudokuPage.vue';
+<script lang="ts">
+import { defineComponent } from "vue";
+import SudokuPage from "@/components/pages/SudokuPage.vue";
 
 export default defineComponent({
-  name: 'SudokuView',
+  name: "SudokuView",
   props: {
     action: {
       type: String,
-      default: ''
+      default: "",
     },
   },
   components: { SudokuPage },

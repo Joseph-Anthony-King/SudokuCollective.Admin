@@ -1,10 +1,10 @@
-import { UsersPort } from '@/ports/usersPort';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { ILoginAssistanceRequestData } from '@/interfaces/requests/ilLoginAssistanceRequestData';
-import { AxiosError, AxiosResponse } from 'axios';
-import { StaticServiceMethods } from '../common';
-import { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
-import { User } from '@/models/domain/user';
+import { AxiosError, AxiosResponse } from "axios";
+import { SignupPort } from "@/ports/signupPort";
+import { UsersPort } from "@/ports/usersPort";
+import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
+import { User } from "@/models/domain/user";
+import { StaticServiceMethods } from "../common";
 
 export class UsersService {
   static async getUserAsync(id: number): Promise<IServicePayload> {
@@ -12,7 +12,7 @@ export class UsersService {
 
     try {
       const idIsZero: AxiosError | null =
-        StaticServiceMethods.idCannotBeZero(id);
+        StaticServiceMethods.numberCannotBeZero(id);
 
       if (idIsZero !== null) {
         throw idIsZero;
@@ -46,8 +46,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -60,15 +60,11 @@ export class UsersService {
     return result;
   }
 
-  static async putUpdateUserAsync(
-    data: IUpdateUserRequestData
-  ): Promise<IServicePayload> {
+  static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const response = (await UsersPort.putUpdateUserAsync(
-        data
-      )) as AxiosResponse;
+      const response = (await UsersPort.putUpdateUserAsync(data)) as AxiosResponse;
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -96,8 +92,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -109,12 +105,13 @@ export class UsersService {
 
     return result;
   }
+
   static async deleteUserAsync(id: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
       const idIsZero: AxiosError | null =
-        StaticServiceMethods.idCannotBeZero(id);
+        StaticServiceMethods.numberCannotBeZero(id);
 
       if (idIsZero !== null) {
         throw idIsZero;
@@ -130,8 +127,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -144,15 +141,17 @@ export class UsersService {
     return result;
   }
 
-  static async postRequestPasswordResetAsync(
-    data: ILoginAssistanceRequestData
-  ): Promise<IServicePayload> {
+  static async postRequestPasswordResetAsync(email: string): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const response = (await UsersPort.postRequestPasswordResetAsync(
-        data
-      )) as AxiosResponse;
+      const stringIsNullOrEmpty = StaticServiceMethods.stringCannotBeEmptyOrNull(email);
+
+      if (stringIsNullOrEmpty !== null) {
+        throw stringIsNullOrEmpty;
+      }
+
+      const response = (await UsersPort.postRequestPasswordResetAsync(email)) as AxiosResponse;
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -162,8 +161,71 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
+    }
+
+    return result;
+  }
+
+  static async putResendEmailConfirmationAsync(requestorId: number): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const idIsZero: AxiosError | null =
+        StaticServiceMethods.numberCannotBeZero(requestorId);
+
+      if (idIsZero !== null) {
+        throw idIsZero;
+      }
+      
+      const response = (await SignupPort.putResendEmailConfirmationAsync(requestorId)) as AxiosResponse;
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
+    }
+
+    return result;
+  }
+
+  static async putCancelResendEmailConfirmationAsync(): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await UsersService.putCancelResendEmailConfirmationAsync()) as AxiosResponse;
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
