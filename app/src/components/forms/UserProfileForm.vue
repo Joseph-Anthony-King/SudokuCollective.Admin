@@ -52,7 +52,7 @@
         <v-tooltip
           open-delay="3000"
           location="bottom"
-          :disabled="!user.isEditing || lastName !== null"
+          :disabled="!user.isEditing || lastName !== null || isSmallViewPort"
         >
           <template v-slot:activator="{ props }">
             <v-text-field
@@ -112,7 +112,7 @@
         <v-tooltip
           open-delay="3000"
           location="bottom"
-          :disabled="!user.isEditing || email !== null"
+          :disabled="!user.isEditing || email !== null || isSmallViewPort"
         >
           <template v-slot:activator="{ props }">
             <v-text-field
@@ -153,7 +153,11 @@
     <AvailableActions>
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip open-delay="3000" location="bottom" :disabled="formValid">
+          <v-tooltip
+            open-delay="3000"
+            location="bottom"
+            :disabled="formValid || isSmallViewPort"
+          >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
@@ -175,7 +179,7 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing"
+            :disabled="user.isEditing || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -195,7 +199,7 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="!user.isEditing"
+            :disabled="!user.isEditing || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -215,7 +219,7 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || user.isSuperUser"
+            :disabled="user.isEditing || user.isSuperUser || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -255,7 +259,10 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
+            :disabled="
+              user.isEditing ||
+              !user.receivedRequestToUpdateEmail ||
+              isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -275,7 +282,10 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || user.receivedRequestToUpdatePassword"
+            :disabled="
+              user.isEditing ||
+              user.receivedRequestToUpdatePassword ||
+              isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -295,7 +305,10 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
+            :disabled="
+              user.isEditing ||
+              !user.receivedRequestToUpdatePassword ||
+              isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -317,7 +330,10 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
+            :disabled="
+              user.isEditing ||
+              !user.receivedRequestToUpdatePassword ||
+              isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -340,7 +356,8 @@
             :disabled="
               user.isEditing ||
               !user.receivedRequestToUpdateEmail ||
-              !user.receivedRequestToUpdatePassword"
+              !user.receivedRequestToUpdatePassword ||
+              isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
