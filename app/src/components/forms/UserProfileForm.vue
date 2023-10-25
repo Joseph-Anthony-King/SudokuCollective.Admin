@@ -235,14 +235,14 @@
           <v-tooltip
             open-delay="3000"
             location="bottom"
-            :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
+            :disabled="user.isEditing || !user.receivedRequestToUpdateEmail || user.isEmailConfirmed"
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
                 text
                 v-bind="props"
-                :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
+                :disabled="user.isEditing || !user.receivedRequestToUpdateEmail || user.isEmailConfirmed"
                 @click="confirmEmailResend = true"
               >
                 Resend Email Confirmation
