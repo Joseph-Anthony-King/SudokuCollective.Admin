@@ -23,8 +23,6 @@
                 </template>
                 <span>{{ RulesMessages.emailInvalidMessage }}</span>
               </v-tooltip>
-              <v-text-field
-              ></v-text-field>
             </v-col>
           </v-row>
         </v-container>
