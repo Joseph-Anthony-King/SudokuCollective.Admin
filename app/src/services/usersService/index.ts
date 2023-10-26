@@ -238,21 +238,21 @@ export class UsersService {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
         result.user = new User(
-          response.data.payload[0].user.id,
-          response.data.payload[0].user.userName,
-          response.data.payload[0].user.firstName,
-          response.data.payload[0].user.lastName,
-          response.data.payload[0].user.nickName,
-          response.data.payload[0].user.fullName,
-          response.data.payload[0].user.email,
-          response.data.payload[0].user.isEmailConfirmed,
-          response.data.payload[0].user.receivedRequestToUpdateEmail,
-          response.data.payload[0].user.receivedRequestToUpdatePassword,
-          response.data.payload[0].user.isActive,
-          response.data.payload[0].user.isSuperUser,
-          response.data.payload[0].user.isAdmin,
-          response.data.payload[0].user.dateCreated,
-          response.data.payload[0].user.dateUpdated,
+          response.data.payload[0].id,
+          response.data.payload[0].userName,
+          response.data.payload[0].firstName,
+          response.data.payload[0].lastName,
+          response.data.payload[0].nickName,
+          response.data.payload[0].fullName,
+          response.data.payload[0].email,
+          response.data.payload[0].isEmailConfirmed,
+          response.data.payload[0].receivedRequestToUpdateEmail,
+          response.data.payload[0].receivedRequestToUpdatePassword,
+          response.data.payload[0].isActive,
+          response.data.payload[0].isSuperUser,
+          response.data.payload[0].isAdmin,
+          response.data.payload[0].dateCreated,
+          response.data.payload[0].dateUpdated,
           true
         );
       } else {
@@ -285,7 +285,7 @@ export class UsersService {
         throw idIsZero;
       }
       
-      const response = (await SignupPort.putResendEmailConfirmationAsync(userId)) as AxiosResponse;
+      const response = (await UsersPort.putResendPasswordResetAsync(userId)) as AxiosResponse;
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;

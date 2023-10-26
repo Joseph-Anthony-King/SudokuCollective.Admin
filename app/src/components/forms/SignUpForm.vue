@@ -8,14 +8,14 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="userName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="userName"
                     label="User Name"
                     prepend-icon="mdi-account-plus"
-                    :rules="userNameRules(invalidUserNames, 'User name not unique')"
-                    required
+                    :rules="!isRedirect ? userNameRules(invalidUserNames, 'User name not unique') : []"
+                    :required="!isRedirect ? true : false"
                     color="primary"
                     v-bind="props"
                   ></v-text-field>
@@ -24,7 +24,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="firstName !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="firstName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="firstName"
@@ -40,7 +40,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="lastName !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="lastName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="lastName"
@@ -64,7 +64,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="email !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="email !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -80,7 +80,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="password !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -100,7 +100,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="confirmPassword !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="confirmPassword !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -138,7 +138,7 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -153,7 +153,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -168,7 +168,7 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -214,7 +214,7 @@ import {
   onUnmounted,
   toRaw,
 } from "vue";
-import { VForm } from "vuetify/components";
+import { VForm, VTextField } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import { useAppStore } from "@/store/appStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
@@ -226,14 +226,19 @@ import { SignupRequestData } from "@/models/requests/signupRequestData";
 import rules from "@/utilities/rules/index";
 import { RulesMessages } from "@/utilities/rules/rulesMessages";
 import commonUtilities from "@/utilities/common";
+import { watch } from 'vue';
 
 const props = defineProps({
   formStatus: {
     type: Boolean,
     default: false,
   },
+  isRedirect: {
+    type: Boolean,
+    default: false,
+  }
 });
-const emit = defineEmits(["cancel-signup"]);
+const emit = defineEmits(["cancel-signup", "reset-redirect"]);
 
 // Instantiate the stores
 const appStore = useAppStore();
@@ -282,6 +287,7 @@ const lastNameTooltip: ComputedRef<string> = computed(() =>
 // Form logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
+const userNameTextField: Ref<VTextField | null> = ref(null);
 const isSmallViewPort: Ref<boolean> = ref(true);
 const maxDialogWidth: Ref<string> = ref("auto");
 const getFormStatus: ComputedRef<boolean> = computed(() => {
@@ -291,6 +297,12 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
+watch(
+  () => userName.value,
+  () => {
+    emit("reset-redirect", null, null);
+  }
+);
 
 // Form actions
 const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
@@ -404,8 +416,10 @@ onMounted(async () => {
       "Resized"
     );
   });
-  if (signUpFormStore.getDirty) {
+  if (signUpFormStore.getDirty && !props.isRedirect) {
     form.value?.validate();
+  } else if (userName.value !== null) {
+    userNameTextField.value?.validate();
   }
 });
 onUnmounted(() => {

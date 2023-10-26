@@ -27,6 +27,7 @@
             :formStatus="userIsLoggingIn"
             v-on:cancel-login="user.isLoggingIn = false"
             v-on:obtain-login-assistance="openLoginAssistanceHandler"
+            v-on:redirect-to-signup="redirectToSignUpHandler"
           />
         </v-dialog>
         <v-dialog
@@ -52,7 +53,9 @@
         >
           <SignUpForm
             :formStatus="userIsSigningUp"
-            v-on:cancel-signup="user.isSigningUp = false"
+            :isRedirect="isRedirect"
+            v-on:cancel-signup="() => { user.isSigningUp = false; isRedirect = false }"
+            v-on:reset-redirect="isRedirect = false"
           />
         </v-dialog>
       </v-main>
@@ -72,6 +75,7 @@ import {
   onMounted,
   onUnmounted,
   watch,
+  toRaw,
   defineComponent,
 } from "vue";
 import router from "@/router/index";
@@ -180,6 +184,13 @@ export default defineComponent({
       user.value.isLoggingIn = true;
       userObtainingLoginAssistance.value = false;
     };
+    const redirectToSignUpHandler = (redirect: boolean, event: Event | null = null): void => {
+      isRedirect.value = redirect;
+      event?.preventDefault();
+      user.value.isLoggingIn = false;
+      user.value.isSigningUp = true;
+      userStore.updateUser(toRaw(user.value));
+    };
 
     watch(
       () => appStore.getProcessingStatus,
@@ -246,6 +257,7 @@ export default defineComponent({
     );
 
     // Sign up functionality
+    const isRedirect: Ref<boolean> = ref(false);
     const userIsSigningUp: ComputedRef<boolean> = computed(() => {
       return user.value?.isSigningUp && !processingStatus.value;
     });
@@ -321,6 +333,7 @@ export default defineComponent({
       user,
       processingStatus,
       navDrawerStatus,
+      isRedirect,
       closeNavDrawerHandler,
       userObtainingLoginAssistance,
       userIsLoggingIn,
@@ -328,6 +341,7 @@ export default defineComponent({
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
+      redirectToSignUpHandler,
       updateNavDrawerHandler,
     };
   },
