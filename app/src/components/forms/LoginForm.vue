@@ -8,7 +8,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="userName !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="userName !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="User Name"
@@ -25,7 +25,7 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="3000" location="bottom" :disabled="password !== null || isSmallViewPort">
+              <v-tooltip open-delay="2000" location="bottom" :disabled="password !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="Password"
@@ -62,8 +62,8 @@
       </v-card-text>
       <AvailableActions>
         <v-row dense>
-          <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
+          <v-col cols="2.4">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -77,8 +77,8 @@
               <span>Get assistance to verify your user name or change password</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
+          <v-col cols="2.4">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -92,8 +92,8 @@
               <span>Reset the login form</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="isSmallViewPort">
+          <v-col cols="2.4">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -107,8 +107,24 @@
               <span>Cancel the login process</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
-            <v-tooltip open-delay="3000" location="bottom" :disabled="!formValid || isSmallViewPort">
+          <v-col cols="2.4">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="!loginFailed">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="confirmSignUp = true"
+                  v-bind="props"
+                  :disabled="!loginFailed"
+                >
+                  Sign Up
+                </v-btn>
+              </template>
+              <span>Redirect to sign up if you haven't done so already</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols="2.4">
+            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
@@ -128,7 +144,7 @@
     </v-form>
   </v-card>
   <v-dialog
-    v-model="confirmFormReset"
+    v-model="confirmDialog"
     persistent
     :fullscreen="isSmallViewPort"
     :max-width="maxDialogWidth"
@@ -136,10 +152,10 @@
     transition="dialog-top-transition"
   >
     <ConfirmDialog
-      title="Reset Form"
-      message="Are you sure you want to reset this form?"
-      v-on:action-confirmed="resetHandlerAsync"
-      v-on:action-not-confirmed="confirmFormReset = false"
+      :title="confirmTitle"
+      :message="confirmMessage"
+      v-on:action-confirmed="actionConfirmedAsync"
+      v-on:action-not-confirmed="confirmDialog = false"
     />
   </v-dialog>
 </template>
@@ -154,12 +170,14 @@ import {
   onMounted,
   onUpdated,
   onUnmounted,
+  watch,
 } from "vue";
 import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import { useAppStore } from "@/store/appStore";
 import { useLoginFormStore } from "@/store/forms/loginFormStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
 import { useUserStore } from "@/store/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
@@ -174,12 +192,13 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["obtain-login-assistance", "cancel-login"]);
+const emit = defineEmits(["obtain-login-assistance", "cancel-login", "redirect-to-signup"]);
 
 // Instantiate the stores
 const appStore = useAppStore();
 const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
+const signUpFormStore = useSignUpFormStore();
 const userStore = useUserStore();
 
 const { passwordRules, userNameRules } = rules();
@@ -194,10 +213,32 @@ const {
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
+const loginFailed: Ref<boolean> = ref(loginFormStore.getLoginFailed);
 const stayLoggedIn: Ref<boolean> = ref(appStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
+const confirmSignUp: Ref<boolean> = ref(false);
+const confirmDialog: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
 const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPasswords);
+
+const confirmTitle: ComputedRef<string | undefined> = computed(() => {
+  let result = undefined
+  if (confirmFormReset.value) {
+    result = "Reset Form"
+  } else if (confirmSignUp.value) {
+    result = "Confirm Redirect to Sign Up";
+  }
+  return result;
+});
+const confirmMessage: ComputedRef<string | undefined> = computed(() => {
+  let result = undefined
+  if (confirmFormReset.value) {
+    result = "Are you sure you want to reset this form?"
+  } else if (confirmSignUp.value) {
+    result = "Are you sure you want to redirect to Sign Up?";
+  }
+  return result;
+});
 
 // Form logic
 const form: Ref<VForm | null> = ref(null);
@@ -234,6 +275,8 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         password: toRaw(password.value),
       });
       if (failedToast.failed) {
+        loginFailed.value = true;
+        loginFormStore.updateLoginFailed(toRaw(loginFailed.value));
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
         invalidPasswords.value = failedToast.methodResult.invalidPasswords;
         loginFormStore.updateUserName(toRaw(userName.value));
@@ -258,19 +301,14 @@ const helpHandlerAsync = async (event: Event | null = null): Promise<void> => {
     emit("obtain-login-assistance", null, null);
   });
 };
-const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const actionConfirmedAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  await updateAppProcessingAsync(() => {
-    serviceFailStore.initializeStore();
-    loginFormStore.initializeStore();
-    userName.value = loginFormStore.getUserName;
-    password.value = loginFormStore.getPassword;
-    stayLoggedIn.value = true;
-    invalidUserNames.value = loginFormStore.getInvalidUserNames;
-    invalidPasswords.value = loginFormStore.getInvalidEmails;
-    form.value?.reset();
-    confirmFormReset.value = false;
-  });
+  if (confirmFormReset.value) {
+    await resetHandlerAsync()
+  } else if (confirmSignUp.value) {
+    redirectToSignUpAsync();
+  }
+  confirmDialog.value = false;
 };
 const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
@@ -279,6 +317,56 @@ const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => 
     emit("cancel-login", null, null);
   });
 };
+const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  await updateAppProcessingAsync(() => {
+    serviceFailStore.initializeStore();
+    loginFormStore.initializeStore();
+    userName.value = loginFormStore.getUserName;
+    password.value = loginFormStore.getPassword;
+    stayLoggedIn.value = true;
+    loginFailed.value = loginFormStore.getLoginFailed;
+    invalidUserNames.value = loginFormStore.getInvalidUserNames;
+    invalidPasswords.value = loginFormStore.getInvalidEmails;
+    form.value?.reset();
+    confirmFormReset.value = false;
+  });
+};
+const redirectToSignUpAsync = async (event: Event | null = null): Promise<void> => {
+  event?.preventDefault();
+  await updateAppProcessingAsync(() => {
+    loginFormStore.initializeStore();
+    signUpFormStore.updateUserName(toRaw(userName.value));
+    emit("redirect-to-signup", true, null);
+  });
+};
+watch(
+  () => confirmFormReset.value,
+  () => {
+    if (confirmFormReset.value) {
+      confirmSignUp.value = false;
+      confirmDialog.value = confirmFormReset.value;
+    }
+  }
+);
+watch(
+  () => confirmSignUp.value,
+  () => {
+    if (confirmSignUp.value) {
+      confirmFormReset.value = false;
+      confirmDialog.value = confirmSignUp.value;
+    }
+  }
+);
+watch(
+  () => confirmDialog.value,
+  () => {
+    if (!confirmDialog.value) {
+      confirmFormReset.value = confirmDialog.value;
+      confirmSignUp.value = confirmDialog.value;
+    }
+  }
+);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
