@@ -239,10 +239,7 @@
           <v-tooltip
             open-delay="2000"
             location="bottom"
-            :disabled="
-              user.isEditing ||
-              !user.receivedRequestToUpdateEmail ||
-              isSmallViewPort"
+            :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
           >
             <template v-slot:activator="{ props }">
               <v-btn
