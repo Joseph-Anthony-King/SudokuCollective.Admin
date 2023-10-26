@@ -162,7 +162,7 @@ export class UsersPort {
   static async putResendPasswordResetAsync(userId: number): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "post",
+        method: "put",
         url: `${Endpoints.resendPasswordResetEndpoint}`,
         headers: {
           "accept": "application/json",

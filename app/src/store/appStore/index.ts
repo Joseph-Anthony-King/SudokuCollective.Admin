@@ -1,6 +1,7 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { AxiosResponse } from "axios";
+import { toast } from 'vue3-toastify';
 import { useUserStore } from "@/store/userStore";
 import { LoginService } from "@/services/loginService";
 import router from "@/router";
@@ -52,7 +53,6 @@ export const useAppStore = defineStore("appStore", () => {
     token.value = null;
     tokenExpirationDate.value = null;
     redirectUrl.value = null;
-    processingMessage.value = null;
     serviceMessage.value = null;
     processingStatus.value = false;
     navDrawerStatus.value = false;
@@ -120,11 +120,18 @@ export const useAppStore = defineStore("appStore", () => {
     return result;
   };
   const tokenHasExpired = (data: AxiosResponse): void => {
-    if (data.status === 401) {
+    if (data.status === 401 || (data.status === 403 && data.data.message === "Status Code 403: Invalid request on this authorization token")) {
       const { clearStores } = commonUtitlities();
       clearStores();
+      const user = new User();
+      user.isLoggingIn = true;
+      useUserStore().updateUser(user);
       updateRedirectUrl(router.currentRoute.value.path);
       router.push("/login");
+      toast("The authorization token has expired, please sign in again.", {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
     }
   };
 

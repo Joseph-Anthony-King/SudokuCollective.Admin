@@ -36,7 +36,7 @@ export class SignupPort {
     try {
       const config = {
         method: "put",
-        url: Endpoints.resentEmailConfirmationEndpoint,
+        url: Endpoints.resendEmailConfirmationEndpoint,
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",

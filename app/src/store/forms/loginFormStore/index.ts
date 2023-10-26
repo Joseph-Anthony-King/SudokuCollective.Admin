@@ -10,6 +10,7 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
   const invalidUserNames: Ref<string[]> = ref([]);
   const invalidPasswords: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
+  const loginFailed: Ref<boolean> = ref(false);
 
   const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
   const getEmailDirty: ComputedRef<boolean> = computed(() =>
@@ -33,6 +34,7 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
   const getInvalidEmails: ComputedRef<string[]> = computed(() =>
     toRaw(invalidEmails.value)
   );
+  const getLoginFailed: ComputedRef<boolean> = computed(() => toRaw(loginFailed.value));
 
   const initializeStore = (): void => {
     dirty.value = false;
@@ -42,6 +44,7 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
     invalidUserNames.value = [];
     invalidPasswords.value = [];
     invalidEmails.value = [];
+    loginFailed.value = false;
   };
   const initializeAssistance = (): void => {
     email.value = null;
@@ -71,6 +74,10 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
     emailDirty.value = true;
     invalidEmails.value = emails;
   };
+  const updateLoginFailed = (failed: boolean) => {
+    dirty.value = true;
+    loginFailed.value = failed;
+  };
 
   return {
     dirty,
@@ -81,6 +88,7 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
     invalidUserNames,
     invalidPasswords,
     invalidEmails,
+    loginFailed,
     getDirty,
     getEmailDirty,
     getUserName,
@@ -89,6 +97,7 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
     getInvalidUserNames,
     getInvalidPasswords,
     getInvalidEmails,
+    getLoginFailed,
     initializeStore,
     initializeAssistance,
     updateUserName,
@@ -97,5 +106,6 @@ export const useLoginFormStore = defineStore("loginFormStore", () => {
     updateInvalidUserNames,
     updateInvalidPasswords,
     updateInvalidEmails,
+    updateLoginFailed,
   };
 });

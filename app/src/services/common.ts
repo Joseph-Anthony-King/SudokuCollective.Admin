@@ -10,7 +10,7 @@ export class StaticServiceMethods {
     serviceFailStore.updateServiceMessage(response.data.message);
     serviceFailStore.updateStatusCode(response.status);
 
-    if (response.status === 401) {
+    if (response.status === 401 || (response.status === 403 && response.data.message === "Status Code 403: Invalid request on this authorization token")) {
       appStore.tokenHasExpired(response);
     }
   }

@@ -14,7 +14,7 @@
           :disabled="user.isEditing"
         ></v-text-field>
         <v-tooltip
-          open-delay="3000"
+          open-delay="2000"
           location="bottom"
           :disabled="!user.isEditing || userName !== null || isSmallViewPort"
         >
@@ -32,7 +32,7 @@
           <span>{{ RulesMessages.userNameRegexMessage }}</span>
         </v-tooltip>
         <v-tooltip
-          open-delay="3000"
+          open-delay="2000"
           location="bottom"
           :disabled="!user.isEditing || firstName !== null || isSmallViewPort"
         >
@@ -50,7 +50,7 @@
           <span>{{ firstNameTooltip }}</span>
         </v-tooltip>
         <v-tooltip
-          open-delay="3000"
+          open-delay="2000"
           location="bottom"
           :disabled="!user.isEditing || lastName !== null || isSmallViewPort"
         >
@@ -110,7 +110,7 @@
           :disabled="user.isEditing"
         ></v-text-field>
         <v-tooltip
-          open-delay="3000"
+          open-delay="2000"
           location="bottom"
           :disabled="!user.isEditing || email !== null || isSmallViewPort"
         >
@@ -154,7 +154,7 @@
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="formValid || isSmallViewPort"
           >
@@ -177,7 +177,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="user.isEditing || isSmallViewPort"
           >
@@ -197,7 +197,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="!user.isEditing || isSmallViewPort"
           >
@@ -217,7 +217,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="user.isEditing || user.isSuperUser || isSmallViewPort"
           >
@@ -237,7 +237,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
@@ -260,7 +260,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
@@ -283,10 +283,11 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
+              user.isEmailConfirmed ||
               user.receivedRequestToUpdatePassword ||
               isSmallViewPort"
           >
@@ -295,7 +296,7 @@
                 color="blue darken-1"
                 text
                 v-bind="props"
-                :disabled="user.isEditing || user.receivedRequestToUpdatePassword"
+                :disabled="user.isEditing || !user.isEmailConfirmed || user.receivedRequestToUpdatePassword"
                 @click="confirmPasswordReset = true"
               >
                 Reset Password
@@ -306,7 +307,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
@@ -327,11 +328,9 @@
             <span>Resend your outstanding password reset email</span>
           </v-tooltip>
         </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col cols="12" sm="6" md="6" lg="6" xl="6" xxl="6">
+        <v-col cols="12" sm="6" md="6" lg="3" xl="6" xxl="6">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
@@ -352,9 +351,9 @@
             <span>Cancel your password reset request</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6" xl="6" xxl="6">
+        <v-col cols="12" sm="6" md="6" lg="3" xl="6" xxl="6">
           <v-tooltip
-            open-delay="3000"
+            open-delay="2000"
             location="bottom"
             :disabled="
               user.isEditing ||
@@ -545,7 +544,7 @@ const confirmTitle: ComputedRef<string | undefined> = computed(() => {
   } else if (confirmEmailResend.value) {
     return "Confirm Email Confirmation Resend";
   } else if (confirmCancelEmailResend.value) {
-    return "Confirm Cancel Email Confirmation Resend";
+    return "Confirm Cancel Email Confirmation";
   } else if (confirmPasswordReset.value) {
     return "Confirm Password Reset";
   } else if (confirmResendPasswordReset.value) {
@@ -568,7 +567,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
   } else if (confirmEmailResend.value) {
     return `Are you sure you want to resend your outstanding email confirmation ${user.value.userName}?`;
   } else if (confirmCancelEmailResend.value) {
-    return `Are you sure you want to cancel your outstanding email confirmation ${user.value.userName}?`;
+    return `Are you sure you want to cancel your outstanding email confirmation ${user.value.userName}?  If your email has not been confirmed you will lose access to your profile if you forget your password.`;
   } else if (confirmPasswordReset.value) {
     return `Are you sure you want to reset your password ${user.value.userName}?`;
   } else if (confirmResendPasswordReset.value) {
