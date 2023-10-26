@@ -22,7 +22,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
@@ -53,7 +53,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {
             userName: data.userName,
@@ -90,7 +90,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
@@ -121,7 +121,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
@@ -171,7 +171,7 @@ export class UsersPort {
         },
         data: {
           userId,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
         },
       };
       return axios(config);
@@ -200,7 +200,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
@@ -231,7 +231,7 @@ export class UsersPort {
         data: {
           license: process.env.VUE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as number,
+          appId: process.env.VUE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
