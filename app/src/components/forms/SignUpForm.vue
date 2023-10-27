@@ -205,6 +205,8 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars*/
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
   Ref,
   ref,
@@ -293,7 +295,6 @@ const maxDialogWidth: Ref<string> = ref("auto");
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-// eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
@@ -380,7 +381,6 @@ const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => 
     emit("cancel-signup", null, null);
   });
 };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === "Status Code 404: User name not unique" &&

@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars*/
 import { Ref, ref, watch } from "vue";
 import { onBeforeMount } from "vue";
 import { onBeforeUpdate } from "vue";
@@ -40,7 +41,6 @@ import { NavDrawerLinks } from "@/utilities/links/navDrawerLinks";
 import { User } from "@/models/domain/user";
 import { MenuItem } from "@/models/infrastructure/menuItem";
 
-// eslint-disable-next-line
 const props = defineProps({
   navDrawerStatus: {
     type: Boolean,

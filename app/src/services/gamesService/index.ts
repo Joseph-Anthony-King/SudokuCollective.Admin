@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import { AxiosResponse, AxiosError } from "axios";
 import { GamesPort } from "@/ports/gamesPort";
 import { SolutionsPort } from "@/ports/solutionsPort";
@@ -149,7 +150,6 @@ export class GamesService {
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message.substring(17);
 
-      // eslint-disable-next-line
     } catch (error: any) {
       if (process.env.NODE_ENV === "development") {
         console.error("error: ", error);
@@ -268,8 +268,6 @@ export class GamesService {
         }
         result.puzzle = solvedPuzzle;
       }
-
-      // eslint-disable-next-line
     } catch (error: any) {
       if (process.env.NODE_ENV === "development") {
         console.error("error: ", error);
@@ -304,8 +302,6 @@ export class GamesService {
         }
         result.solution = solution;
       }
-
-      // eslint-disable-next-line
     } catch (error: any) {
       if (process.env.NODE_ENV === "development") {
         console.error("error: ", error);

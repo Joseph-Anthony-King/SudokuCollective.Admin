@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-// eslint-disable-next-line
+/* eslint-disable @typescript-eslint/no-unused-vars*/
 const props = defineProps({
   title: {
     type: String,
