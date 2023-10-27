@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
 
@@ -27,7 +28,6 @@ export const useServiceFailStore = defineStore("serviceFailStore", () => {
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const updateStatusCode = (code: number = 0): void => {
     statusCode.value = code;
   };

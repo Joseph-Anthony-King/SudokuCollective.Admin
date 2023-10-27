@@ -161,6 +161,8 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars*/
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
   Ref,
   ref,
@@ -248,7 +250,6 @@ const maxDialogWidth: Ref<string> = ref("auto");
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-// eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
@@ -367,7 +368,6 @@ watch(
     }
   }
 );
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === "Status Code 404: No user is using this user name" &&

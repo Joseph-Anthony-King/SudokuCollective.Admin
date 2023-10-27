@@ -396,6 +396,8 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars*/
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
   Ref,
   ref,
@@ -457,11 +459,9 @@ const lastNameTooltip: ComputedRef<string> = computed(() =>
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
 const formTitle: Ref<string> = ref("User Profile");
-// eslint-disable-next-line
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
-// eslint-disable-next-line
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
@@ -752,7 +752,6 @@ watch(
     }
   }
 );
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateInvalidValues = (message: string, options: any): any => {
   if (
     message === "Status Code 404: User name not unique" &&
