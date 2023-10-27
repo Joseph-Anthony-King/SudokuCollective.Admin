@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="app-responsive-viewport">
     <v-card elevation="6" class="mx-16">
-      <v-row class="text-center home-banner" :style="backgroundImage">
+      <v-row class="text-center home-banner">
         <v-col cols="12">
           <h1 class="text-center centered-welcome-message text-padding">
             {{ headline }}
@@ -20,24 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { ComputedRef, computed } from 'vue';
-
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 const props = defineProps({
   headline: {
     type: String,
     default: "",
   },
-  imageUrl: {
-    type: String,
-    default: "@/assets/banner.jpg",
-  }
-});
-
-const backgroundImage: ComputedRef<{ any :string }> = computed(() => {
-  return {
-    "background-image": props.headline
-  }
 });
 </script>
 
@@ -62,6 +50,7 @@ const backgroundImage: ComputedRef<{ any :string }> = computed(() => {
   border: 0;
   border-color: transparent;
   min-height: 500px;
+  background-image: url("@/assets/banner.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
