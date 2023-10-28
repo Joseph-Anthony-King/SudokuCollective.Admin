@@ -35,6 +35,7 @@ const props = defineProps({
     padding: 0 0 0 0 !important;
     margin: 0 0 0 0 !important;
   }
+  width: 100%;
 }
 .text-padding {
   @media (max-width: 600px) {
