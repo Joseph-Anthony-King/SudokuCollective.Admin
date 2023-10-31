@@ -29,7 +29,7 @@
       </v-card-text>
       <AvailableActions>
         <v-row dense>
-          <v-col cols="3">
+          <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
             <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -45,7 +45,7 @@
               <span>Send a link to your email to reset your password if your email has been confirmed</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
             <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -61,7 +61,7 @@
               <span>Obtain your user name if your email has been confirmed</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
             <v-tooltip open-delay="2000" location="bottom" :disabled="(email === '' || email === null) && invalidEmails.length === 0 || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
@@ -77,7 +77,7 @@
               <span>Reset this form</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
             <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
