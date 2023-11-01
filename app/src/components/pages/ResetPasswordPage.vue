@@ -1,13 +1,13 @@
 <template>
-  <HomePage :action="action" />
+  <ResetPasswordWidget :token="token" />
 </template>
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HomePage from "@/components/pages/HomePage.vue";
+import ResetPasswordWidget from "@/components/widgets/common/ResetPasswordWidget.vue"
 
 const props = defineProps({
-  action: {
+  token: {
     type: String,
     default: "",
   },

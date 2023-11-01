@@ -2,8 +2,10 @@ import { AxiosError, AxiosResponse } from "axios";
 import { SignupPort } from "@/ports/signupPort";
 import { UsersPort } from "@/ports/usersPort";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
 import { User } from "@/models/domain/user";
+import { ConfirmEmailResultData } from "@/models/results/confirmEmailResultData";
 import { StaticServiceMethods } from "../common";
 
 export class UsersService {
@@ -141,6 +143,42 @@ export class UsersService {
     return result;
   }
 
+  static async getConfirmEmailAsync(token: string): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await UsersPort.getConfirmEmailAsync(token)) as AxiosResponse;
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+        result.data = new ConfirmEmailResultData(
+          parseInt(response.data.payload[0].confirmationType),
+          response.data.payload[0].userName,
+          response.data.payload[0].email,
+          response.data.payload[0].isUpdate,
+          response.data.payload[0].newEmailAddressConfirmed,
+          response.data.payload[0].confirmationEmailSuccessfullySent
+        );
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
+    }
+
+    return result;
+  }
+
   static async putResendEmailConfirmationAsync(requestorId: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
@@ -203,6 +241,34 @@ export class UsersService {
           response.data.payload[0].user.dateUpdated,
           true
         );
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
+    }
+
+    return result;
+  }
+
+  static async putResetPasswordAsync(data: IResetPasswordRequestData): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await UsersPort.putResetPasswordAsync(data)) as AxiosResponse;
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);

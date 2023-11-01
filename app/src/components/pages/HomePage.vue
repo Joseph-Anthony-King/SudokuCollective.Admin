@@ -59,17 +59,13 @@ watch(
 );
 // Lifecycle hooks
 onBeforeMount(() => {
-  /* Ensures this logic only runs on first navigation, 
-     this allows bookmarks for login and signup to work correctly*/
-  if (router.options.history.state.position === 1) {
-    const user: User = userStore.getUser;
-    if (props.action.toLowerCase() === "login") {
-      user.isLoggingIn = true;
-      userStore.updateUser(user);
-    } else if (props.action.toLowerCase() === "signup") {
-      user.isSigningUp = true;
-      userStore.updateUser(user);
-    }
+  const user: User = userStore.getUser;
+  if (props.action.toLowerCase() === "login") {
+    user.isLoggingIn = true;
+    userStore.updateUser(user);
+  } else if (props.action.toLowerCase() === "signup") {
+    user.isSigningUp = true;
+    userStore.updateUser(user);
   }
 });
 </script>
