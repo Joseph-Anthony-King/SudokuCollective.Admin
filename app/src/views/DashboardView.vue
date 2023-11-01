@@ -2,14 +2,6 @@
   <DashboardPage />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import DashboardPage from "@/components/pages/DashboardPage.vue";
-
-export default defineComponent({
-  name: "DashboardView",
-  components: {
-    DashboardPage,
-  },
-});
 </script>

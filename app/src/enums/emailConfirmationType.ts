@@ -1,0 +1,6 @@
+export enum EmailConfirmationType {
+  NULL,
+  NEWPROFILECONFIRMED,
+  OLDEMAILCONFIRMED,
+  NEWEMAILCONFIRMED
+}

@@ -15,14 +15,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, watch } from "vue";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index";
 import { useUserStore } from "@/store/userStore";
 import { useValuesStore } from "@/store/valuesStore";
 import HeroWidget from "@/components/widgets/common/HeroWidget.vue";
 import commonUtitlities from "@/utilities/common";
-import { User } from "@/models/domain/user";
 
 const props = defineProps({
   action: {
@@ -57,21 +57,6 @@ watch(
     updateUrlWithAction(userIsSigningUp, "/", "signup", router, route);
   }
 );
-// Lifecycle hooks
-onBeforeMount(() => {
-  /* Ensures this logic only runs on first navigation, 
-     this allows bookmarks for login and signup to work correctly*/
-  if (router.options.history.state.position === 1) {
-    const user: User = userStore.getUser;
-    if (props.action.toLowerCase() === "login") {
-      user.isLoggingIn = true;
-      userStore.updateUser(user);
-    } else if (props.action.toLowerCase() === "signup") {
-      user.isSigningUp = true;
-      userStore.updateUser(user);
-    }
-  }
-});
 </script>
 
 <style lang="scss" scoped>

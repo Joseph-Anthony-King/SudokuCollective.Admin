@@ -128,7 +128,7 @@ export const useAppStore = defineStore("appStore", () => {
       useUserStore().updateUser(user);
       updateRedirectUrl(router.currentRoute.value.path);
       router.push("/login");
-      toast("The authorization token has expired, please sign in again.", {
+      toast("The authorization token has expired, please sign in again", {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });

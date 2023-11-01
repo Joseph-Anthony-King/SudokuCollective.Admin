@@ -6,6 +6,7 @@ import { SignupService } from "@/services/signupService";
 import { UsersService } from "@/services/usersService";
 import { User } from "@/models/domain/user";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
 import { ISignupRequestData } from "@/interfaces/requests/iSignupRequestData";
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
 import commonUtitlities from "@/utilities/common";
@@ -47,9 +48,14 @@ export const useUserStore = defineStore("userStore", () => {
     processingMessage.value = null;
     serviceMessage.value = null;
   };
-
   const updateUser = (param: User): void => {
     user.value = param;
+  };
+  const updateUserIsLoggingIn = (param: boolean): void => {
+    user.value.isLoggingIn = param;
+  };
+  const updateUserIsSigningUp = (param: boolean): void => {
+    user.value.isSigningUp = param;
   };
   const updateConfirmedUserName = (param: string | null = null): void => {
     confirmedUserName.value = param;
@@ -106,6 +112,14 @@ export const useUserStore = defineStore("userStore", () => {
       await LoginService.postConfirmUserNameAsync(email);
     if (response.isSuccess) {
       updateUser(response.user);
+      updateServiceMessage(response.message);
+    }
+    return response.isSuccess;
+  };
+  const confirmEmailAsync = async (token: string): Promise<boolean> => {
+    const response: IServicePayload = await UsersService.getConfirmEmailAsync(token);
+    if (response.isSuccess) {
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
@@ -122,6 +136,13 @@ export const useUserStore = defineStore("userStore", () => {
       updateUser(response.user);
     }
     updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
+  const resetPasswordAsync = async (data: IResetPasswordRequestData): Promise<boolean> => {    
+    const response: IServicePayload = await UsersService.putResetPasswordAsync(data);
+    if (response.isSuccess) {
+      updateServiceMessage(response.message);
+    }
     return response.isSuccess;
   };
   const requestPasswordResetAsync = async (email: string): Promise<boolean> => {
@@ -173,6 +194,8 @@ export const useUserStore = defineStore("userStore", () => {
     getServiceMessage,
     initializeStore,
     updateUser,
+    updateUserIsLoggingIn,
+    updateUserIsSigningUp,
     deleteUserAsync,
     updateConfirmedUserName,
     updateProcessingMessage,
@@ -181,8 +204,10 @@ export const useUserStore = defineStore("userStore", () => {
     getUserAsync,
     updateUserAsync,
     confirmUserNameAsync,
+    confirmEmailAsync,
     resendEmailConfirmationRequestAsync,
     cancelEmailConfirmationRequestAsync,
+    resetPasswordAsync,
     requestPasswordResetAsync,
     resendPasswordResetAsync,
     cancelPasswordResetAsync,
