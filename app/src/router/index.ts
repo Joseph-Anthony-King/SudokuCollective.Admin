@@ -18,10 +18,24 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: 'dashboard' */ "../views/DashboardView.vue"),
   },
   {
+    path: "/confirm-email/:token?",
+    name: "confirm-email",
+    component: () =>
+      import(/* webpackChunkName: 'dashboard' */ "../views/ConfirmEmailView.vue"),
+    props: true,
+  },
+  {
     path: "/:action?",
     name: "home",
     component: () =>
       import(/* webpackChunkName: 'home' */ "../views/HomeView.vue"),
+    props: true,
+  },
+  {
+    path: "/reset-password/:token?",
+    name: "resetPassword",
+    component: () =>
+      import(/* webpackChunkName: 'dashboard' */ "../views/ResetPasswordView.vue"),
     props: true,
   },
   {
@@ -56,7 +70,7 @@ const refreshToken = (
   }
   user.isLoggingIn = true;
   useUserStore().updateUser(user);
-  toast("The authorization token has expired, please sign in again.", {
+  toast("The authorization token has expired, please sign in again", {
     position: toast.POSITION.TOP_CENTER,
     type: toast.TYPE.WARNING,
   });
@@ -68,7 +82,7 @@ const checkUserLoggedIn = (next: NavigationGuardNext): void => {
   if (user.isLoggedIn) {
     next();
   } else {
-    toast("You must be logged in to view this page.", {
+    toast("You must be logged in to view this page", {
       position: toast.POSITION.TOP_CENTER,
       type: toast.TYPE.ERROR,
     });
@@ -81,7 +95,7 @@ const checkSuperAdmin = (next: NavigationGuardNext): void => {
   if (user.isSuperUser) {
     next();
   } else {
-    toast("You must be a super user to access this page.", {
+    toast("You must be a super user to access this page", {
       position: toast.POSITION.TOP_CENTER,
       type: toast.TYPE.ERROR,
     });
@@ -95,7 +109,13 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name === "home" || to.name === "sudoku") {
+  if ((to.name === undefined || to.name?.toString().toLowerCase()  === "home") && to.path.toLowerCase()  !== "/" && to.path.toLowerCase()  !== "/login" && to.path.toLowerCase()  !== "/signup") {
+    toast("Invalid route requested", {
+      position: toast.POSITION.TOP_CENTER,
+      type: toast.TYPE.ERROR,
+    });
+    next("/");
+  } else if (to.name === "home" || to.name === "confirm-email" || to.name === "sudoku" || to.name === "reset-password") {
     next();
   } else {
     if (useAppStore().isTokenExpired()) {

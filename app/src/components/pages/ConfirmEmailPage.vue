@@ -1,13 +1,13 @@
 <template>
-  <HomePage :action="action" />
+  <ConfirmEmailWidget :token="token" />
 </template>
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HomePage from "@/components/pages/HomePage.vue";
+import ConfirmEmailWidget from "@/components/widgets/common/ConfirmEmailWidget.vue"
 
 const props = defineProps({
-  action: {
+  token: {
     type: String,
     default: "",
   },

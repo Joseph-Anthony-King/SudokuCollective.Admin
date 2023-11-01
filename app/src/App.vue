@@ -191,13 +191,7 @@ export default defineComponent({
       user.value.isSigningUp = true;
       userStore.updateUser(toRaw(user.value));
     };
-
-    watch(
-      () => appStore.getProcessingStatus,
-      () => {
-        processingStatus.value = appStore.getProcessingStatus;
-      }
-    );
+    
     watch(
       () => appStore.getServiceMessage,
       () => {

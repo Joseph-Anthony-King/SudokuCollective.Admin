@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Endpoints } from "@/ports/usersPort/endpoints";
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
+import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
 import { useAppStore } from "@/store/appStore";
 import { useUserStore } from "@/store/userStore/index";
 
@@ -104,6 +105,26 @@ export class UsersPort {
     }
   }
 
+  static async getConfirmEmailAsync(token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+      const config = {
+        method: "get",
+        url: `${Endpoints.confirmEmailEndpoint.replace("{{token}}", token)}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
   static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
     try {
       const appStore = useAppStore();
@@ -125,6 +146,29 @@ export class UsersPort {
           paginator: {},
           payload: {},
         },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("error: ", error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putResetPasswordAsync(data: IResetPasswordRequestData): Promise<AxiosResponse | AxiosError> {
+    try {
+      const config = {
+        method: "put",
+        url: `${Endpoints.resetPasswordEndpoint.replace("{{token}}", data.token)}`,
+        headers: {
+          "accept": "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        data: {
+          newPassword: data.newPassword
+        }
       };
       return axios(config);
     } catch (error) {

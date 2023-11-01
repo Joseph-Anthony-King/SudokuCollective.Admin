@@ -296,7 +296,7 @@
                 :disabled="user.isEditing || !user.isEmailConfirmed || user.receivedRequestToUpdatePassword"
                 @click="confirmPasswordReset = true"
               >
-                Reset Password
+                Password Reset
               </v-btn>
             </template>
             <span>Reset your password</span>
@@ -319,7 +319,7 @@
                 :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
                 @click="confirmResendPasswordReset = true"
               >
-                Resend Reset Password
+                Resend Password Reset
               </v-btn>
             </template>
             <span>Resend your outstanding password reset email</span>
