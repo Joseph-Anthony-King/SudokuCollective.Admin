@@ -115,9 +115,19 @@ router.beforeEach(async (to, from, next) => {
       type: toast.TYPE.ERROR,
     });
     next("/");
-  } else if (to.name === "home" || to.name === "confirm-email" || to.name === "sudoku" || to.name === "reset-password") {
+  } else if (to.name === "home" || to.name === "sudoku") {
+    if (to.params.action.toString().toLowerCase() === "login") {
+      useUserStore().updateUserIsLoggingIn(true);
+      useUserStore().updateUserIsSigningUp(false);
+    }
+    if (to.params.action.toString().toLowerCase() === "signup") {
+      useUserStore().updateUserIsLoggingIn(false);
+      useUserStore().updateUserIsSigningUp(true);
+    }
     next();
-  } else {
+  } else if (to.name === "confirm-email" || to.name === "reset-password") {
+    next();
+  }  else {
     if (useAppStore().isTokenExpired()) {
       refreshToken(from, next);
     }

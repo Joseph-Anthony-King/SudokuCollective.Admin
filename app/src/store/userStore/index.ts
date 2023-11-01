@@ -48,9 +48,14 @@ export const useUserStore = defineStore("userStore", () => {
     processingMessage.value = null;
     serviceMessage.value = null;
   };
-
   const updateUser = (param: User): void => {
     user.value = param;
+  };
+  const updateUserIsLoggingIn = (param: boolean): void => {
+    user.value.isLoggingIn = param;
+  };
+  const updateUserIsSigningUp = (param: boolean): void => {
+    user.value.isSigningUp = param;
   };
   const updateConfirmedUserName = (param: string | null = null): void => {
     confirmedUserName.value = param;
@@ -189,6 +194,8 @@ export const useUserStore = defineStore("userStore", () => {
     getServiceMessage,
     initializeStore,
     updateUser,
+    updateUserIsLoggingIn,
+    updateUserIsSigningUp,
     deleteUserAsync,
     updateConfirmedUserName,
     updateProcessingMessage,

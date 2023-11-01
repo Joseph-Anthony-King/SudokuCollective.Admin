@@ -214,7 +214,17 @@ export default defineComponent({
     watch(
       () => user.value.isLoggingIn,
       () => {
-        userStore.updateUser(user.value);
+        if (userStore.getUserIsLoggingIn !== user.value.isLoggingIn) {
+          userStore.updateUserIsLoggingIn(toRaw(user.value.isLoggingIn));
+        }
+      }
+    );
+    watch(
+      () => userStore.getUserIsLoggingIn,
+      () => {
+        if (userStore.getUserIsLoggingIn !== user.value.isLoggingIn) {
+          user.value.isLoggingIn = userStore.getUserIsLoggingIn;
+        }
       }
     );
     watch(
@@ -258,7 +268,17 @@ export default defineComponent({
     watch(
       () => user.value.isSigningUp,
       () => {
-        userStore.updateUser(user.value);
+        if (userStore.getUserIsSigningUp !== user.value.isSigningUp) {
+          userStore.updateUserIsSigningUp(toRaw(user.value.isSigningUp));
+        }
+      }
+    );
+    watch(
+      () => userStore.getUserIsSigningUp,
+      () => {
+        if (userStore.getUserIsSigningUp !== user.value.isSigningUp) {
+          user.value.isSigningUp = userStore.getUserIsSigningUp;
+        }
       }
     );
 
