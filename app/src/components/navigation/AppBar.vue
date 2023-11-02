@@ -16,7 +16,7 @@
             transition="scale-transition"
             width="40"
           />
-          <span class="nav-text"> Sudoku Collective Admin Vue </span>
+          <span class="nav-text"> Sudoku Collective Admin Console </span>
         </router-link>
       </v-app-bar-title>
       <v-spacer></v-spacer>
