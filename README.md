@@ -1,6 +1,6 @@
-# Sudoku Collective Admin Vue
+# Sudoku Collective Admin Console
 
-Sudoku Collective Admin Vue is the administrative app for the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).  This app is used to create and manage app licenses thus granting client apps access to the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).
+Sudoku Collective Admin Console is the administrative app for the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).  This app is used to create and manage app licenses thus granting client apps access to the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).
 
 ## Requirements
 

@@ -1,5 +1,5 @@
 <template>
-  <HeroWidget headline="Welcome to Sudoku Collective Admin Vue">
+  <HeroWidget headline="Welcome to Sudoku Collective Admin Console">
     <v-row>
       <v-col cols="12">
         <p class="motto text-center text-padding">
