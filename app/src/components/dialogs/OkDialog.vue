@@ -22,8 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import { useOkDialogStore } from "@/store/okDialogStore";
 import { Ref, ref } from "vue";
+import { useOkDialogStore } from "@/store/okDialogStore";
 
 const emit = defineEmits(["close-ok-dialog"]);
 
