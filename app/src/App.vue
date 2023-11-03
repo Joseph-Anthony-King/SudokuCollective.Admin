@@ -195,7 +195,7 @@ export default defineComponent({
         router.currentRoute.value.name !== "home" &&
         router.currentRoute.value.name !== "sudoku"
       ) {
-        router.push({ name: "home" });
+        router.push("/");
       }
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
