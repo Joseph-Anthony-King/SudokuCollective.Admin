@@ -31,7 +31,7 @@
           />
         </v-dialog>
         <v-dialog
-          v-model="userObtainingLoginAssistance"
+          :v-model="userObtainingLoginAssistance && !processingStatus"
           persistent
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
@@ -59,7 +59,7 @@
           />
         </v-dialog>
         <v-dialog
-          v-model="emailConfirmed"
+          :v-model="emailConfirmed && !processingStatus"
           persistent
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
@@ -69,7 +69,7 @@
           <ConfirmEmailResultWidget v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
         </v-dialog>
         <v-dialog
-          v-model="okDialogIsActive"
+          :v-model="okDialogIsActive && !processingStatus"
           persistent
           :fullscreen="isSmallViewPort"
           :max-width="maxDialogWidth"
@@ -231,7 +231,7 @@ export default defineComponent({
         ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
+            type: toast.TYPE.SUCCESS,
           });
           user.value.isLoggingIn = false;
           userObtainingLoginAssistance.value = false;
