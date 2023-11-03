@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import ConfirmEmailWidget from "@/components/widgets/common/ConfirmEmailWidget.vue"
+import ConfirmEmailWidget from "@/components/widgets/confirmEmail/ConfirmEmailWidget.vue"
 
 const props = defineProps({
   token: {
