@@ -90,8 +90,6 @@ export const useAppStore = defineStore("appStore", () => {
       if (redirectUrl.value !== null) {
         window.location.href = redirectUrl.value;
         updateRedirectUrl();
-      } else {
-        window.location.href = "/dashboard";
       }
     }
   };
