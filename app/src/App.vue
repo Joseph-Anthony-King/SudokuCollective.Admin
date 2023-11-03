@@ -58,6 +58,16 @@
             v-on:reset-redirect="isRedirect = false"
           />
         </v-dialog>
+        <v-dialog
+          v-model="emailConfirmed"
+          persistent
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
+          hide-overlay
+          transition="dialog-top-transition"
+        >        
+          <EmailConfirmedWidget v-on:close-email-confirmed-widget="closeEmailConfirmedWidget" />
+        </v-dialog>
       </v-main>
     </v-content>
     <v-footer app inset>
@@ -83,6 +93,7 @@ import vuetify from "@/plugins/vuetify";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAppStore } from "@/store/appStore";
+import { useConfirmEmailStore } from "@/store/confirmEmailStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSudokuStore } from "@/store/sudokuStore";
 import { useUserStore } from "@/store/userStore";
@@ -94,6 +105,7 @@ import LoginForm from "@/components/forms/LoginForm.vue";
 import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
+import EmailConfirmedWidget from "@/components/widgets/confirmEmail/EmailConfirmedWidget.vue";
 import { User } from "@/models/domain/user";
 import commonUtilities from "@/utilities/common";
 
@@ -108,10 +120,12 @@ export default defineComponent({
     LoginForm,
     LoginAssistanceForm,
     SignUpForm,
-  },
+    EmailConfirmedWidget
+},
   setup() {
     // Instantiate the stores
     const appStore = useAppStore();
+    const confirmEmailStore = useConfirmEmailStore();
     const serviceFailStore = useServiceFailStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
@@ -125,6 +139,12 @@ export default defineComponent({
       if (!appStore.getStayedLoggedIn) {
         clearStores();
       }
+    };
+
+    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess : false);
+
+    const closeEmailConfirmedWidget = (): void => {
+      confirmEmailStore.initializeStore();
     };
 
     // Navbar functionality
@@ -344,6 +364,8 @@ export default defineComponent({
     return {
       isSmallViewPort,
       maxDialogWidth,
+      emailConfirmed,
+      closeEmailConfirmedWidget,
       user,
       processingStatus,
       navDrawerStatus,

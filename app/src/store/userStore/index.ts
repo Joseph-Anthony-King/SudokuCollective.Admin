@@ -1,6 +1,7 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { useAppStore } from "@/store/appStore";
+import { useConfirmEmailStore } from "@/store/confirmEmailStore";
 import { LoginService } from "@/services/loginService";
 import { SignupService } from "@/services/signupService";
 import { UsersService } from "@/services/usersService";
@@ -120,6 +121,10 @@ export const useUserStore = defineStore("userStore", () => {
     const response: IServicePayload = await UsersService.getConfirmEmailAsync(token);
     if (response.isSuccess) {
       updateServiceMessage(response.message);
+      useConfirmEmailStore().updateConfirmationType(response.data.confirmationType);
+      useConfirmEmailStore().updateUserName(response.data.userName);
+      useConfirmEmailStore().updateEmail(response.data.email);
+      useConfirmEmailStore().updateIsSuccess(response.isSuccess);
     }
     return response.isSuccess;
   };
