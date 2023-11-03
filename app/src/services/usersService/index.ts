@@ -153,7 +153,7 @@ export class UsersService {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
         result.data = new ConfirmEmailResultData(
-          parseInt(response.data.payload[0].confirmationType),
+          response.data.payload[0].confirmationType,
           response.data.payload[0].userName,
           response.data.payload[0].email
         );

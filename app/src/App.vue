@@ -68,6 +68,16 @@
         >        
           <ConfirmEmailResultWidget v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
         </v-dialog>
+        <v-dialog
+          v-model="okDialogIsActive"
+          persistent
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
+          hide-overlay
+          transition="dialog-top-transition"
+        >
+          <OkDialog v-on:close-ok-dialog="closeOkDialog" />
+        </v-dialog>
       </v-main>
     </v-content>
     <v-footer app inset>
@@ -94,6 +104,7 @@ import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAppStore } from "@/store/appStore";
 import { useConfirmEmailStore } from "@/store/confirmEmailStore";
+import { useOkDialogStore } from "@/store/okDialogStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSudokuStore } from "@/store/sudokuStore";
 import { useUserStore } from "@/store/userStore";
@@ -101,6 +112,7 @@ import { useValuesStore } from "@/store/valuesStore";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import NavigationDrawer from "@/components/navigation/NavigationDrawer.vue";
+import OkDialog from "@/components/dialogs/OkDialog.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
 import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
@@ -116,16 +128,18 @@ export default defineComponent({
     AppBar,
     FooterNav,
     NavigationDrawer,
+    OkDialog,
     ProgressWidget,
     LoginForm,
     LoginAssistanceForm,
     SignUpForm,
-    ConfirmEmailResultWidget
+    ConfirmEmailResultWidget,
 },
   setup() {
     // Instantiate the stores
     const appStore = useAppStore();
     const confirmEmailStore = useConfirmEmailStore();
+    const okDialogStore =useOkDialogStore();
     const serviceFailStore = useServiceFailStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
@@ -139,12 +153,6 @@ export default defineComponent({
       if (!appStore.getStayedLoggedIn) {
         clearStores();
       }
-    };
-
-    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess : false);
-
-    const closeConfirmEmailResultWidget = (): void => {
-      confirmEmailStore.initializeStore();
     };
 
     // Navbar functionality
@@ -254,19 +262,17 @@ export default defineComponent({
         const isSignedUp = userStore.getUserIsSignedIn;
         if (isLoggedIn) {
           updateNavDrawerHandler();
-          let toastMessage: string;
           user.value = userStore.getUser;
           if (!isSignedUp) {
-            toastMessage = `Welcome back ${user.value.userName}!`;
+            toast(`Welcome back ${user.value.userName}!`, {
+              position: toast.POSITION.TOP_CENTER,
+              type: toast.TYPE.SUCCESS,
+            });
           } else {
-            toastMessage = `Welcome to Sudoku Collective ${user.value.userName}!`;
             user.value.isSignedUp = false;
             userStore.updateUser(user.value);
+            okDialogStore.updateIsActive(true);
           }
-          toast(toastMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.SUCCESS,
-          });
         }
       }
     );
@@ -301,6 +307,18 @@ export default defineComponent({
         }
       }
     );
+
+    // Email confirmed results
+    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess : false);
+    const closeConfirmEmailResultWidget = (): void => {
+      confirmEmailStore.initializeStore();
+    };
+
+    // Ok dialog
+    const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive);
+    const closeOkDialog = (): void => {
+      okDialogStore.initializeStore();
+    };
 
     // Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
@@ -362,23 +380,25 @@ export default defineComponent({
     });
 
     return {
-      isSmallViewPort,
-      maxDialogWidth,
-      emailConfirmed,
-      closeConfirmEmailResultWidget,
-      user,
       processingStatus,
       navDrawerStatus,
-      isRedirect,
+      updateNavDrawerHandler,
       closeNavDrawerHandler,
+      user,
       userObtainingLoginAssistance,
       userIsLoggingIn,
-      userIsSigningUp,
       logoutHandler,
       openLoginAssistanceHandler,
       closeLoginAssistanceHandler,
       redirectToSignUpHandler,
-      updateNavDrawerHandler,
+      isRedirect,
+      userIsSigningUp,
+      emailConfirmed,
+      closeConfirmEmailResultWidget,
+      okDialogIsActive,
+      closeOkDialog,
+      isSmallViewPort,
+      maxDialogWidth,
     };
   },
 });

@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="justify-center text-center">
+  <v-card class="justify-center text-center">
+    <v-card-title>
       <span class="headline">{{ title }}</span>
     </v-card-title>
     <v-card-text v-if="isSuccess && confirmationType !== EmailConfirmationType.OLDEMAILCONFIRMED">
@@ -14,8 +14,11 @@
       <v-container>
         <p>
           Thank you for confirming your old email address {{ userName }}, please review and confirm your new email address by following the link sent to 
-          <a :href="mailTo" target="_blank">{{ email }}</a>.  Please do not respond to the email as the email is not monitored, simply following the link 
-          contained in the email.
+          <a :href="mailTo" target="_blank">{{ email }}</a>.
+          <br /><br />
+          Please do not respond to the email as the email is not monitored, simply follow the link contained in the email.
+          <br /><br />
+          If you do not complete this process within 24 hours of its initiation your email will revert to its original value.
         </p>
       </v-container>
     </v-card-text>

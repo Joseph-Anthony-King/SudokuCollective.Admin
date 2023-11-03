@@ -7,7 +7,7 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <span>{{ message }}</span>
+            <p v-html="message"></p>
           </v-col>
         </v-row>
       </v-container>
