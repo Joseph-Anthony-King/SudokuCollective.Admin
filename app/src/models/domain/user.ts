@@ -18,6 +18,7 @@ export class User implements IUser {
   dateUpdated: Date | undefined;
   isLoggedIn: boolean;
   isLoggingIn: boolean;
+  isObtainingAssistance: boolean;
   isSignedUp: boolean;
   isSigningUp: boolean;
   isEditing: boolean;
@@ -60,6 +61,7 @@ export class User implements IUser {
 		isSignedUp ? this.isSignedUp = isSignedUp : this.isSignedUp = false;
 
 		this.isLoggingIn = false;
+    this.isObtainingAssistance = false;
 		this.isSigningUp = false;
 		this.isEditing = false;
   }

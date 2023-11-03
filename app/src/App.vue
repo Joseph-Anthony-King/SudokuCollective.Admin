@@ -182,7 +182,9 @@ export default defineComponent({
     );
 
     // Login/logout functionality
-    const userObtainingLoginAssistance: Ref<boolean> = ref(false);
+    const userObtainingLoginAssistance: ComputedRef<boolean> = computed(() => {
+      return user.value?.isObtainingAssistance && !processingStatus.value;
+    });
     const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
       return user.value?.isLoggingIn && !processingStatus.value;
     });
@@ -205,12 +207,12 @@ export default defineComponent({
     const openLoginAssistanceHandler = (event: Event | null = null): void => {
       event?.preventDefault();
       user.value.isLoggingIn = false;
-      userObtainingLoginAssistance.value = true;
+      user.value.isObtainingAssistance = true;
     };
     const closeLoginAssistanceHandler = (event: Event | null = null): void => {
       event?.preventDefault();
       user.value.isLoggingIn = true;
-      userObtainingLoginAssistance.value = false;
+      user.value.isObtainingAssistance = false;
     };
     const redirectToSignUpHandler = (redirect: boolean, event: Event | null = null): void => {
       isRedirect.value = redirect;
@@ -231,10 +233,10 @@ export default defineComponent({
         ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
+            type: toast.TYPE.SUCCESS,
           });
           user.value.isLoggingIn = false;
-          userObtainingLoginAssistance.value = false;
+          user.value.isObtainingAssistance = false;
           appStore.updateServiceMessage("");
         }
       }
@@ -268,9 +270,13 @@ export default defineComponent({
               position: toast.POSITION.TOP_CENTER,
               type: toast.TYPE.SUCCESS,
             });
+            if (router.currentRoute.value.name !== "sudoku") {
+              router.push("/dashboard");
+            }
           } else {
             user.value.isSignedUp = false;
             userStore.updateUser(user.value);
+            window.location.href = "/user-profile";
             okDialogStore.updateIsActive(true);
           }
         }
@@ -309,13 +315,13 @@ export default defineComponent({
     );
 
     // Email confirmed results
-    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess : false);
+    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess && !processingStatus.value : false);
     const closeConfirmEmailResultWidget = (): void => {
       confirmEmailStore.initializeStore();
     };
 
     // Ok dialog
-    const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive);
+    const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive && !processingStatus.value);
     const closeOkDialog = (): void => {
       okDialogStore.initializeStore();
     };
