@@ -559,7 +559,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
     if (user.value.email === email.value) {
       return `Are you sure you want to submit your edits ${user.value.userName}?`;
     } else {
-      return `Are you sure you want to submit your edits ${user.value.userName}?  Please be advised that your update to your email will require you to confirm ownership of the old and new email addresses by responding to confirmation emails sent to each address.<br /><br />Please do not respond to the emails as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your email will retain to it's original value.`;
+      return `Are you sure you want to submit your edits ${user.value.userName}?  Please be advised that your update to your email will require you to confirm ownership of the old and new email addresses by responding to confirmation emails sent to each address.<br /><br />Please do not respond to the emails as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your email will retain it's original value.`;
     }
   } else if (confirmRefresh.value) {
     return `Are you sure you want to refresh your profile ${user.value.userName}?`;
@@ -570,7 +570,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
   } else if (confirmCancelEmailResend.value) {
     return `Are you sure you want to cancel your outstanding email confirmation ${user.value.userName}?  If your email has not been confirmed you will lose access to your profile if you forget your password.`;
   } else if (confirmPasswordReset.value) {
-    return `Are you sure you want to reset your password ${user.value.userName}?  Please be advised that in order to confirm your identity you will receive an email at the address provided in your profile.  Please review that email and follow the link contained therein to enter your new password.<br /><br />Please do not respond to the email as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your password will retain it's original value`;
+    return `Are you sure you want to reset your password ${user.value.userName}?  Please be advised that in order to confirm your identity you will receive an email at the address provided in your profile.  Please review that email and follow the link contained therein to enter your new password.<br /><br />Please do not respond to the email as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your password will retain it's original value.`;
   } else if (confirmResendPasswordReset.value) {
     return `Are you sure you want to resend your password reset request ${user.value.userName}?`;
   } else if (confirmCancelPasswordReset.value) {
