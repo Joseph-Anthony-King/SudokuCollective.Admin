@@ -66,7 +66,7 @@
           hide-overlay
           transition="dialog-top-transition"
         >        
-          <EmailConfirmedWidget v-on:close-email-confirmed-widget="closeEmailConfirmedWidget" />
+          <ConfirmEmailResultWidget v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
         </v-dialog>
       </v-main>
     </v-content>
@@ -105,7 +105,7 @@ import LoginForm from "@/components/forms/LoginForm.vue";
 import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
-import EmailConfirmedWidget from "@/components/widgets/confirmEmail/EmailConfirmedWidget.vue";
+import ConfirmEmailResultWidget from "@/components/widgets/confirmEmail/ConfirmEmailResultWidget.vue";
 import { User } from "@/models/domain/user";
 import commonUtilities from "@/utilities/common";
 
@@ -120,7 +120,7 @@ export default defineComponent({
     LoginForm,
     LoginAssistanceForm,
     SignUpForm,
-    EmailConfirmedWidget
+    ConfirmEmailResultWidget
 },
   setup() {
     // Instantiate the stores
@@ -143,7 +143,7 @@ export default defineComponent({
 
     const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess : false);
 
-    const closeEmailConfirmedWidget = (): void => {
+    const closeConfirmEmailResultWidget = (): void => {
       confirmEmailStore.initializeStore();
     };
 
@@ -365,7 +365,7 @@ export default defineComponent({
       isSmallViewPort,
       maxDialogWidth,
       emailConfirmed,
-      closeEmailConfirmedWidget,
+      closeConfirmEmailResultWidget,
       user,
       processingStatus,
       navDrawerStatus,

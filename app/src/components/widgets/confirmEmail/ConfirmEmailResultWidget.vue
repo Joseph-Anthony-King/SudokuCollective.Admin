@@ -1,9 +1,9 @@
 <template>
   <v-card>
     <v-card-title class="justify-center text-center">
-      <span class="headline"></span>
+      <span class="headline">{{ title }}</span>
     </v-card-title>
-    <v-card-text v-if="isSuccess && confirmationType === EmailConfirmationType.NEWPROFILECONFIRMED || confirmationType === EmailConfirmationType.NEWEMAILCONFIRMED">
+    <v-card-text v-if="isSuccess && confirmationType !== EmailConfirmationType.OLDEMAILCONFIRMED">
       <v-container>
         <p>
           Thank you for confirming your email address {{ userName }}, your profile has been updated.  Hope you are having fun!
@@ -26,7 +26,7 @@
         </p>
       </v-container>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="text-center">
       <v-row :dense="true">
         <v-col cols="12">
           <v-btn color="blue darken-1" text @click="close($event)">
@@ -53,6 +53,18 @@ const userName: Ref<string | null> = ref(confirmEmailStore.getUserName);
 const email: Ref<string | null> = ref(confirmEmailStore.getEmail);
 
 const mailTo: ComputedRef<string> = computed(() => `mailto:${email.value}`);
+
+const title: ComputedRef<string> = computed(() => {
+  if (confirmationType.value === EmailConfirmationType.NEWPROFILECONFIRMED) {
+    return "Email Confirmed";
+  } else if (confirmationType.value === EmailConfirmationType.OLDEMAILCONFIRMED) {
+    return "Old Email Confirmed";
+  } else if (confirmationType.value === EmailConfirmationType.NEWEMAILCONFIRMED) {
+    return "New Email Confirmed";
+  } else {
+    return "Email Not Confirmed"
+  }
+});
 
 const close = (event: Event | undefined = undefined): void => {
   event?.preventDefault();
