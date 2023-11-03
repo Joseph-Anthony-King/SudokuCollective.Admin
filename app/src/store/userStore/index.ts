@@ -1,6 +1,8 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { useAppStore } from "@/store/appStore";
+import { useConfirmEmailStore } from "@/store/confirmEmailStore";
+import { useOkDialogStore } from "@/store/okDialogStore";
 import { LoginService } from "@/services/loginService";
 import { SignupService } from "@/services/signupService";
 import { UsersService } from "@/services/usersService";
@@ -41,6 +43,7 @@ export const useUserStore = defineStore("userStore", () => {
   );
 
   const appStore = useAppStore();
+  const okDialogStore = useOkDialogStore();
 
   const initializeStore = (): void => {
     user.value = new User();
@@ -73,6 +76,8 @@ export const useUserStore = defineStore("userStore", () => {
       appStore.updateToken(response.token);
       appStore.updateTokenExpirationDate(response.tokenExpirationDate);
       appStore.updateStayLoggedIn(data.stayLoggedIn);
+      okDialogStore.updateTitle("Welcome to Sudoku Collective");
+      okDialogStore.updateMessage(`Thank you for joining <strong>Sudoku Collective</strong> ${user.value.userName}!  Please note that you will have to confirm your email adress of <strong>${user.value.email}</strong> or you may lose access to your profile if you forget your password.  An email has been sent to <strong>${user.value.email}</strong>, please review and following the link contained within the email to confirm the address you provided.  Please do not respond to the email as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />Most importantly I sincerely hope you have fun coding, welcome to <strong>Sudoku Collective</strong>!`);
     }
     return response.isSuccess;
   };
@@ -120,6 +125,10 @@ export const useUserStore = defineStore("userStore", () => {
     const response: IServicePayload = await UsersService.getConfirmEmailAsync(token);
     if (response.isSuccess) {
       updateServiceMessage(response.message);
+      useConfirmEmailStore().updateConfirmationType(response.data.confirmationType);
+      useConfirmEmailStore().updateUserName(response.data.userName);
+      useConfirmEmailStore().updateEmail(response.data.email);
+      useConfirmEmailStore().updateIsSuccess(response.isSuccess);
     }
     return response.isSuccess;
   };
