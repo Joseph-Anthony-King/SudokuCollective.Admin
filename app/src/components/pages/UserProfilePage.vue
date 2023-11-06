@@ -3,7 +3,7 @@
     <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
-          <user-profile-form />
+          <UserProfileForm />
         </v-container>
       </v-card-text>
     </v-card>
@@ -24,7 +24,7 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-// Lifecycle hooks
+
 onBeforeMount(() => {
   const user: User = userStore.getUser;
   if (props.action.toLowerCase() === "login") {

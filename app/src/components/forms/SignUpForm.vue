@@ -242,12 +242,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["cancel-signup", "reset-redirect"]);
 
-// Instantiate the stores
-const appStore = useAppStore();
-const serviceFailStore = useServiceFailStore();
-const signUpFormStore = useSignUpFormStore();
-const userStore = useUserStore();
-
 const {
   isChrome,
   displayFailedToastAsync,
@@ -263,6 +257,14 @@ const {
   userNameRules,
 } = rules();
 
+//#region Instantiate the Stores
+const appStore = useAppStore();
+const serviceFailStore = useServiceFailStore();
+const signUpFormStore = useSignUpFormStore();
+const userStore = useUserStore();
+//#endregion
+
+//#region Properties
 const userName: Ref<string | null> = ref(signUpFormStore.getUserName);
 const firstName: Ref<string | null> = ref(signUpFormStore.getFirstName);
 const lastName: Ref<string | null> = ref(signUpFormStore.getLastName);
@@ -285,8 +287,9 @@ const firstNameTooltip: ComputedRef<string> = computed(() =>
 const lastNameTooltip: ComputedRef<string> = computed(() =>
   RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
 );
+//#endregion
 
-// Form logic
+//#region Form Logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const userNameTextField: Ref<VTextField | null> = ref(null);
@@ -298,14 +301,9 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
-watch(
-  () => userName.value,
-  () => {
-    emit("reset-redirect", null, null);
-  }
-);
+//#endregion
 
-// Form actions
+//#region Action Handlers
 const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
@@ -399,7 +397,18 @@ const updateInvalidValues = (message: string, options: any): any => {
     invalidEmails: options.invalidEmails,
   };
 };
-// Lifecycle hooks
+//#endregion
+
+//#region Watches
+watch(
+  () => userName.value,
+  () => {
+    emit("reset-redirect", null, null);
+  }
+);
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(async () => {
   if (isChrome.value) {
     repairAutoComplete();
@@ -427,4 +436,5 @@ onUnmounted(() => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
+//#endregion
 </script>

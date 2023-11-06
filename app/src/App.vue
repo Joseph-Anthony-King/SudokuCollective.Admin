@@ -80,9 +80,7 @@
         </v-dialog>
       </v-main>
     </v-content>
-    <v-footer app inset>
-      <FooterNav />
-    </v-footer>
+    <FooterNav />
   </v-app>
 </template>
 
@@ -136,17 +134,6 @@ export default defineComponent({
     ConfirmEmailResultWidget,
 },
   setup() {
-    // Instantiate the stores
-    const appStore = useAppStore();
-    const confirmEmailStore = useConfirmEmailStore();
-    const okDialogStore =useOkDialogStore();
-    const serviceFailStore = useServiceFailStore();
-    const sudokuStore = useSudokuStore();
-    const userStore = useUserStore();
-    const valuesStore = useValuesStore();
-
-    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
-
     const { clearStores, updateAppProcessingAsync } = commonUtilities();
 
     const clearStoresIfUserIsNotLoggedIn = (): void => {
@@ -155,24 +142,17 @@ export default defineComponent({
       }
     };
 
-    // Navbar functionality
-    const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
-    const updateNavDrawerHandler = (): void => {
-      if (vuetify.display.smAndDown.value) {
-        navDrawerStatus.value = !navDrawerStatus.value;
-      } else {
-        navDrawerStatus.value = true;
-      }
-      appStore.updateNavDrawerStatus(navDrawerStatus.value);
-    };
-    const closeNavDrawerHandler = (modelValue: boolean): void => {
-      if (modelValue === false && navDrawerStatus.value === true) {
-        navDrawerStatus.value = modelValue;
-        appStore.updateNavDrawerStatus(navDrawerStatus.value);
-      }
-    };
+    //#region Instantiate the Stores
+    const appStore = useAppStore();
+    const confirmEmailStore = useConfirmEmailStore();
+    const okDialogStore =useOkDialogStore();
+    const serviceFailStore = useServiceFailStore();
+    const sudokuStore = useSudokuStore();
+    const userStore = useUserStore();
+    const valuesStore = useValuesStore();
+    //#endregion
 
-    // User set up
+    //#region User set up
     const user: Ref<User> = ref(userStore.getUser);
     watch(
       () => userStore.getUser,
@@ -180,8 +160,9 @@ export default defineComponent({
         user.value = userStore.getUser;
       }
     );
+    //#endregion
 
-    // Login/logout functionality
+    //#region Login/logout functionality
     const userObtainingLoginAssistance: ComputedRef<boolean> = computed(() => {
       return user.value?.isObtainingAssistance && !processingStatus.value;
     });
@@ -291,8 +272,9 @@ export default defineComponent({
         }
       }
     );
+    //#endregion
 
-    // Sign up functionality
+    //#region Sign up functionality
     const isRedirect: Ref<boolean> = ref(false);
     const userIsSigningUp: ComputedRef<boolean> = computed(() => {
       return user.value?.isSigningUp && !processingStatus.value;
@@ -313,20 +295,51 @@ export default defineComponent({
         }
       }
     );
+    //#endregion
 
-    // Email confirmed results
+    //#region Navbar functionality
+    const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
+    const updateNavDrawerHandler = (): void => {
+      if (vuetify.display.smAndDown.value) {
+        navDrawerStatus.value = !navDrawerStatus.value;
+      } else {
+        navDrawerStatus.value = true;
+      }
+      appStore.updateNavDrawerStatus(navDrawerStatus.value);
+    };
+    const closeNavDrawerHandler = (modelValue: boolean): void => {
+      if (modelValue === false && navDrawerStatus.value === true) {
+        navDrawerStatus.value = modelValue;
+        appStore.updateNavDrawerStatus(navDrawerStatus.value);
+      }
+    };
+    //#endregion
+    
+    //#region App Processing logic
+    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
+    watch(
+      () => appStore.getProcessingStatus,
+      () => {
+        processingStatus.value = appStore.getProcessingStatus;
+      }
+    )
+    //#endregion
+
+    //#region Email confirmed results
     const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess && !processingStatus.value : false);
     const closeConfirmEmailResultWidget = (): void => {
       confirmEmailStore.initializeStore();
     };
+    //#endregion
 
-    // Ok dialog
+    //#region Ok dialog
     const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive && !processingStatus.value);
     const closeOkDialog = (): void => {
       okDialogStore.initializeStore();
     };
+    //#endregion
 
-    // Dialog formatting
+    //#region Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
     const maxDialogWidth: Ref<string> = ref("auto");
     const resetAppDialogViewPort = (): void => {
@@ -342,8 +355,9 @@ export default defineComponent({
         appStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
     };
+    //#endregion
 
-    // Lifecycle hooks
+    //#region Lifecycle Hooks
     onMounted(async () => {
       updateAppProcessingAsync(async () => {
         // Initialize the value, sudoku and serviceFailure stores
@@ -384,6 +398,7 @@ export default defineComponent({
         clearStoresIfUserIsNotLoggedIn();
       });
     });
+    //#endregion
 
     return {
       processingStatus,
