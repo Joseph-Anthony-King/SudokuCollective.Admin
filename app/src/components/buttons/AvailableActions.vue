@@ -6,5 +6,3 @@
     </v-container>
   </v-card-actions>
 </template>
-
-<script setup lang="ts"></script>

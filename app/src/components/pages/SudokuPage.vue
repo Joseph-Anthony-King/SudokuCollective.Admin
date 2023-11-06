@@ -1,7 +1,5 @@
 <template>
-  <v-container fluid class="app-responsive-viewport">
-    <SudokuWidget />
-  </v-container>
+  <SudokuWidget />
 </template>
 
 <script setup lang="ts">
@@ -38,7 +36,7 @@ watch(
     updateUrlWithAction(userIsSigningUp, "/sudoku", "signup", router, route);
   }
 );
-// Lifecycle hooks
+
 onBeforeMount(() => {
   if (router.options.history.state.position === 1) {
     const user: User = userStore.getUser;

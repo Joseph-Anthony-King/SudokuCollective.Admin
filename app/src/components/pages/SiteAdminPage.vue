@@ -25,7 +25,7 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-// Lifecycle hooks
+
 onBeforeMount(() => {
   const user: User = userStore.getUser;
   if (props.action.toLowerCase() === "login") {

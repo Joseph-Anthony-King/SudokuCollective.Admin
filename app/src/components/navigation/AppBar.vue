@@ -206,11 +206,11 @@ const emit = defineEmits([
   "update-nav-drawer",
 ]);
 
-// Instantiate the stores
-const userStore = useUserStore();
-
 const { resetViewPort } = commonUtilities();
 
+const userStore = useUserStore();
+
+//#region Properties
 const user: Ref<User> = ref(userStore.getUser);
 const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
 const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
@@ -220,8 +220,9 @@ const confirmUserLogout: Ref<boolean> = ref(false);
 const confirmMessage: ComputedRef<string> = computed(() => {
   return `Are you sure you want to log out ${user.value.userName}?`;
 });
+//#endregion
 
-// Actions
+//#region Action Handlers
 const loginHandler = (event: Event | null = null): void => {
   event?.preventDefault();
   emit("user-logging-in", null, null);
@@ -246,7 +247,9 @@ watch(
     user.value = userStore.getUser;
   }
 );
-// Lifecycle hooks
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(async () => {
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
@@ -266,6 +269,7 @@ onUnmounted(() => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
+//#endregion
 </script>
 
 <style lang="scss" scoped>
