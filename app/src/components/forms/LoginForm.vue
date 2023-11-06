@@ -196,13 +196,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["obtain-login-assistance", "cancel-login", "redirect-to-signup"]);
 
-// Instantiate the stores
-const appStore = useAppStore();
-const loginFormStore = useLoginFormStore();
-const serviceFailStore = useServiceFailStore();
-const signUpFormStore = useSignUpFormStore();
-const userStore = useUserStore();
-
 const { passwordRules, userNameRules } = rules();
 const {
   isChrome,
@@ -212,6 +205,15 @@ const {
   updateAppProcessingAsync,
 } = commonUtilities();
 
+//#region Instantiate the Stores
+const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
+const serviceFailStore = useServiceFailStore();
+const signUpFormStore = useSignUpFormStore();
+const userStore = useUserStore();
+//#endregion
+
+//#region Properties
 const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
@@ -241,8 +243,9 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
   }
   return result;
 });
+//#endregion
 
-// Form logic
+//#region Form Logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
@@ -253,8 +256,9 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
+//#endregion
 
-// Form actions
+//#region Action Handlers
 const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
@@ -341,6 +345,27 @@ const redirectToSignUpAsync = async (event: Event | null = null): Promise<void> 
     emit("redirect-to-signup", true, null);
   });
 };
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === "Status Code 404: No user is using this user name" &&
+    !options.invalidUserNames.includes(options.userName)
+  ) {
+    options.invalidUserNames.push(options.userName);
+  }
+  if (
+    message === "Status Code 404: Password is incorrect" &&
+    !options.invalidPasswords.includes(options.password)
+  ) {
+    options.invalidPasswords.push(options.password);
+  }
+  return {
+    invalidUserNames: options.invalidUserNames,
+    invalidPasswords: options.invalidPasswords,
+  };
+};
+//#endregion
+
+//#region Watches
 watch(
   () => confirmFormReset.value,
   () => {
@@ -368,25 +393,9 @@ watch(
     }
   }
 );
-const updateInvalidValues = (message: string, options: any): any => {
-  if (
-    message === "Status Code 404: No user is using this user name" &&
-    !options.invalidUserNames.includes(options.userName)
-  ) {
-    options.invalidUserNames.push(options.userName);
-  }
-  if (
-    message === "Status Code 404: Password is incorrect" &&
-    !options.invalidPasswords.includes(options.password)
-  ) {
-    options.invalidPasswords.push(options.password);
-  }
-  return {
-    invalidUserNames: options.invalidUserNames,
-    invalidPasswords: options.invalidPasswords,
-  };
-};
-// Lifecycle hooks
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
@@ -422,4 +431,5 @@ onUnmounted(() => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
+//#endregion
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="app-responsive-viewport">
-    <v-card elevation="6" class="mx-16">
+    <v-card elevation="6" class="mx-auto">
       <v-row class="text-center home-banner">
         <v-col cols="12">
           <h1 class="text-center centered-welcome-message text-padding">

@@ -52,11 +52,17 @@ const props = defineProps({
   },
 });
 
+//#region Instantiate the Stores
 const userStore = useUserStore();
+//#endregion
+
+//#region Properties
 const greeting: Ref<string> = ref("");
 const navDrawerItems: Ref<MenuItem[]> = ref(NavDrawerLinks);
 const user: Ref<User> = ref(userStore.getUser);
+//#endregion
 
+//#region Actions
 const updateNow = () => {
   const now = new Date();
 
@@ -89,12 +95,18 @@ const updateSiteAdminVisibility = () => {
     }
   }
 };
+//#endregion
+
+//#region Watches
 watch(
   () => userStore.getUser,
   () => {
     user.value = userStore.getUser;
   }
 );
+//#endregion
+
+//#region Lifecycle Hooks
 onBeforeMount(() => {
   updateGreeting();
   updateSiteAdminVisibility();
@@ -102,6 +114,7 @@ onBeforeMount(() => {
 onBeforeUpdate(() => {
   updateSiteAdminVisibility();
 });
+//#endregion
 </script>
 
 <style scoped>

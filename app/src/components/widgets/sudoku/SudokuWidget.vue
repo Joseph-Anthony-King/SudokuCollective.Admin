@@ -244,6 +244,7 @@ watch(
     padding: 0 0 0 0 !important;
     margin: 0 0 0 0 !important;
   }
+  width: 100%;
 }
 .h1-margin {
   margin: 100px 0 100px 0;

@@ -22,8 +22,11 @@
 import { Ref, ref, ComputedRef, computed, onMounted, onUnmounted } from "vue";
 import { useAppStore } from "@/store/appStore";
 
+//#region Instantiate the Stores
 const appStore = useAppStore();
+//#endregion
 
+//#region Properties
 let windowWidth: Ref<number> = ref(window.innerWidth);
 let progressMessage: Ref<string> = ref(appStore.getProcessingMessage);
 const progressSize: ComputedRef<number> = computed(() => {
@@ -101,9 +104,15 @@ const progressPadding = (outerColumn: boolean): number => {
   }
   return result;
 };
+//#endregion
+
+//#region Actions
 const resetProgressMessagePadding = (): void => {
   windowWidth.value = window.innerWidth;
 };
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(() => {
   resetProgressMessagePadding();
   window.addEventListener("resize", () => {
@@ -115,6 +124,7 @@ onUnmounted(() => {
     resetProgressMessagePadding();
   });
 });
+//#endregion
 </script>
 
 <style lang="scss" scoped>

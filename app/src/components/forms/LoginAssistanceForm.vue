@@ -146,12 +146,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["return-to-login"]);
 
-// Instantiate the stores
-const appStore = useAppStore();
-const loginFormStore = useLoginFormStore();
-const serviceFailStore = useServiceFailStore();
-const userStore = useUserStore();
-
 const {
   isChrome,
   displayFailedToastAsync,
@@ -160,11 +154,20 @@ const {
   updateAppProcessingAsync,
 } = commonUtilities();
 
+//#region Instantiate the Stores
+const appStore = useAppStore();
+const loginFormStore = useLoginFormStore();
+const serviceFailStore = useServiceFailStore();
+const userStore = useUserStore();
+//#endregion
+
+//#region Properties
 const confirmFormReset: Ref<boolean> = ref(false);
 const email: Ref<string | null> = ref(loginFormStore.getEmail);
 const invalidEmails: Ref<string[]> = ref(loginFormStore.getInvalidEmails);
+//#endregion
 
-// Form logic
+//#region Form logic
 const { emailRules } = rules();
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
@@ -177,8 +180,9 @@ const getFormStatus: ComputedRef<boolean> = computed(() => {
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
+//#endregion
 
-// Form actions
+//#region Action Handlers
 const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
@@ -237,6 +241,9 @@ const updateInvalidValues = (message: string, options: any): any => {
   }
   return { invalidEmails: options.invalidEmails };
 };
+//#endregion
+
+//#region Watches
 watch(
   () => userStore.getConfirmedUserName,
   () => {
@@ -246,7 +253,9 @@ watch(
     }
   }
 );
-// lifecycle hooks
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(() => {
   if (isChrome.value) {
     repairAutoComplete();
@@ -277,4 +286,5 @@ onUnmounted(() => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
+//#endregion
 </script>

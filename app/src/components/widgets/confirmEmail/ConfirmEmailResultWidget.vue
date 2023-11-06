@@ -14,9 +14,9 @@
       <v-container>
         <p>
           Thank you for confirming your old email address {{ userName }}, please review and confirm your new email address by following the link sent to 
-          <a :href="mailTo" target="_blank">{{ email }}</a>.
+          <span class="primary-color">{{ email }}</span> by <span class="primary-color">sudokucollective@gmail.com</span>.
           <br /><br />
-          Please do not respond to the email as the email is not monitored, simply follow the link contained in the email.
+          Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored, simply follow the link contained in the email.
           <br /><br />
           If you do not complete this process within 24 hours of its initiation your email will revert to its original value.
         </p>
@@ -54,8 +54,6 @@ const isSuccess: Ref<boolean | null> = ref(confirmEmailStore.getIsSuccess);
 const confirmationType: Ref<EmailConfirmationType | null> = ref(confirmEmailStore.getConfirmationType);
 const userName: Ref<string | null> = ref(confirmEmailStore.getUserName);
 const email: Ref<string | null> = ref(confirmEmailStore.getEmail);
-
-const mailTo: ComputedRef<string> = computed(() => `mailto:${email.value}`);
 
 const title: ComputedRef<string> = computed(() => {
   if (confirmationType.value === EmailConfirmationType.NEWPROFILECONFIRMED) {

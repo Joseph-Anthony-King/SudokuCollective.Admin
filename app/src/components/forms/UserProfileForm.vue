@@ -430,8 +430,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["user-updated"]);
 
-// Instantiate the stores
-const userStore = useUserStore();
 const { emailRules, requiredRules, userNameRules } = rules();
 const {
   displaySuccessfulToast,
@@ -440,6 +438,11 @@ const {
   updateAppProcessingAsync,
 } = commonUtilities();
 
+//#region Instantiate the Stores
+const userStore = useUserStore();
+//#endregion
+
+//#region Properties
 const user: Ref<User> = ref(userStore.getUser);
 const userName: Ref<string | undefined> = ref(user.value.userName);
 const firstName: Ref<string | undefined> = ref(user.value.firstName);
@@ -454,8 +457,9 @@ const firstNameTooltip: ComputedRef<string> = computed(() =>
 const lastNameTooltip: ComputedRef<string> = computed(() =>
   RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
 );
+//#endregion
 
-// Form logic
+//#region Form Logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
 const formTitle: Ref<string> = ref("User Profile");
@@ -517,8 +521,9 @@ watch(
     }
   }
 );
+//#endregion
 
-// Confirm dialog logic
+//#region Confirm dialog logic
 const confirmDialog: Ref<boolean> = ref(false);
 const confirmEditSubmission: Ref<boolean> = ref(false);
 const confirmRefresh: Ref<boolean> = ref(false);
@@ -559,18 +564,18 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
     if (user.value.email === email.value) {
       return `Are you sure you want to submit your edits ${user.value.userName}?`;
     } else {
-      return `Are you sure you want to submit your edits ${user.value.userName}?  Please be advised that your update to your email will require you to confirm ownership of the old and new email addresses by responding to confirmation emails sent to each address.<br /><br />Please do not respond to the emails as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your email will retain it's original value.`;
+      return `Are you sure you want to submit your edits ${user.value.userName}?  Please be advised that your update to your email will require you to confirm ownership of the old and new email addresses by responding to confirmation emails sent to each address by <span class="primary-color">sudokucollective@gmail.com</span>.<br /><br />Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.  If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your email will retain it's original value.`;
     }
   } else if (confirmRefresh.value) {
     return `Are you sure you want to refresh your profile ${user.value.userName}?`;
   } else if (confirmDeleteSubmission.value) {
     return `Are you sure you want to delete your profile ${user.value.userName}?  This action cannot be reversed and will delete all apps and games associated with your profile.`;
   } else if (confirmEmailResend.value) {
-    return `Are you sure you want to resend your outstanding email confirmation ${user.value.userName}?`;
+    return `Are you sure you want to resend your outstanding email confirmation from <span class="primary-color">sudokucollective@gmail.com</span> ${user.value.userName}?`;
   } else if (confirmCancelEmailResend.value) {
-    return `Are you sure you want to cancel your outstanding email confirmation ${user.value.userName}?  If your email has not been confirmed you will lose access to your profile if you forget your password.`;
+    return `Are you sure you want to cancel your outstanding email confirmation from <span class="primary-color">sudokucollective@gmail.com</span> ${user.value.userName}?  If your email has not been confirmed you will lose access to your profile if you forget your password.`;
   } else if (confirmPasswordReset.value) {
-    return `Are you sure you want to reset your password ${user.value.userName}?  Please be advised that in order to confirm your identity you will receive an email at the address provided in your profile.  Please review that email and follow the link contained therein to enter your new password.<br /><br />Please do not respond to the email as the email is not monitored.  If you cannot find the email please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your password will retain it's original value.`;
+    return `Are you sure you want to reset your password ${user.value.userName}?  Please be advised that in order to confirm your identity you will receive an email from <span class="primary-color">sudokucollective@gmail.com</span> at the address provided in your profile.  Please review the email from <span class="primary-color">sudokucollective@gmail.com</span> and follow the link contained therein to enter your new password.<br /><br />Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.  If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />You will have 24 hours to complete the process or your password will retain it's original value.`;
   } else if (confirmResendPasswordReset.value) {
     return `Are you sure you want to resend your password reset request ${user.value.userName}?`;
   } else if (confirmCancelPasswordReset.value) {
@@ -684,6 +689,24 @@ const actionNotConfirmedHandler = async (
     }
   });
 };
+const updateInvalidValues = (message: string, options: any): any => {
+  if (
+    message === "Status Code 404: User name not unique" &&
+    !options.invalidUserNames.includes(options.userName as string)
+  ) {
+    options.invalidUserNames.push(options.userName as string);
+  }
+  if (
+    message === "Status Code 404: Email not unique" &&
+    !options.invalidEmails.includes(options.email as string)
+  ) {
+    options.invalidEmails.push(options.email as string);
+  }
+  return {
+    invalidUserNames: options.invalidUserNames,
+    invalidEmails: options.invalidEmails,
+  };
+};
 watch(
   () => confirmEditSubmission.value,
   () => {
@@ -756,26 +779,9 @@ watch(
     }
   }
 );
-const updateInvalidValues = (message: string, options: any): any => {
-  if (
-    message === "Status Code 404: User name not unique" &&
-    !options.invalidUserNames.includes(options.userName as string)
-  ) {
-    options.invalidUserNames.push(options.userName as string);
-  }
-  if (
-    message === "Status Code 404: Email not unique" &&
-    !options.invalidEmails.includes(options.email as string)
-  ) {
-    options.invalidEmails.push(options.email as string);
-  }
-  return {
-    invalidUserNames: options.invalidUserNames,
-    invalidEmails: options.invalidEmails,
-  };
-};
+//#endregion
 
-// Form actions
+//#region Action Handlers
 const editHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
   event?.preventDefault();
   return (await updateAppProcessingAsync(async () => {
@@ -943,6 +949,9 @@ const cancelAllEmailRequestsHandlerAsync = async (event: Event | null = null): P
     return result;
   })) as Promise<boolean>;
 };
+//#endregion
+
+//#region Watches
 watch(
   () => userStore.getUser,
   () => {
@@ -954,7 +963,9 @@ watch(
     email.value = user.value.email;
   }
 );
-// Lifecycle hooks
+//#endregion
+
+//#region Lifecycle Hooks
 onMounted(async () => {
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
@@ -974,4 +985,5 @@ onUnmounted(() => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
+//#endregion
 </script>

@@ -38,11 +38,16 @@ import {
 import { GameState } from "@/enums/gameState";
 import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 
+//#region Instantiate the Stores
 const sudokuStore = useSudokuStore();
+//#endregion
 
+//#region Properties
 const matrix = ref(Array<Array<string>>());
 let gameState: DropdownItem | null = sudokuStore.getGameState;
+//#endregion
 
+//#region Actions
 const applyOddRegionStyling = (
   rowIndex: number,
   cellIndex: number
@@ -92,6 +97,9 @@ const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
     return true;
   }
 };
+//#endregion
+
+//#region Watches
 watch(
   () => sudokuStore.getGameState,
   () => {
@@ -147,26 +155,19 @@ watch(
     }
   }
 );
-// Lifecycle hooks
+//#endregion
+
+//#region Lifecycle Hooks
 onBeforeMount(() => {
   matrix.value = obtainMatrix();
 });
+//#endregion
 </script>
 
 <style lang="scss" scoped>
-@media only screen and (max-width: 311px) {
+@media only screen and (max-width: 320px) {
   .v-text-field {
-    max-width: 20px;
-    max-height: 48px;
-    font-weight: bold;
-    :deep(input) {
-      font-size: 12px;
-    }
-  }
-}
-@media only screen and (min-width: 312px) and (max-width: 320px) {
-  .v-text-field {
-    max-width: 24px;
+    max-width: 27px;
     max-height: 48px;
     font-weight: bold;
     :deep(input) {
@@ -176,7 +177,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 321px) and (max-width: 329px) {
   .v-text-field {
-    max-width: 25px;
+    max-width: 28px;
     max-height: 54px;
     font-weight: bold;
     :deep(input) {
@@ -186,7 +187,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 330px) and (max-width: 338px) {
   .v-text-field {
-    max-width: 26px;
+    max-width: 29px;
     max-height: 54px;
     font-weight: bold;
     :deep(input) {
@@ -196,7 +197,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 339px) and (max-width: 347px) {
   .v-text-field {
-    max-width: 27px;
+    max-width: 30px;
     max-height: 54px;
     font-weight: bold;
     :deep(input) {
@@ -206,7 +207,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 348px) and (max-width: 356px) {
   .v-text-field {
-    max-width: 28px;
+    max-width: 31px;
     max-height: 54px;
     font-weight: bold;
     :deep(input) {
@@ -216,7 +217,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 357px) and (max-width: 411px) {
   .v-text-field {
-    max-width: 29px;
+    max-width: 32px;
     max-height: 54px;
     font-weight: bold;
     :deep(input) {
@@ -224,19 +225,9 @@ onBeforeMount(() => {
     }
   }
 }
-@media only screen and (min-width: 412px) and (max-width: 481px) {
+@media only screen and (min-width: 412px) and (max-width: 491px) {
   .v-text-field {
     max-width: 42px;
-    max-height: 56px;
-    font-weight: bold;
-    :deep(input) {
-      font-size: 14px;
-    }
-  }
-}
-@media only screen and (min-width: 482px) and (max-width: 491px) {
-  .v-text-field {
-    max-width: 39px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -246,7 +237,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 492px) and (max-width: 500px) {
   .v-text-field {
-    max-width: 40px;
+    max-width: 44px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -256,7 +247,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 501px) and (max-width: 509px) {
   .v-text-field {
-    max-width: 41px;
+    max-width: 45px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -266,7 +257,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 510px) and (max-width: 518px) {
   .v-text-field {
-    max-width: 41px;
+    max-width: 46px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -276,7 +267,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 519px) and (max-width: 527px) {
   .v-text-field {
-    max-width: 43px;
+    max-width: 47px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -286,7 +277,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 528px) and (max-width: 536px) {
   .v-text-field {
-    max-width: 44px;
+    max-width: 48px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -296,7 +287,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 537px) and (max-width: 545px) {
   .v-text-field {
-    max-width: 45px;
+    max-width: 49px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -306,7 +297,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 546px) and (max-width: 554px) {
   .v-text-field {
-    max-width: 46px;
+    max-width: 50px;
     max-height: 56px;
     font-weight: bold;
     :deep(input) {
@@ -316,7 +307,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 555px) and (max-width: 563px) {
   .v-text-field {
-    max-width: 47px;
+    max-width: 51px;
     max-height: 58px;
     font-weight: bold;
     :deep(input) {
@@ -326,7 +317,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 564px) and (max-width: 572px) {
   .v-text-field {
-    max-width: 48px;
+    max-width: 52px;
     max-height: 58px;
     font-weight: bold;
     :deep(input) {
@@ -336,7 +327,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 573px) and (max-width: 581px) {
   .v-text-field {
-    max-width: 49px;
+    max-width: 53px;
     max-height: 58px;
     font-weight: bold;
     :deep(input) {
@@ -346,7 +337,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 582px) and (max-width: 590px) {
   .v-text-field {
-    max-width: 50px;
+    max-width: 54px;
     max-height: 58px;
     font-weight: bold;
     :deep(input) {
@@ -356,7 +347,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 591px) and (max-width: 599px) {
   .v-text-field {
-    max-width: 51px;
+    max-width: 55px;
     max-height: 58px;
     font-weight: bold;
     :deep(input) {
@@ -366,7 +357,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 600px) and (max-width: 608px) {
   .v-text-field {
-    max-width: 52px;
+    max-width: 56px;
     max-height: 63px;
     font-weight: bold;
     :deep(input) {
@@ -376,7 +367,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 609px) and (max-width: 617px) {
   .v-text-field {
-    max-width: 53px;
+    max-width: 57px;
     max-height: 63px;
     font-weight: bold;
     :deep(input) {
@@ -386,7 +377,7 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 618px) and (max-width: 642px) {
   .v-text-field {
-    max-width: 54px;
+    max-width: 58px;
     max-height: 63px;
     font-weight: bold;
     :deep(input) {
@@ -396,8 +387,8 @@ onBeforeMount(() => {
 }
 @media only screen and (min-width: 643px) and (max-width: 1920px) {
   .v-text-field {
-    max-width: 57px;
-    max-height: 58px;
+    max-width: 59px;
+    max-height: 59px;
     font-weight: bold;
     :deep(input) {
       font-size: 18px;
