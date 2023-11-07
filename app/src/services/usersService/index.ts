@@ -6,7 +6,7 @@ import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordR
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
 import { User } from "@/models/domain/user";
 import { ConfirmEmailResultData } from "@/models/results/confirmEmailResultData";
-import { StaticServiceMethods } from "../common";
+import { StaticServiceMethods } from "@/services/common";
 
 export class UsersService {
   static async getUserAsync(id: number): Promise<IServicePayload> {

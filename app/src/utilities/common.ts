@@ -2,6 +2,7 @@
 import { Ref, ComputedRef, computed } from "vue";
 import { RouteLocationNormalizedLoaded, Router } from "vue-router";
 import { toast } from "vue3-toastify";
+import { useAppStore } from "@/store/appStore";
 import { useGlobalStore } from "@/store/globalStore";
 import { useLoginFormStore } from "@/store/forms/loginFormStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
@@ -15,6 +16,7 @@ export default function () {
     return /Chrome/.test(navigator.userAgent);
   });
   const clearStores = (): void => {
+    useAppStore().initializeStore();
     useGlobalStore().initializeStore();
     useLoginFormStore().initializeStore();
     useServiceFailStore().initializeStore();
