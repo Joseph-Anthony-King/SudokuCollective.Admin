@@ -64,7 +64,7 @@
                   Reset
                 </v-btn>
               </template>
-              <span>Reset the sign up form</span>
+              <span>Reset the update password form</span>
             </v-tooltip>
           </v-col>
           <v-col cols="4">
@@ -73,13 +73,13 @@
                 <v-btn
                   color="blue darken-1"
                   text
-                  @click="cancelHandlerAsync($event)"
+                  @click="closeHandlerAsync($event)"
                   v-bind="props"
                 >
-                  Cancel
+                  Close
                 </v-btn>
               </template>
-              <span>Cancel the sign up process</span>
+              <span>Close the update password form</span>
             </v-tooltip>
           </v-col>
           <v-col cols="4">
@@ -95,7 +95,7 @@
                   Submit
                 </v-btn>
               </template>
-              <span>Sign up with SudokuCollective.com</span>
+              <span>Submit your updated password</span>
             </v-tooltip>
           </v-col>
         </v-row>
@@ -220,7 +220,7 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
     confirmFormReset.value = false;
   });
 };
-const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => {
+const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     signUpFormStore.initializeStore();
