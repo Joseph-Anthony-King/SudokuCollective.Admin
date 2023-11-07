@@ -5,7 +5,7 @@ import { GalleryApp } from "@/models/domain/galleryApp";
 import { DropdownItem } from "@/models/infrastructure/dropdownItem";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { AxiosResponse, AxiosError } from "axios";
-import { StaticServiceMethods } from "../common";
+import { StaticServiceMethods } from "@/services/common";
 
 export class ValuesService {
   static async getValuesAsync(): Promise<IServicePayload> {

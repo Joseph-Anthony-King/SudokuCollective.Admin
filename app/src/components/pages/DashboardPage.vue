@@ -4,9 +4,10 @@
       <v-card-text>
         <v-container fluid>
           <v-card-title class="justify-center text-center">
-            <span class="headline">Dashboard</span>
+            <span class="headline">Your Dashboard</span>
           </v-card-title>
         </v-container>
+        <AppRolodex />
       </v-card-text>
     </v-card>
   </v-container>
@@ -14,6 +15,8 @@
 
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
+import AppRolodex from "@/components/apps/AppRolodex.vue"
+import { useAppStore } from "@/store/appStore";
 import { useUserStore } from "@/store/userStore";
 import { User } from "@/models/domain/user";
 
@@ -25,12 +28,14 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
+const appStore = useAppStore();
 
-onBeforeMount(() => {
+onBeforeMount(async() => {
   const user: User = userStore.getUser;
   if (props.action.toLowerCase() === "login") {
     user.isLoggingIn = true;
     userStore.updateUser(user);
   }
+  await appStore.getMyAppsAsync();
 });
 </script>

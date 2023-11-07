@@ -51,7 +51,7 @@ export class App implements IApp {
     useCutomSMTPServer?: boolean,
     smtpServerSettings?: ISmtpServerSettings,
     userCount?: number,
-    timeFrame?: TimeFrame,
+    timeFrame?: number,
     accessDuration?: number,
     displayInGallery?: boolean,
     dateCreated?: Date,
@@ -77,7 +77,14 @@ export class App implements IApp {
     useCutomSMTPServer ? this.useCustomSMTPServer = useCutomSMTPServer : this.useCustomSMTPServer = false;
     smtpServerSettings ? this.smtpServerSettings = smtpServerSettings : this.smtpServerSettings = null;
     userCount ? this.userCount = userCount : this.userCount = 0;
-    timeFrame ? this.timeFrame = timeFrame : this.timeFrame = TimeFrame.NULL;
+    timeFrame ? 
+      timeFrame === 1 ? this.timeFrame = TimeFrame.SECONDS : 
+      timeFrame === 2 ? this.timeFrame = TimeFrame.MINUTES : 
+      timeFrame === 3 ? this.timeFrame = TimeFrame.HOURS : 
+      timeFrame === 4 ? this.timeFrame = TimeFrame.DAYS : 
+      timeFrame === 5 ? this.timeFrame = TimeFrame.MONTHS : 
+      this.timeFrame = TimeFrame.YEARS : 
+      this.timeFrame = TimeFrame.NULL;
     accessDuration ? this.accessDuration = accessDuration : this.accessDuration = 0;
     displayInGallery ? this.displayInGallery = displayInGallery : this.displayInGallery = false;
     dateCreated ? this.dateCreated = dateCreated : this.dateCreated = null;
