@@ -10,7 +10,7 @@ import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { User } from "@/models/domain/user";
 import commonUtitlities from "@/utilities/common";
 
-export const useAppStore = defineStore("appStore", () => {
+export const useGlobalStore = defineStore("globalStore", () => {
   const license: Ref<string | null> = ref(process.env.VUE_APP_LICENSE);
   const token: Ref<string | null> = ref(null);
   const tokenExpirationDate: Ref<Date | null> = ref(null);

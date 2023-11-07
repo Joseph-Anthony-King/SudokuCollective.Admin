@@ -128,7 +128,7 @@ import {
   toRaw,
 } from "vue";
 import { VForm } from "vuetify/components";
-import { useAppStore } from "@/store/appStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useLoginFormStore } from "@/store/forms/loginFormStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useUserStore } from "@/store/userStore";
@@ -155,7 +155,7 @@ const {
 } = commonUtilities();
 
 //#region Instantiate the Stores
-const appStore = useAppStore();
+const globalStore = useGlobalStore();
 const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const userStore = useUserStore();
@@ -187,7 +187,7 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (getFormStatus.value && email.value !== null) {
-      await appStore.confirmUserNameAsync(toRaw(email.value));
+      await globalStore.confirmUserNameAsync(toRaw(email.value));
       const failedToast = await displayFailedToastAsync(updateInvalidValues, {
         invalidEmails: toRaw(invalidEmails.value),
         email: toRaw(email.value),

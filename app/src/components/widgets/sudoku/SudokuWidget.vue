@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import { Ref, ref, ComputedRef, computed, toRaw, watch } from "vue";
 import { useSudokuStore } from "@/store/sudokuStore";
-import { useValuesStore } from "@/store/valuesStore";
+import { useValueStore } from "@/store/valueStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
@@ -95,7 +95,7 @@ import commonUtilities from "@/utilities/common";
 
 /* initialize stores */
 const sudokuStore = useSudokuStore();
-const valuesStore = useValuesStore();
+const valueStore = useValueStore();
 
 const {
   displaySuccessfulToast,
@@ -104,12 +104,12 @@ const {
 } = commonUtilities();
 
 /* difficulty properties and methods */
-const difficulties: Ref<Difficulty[]> = ref(valuesStore.getDifficulties);
+const difficulties: Ref<Difficulty[]> = ref(valueStore.getDifficulties);
 const selectedDifficulty: Ref<Difficulty | null> = ref(
   sudokuStore.getSelectedDifficulty
 );
 /* Game state properties and methods */
-const gameStates: Ref<DropdownItem[]> = ref(valuesStore.getGameStates);
+const gameStates: Ref<DropdownItem[]> = ref(valueStore.getGameStates);
 const selectedGameState: Ref<DropdownItem | null> = ref(
   sudokuStore.getGameState
 );
@@ -211,9 +211,9 @@ const clear = (event: Event | null = null): void => {
   }
 };
 watch(
-  () => valuesStore.getGameStates,
+  () => valueStore.getGameStates,
   () => {
-    gameStates.value = valuesStore.getGameStates;
+    gameStates.value = valueStore.getGameStates;
   }
 );
 watch(
@@ -223,9 +223,9 @@ watch(
   }
 );
 watch(
-  () => valuesStore.getDifficulties,
+  () => valueStore.getDifficulties,
   () => {
-    difficulties.value = valuesStore.getDifficulties;
+    difficulties.value = valueStore.getDifficulties;
   }
 );
 watch(

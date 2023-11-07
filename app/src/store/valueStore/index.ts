@@ -7,7 +7,7 @@ import { GameStates } from "@/utilities/dropdowns/gameStates";
 import { Difficulty } from "@/models/domain/difficulty";
 import { GalleryApp } from "@/models/domain/galleryApp";
 
-export const useValuesStore = defineStore("valuesStore", () => {
+export const useValueStore = defineStore("valueStore", () => {
   const difficulties: Ref<Array<Difficulty> | null> = ref(null);
   const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);
   const sortValues: Ref<Array<DropdownItem> | null> = ref(null);
