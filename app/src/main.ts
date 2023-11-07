@@ -23,11 +23,15 @@ createApp(App)
       createPersistedState({
         key: process.env.VUE_APP_CACHE_KEY,
         paths: [
-          "appStore",
+          "confirmEmailStore",
+          "loginFormStore",
+          "signUpFormStore",
+          "okDialogStore",
           "serviceFailStore",
+          "globalStore",
           "sudokuStore",
           "userStore",
-          "valuesStore",
+          "valueStore",
         ],
         storage: {
           getItem: (key) => ls.get(key),

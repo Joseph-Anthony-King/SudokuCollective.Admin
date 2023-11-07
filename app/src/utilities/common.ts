@@ -2,7 +2,7 @@
 import { Ref, ComputedRef, computed } from "vue";
 import { RouteLocationNormalizedLoaded, Router } from "vue-router";
 import { toast } from "vue3-toastify";
-import { useAppStore } from "@/store/appStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useLoginFormStore } from "@/store/forms/loginFormStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
@@ -15,7 +15,7 @@ export default function () {
     return /Chrome/.test(navigator.userAgent);
   });
   const clearStores = (): void => {
-    useAppStore().initializeStore();
+    useGlobalStore().initializeStore();
     useLoginFormStore().initializeStore();
     useServiceFailStore().initializeStore();
     useSignUpFormStore().initializeStore();
@@ -91,14 +91,14 @@ export default function () {
   const updateAppProcessingAsync = async (
     method: () => unknown
   ): Promise<void | unknown> => {
-    useAppStore().updateProcessingStatus(true);
+    useGlobalStore().updateProcessingStatus(true);
     let result: unknown;
     if (isAsyncFunction(method)) {
       result = await method();
     } else {
       result = method();
     }
-    useAppStore().updateProcessingStatus(false);
+    useGlobalStore().updateProcessingStatus(false);
     if (result !== undefined) {
       return result;
     }

@@ -2,13 +2,13 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Endpoints } from "@/ports/usersPort/endpoints";
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
 import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
-import { useAppStore } from "@/store/appStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useUserStore } from "@/store/userStore/index";
 
 export class UsersPort {
   static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -18,7 +18,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
@@ -39,7 +39,7 @@ export class UsersPort {
 
   static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -49,7 +49,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
@@ -76,7 +76,7 @@ export class UsersPort {
 
   static async deleteUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -86,7 +86,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
@@ -127,7 +127,7 @@ export class UsersPort {
 
   static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -137,7 +137,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
@@ -229,7 +229,7 @@ export class UsersPort {
 
   static async putCancelPasswordResetAsync(): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -239,7 +239,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,
@@ -260,7 +260,7 @@ export class UsersPort {
 
   static async putCancelAllEmailRequestsAsync(): Promise<AxiosResponse | AxiosError> {
     try {
-      const appStore = useAppStore();
+      const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
@@ -270,7 +270,7 @@ export class UsersPort {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${appStore.getToken}`,
+          "Authorization": `Bearer ${globalStore.getToken}`,
         },
         data: {
           license: process.env.VUE_APP_LICENSE,

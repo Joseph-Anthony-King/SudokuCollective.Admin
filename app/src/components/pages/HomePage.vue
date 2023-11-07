@@ -20,7 +20,7 @@ import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index";
 import { useUserStore } from "@/store/userStore";
-import { useValuesStore } from "@/store/valuesStore";
+import { useValueStore } from "@/store/valueStore";
 import HeroWidget from "@/components/widgets/common/HeroWidget.vue";
 import commonUtitlities from "@/utilities/common";
 
@@ -32,15 +32,15 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-const valuesStore = useValuesStore();
+const valueStore = useValueStore();
 const route = useRoute();
 const { updateUrlWithAction } = commonUtitlities();
-const missionStatement = ref(valuesStore.getMissionStatement);
+const missionStatement = ref(valueStore.getMissionStatement);
 
 watch(
-  () => valuesStore.getMissionStatement,
+  () => valueStore.getMissionStatement,
   () => {
-    missionStatement.value = valuesStore.getMissionStatement;
+    missionStatement.value = valueStore.getMissionStatement;
   }
 );
 watch(

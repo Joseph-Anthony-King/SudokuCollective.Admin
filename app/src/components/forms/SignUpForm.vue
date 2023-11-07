@@ -219,7 +219,7 @@ import {
 } from "vue";
 import { VForm, VTextField } from "vuetify/components";
 import { toast } from "vue3-toastify";
-import { useAppStore } from "@/store/appStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
 import { useUserStore } from "@/store/userStore";
@@ -258,7 +258,7 @@ const {
 } = rules();
 
 //#region Instantiate the Stores
-const appStore = useAppStore();
+const globalStore = useGlobalStore();
 const serviceFailStore = useServiceFailStore();
 const signUpFormStore = useSignUpFormStore();
 const userStore = useUserStore();
@@ -275,7 +275,7 @@ const confirmPassword: Ref<string | null> = ref(
   signUpFormStore.getConfirmPassword
 );
 const showPassword: Ref<boolean> = ref(false);
-const stayLoggedIn: Ref<boolean> = ref(appStore.getStayedLoggedIn);
+const stayLoggedIn: Ref<boolean> = ref(globalStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const invalidUserNames: Ref<string[]> = ref(
   signUpFormStore.getInvalidUserNames
