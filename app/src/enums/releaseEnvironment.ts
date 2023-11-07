@@ -1,7 +1,7 @@
 export enum ReleaseEnvironment { 
 	NULL,
 	LOCAL,
-	STAGING,
 	QA,
+	STAGING,
 	PROD
 }

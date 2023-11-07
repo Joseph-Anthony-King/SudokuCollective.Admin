@@ -1,0 +1,50 @@
+<template>
+  <v-card>
+    <v-card-title class="justify-center text-center">
+      <span class="headline">Your Apps</span>
+    </v-card-title>
+    <v-card-text>
+      <v-container fluid>
+        <div class="app-buttons-scroll">
+          <span class="no-apps-message" v-if="apps.length === 0">Time to Get Coding!</span>
+          <AppButton
+            v-for="(app, index) in apps"
+            :app="app"
+            :key="index"
+            :index="index"
+            v-on:app-selected="appSelected"
+          />
+        </div>
+      </v-container>
+    </v-card-text>
+  </v-card>
+</template>
+
+<script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars*/
+import { Ref, ref, watch } from "vue";
+import AppButton from "@/components/buttons/AppButton.vue";
+import { useAppStore } from "@/store/appStore";
+import { App } from "@/models/domain/app";
+
+const apps: Ref<App[]> = ref(useAppStore().getMyApps);
+
+const appStore = useAppStore();
+
+const appSelected = (id: number) => {
+  appStore.selectApp(id);
+  alert(`${appStore.getSelectedApp.name} selected...`);
+};
+
+watch(
+  () => useAppStore().getMyApps,
+  () => apps.value = useAppStore().getMyApps
+);
+</script>
+
+<style scoped lang="scss">
+.app-buttons-scroll {
+  display: flex;
+  overflow-x: auto;
+}
+</style>
