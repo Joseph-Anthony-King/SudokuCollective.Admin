@@ -1,5 +1,5 @@
 export enum StoreType {
-  APPSTORE,
+  globalStore,
   USERSTORE,
   SUDOKUSTORE
 }

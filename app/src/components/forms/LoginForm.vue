@@ -176,7 +176,7 @@ import {
 } from "vue";
 import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
-import { useAppStore } from "@/store/appStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useLoginFormStore } from "@/store/forms/loginFormStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
@@ -206,7 +206,7 @@ const {
 } = commonUtilities();
 
 //#region Instantiate the Stores
-const appStore = useAppStore();
+const globalStore = useGlobalStore();
 const loginFormStore = useLoginFormStore();
 const serviceFailStore = useServiceFailStore();
 const signUpFormStore = useSignUpFormStore();
@@ -218,7 +218,7 @@ const userName: Ref<string | null> = ref(loginFormStore.getUserName);
 const password: Ref<string | null> = ref(loginFormStore.getPassword);
 const showPassword: Ref<boolean> = ref(false);
 const loginFailed: Ref<boolean> = ref(loginFormStore.getLoginFailed);
-const stayLoggedIn: Ref<boolean> = ref(appStore.getStayedLoggedIn);
+const stayLoggedIn: Ref<boolean> = ref(globalStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
 const confirmSignUp: Ref<boolean> = ref(false);
 const confirmDialog: Ref<boolean> = ref(false);
@@ -272,7 +272,7 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         password.value,
         stayLoggedIn.value
       );
-      await appStore.loginAsync(data);
+      await globalStore.loginAsync(data);
       const failedToast = await displayFailedToastAsync(updateInvalidValues, {
         invalidUserNames: toRaw(invalidUserNames.value),
         invalidPasswords: toRaw(invalidPasswords.value),

@@ -113,14 +113,14 @@ import router from "@/router/index";
 import vuetify from "@/plugins/vuetify";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-import { useAppStore } from "@/store/appStore";
 import { useConfirmEmailStore } from "@/store/confirmEmailStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useOkDialogStore } from "@/store/okDialogStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
 import { useSignUpFormStore } from "@/store/forms/signUpFormStore"
 import { useSudokuStore } from "@/store/sudokuStore";
 import { useUserStore } from "@/store/userStore";
-import { useValuesStore } from "@/store/valuesStore";
+import { useValueStore } from "@/store/valueStore";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import NavigationDrawer from "@/components/navigation/NavigationDrawer.vue";
@@ -153,20 +153,20 @@ export default defineComponent({
     const { clearStores, updateAppProcessingAsync } = commonUtilities();
 
     const clearStoresIfUserIsNotLoggedIn = (): void => {
-      if (!appStore.getStayedLoggedIn) {
+      if (!globalStore.getStayedLoggedIn) {
         clearStores();
       }
     };
 
     //#region Instantiate the Stores
-    const appStore = useAppStore();
     const confirmEmailStore = useConfirmEmailStore();
-    const okDialogStore =useOkDialogStore();
+    const globalStore = useGlobalStore();
+    const okDialogStore = useOkDialogStore();
     const serviceFailStore = useServiceFailStore();
     const signUpFormStore = useSignUpFormStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
-    const valuesStore = useValuesStore();
+    const valueStore = useValueStore();
     //#endregion
 
     //#region User set up
@@ -190,7 +190,7 @@ export default defineComponent({
       event?.preventDefault();
       navDrawerStatus.value = false;
       const userName = user.value.userName;
-      appStore.logout();
+      globalStore.logout();
       if (
         router.currentRoute.value.name !== "home" &&
         router.currentRoute.value.name !== "sudoku"
@@ -221,9 +221,9 @@ export default defineComponent({
     };
     
     watch(
-      () => appStore.getServiceMessage,
+      () => globalStore.getServiceMessage,
       () => {
-        const serviceMessage = appStore.getServiceMessage;
+        const serviceMessage = globalStore.getServiceMessage;
         if (
           serviceMessage ===
             "Status Code 200: Processed password reset request" ||
@@ -235,7 +235,7 @@ export default defineComponent({
           });
           user.value.isLoggingIn = false;
           user.value.isObtainingAssistance = false;
-          appStore.updateServiceMessage("");
+          globalStore.updateServiceMessage("");
         }
       }
     );
@@ -315,29 +315,29 @@ export default defineComponent({
     //#endregion
 
     //#region Navbar functionality
-    const navDrawerStatus: Ref<boolean> = ref(appStore.getNavDrawerStatus);
+    const navDrawerStatus: Ref<boolean> = ref(globalStore.getNavDrawerStatus);
     const updateNavDrawerHandler = (): void => {
       if (vuetify.display.smAndDown.value) {
         navDrawerStatus.value = !navDrawerStatus.value;
       } else {
         navDrawerStatus.value = true;
       }
-      appStore.updateNavDrawerStatus(navDrawerStatus.value);
+      globalStore.updateNavDrawerStatus(navDrawerStatus.value);
     };
     const closeNavDrawerHandler = (modelValue: boolean): void => {
       if (modelValue === false && navDrawerStatus.value === true) {
         navDrawerStatus.value = modelValue;
-        appStore.updateNavDrawerStatus(navDrawerStatus.value);
+        globalStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
     };
     //#endregion
     
     //#region App Processing logic
-    const processingStatus: Ref<boolean> = ref(appStore.getProcessingStatus);
+    const processingStatus: Ref<boolean> = ref(globalStore.getProcessingStatus);
     watch(
-      () => appStore.getProcessingStatus,
+      () => globalStore.getProcessingStatus,
       () => {
-        processingStatus.value = appStore.getProcessingStatus;
+        processingStatus.value = globalStore.getProcessingStatus;
       }
     )
     //#endregion
@@ -371,12 +371,12 @@ export default defineComponent({
         isSmallViewPort.value = true;
         maxDialogWidth.value = "auto";
         navDrawerStatus.value = false;
-        appStore.updateNavDrawerStatus(navDrawerStatus.value);
+        globalStore.updateNavDrawerStatus(navDrawerStatus.value);
       } else {
         isSmallViewPort.value = false;
         maxDialogWidth.value = "960px";
         navDrawerStatus.value = true;
-        appStore.updateNavDrawerStatus(navDrawerStatus.value);
+        globalStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
     };
     //#endregion
@@ -385,7 +385,7 @@ export default defineComponent({
     onMounted(async () => {
       updateAppProcessingAsync(async () => {
         // Initialize the value, sudoku and serviceFailure stores
-        await valuesStore.initializeStoreAsync();
+        await valueStore.initializeStoreAsync();
         sudokuStore.initializeStore();
         serviceFailStore.initializeStore();
 

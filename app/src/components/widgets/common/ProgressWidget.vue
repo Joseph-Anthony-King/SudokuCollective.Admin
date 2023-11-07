@@ -19,16 +19,16 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, ComputedRef, computed, onMounted, onUnmounted } from "vue";
-import { useAppStore } from "@/store/appStore";
+import { ComputedRef, computed, Ref, ref, onMounted, onUnmounted } from "vue";
+import { useGlobalStore } from "@/store/globalStore";
 
 //#region Instantiate the Stores
-const appStore = useAppStore();
+const globalStore = useGlobalStore();
 //#endregion
 
 //#region Properties
 let windowWidth: Ref<number> = ref(window.innerWidth);
-let progressMessage: Ref<string> = ref(appStore.getProcessingMessage);
+let progressMessage: Ref<string> = ref(globalStore.getProcessingMessage);
 const progressSize: ComputedRef<number> = computed(() => {
   if (windowWidth.value > 1920) {
     return 150;

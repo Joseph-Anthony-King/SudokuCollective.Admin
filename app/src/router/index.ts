@@ -6,9 +6,9 @@ import {
   RouteRecordRaw,
 } from "vue-router";
 import { toast } from "vue3-toastify";
-import { useAppStore } from "@/store/appStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
+import { useUserStore } from "@/store/userStore";
 import { StoreType } from "@/enums/storeTypes";
 import commonUtilities from "@/utilities/common";
 
@@ -194,7 +194,7 @@ router.beforeEach(async (to, from, next) => {
     } = commonUtilities();
 
     updateAppProcessingAsync(() => {
-      if (useAppStore().isTokenExpired()) {
+      if (useGlobalStore().isTokenExpired()) {
         refreshToken(from, next);
       }
   

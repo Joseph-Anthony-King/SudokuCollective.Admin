@@ -1,7 +1,7 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
-import { useAppStore } from "@/store/appStore";
 import { useConfirmEmailStore } from "@/store/confirmEmailStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useOkDialogStore } from "@/store/okDialogStore";
 import { LoginService } from "@/services/loginService";
 import { SignupService } from "@/services/signupService";
@@ -42,7 +42,7 @@ export const useUserStore = defineStore("userStore", () => {
     serviceMessage.value ? toRaw(serviceMessage.value) : ""
   );
 
-  const appStore = useAppStore();
+  const globalStore = useGlobalStore();
   const okDialogStore = useOkDialogStore();
 
   const initializeStore = (): void => {
@@ -73,9 +73,9 @@ export const useUserStore = defineStore("userStore", () => {
     const response: IServicePayload = await SignupService.postAsync(data);
     if (response.isSuccess) {
       updateUser(response.user);
-      appStore.updateToken(response.token);
-      appStore.updateTokenExpirationDate(response.tokenExpirationDate);
-      appStore.updateStayLoggedIn(data.stayLoggedIn);
+      globalStore.updateToken(response.token);
+      globalStore.updateTokenExpirationDate(response.tokenExpirationDate);
+      globalStore.updateStayLoggedIn(data.stayLoggedIn);
       okDialogStore.updateTitle("Welcome to Sudoku Collective");
       okDialogStore.updateMessage(`Thank you for joining <span class="primary-color">Sudoku Collective</span> ${user.value.userName}!<br /><br />Please note that you will have to confirm your email adress of <span class="primary-color">${user.value.email}</span> or you may lose access to your profile if you forget your password.  An email from <span class="primary-color">sudokucollective@gmail.com</span> has been sent to <span class="primary-color">${user.value.email}</span>, please review the link contained within the email from <span class="primary-color">sudokucollective@gmail.com</span> to confirm the address you provided.  Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.<br /><br />If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />Most importantly I sincerely hope you have fun coding, welcome to <span class="primary-color">Sudoku Collective</span>!`);
     }
