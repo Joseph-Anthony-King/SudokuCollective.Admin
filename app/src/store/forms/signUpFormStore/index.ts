@@ -10,6 +10,8 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
   const email: Ref<string | null> = ref(null);
   const password: Ref<string | null> = ref(null);
   const confirmPassword: Ref<string | null> = ref(null);
+  const passwordToken: Ref<string | null> = ref(null);
+  const openPasswordResetForm: Ref<boolean> = ref(false);
   const invalidUserNames: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
 
@@ -35,6 +37,12 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
   const getConfirmPassword: ComputedRef<string | null> = computed(() =>
     toRaw(confirmPassword.value)
   );
+  const getPasswordToken: ComputedRef<string | null> = computed(() => 
+    toRaw(passwordToken.value)
+  );
+  const getOpenPasswordResetForm: ComputedRef<boolean> = computed(() => 
+    toRaw(openPasswordResetForm.value)
+  );
   const getInvalidUserNames: ComputedRef<string[]> = computed(() =>
     toRaw(invalidUserNames.value)
   );
@@ -51,6 +59,8 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
     email.value = null;
     password.value = null;
     confirmPassword.value = null;
+    passwordToken.value = null;
+    openPasswordResetForm.value = false;
     invalidUserNames.value = [];
     invalidEmails.value = [];
   };
@@ -82,6 +92,11 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
     dirty.value = true;
     confirmPassword.value = param;
   };
+  const updatePasswordToken = (param: string | null) => {
+    dirty.value = true;
+    passwordToken.value = param;
+    openPasswordResetForm.value = true;
+  };
   const updateInvalidUserNames = (names: string[]) => {
     dirty.value = true;
     invalidUserNames.value = names;
@@ -101,6 +116,8 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
     password,
     invalidUserNames,
     invalidEmails,
+    passwordToken,
+    openPasswordResetForm,
     getDirty,
     getUserName,
     getFirstName,
@@ -109,6 +126,8 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
     getEmail,
     getPassword,
     getConfirmPassword,
+    getPasswordToken,
+    getOpenPasswordResetForm,
     getInvalidUserNames,
     getInvalidEmails,
     initializeStore,
@@ -119,6 +138,7 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
     updateEmail,
     updatePassword,
     updateConfirmPassword,
+    updatePasswordToken,
     updateInvalidUserNames,
     updateInvalidEmails,
   };
