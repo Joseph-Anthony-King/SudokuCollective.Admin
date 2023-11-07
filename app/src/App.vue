@@ -31,6 +31,19 @@
           />
         </v-dialog>
         <v-dialog
+          v-model="userResettingPassword"
+          persistent
+          :fullscreen="isSmallViewPort"
+          :max-width="maxDialogWidth"
+          hide-overlay
+          transition="dialog-top-transition"
+        >
+          <UpdatePasswordForm
+            :formStatus="userResettingPassword"
+            v-on:close-update-password="closeUpdatePasswordForm"
+          />
+        </v-dialog>
+        <v-dialog
           v-model="userObtainingLoginAssistance"
           persistent
           :fullscreen="isSmallViewPort"
@@ -104,6 +117,7 @@ import { useAppStore } from "@/store/appStore";
 import { useConfirmEmailStore } from "@/store/confirmEmailStore";
 import { useOkDialogStore } from "@/store/okDialogStore";
 import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useSignUpFormStore } from "@/store/forms/signUpFormStore"
 import { useSudokuStore } from "@/store/sudokuStore";
 import { useUserStore } from "@/store/userStore";
 import { useValuesStore } from "@/store/valuesStore";
@@ -114,6 +128,7 @@ import OkDialog from "@/components/dialogs/OkDialog.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
 import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
+import UpdatePasswordForm from "@/components/forms/UpdatePasswordForm.vue";
 import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
 import ConfirmEmailResultWidget from "@/components/widgets/confirmEmail/ConfirmEmailResultWidget.vue";
 import { User } from "@/models/domain/user";
@@ -131,6 +146,7 @@ export default defineComponent({
     LoginForm,
     LoginAssistanceForm,
     SignUpForm,
+    UpdatePasswordForm,
     ConfirmEmailResultWidget,
 },
   setup() {
@@ -147,6 +163,7 @@ export default defineComponent({
     const confirmEmailStore = useConfirmEmailStore();
     const okDialogStore =useOkDialogStore();
     const serviceFailStore = useServiceFailStore();
+    const signUpFormStore = useSignUpFormStore();
     const sudokuStore = useSudokuStore();
     const userStore = useUserStore();
     const valuesStore = useValuesStore();
@@ -332,6 +349,13 @@ export default defineComponent({
     };
     //#endregion
 
+    //#region Reset Password
+    const userResettingPassword: ComputedRef<boolean> = computed(() => signUpFormStore.getOpenPasswordResetForm && !processingStatus.value);
+    const closeUpdatePasswordForm = (): void => {
+      signUpFormStore.initializeStore();
+    };
+    //#endregion
+
     //#region Ok dialog
     const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive && !processingStatus.value);
     const closeOkDialog = (): void => {
@@ -416,6 +440,8 @@ export default defineComponent({
       userIsSigningUp,
       emailConfirmed,
       closeConfirmEmailResultWidget,
+      userResettingPassword,
+      closeUpdatePasswordForm,
       okDialogIsActive,
       closeOkDialog,
       isSmallViewPort,
