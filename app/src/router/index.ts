@@ -8,8 +8,8 @@ import {
 import { toast } from "vue3-toastify";
 import { useAppStore } from "@/store/appStore";
 import { useUserStore } from "@/store/userStore";
+import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
 import { StoreType } from "@/enums/storeTypes";
-import { ResetPasswordRequestData } from "@/models/requests/resetPasswordRequestData";
 import commonUtilities from "@/utilities/common";
 
 //#region Routes
@@ -36,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/reset-password/:token?",
-    name: "resetPassword",
+    name: "reset-password",
     component: () =>
       import(/* webpackChunkName: 'dashboard' */ "../views/ResetPasswordView.vue"),
     props: true,
@@ -151,21 +151,27 @@ router.beforeEach(async (to, from, next) => {
     } = commonUtilities();
 
     updateAppProcessingAsync(async () => {
-      if (/^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/.test(to.params.token.toString())) {
-  
-        let result: boolean;
+      if (/^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/.test(to.params.token.toString())) {  
+        let result = true;
+
         if (to.name === "confirm-email") {
           result = await useUserStore().confirmEmailAsync(to.params.token.toString());
         } else {
-          const data = new ResetPasswordRequestData(to.params.token.toString(), "P@ssw0rd!");
-          result = await useUserStore().resetPasswordAsync(data);
+          useSignUpFormStore().updatePasswordToken(to.params.token.toString());
         }
+
         if (result) {
           displaySuccessfulToast(StoreType.USERSTORE);
           if (useUserStore().getUserIsLoggedIn) {
             await useUserStore().getUserAsync();
             useUserStore().updateServiceMessage();
-            router.push("/user-profile");
+            if (to.name === "confirm-email") {
+              router.push("/user-profile");
+            } else {
+              router.push("/");
+            }
+          } else {
+            router.push("/");
           }
         } else {
           displayFailedToastAsync(undefined, undefined);

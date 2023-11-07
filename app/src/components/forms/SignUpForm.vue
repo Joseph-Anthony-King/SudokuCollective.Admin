@@ -215,6 +215,7 @@ import {
   onMounted,
   onUnmounted,
   toRaw,
+  watch
 } from "vue";
 import { VForm, VTextField } from "vuetify/components";
 import { toast } from "vue3-toastify";
@@ -228,7 +229,6 @@ import { SignupRequestData } from "@/models/requests/signupRequestData";
 import rules from "@/utilities/rules/index";
 import { RulesMessages } from "@/utilities/rules/rulesMessages";
 import commonUtilities from "@/utilities/common";
-import { watch } from 'vue';
 
 const props = defineProps({
   formStatus: {
