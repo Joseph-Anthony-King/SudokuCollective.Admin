@@ -89,7 +89,7 @@ export const useGlobalStore = defineStore("globalStore", () => {
       updateToken(response.token);
       updateTokenExpirationDate(response.tokenExpirationDate);
       updateStayLoggedIn(data.stayLoggedIn);
-      
+
       await appStore.getMyAppsAsync();
       await appStore.getMyRegisteredAppsAsync();
 
