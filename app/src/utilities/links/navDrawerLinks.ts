@@ -19,7 +19,7 @@ export const NavDrawerLinks: Array<MenuItem> = [
   ),
   new MenuItem(
     "/site-admin",
-    "Site Admin",
+    "Site Administration",
     "Go to Site Administration",
     "mdi-layers-outline",
     "_blank",
