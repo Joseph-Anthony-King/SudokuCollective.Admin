@@ -57,6 +57,7 @@ onBeforeMount(async() => {
     userStore.updateUser(user);
   }
   await appStore.getMyAppsAsync();
+  await appStore.getMyRegisteredAppsAsync();
 });
 //#endregion
 </script>
