@@ -7,7 +7,7 @@
       <span class="select-app-title">{{ formattedAppName }}</span>
     </v-card-title>
     <v-card-text>
-      <span class="select-app-title">{{ releaseStatus }}</span>
+      <span class="select-app-text">{{ releaseStatus }}</span>
     </v-card-text>
   </v-card>
 </template>
@@ -73,21 +73,45 @@ const evaluateColor = (value: number): string => {
 };
 </script>
 
-<style scoped>
-.app-button {
-  min-height: 200px;
-  max-height: 200px;
-  min-width: 200px;
-  max-width: 200px;
-  margin-right: 10px;
-  margin-bottom: 30px;
-  cursor: pointer;
-}
+<style scoped lang="scss">
 
 .select-app-title {
   white-space: pre-wrap;
   text-decoration: none !important;
   color: white;
+}
+@media only screen and (max-width: 481px) {
+  .select-app-text {
+    white-space: pre-wrap;
+    text-decoration: none !important;
+    color: white;
+    padding: 0.5rem 1rem;
+  }
+  .app-button {
+    min-height: 170px;
+    max-height: 170px;
+    min-width: 170px;
+    max-width: 170px;
+    margin-right: 10px;
+    margin-bottom: 30px;
+    cursor: pointer;
+  }
+}
+@media only screen and (min-width: 482px) {
+  .select-app-text {
+    white-space: pre-wrap;
+    text-decoration: none !important;
+    color: white;
+  }
+  .app-button {
+    min-height: 200px;
+    max-height: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    margin-right: 10px;
+    margin-bottom: 30px;
+    cursor: pointer;
+  }
 }
 .secondary {
   color: white;
