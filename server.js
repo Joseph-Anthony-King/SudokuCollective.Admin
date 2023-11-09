@@ -35,6 +35,8 @@ if (results['en0'] !== undefined) {
   networkAddress = results['eth0'][0];
 } else if (results['wlo1'] !== undefined) {
   networkAddress = results['wlo1'][0];
+} else if (results['Ethernet'] !== undefined) {
+  networkAddress = results['Ethernet'][0];
 } else {
   networkAddress = results['Wi-Fi'][0];
 }
