@@ -6,18 +6,26 @@ import { IApp } from "@/interfaces/domain/iApp";
 
 export const useAppStore = defineStore("appStore", () => {
   const myApps: Ref<Array<IApp>> = ref([]);
+  const myRegisteredApps: Ref<Array<IApp>> = ref([]);
   const selectedApp: Ref<IApp | null | undefined> = ref(null);
   const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
+  const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myRegisteredApps.value));
   const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() => toRaw(selectedApp.value));
 
   const initializeStore = (): void => {
     myApps.value = [];
+    myRegisteredApps.value = [];
     selectedApp.value = null;
   };
   
-  const getMyAppsAsync = async (): Promise<void> => {
+  const getMyAppsAsync = async (): Promise<boolean> => {
     const response: IServicePayload = await AppsService.getMyAppsAsync();
     myApps.value = response.apps;
+    return response.isSuccess;
+  };
+  const getMyRegisteredAppsAsync = async (): Promise<boolean> => {
+    const response: IServicePayload = await AppsService.getMyRegisteredAppsAsync();
+    myRegisteredApps.value = response.apps;
     return response.isSuccess;
   };
   const updateSelectedApp = (id = 0): void => {
@@ -26,11 +34,14 @@ export const useAppStore = defineStore("appStore", () => {
 
   return {
     myApps,
+    myRegisteredApps,
     selectedApp,
     getMyApps,
+    getMyRegisteredApps,
     getSelectedApp,
     initializeStore,
     getMyAppsAsync,
+    getMyRegisteredAppsAsync,
     updateSelectedApp
   }
 });
