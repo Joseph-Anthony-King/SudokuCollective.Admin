@@ -30,6 +30,7 @@ export class App implements IApp {
   dateCreated: Date | null;
   dateUpdated: Date | null;
   users: User[];
+  isEditing: boolean;
 
   constructor(
     id?: number,
@@ -90,5 +91,6 @@ export class App implements IApp {
     dateCreated ? this.dateCreated = dateCreated : this.dateCreated = null;
     dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = null;
     users ? this.users = users : this.users = [];
+    this.isEditing = false;
   }
 }

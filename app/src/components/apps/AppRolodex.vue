@@ -30,8 +30,6 @@
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { Ref, ref, watch } from "vue";
-import { toast } from "vue3-toastify";
-import "vue3-toastify/dist/index.css";
 import AppButton from "@/components/buttons/AppButton.vue";
 import { useAppStore } from "@/store/appStore";
 import { App } from "@/models/domain/app";
@@ -42,11 +40,11 @@ const selectedApps: Ref<string> = ref("Your Apps");
 const appStore = useAppStore();
 
 const appSelected = (id: number) => {
-  appStore.selectApp(id);
-  toast(`${appStore.getSelectedApp.name} selected...`, {
-    position: toast.POSITION.TOP_CENTER,
-    type: toast.TYPE.SUCCESS,
-  });
+  if (id !== appStore.getSelectedApp?.id) {
+    appStore.updateSelectedApp(id);
+  } else {
+    appStore.updateSelectedApp(0);
+  }
 };
 
 watch(
