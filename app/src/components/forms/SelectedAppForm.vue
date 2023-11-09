@@ -98,10 +98,8 @@ watch(
 //#region Form Logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
-const formTitle: Ref<string> = ref("App");
-const getFormStatus: ComputedRef<boolean> = computed(() => {
-  return props.formStatus;
-});
+const formTitle: ComputedRef<string | null> = computed(() => selectedApp.value.name);
+const getFormStatus: ComputedRef<boolean> = computed(() => props.formStatus);
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
