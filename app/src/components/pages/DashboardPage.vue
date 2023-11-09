@@ -4,7 +4,7 @@
       <v-card-text>
         <v-container fluid>
           <v-card-title class="justify-center text-center">
-            <span class="headline">Your Dashboard</span>
+            <span class="headline">Dashboard</span>
           </v-card-title>
         </v-container>
         <AppRolodex />
@@ -56,8 +56,6 @@ onBeforeMount(async() => {
     user.isLoggingIn = true;
     userStore.updateUser(user);
   }
-  await appStore.getMyAppsAsync();
-  await appStore.getMyRegisteredAppsAsync();
 });
 //#endregion
 </script>
