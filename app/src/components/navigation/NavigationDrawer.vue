@@ -83,7 +83,7 @@ const updateGreeting = () => {
 };
 const updateSiteAdminVisibility = () => {
   const navItemIndex = navDrawerItems.value.findIndex(
-    (item) => item.title === "Site Admin"
+    (item) => item.title === "Site Administration"
   );
   if (navItemIndex !== -1) {
     if (user.value.isSuperUser === true) {
