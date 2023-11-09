@@ -1,7 +1,14 @@
 <template>
   <v-card>
     <v-card-title class="justify-center text-center">
-      <span class="headline">Your Apps</span>
+      <v-col cols="12">
+        <v-select
+          class="headline"
+          color="primary"
+          label="Select"
+          :items="['Your Apps', 'Your Registered Apps']"
+          :model-value="selectedApps"></v-select>
+      </v-col>
     </v-card-title>
     <v-card-text>
       <v-container fluid>
@@ -28,6 +35,7 @@ import { useAppStore } from "@/store/appStore";
 import { App } from "@/models/domain/app";
 
 const apps: Ref<App[]> = ref(useAppStore().getMyApps);
+const selectedApps: Ref<string> = ref("Your Apps");
 
 const appStore = useAppStore();
 
