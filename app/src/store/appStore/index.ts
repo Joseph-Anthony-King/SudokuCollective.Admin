@@ -3,13 +3,12 @@ import { AppsService } from "@/services/appsService"
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { ComputedRef, Ref, computed, ref, toRaw } from "vue";
 import { IApp } from "@/interfaces/domain/iApp";
-import { App } from "@/models/domain/app";
 
 export const useAppStore = defineStore("appStore", () => {
   const myApps: Ref<Array<IApp>> = ref([]);
   const selectedApp: Ref<IApp | null | undefined> = ref(null);
   const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
-  const getSelectedApp: ComputedRef<IApp> = computed(() => selectedApp.value ? selectedApp.value : new App());
+  const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() => toRaw(selectedApp.value));
 
   const initializeStore = (): void => {
     myApps.value = [];
@@ -21,7 +20,7 @@ export const useAppStore = defineStore("appStore", () => {
     myApps.value = response.apps;
     return response.isSuccess;
   };
-  const selectApp = (id = 0): void => {
+  const updateSelectedApp = (id = 0): void => {
     selectedApp.value = id !== 0 && myApps.value.findIndex(a => a.id === id) !== -1 ? myApps.value.find(a => a.id === id) : null;
   };
 
@@ -32,6 +31,6 @@ export const useAppStore = defineStore("appStore", () => {
     getSelectedApp,
     initializeStore,
     getMyAppsAsync,
-    selectApp
+    updateSelectedApp
   }
 });

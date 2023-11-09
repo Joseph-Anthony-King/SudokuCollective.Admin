@@ -29,4 +29,5 @@ export interface IApp {
   dateCreated: Date | null;
   dateUpdated: Date | null;
   users: User[];
+  isEditing: boolean;
 }

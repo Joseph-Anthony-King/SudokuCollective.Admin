@@ -8,17 +8,25 @@
           </v-card-title>
         </v-container>
         <AppRolodex />
+        <SelectedAppForm v-if="selectedApp !== null" />
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
-import AppRolodex from "@/components/apps/AppRolodex.vue"
+import { 
+  Ref, 
+  ref, 
+  onBeforeMount, 
+  watch 
+} from "vue";
+import AppRolodex from "@/components/apps/AppRolodex.vue";
+import SelectedAppForm from "@/components/forms/SelectedAppForm.vue"
 import { useAppStore } from "@/store/appStore";
 import { useUserStore } from "@/store/userStore";
 import { User } from "@/models/domain/user";
+import { App } from "@/models/domain/app";
 
 const props = defineProps({
   action: {
@@ -27,9 +35,21 @@ const props = defineProps({
   },
 });
 
+//#region Instantiate the Stores
 const userStore = useUserStore();
 const appStore = useAppStore();
+//#endregion
 
+//#region Properties
+const selectedApp: Ref<App | null | undefined> = ref(appStore.getSelectedApp);
+
+watch(
+  () => appStore.getSelectedApp,
+  () => selectedApp.value = appStore.getSelectedApp
+);
+//#endregion
+
+//#region Lifecycle Hooks
 onBeforeMount(async() => {
   const user: User = userStore.getUser;
   if (props.action.toLowerCase() === "login") {
@@ -38,4 +58,5 @@ onBeforeMount(async() => {
   }
   await appStore.getMyAppsAsync();
 });
+//#endregion
 </script>
