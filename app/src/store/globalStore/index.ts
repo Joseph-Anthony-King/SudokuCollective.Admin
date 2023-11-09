@@ -2,6 +2,7 @@ import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { AxiosResponse } from "axios";
 import { toast } from 'vue3-toastify';
+import { useAppStore } from "@/store/appStore";
 import { useUserStore } from "@/store/userStore";
 import { LoginService } from "@/services/loginService";
 import router from "@/router";
@@ -82,11 +83,16 @@ export const useGlobalStore = defineStore("globalStore", () => {
   const loginAsync = async (data: ILoginRequestData): Promise<void> => {
     const response: IServicePayload = await LoginService.postLoginAsync(data);
     if (response.isSuccess) {
+      const appStore = useAppStore();
       const userStore = useUserStore();
       userStore.updateUser(response.user);
       updateToken(response.token);
       updateTokenExpirationDate(response.tokenExpirationDate);
       updateStayLoggedIn(data.stayLoggedIn);
+      
+      await appStore.getMyAppsAsync();
+      await appStore.getMyRegisteredAppsAsync();
+
       if (redirectUrl.value !== null) {
         window.location.href = redirectUrl.value;
         updateRedirectUrl();
