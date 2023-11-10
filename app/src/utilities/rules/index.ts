@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RulesMessages } from "@/utilities/rules/rulesMessages";
+import { ComputedRef, computed } from "vue";
 
 export default function () {
   const emailRules = (
@@ -52,6 +53,12 @@ export default function () {
         !!v || RulesMessages.requiredMessage.replace("{{value}}", value),
     ];
   };
+  const urlRules: ComputedRef<((v: string) => string | true)[]> = computed(() => {
+    return [
+      (v: string) =>
+        /^(ht|f)tp(s?):\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-.?,'/\\+&%$#_]*)?$/.test(v) || RulesMessages.urlRegexMessage,
+    ];
+  });
   const userNameRules = (
     invalidUserNames: string[] = new Array<string>(),
     invalidMessage: string | undefined = undefined
@@ -74,6 +81,7 @@ export default function () {
     emailRules,
     passwordRules,
     requiredRules,
+    urlRules,
     userNameRules,
   };
 }

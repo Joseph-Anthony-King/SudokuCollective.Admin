@@ -33,6 +33,7 @@
                 v-model="name"
                 label="Name"
                 prepend-icon="mdi-application"
+                :rules="requiredRules('Name')"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -50,6 +51,7 @@
                 v-model="selectedReleaseEnvironment"
                 label="Please make a selection"
                 prepend-icon="mdi-application"
+                :rules="requiredRules('Release Environment')"
                 :readonly="!selectedApp.isEditing"
                 :items="releaseEnvironments"
                 item-title="label"
@@ -72,6 +74,7 @@
                 prepend-icon="mdi-application"
                 :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.LOCAL && localUrl !== null ? 'mdi-launch' : ''"
                 @click:append="navigateToUrlHandler"
+                :rules="urlRules"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -92,6 +95,7 @@
                 :readonly="!selectedApp.isEditing"
                 :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.QA && qaUrl !== null ? 'mdi-launch' : ''"
                 @click:append="navigateToUrlHandler"
+                :rules="urlRules"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
               ></v-text-field>
@@ -110,6 +114,7 @@
                 prepend-icon="mdi-application"
                 :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.STAGING && stagingUrl !== null ? 'mdi-launch' : ''"
                 @click:append="navigateToUrlHandler"
+                :rules="urlRules"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -129,6 +134,7 @@
                 prepend-icon="mdi-application"
                 :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.PROD && prodUrl !== null ? 'mdi-launch' : ''"
                 @click:append="navigateToUrlHandler"
+                :rules="urlRules"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -147,6 +153,7 @@
                 label="Source Code URL"
                 prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
+                :rules="urlRules"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
               ></v-text-field>
@@ -163,7 +170,6 @@
                 v-model="selectedApp.useCustomSMTPServer"
                 :label="selectedApp.useCustomSMTPServer ? 'Custom SMTP Server in use' : 'Custom SMTP Server is not use'"
                 :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
                 color="primary"
                 v-bind="props"
               ></v-checkbox>
@@ -181,6 +187,7 @@
                 v-model="SMTPServerName"
                 label="SMTP Server Name"
                 prepend-icon="mdi-application"
+                :rules="selectedApp.useCustomSMTPServer ? urlRules : []"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -276,7 +283,6 @@
                 v-model="selectedApp.isActive"
                 :label="selectedApp.isActive ? 'App is currently active' : 'App is currently deactivated'"
                 :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
                 color="primary"
                 v-bind="props"
               ></v-checkbox>
@@ -293,7 +299,6 @@
                 v-model="selectedApp.disableCustomUrls"
                 :label="!selectedApp.disableCustomUrls ? 'Custom Email Confirmation and Password Reset endpoints are active' : 'Custom Email Confirmation and Password Reset endpoints are not active'"
                 :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
                 color="primary"
                 v-bind="props"
               ></v-checkbox>
@@ -344,7 +349,6 @@
                 v-model="selectedApp.permitCollectiveLogins"
                 :label="selectedApp.permitCollectiveLogins ? 'Any sudoku collective user can login' : 'A user must subscribe to your app to login'"
                 :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
                 color="primary"
                 v-bind="props"
               ></v-checkbox>
@@ -361,7 +365,6 @@
                 v-model="selectedApp.permitSuperUserAccess"
                 :label="selectedApp.permitSuperUserAccess ? 'Super users have default access to your app' : 'Super users do not have default access to your app'"
                 :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
                 color="primary"
                 v-bind="props"
               ></v-checkbox>
@@ -369,15 +372,16 @@
             <span>Do Super Users have default access to your app</span>
           </v-tooltip>
           <v-tooltip
+            v-if="!selectedApp.isEditing"
             open-delay="2000"
             location="bottom"
-            :disabled="!selectedApp.isEditing || isSmallViewPort"
+            disabled
           >
             <template v-slot:activator="{ props }">
               <v-text-field
                 v-model="accessDuration"
                 label="Token Access Period"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-calendar-range"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -385,6 +389,45 @@
             </template>
             <span>Access period for authorization tokens</span>
           </v-tooltip>
+          <v-col cols="12" v-if="selectedApp.isEditing">
+          <v-row>
+            <v-tooltip              
+              open-delay="2000"
+              location="bottom"
+            >
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-model="accessDurationMagnitude"
+                  type="number"
+                  label="Token Access Magnitude"
+                  prepend-icon="mdi-clock"
+                  color="primary"
+                  v-bind="props"
+                ></v-text-field>
+              </template>
+              <span>Access magnitude for the authorization token</span>
+            </v-tooltip>
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+            >
+              <template v-slot:activator="{ props }">
+                <v-select
+                  v-model="selectedTimeFrame"
+                  label="Please make a selection"
+                  prepend-icon="mdi-calendar"
+                  :readonly="!selectedApp.isEditing"
+                  :items="timeFrames"
+                  item-title="label"
+                  item-value="value"
+                  single-line
+                  v-bind="props"
+                ></v-select>
+              </template>
+              <span>The effective period for the authorization token</span>
+            </v-tooltip>
+          </v-row>
+          </v-col>
           <v-text-field
             v-model="formattedDateCreated"
             label="Date Created"
@@ -406,6 +449,91 @@
         </v-col>
       </v-row>
       <AvailableActions>
+        <v-row dense>
+          <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="formValid || isSmallViewPort"
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  v-bind="props"
+                  :disabled="formValid"
+                  @click.prevent="
+                    selectedApp.isEditing === false
+                      ? (selectedApp.isEditing = true)
+                      : (confirmEditSubmission = true)"
+                >
+                  {{ submitText }}
+                </v-btn>
+              </template>
+              <span>{{ submitHelperText }}</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="selectedApp.isEditing || isSmallViewPort"
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  v-bind="props"
+                  :disabled="selectedApp.isEditing"
+                  @click="confirmRefresh = true"
+                >
+                  Refresh
+                </v-btn>
+              </template>
+              <span>Pull latest values from the API</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!selectedApp.isEditing || isSmallViewPort"
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  v-bind="props"
+                  :disabled="!selectedApp.isEditing"
+                  @click="cancelHandler($event)"
+                >
+                  Cancel
+                </v-btn>
+              </template>
+              <span>Cancel editing of your app</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="selectedApp.isEditing || selectedApp.id === 1 || isSmallViewPort"
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="red darken-1"
+                  text
+                  v-bind="props"
+                  :disabled="selectedApp.isEditing || selectedApp.id === 1"
+                  @click="confirmDeleteSubmission = true"
+                >
+                  Delete
+                </v-btn>
+              </template>
+              <span>Delete this app</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
       </AvailableActions>
     </v-form>
   </v-container>
@@ -434,6 +562,7 @@ import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAppStore } from "@/store/appStore";
+import { useUserStore } from "@/store/userStore";
 import { useValueStore } from "@/store/valueStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
@@ -441,6 +570,14 @@ import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { App } from '@/models/domain/app';
+import { User } from '@/models/domain/user';
+import rules from "@/utilities/rules/index";
+import commonUtilities from "@/utilities/common";
+
+const { requiredRules, urlRules } = rules();
+const {
+  updateAppProcessingAsync,
+} = commonUtilities();
 
 const props = defineProps({
   formStatus: {
@@ -451,10 +588,12 @@ const props = defineProps({
 
 //#region Instantiate the Stores
 const appStore = useAppStore();
+const userStore = useUserStore();
 const valueStore = useValueStore();
 //#endregion
 
 //#region Properties
+const user: Ref<User> = ref(userStore.getUser);
 const selectedApp: Ref<App> = ref(appStore.getSelectedApp ? appStore.getSelectedApp : new App());
 const name: Ref<string | null> = ref(appStore.getSelectedApp ? appStore.getSelectedApp.name : null);
 const localUrl: Ref<string | null> = ref(appStore.getSelectedApp ? appStore.getSelectedApp.localUrl : null);
@@ -489,6 +628,9 @@ const accessDuration: ComputedRef<string> = computed(() => {
     return "";
   }
 });
+const timeFrames: Ref<DropdownItem[]> = ref(valueStore.getTimeFrames);
+const selectedTimeFrame: Ref<TimeFrame> = ref(appStore.getSelectedApp ? appStore.getSelectedApp.timeFrame : TimeFrame.MINUTES);
+const accessDurationMagnitude: Ref<number> = ref(appStore.getSelectedApp ? appStore.getSelectedApp.accessDuration : 0);
 const formattedDateCreated: ComputedRef<string | null> = computed(() => {
   if (selectedApp.value.dateCreated === undefined) {
     return null;
@@ -515,6 +657,20 @@ const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
         selectedApp.value.dateUpdated
       ).toLocaleTimeString()}`;
     }
+  }
+});
+const submitText: ComputedRef<string> = computed(() => {
+  if (!selectedApp.value.isEditing) {
+    return "Edit";
+  } else {
+    return "Submit";
+  }
+});
+const submitHelperText: ComputedRef<string> = computed(() => {
+  if (!selectedApp.value.isEditing) {
+    return "Edit your App";
+  } else {
+    return "Submit your changes";
   }
 });
 const SMTPServerName: ComputedRef<string | null> = computed(() => selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.smptServer : null);
@@ -563,7 +719,23 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 });
 //#endregion
 
-//#region Handlers
+//#region Action Handlers
+const cancelHandler = (event: Event | null = null): void => {
+  event?.preventDefault();
+  updateAppProcessingAsync(() => {
+    selectedApp.value = appStore.getSelectedApp ? appStore.getSelectedApp : new App();
+    name.value = appStore.getSelectedApp ? appStore.getSelectedApp.name : null;
+    localUrl.value = appStore.getSelectedApp ? appStore.getSelectedApp.localUrl : null;
+    qaUrl.value = appStore.getSelectedApp ? appStore.getSelectedApp.qaUrl : null;
+    stagingUrl.value = appStore.getSelectedApp ? appStore.getSelectedApp.stagingUrl : null;
+    prodUrl.value = appStore.getSelectedApp ? appStore.getSelectedApp.prodUrl : null;
+    sourceCodeUrl.value = appStore.getSelectedApp ? appStore.getSelectedApp.sourceCodeUrl : null;
+    selectedReleaseEnvironment.value = appStore.getSelectedApp ? appStore.getSelectedApp.environment : ReleaseEnvironment.LOCAL;
+    confirmEmailAction.value = appStore.getSelectedApp ? appStore.getSelectedApp.customEmailConfirmationAction : null;
+    resetPasswordAction.value = appStore.getSelectedApp ? appStore.getSelectedApp.customPasswordResetAction : null;
+    selectedApp.value.isEditing = false;
+  });
+};
 const copyLicenseToClipboardHandler = async (): Promise<void> => {
   try {
     if (selectedApp.value?.license !== null && selectedApp.value?.license !== undefined) {
@@ -594,19 +766,48 @@ const navigateToUrlHandler = (): void => {
 //#endregion
 
 //#region Confirm dialog logic
-const confirmDialog: Ref<boolean> = ref(false);
 const isSmallViewPort: Ref<boolean> = ref(true);
 const maxDialogWidth: Ref<string> = ref("auto");
-const confirmTitle: ComputedRef<string | undefined> = computed(() => "App");
-const confirmMessage: ComputedRef<string | undefined> = computed(() => "Message");
+const confirmEditSubmission: Ref<boolean> = ref(false);
+const confirmRefresh: Ref<boolean> = ref(false);
+const confirmDialog: Ref<boolean> = ref(false);
+const confirmDeleteSubmission: Ref<boolean> = ref(false);
+const confirmTitle: ComputedRef<string | undefined> = computed(() => {
+  if (confirmDeleteSubmission.value) {
+    return "Confirm Delete";
+  } else {
+    return undefined;
+  }
+});
+const confirmMessage: ComputedRef<string | undefined> = computed(() => {
+  if (confirmDeleteSubmission.value) {
+    return `Are you sure you want to delete this app ${user.value.userName}?  This action cannot be reversed and all games associated with this app will be deleted as well.`;
+  } else {
+    return undefined;
+  }
+});
+
+watch(
+  () => confirmDeleteSubmission.value,
+  () => {
+    if (confirmDeleteSubmission.value) {
+      confirmDialog.value = confirmDeleteSubmission.value;
+    }
+  }
+);
 
 const actionConfirmedHandler = (event: Event | null = null): void => {
   event?.preventDefault();
   alert("action confirmed...");
 };
-const actionNotConfirmedHandler = (event: Event | null = null): void => {
+const actionNotConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
-  alert("action not confirmed...");
+  await updateAppProcessingAsync(() => {
+    if (confirmDeleteSubmission.value) {
+      confirmDialog.value = false;
+      confirmDeleteSubmission.value = false;
+    }
+  });
 };
 //#endregion
 </script>
