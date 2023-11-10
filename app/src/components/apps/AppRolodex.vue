@@ -33,6 +33,11 @@ import { Ref, ref, watch } from "vue";
 import AppButton from "@/components/buttons/AppButton.vue";
 import { useAppStore } from "@/store/appStore";
 import { App } from "@/models/domain/app";
+import commonUtilities from "@/utilities/common";
+
+const {
+  updateAppProcessingAsync,
+} = commonUtilities();
 
 const apps: Ref<App[]> = ref(useAppStore().getMyApps);
 const selectedApps: Ref<string> = ref("Your Apps");
@@ -52,11 +57,13 @@ watch(
 const appStore = useAppStore();
 
 const appSelected = (id: number) => {
-  if (id !== appStore.getSelectedApp?.id) {
-    appStore.updateSelectedApp(id);
-  } else {
-    appStore.updateSelectedApp(0);
-  }
+  updateAppProcessingAsync(() => {
+    if (id !== appStore.getSelectedApp?.id) {
+      appStore.updateSelectedApp(id);
+    } else {
+      appStore.updateSelectedApp(0);
+    }
+  });
 };
 
 watch(

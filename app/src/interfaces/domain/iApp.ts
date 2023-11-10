@@ -9,8 +9,8 @@ export interface IApp {
   license: string | null;
   ownerId: number;
   localUrl: string | null;
-  stagingUrl: string | null;
   qaUrl: string | null;
+  stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;
   isActive: boolean;
@@ -26,8 +26,8 @@ export interface IApp {
   timeFrame: TimeFrame;
   accessDuration: number;
   displayInGallery: boolean;
-  dateCreated: Date | null;
-  dateUpdated: Date | null;
+  dateCreated: Date | undefined;
+  dateUpdated: Date | undefined;
   users: User[];
   isEditing: boolean;
 }
