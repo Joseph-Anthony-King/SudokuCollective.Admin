@@ -10,8 +10,8 @@ export class App implements IApp {
   license: string | null;
   ownerId: number;
   localUrl: string | null;
-  stagingUrl: string | null;
   qaUrl: string | null;
+  stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;
   isActive: boolean;
@@ -27,8 +27,8 @@ export class App implements IApp {
   timeFrame: TimeFrame;
   accessDuration: number;
   displayInGallery: boolean;
-  dateCreated: Date | null;
-  dateUpdated: Date | null;
+  dateCreated: Date | undefined;
+  dateUpdated: Date | undefined;
   users: User[];
   isEditing: boolean;
 
@@ -38,8 +38,8 @@ export class App implements IApp {
     license?: string,
     ownerId?: number,
     localUrl?: string,
-    stagingUrl?: string,
     qaUrl?: string,
+    stagingUrl?: string,
     prodUrl?: string,
     sourceCodeUrl?: string,
     isActive?: boolean,
@@ -64,8 +64,8 @@ export class App implements IApp {
     license ? this.license = license : this.license = null;
     ownerId ? this.ownerId = ownerId : this.ownerId = 0;
     localUrl ? this.localUrl = localUrl : this.localUrl = null;
-    stagingUrl ? this.stagingUrl = stagingUrl : this.stagingUrl = null;
     qaUrl ? this.qaUrl = qaUrl : this.qaUrl = null;
+    stagingUrl ? this.stagingUrl = stagingUrl : this.stagingUrl = null;
     prodUrl ? this.prodUrl = prodUrl : this.prodUrl = null;
     sourceCodeUrl ? this.sourceCodeUrl = sourceCodeUrl : this.sourceCodeUrl = null;
     isActive ? this.isActive = isActive : this.isActive = false;
@@ -88,8 +88,8 @@ export class App implements IApp {
       this.timeFrame = TimeFrame.NULL;
     accessDuration ? this.accessDuration = accessDuration : this.accessDuration = 0;
     displayInGallery ? this.displayInGallery = displayInGallery : this.displayInGallery = false;
-    dateCreated ? this.dateCreated = dateCreated : this.dateCreated = null;
-    dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = null;
+    dateCreated ? this.dateCreated = dateCreated : this.dateCreated = undefined;
+    dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = undefined;
     users ? this.users = users : this.users = [];
     this.isEditing = false;
   }
