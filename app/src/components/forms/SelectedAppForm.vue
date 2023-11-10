@@ -1,10 +1,7 @@
 <template>
   <v-container>
     <v-card-title class="justify-center text-center">
-      <span v-if="!selectedApp.isActive || appUrl === null" class="headline">{{ formTitle }}</span>
-      <span v-if="selectedApp.isActive && appUrl !== null" class="headline">
-        <a :href="appUrl" target="_blank" :title="formTitle ? formTitle : 'Selected App'">{{ formTitle }}</a>
-      </span>
+      <span class="headline">{{ formTitle }}</span>
     </v-card-title>
     <v-form v-model="formValid" ref="form" onsubmit="event.preventDefault();">
       <v-row>
@@ -22,7 +19,7 @@
             label="License"
             prepend-icon="mdi-application"
             append-icon="mdi-content-copy"
-            @click:append="copyLicenseToClipboard"
+            @click:append="copyLicenseToClipboardHandler"
             :readonly="!selectedApp.isEditing"
             :disabled="selectedApp.isEditing"
           ></v-text-field>
@@ -53,6 +50,8 @@
                 v-model="localUrl"
                 label="Local URL"
                 prepend-icon="mdi-application"
+                :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.LOCAL && localUrl !== null ? 'mdi-launch' : ''"
+                @click:append="navigateToUrlHandler"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -71,6 +70,8 @@
                 label="Quality Assurance URL"
                 prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
+                :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.QA && qaUrl !== null ? 'mdi-launch' : ''"
+                @click:append="navigateToUrlHandler"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
               ></v-text-field>
@@ -87,6 +88,8 @@
                 v-model="stagingUrl"
                 label="Staging URL"
                 prepend-icon="mdi-application"
+                :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.STAGING && stagingUrl !== null ? 'mdi-launch' : ''"
+                @click:append="navigateToUrlHandler"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -104,6 +107,8 @@
                 v-model="prodUrl"
                 label="Production URL"
                 prepend-icon="mdi-application"
+                :append-icon="selectedApp.isActive && selectedReleaseEnvironment === ReleaseEnvironment.PROD && prodUrl !== null ? 'mdi-launch' : ''"
+                @click:append="navigateToUrlHandler"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"
@@ -444,8 +449,10 @@ const props = defineProps({
   },
 });
 
+//#region Instantiate the Stores
 const appStore = useAppStore();
 const valueStore = useValueStore();
+//#endregion
 
 //#region Properties
 const selectedApp: Ref<App> = ref(appStore.getSelectedApp ? appStore.getSelectedApp : new App());
@@ -554,7 +561,10 @@ const getFormStatus: ComputedRef<boolean> = computed(() => props.formStatus);
 const resetFormStatus: ComputedRef<boolean> = computed(() => {
   return !props.formStatus;
 });
-const copyLicenseToClipboard = async () => {
+//#endregion
+
+//#region Handlers
+const copyLicenseToClipboardHandler = async (): Promise<void> => {
   try {
     if (selectedApp.value?.license !== null && selectedApp.value?.license !== undefined) {
       await navigator.clipboard.writeText(selectedApp.value.license);
@@ -570,6 +580,17 @@ const copyLicenseToClipboard = async () => {
     });
   }
 };
+const navigateToUrlHandler = (): void => {
+  if (selectedReleaseEnvironment.value === ReleaseEnvironment.LOCAL) {
+    window.open(localUrl.value?.toString(), '_blank');
+  } else if (selectedReleaseEnvironment.value === ReleaseEnvironment.QA) {
+    window.open(qaUrl.value?.toString(), '_blank');
+  } else if (selectedReleaseEnvironment.value === ReleaseEnvironment.STAGING) {
+    window.open(stagingUrl.value?.toString(), '_blank');
+  } else {
+    window.open(prodUrl.value?.toString(), '_blank');
+  }
+}
 //#endregion
 
 //#region Confirm dialog logic
