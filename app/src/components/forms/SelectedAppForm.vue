@@ -46,6 +46,26 @@
             :disabled="!selectedApp.isEditing || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
+              <v-select
+                v-model="selectedReleaseEnvironment"
+                label="Please make a selection"
+                prepend-icon="mdi-application"
+                :readonly="!selectedApp.isEditing"
+                :items="releaseEnvironments"
+                item-title="label"
+                item-value="value"
+                single-line
+                v-bind="props"
+              ></v-select>
+            </template>
+            <span>The currently selected development environment</span>
+          </v-tooltip>
+          <v-tooltip
+            open-delay="2000"
+            location="bottom"
+            :disabled="!selectedApp.isEditing || isSmallViewPort"
+          >
+            <template v-slot:activator="{ props }">
               <v-text-field
                 v-model="localUrl"
                 label="Local URL"
@@ -132,23 +152,6 @@
               ></v-text-field>
             </template>
             <span>URL hosting your Source Control</span>
-          </v-tooltip>
-          <v-tooltip
-            open-delay="2000"
-            location="bottom"
-            :disabled="!selectedApp.isEditing || isSmallViewPort"
-          >
-            <template v-slot:activator="{ props }">
-              <v-checkbox
-                v-model="selectedApp.isActive"
-                :label="selectedApp.isActive ? 'App is currently active' : 'App is currently deactivated'"
-                :readonly="!selectedApp.isEditing"
-                :disabled="selectedApp.isEditing"
-                color="primary"
-                v-bind="props"
-              ></v-checkbox>
-            </template>
-            <span>Activate or deactive your app</span>
           </v-tooltip>
           <v-tooltip
             open-delay="2000"
@@ -269,19 +272,16 @@
             :disabled="!selectedApp.isEditing || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
-              <v-select
-                v-model="selectedReleaseEnvironment"
-                label="Please make a selection"
-                prepend-icon="mdi-application"
+              <v-checkbox
+                v-model="selectedApp.isActive"
+                :label="selectedApp.isActive ? 'App is currently active' : 'App is currently deactivated'"
                 :readonly="!selectedApp.isEditing"
-                :items="releaseEnvironments"
-                item-title="label"
-                item-value="value"
-                single-line
+                :disabled="selectedApp.isEditing"
+                color="primary"
                 v-bind="props"
-              ></v-select>
+              ></v-checkbox>
             </template>
-            <span>The currently selected development environment</span>
+            <span>Activate or deactive your app</span>
           </v-tooltip>
           <v-tooltip
             open-delay="2000"
