@@ -1,6 +1,6 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
-import { Methods } from "@/store/sudokuStore/common";
+import { Methods } from "@/stores/sudokuStore/common";
 import { GamesService } from "@/services/gamesService";
 import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
 import { DropdownItem } from "@/models/infrastructure/dropdownItem";

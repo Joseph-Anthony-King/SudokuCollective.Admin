@@ -1,6 +1,6 @@
 import { GameState } from "@/enums/gameState";
 import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { useSudokuStore } from "@/store/sudokuStore";
+import { useSudokuStore } from "@/stores/sudokuStore";
 
 const oddRegionIndexes: Array<{ row: number; cell: number }> = [
   { row: 0, cell: 0 },

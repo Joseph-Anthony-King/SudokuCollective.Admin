@@ -19,8 +19,8 @@
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index";
-import { useUserStore } from "@/store/userStore";
-import { useValueStore } from "@/store/valueStore";
+import { useUserStore } from "@/stores/userStore";
+import { useValueStore } from "@/stores/valueStore";
 import HeroWidget from "@/components/widgets/common/HeroWidget.vue";
 import commonUtitlities from "@/utilities/common";
 
@@ -82,3 +82,4 @@ watch(
   padding-bottom: 50px;
 }
 </style>
+@/stores/userStore@/stores/valueStore

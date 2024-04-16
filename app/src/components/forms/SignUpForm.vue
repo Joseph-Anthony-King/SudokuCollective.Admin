@@ -219,10 +219,10 @@ import {
 } from "vue";
 import { VForm, VTextField } from "vuetify/components";
 import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/store/globalStore";
-import { useServiceFailStore } from "@/store/serviceFailStore";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { useUserStore } from "@/stores/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import { SignupRequestData } from "@/models/requests/signupRequestData";
@@ -438,3 +438,4 @@ onUnmounted(() => {
 });
 //#endregion
 </script>
+@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

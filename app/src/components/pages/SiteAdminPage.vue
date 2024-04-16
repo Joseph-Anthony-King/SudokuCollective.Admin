@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/stores/userStore";
 import { User } from "@/models/domain/user";
 
 const props = defineProps({
@@ -34,3 +34,4 @@ onBeforeMount(() => {
   }
 });
 </script>
+@/stores/userStore
