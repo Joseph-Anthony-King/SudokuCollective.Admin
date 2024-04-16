@@ -6,7 +6,7 @@
 import { onBeforeMount, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/stores/userStore";
 import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
 import commonUtitlities from "@/utilities/common";
 import { User } from "@/models/domain/user";
@@ -50,3 +50,4 @@ onBeforeMount(() => {
   }
 });
 </script>
+@/stores/userStore

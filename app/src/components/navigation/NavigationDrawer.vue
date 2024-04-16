@@ -36,7 +36,7 @@
 import { Ref, ref, watch } from "vue";
 import { onBeforeMount } from "vue";
 import { onBeforeUpdate } from "vue";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/stores/userStore";
 import { NavDrawerLinks } from "@/utilities/links/navDrawerLinks";
 import { User } from "@/models/domain/user";
 import { MenuItem } from "@/models/infrastructure/menuItem";
@@ -154,3 +154,4 @@ onBeforeUpdate(() => {
   padding-bottom: 5px;
 }
 </style>
+@/stores/userStore

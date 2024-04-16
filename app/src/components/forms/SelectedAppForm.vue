@@ -561,9 +561,9 @@ import { ComputedRef, computed, Ref, ref, watch } from 'vue';
 import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-import { useAppStore } from "@/store/appStore";
-import { useUserStore } from "@/store/userStore";
-import { useValueStore } from "@/store/valueStore";
+import { useAppStore } from "@/stores/appStore";
+import { useUserStore } from "@/stores/userStore";
+import { useValueStore } from "@/stores/valueStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
@@ -811,3 +811,4 @@ const actionNotConfirmedHandler = async (event: Event | null = null): Promise<vo
 };
 //#endregion
 </script>
+@/stores/appStore@/stores/userStore@/stores/valueStore

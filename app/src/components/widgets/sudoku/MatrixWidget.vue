@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount, watch } from "vue";
-import { useSudokuStore } from "@/store/sudokuStore";
+import { useSudokuStore } from "@/stores/sudokuStore";
 import {
   obtainMatrix,
   applyOddRegion,
@@ -430,3 +430,4 @@ onBeforeMount(() => {
   color: yellow !important;
 }
 </style>
+@/stores/sudokuStore

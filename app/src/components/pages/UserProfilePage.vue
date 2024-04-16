@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/stores/userStore";
 import UserProfileForm from "@/components/forms/UserProfileForm.vue";
 import { User } from "@/models/domain/user";
 
@@ -33,3 +33,4 @@ onBeforeMount(() => {
   }
 });
 </script>
+@/stores/userStore

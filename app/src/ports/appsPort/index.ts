@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Endpoints } from "./endpoints";
-import { useGlobalStore } from "@/store/globalStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useUserStore } from "@/stores/userStore";
 
 export class AppsPort {
   static async getMyAppsAsync(): Promise<AxiosResponse | AxiosError> {

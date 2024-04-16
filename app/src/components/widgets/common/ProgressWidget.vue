@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { ComputedRef, computed, Ref, ref, onMounted, onUnmounted } from "vue";
-import { useGlobalStore } from "@/store/globalStore";
+import { useGlobalStore } from "@/stores/globalStore";
 
 //#region Instantiate the Stores
 const globalStore = useGlobalStore();
@@ -171,3 +171,4 @@ onUnmounted(() => {
   }
 }
 </style>
+@/stores/globalStore

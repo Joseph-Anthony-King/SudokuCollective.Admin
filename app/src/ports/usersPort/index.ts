@@ -2,8 +2,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Endpoints } from "@/ports/usersPort/endpoints";
 import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
 import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
-import { useGlobalStore } from "@/store/globalStore";
-import { useUserStore } from "@/store/userStore/index";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useUserStore } from "@/stores/userStore/index";
 
 export class UsersPort {
   static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {

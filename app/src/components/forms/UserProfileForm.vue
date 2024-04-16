@@ -412,7 +412,7 @@ import router from "@/router/index";
 import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/stores/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import { UpdateUserRequestData } from "@/models/requests/updateUserRequestData";
@@ -987,3 +987,4 @@ onUnmounted(() => {
 });
 //#endregion
 </script>
+@/stores/userStore

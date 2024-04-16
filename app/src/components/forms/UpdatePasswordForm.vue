@@ -125,8 +125,8 @@ import { ComputedRef, computed, Ref, ref, toRaw } from 'vue';
 import { VForm, VTextField } from "vuetify/components";
 import { toast } from "vue3-toastify";
 import router from "@/router/index";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
-import { useUserStore } from "@/store/userStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { useUserStore } from "@/stores/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import { StoreType } from '@/enums/storeTypes';
 import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
@@ -229,3 +229,4 @@ const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
 };
 //#endregion
 </script>
+@/stores/formStores/signUpFormStore@/stores/userStore

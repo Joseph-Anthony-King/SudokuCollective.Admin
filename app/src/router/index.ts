@@ -6,9 +6,9 @@ import {
   RouteRecordRaw,
 } from "vue-router";
 import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/store/globalStore";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { useUserStore } from "@/stores/userStore";
 import { StoreType } from "@/enums/storeTypes";
 import commonUtilities from "@/utilities/common";
 
