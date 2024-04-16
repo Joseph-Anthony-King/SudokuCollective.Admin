@@ -128,10 +128,10 @@ import {
   toRaw,
 } from "vue";
 import { VForm } from "vuetify/components";
-import { useGlobalStore } from "@/store/globalStore";
-import { useLoginFormStore } from "@/store/forms/loginFormStore";
-import { useServiceFailStore } from "@/store/serviceFailStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useLoginFormStore } from "@/stores/formStores/loginFormStore";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { useUserStore } from "@/stores/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import commonUtilities from "@/utilities/common";
@@ -288,3 +288,4 @@ onUnmounted(() => {
 });
 //#endregion
 </script>
+@/stores/formStores/loginFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

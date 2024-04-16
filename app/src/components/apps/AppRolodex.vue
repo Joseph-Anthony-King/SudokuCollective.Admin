@@ -31,7 +31,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { Ref, ref, watch } from "vue";
 import AppButton from "@/components/buttons/AppButton.vue";
-import { useAppStore } from "@/store/appStore";
+import { useAppStore } from "@/stores/appStore";
 import { App } from "@/models/domain/app";
 import commonUtilities from "@/utilities/common";
 
@@ -78,3 +78,4 @@ watch(
   overflow-x: auto;
 }
 </style>
+@/stores/appStore

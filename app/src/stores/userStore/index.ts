@@ -1,8 +1,8 @@
 import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
 import { defineStore } from "pinia";
-import { useConfirmEmailStore } from "@/store/confirmEmailStore";
-import { useGlobalStore } from "@/store/globalStore";
-import { useOkDialogStore } from "@/store/okDialogStore";
+import { useConfirmEmailStore } from "@/stores/confirmEmailStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useOkDialogStore } from "@/stores/okDialogStore";
 import { LoginService } from "@/services/loginService";
 import { SignupService } from "@/services/signupService";
 import { UsersService } from "@/services/usersService";

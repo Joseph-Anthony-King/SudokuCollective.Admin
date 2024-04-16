@@ -2,13 +2,13 @@
 import { Ref, ComputedRef, computed } from "vue";
 import { RouteLocationNormalizedLoaded, Router } from "vue-router";
 import { toast } from "vue3-toastify";
-import { useAppStore } from "@/store/appStore";
-import { useGlobalStore } from "@/store/globalStore";
-import { useLoginFormStore } from "@/store/forms/loginFormStore";
-import { useServiceFailStore } from "@/store/serviceFailStore";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
-import { useSudokuStore } from "@/store/sudokuStore";
-import { useUserStore } from "@/store/userStore";
+import { useAppStore } from "@/stores/appStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useLoginFormStore } from "@/stores/formStores/loginFormStore";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { useSudokuStore } from "@/stores/sudokuStore";
+import { useUserStore } from "@/stores/userStore";
 import { StoreType } from "@/enums/storeTypes";
 
 export default function () {

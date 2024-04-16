@@ -113,14 +113,14 @@ import router from "@/router/index";
 import vuetify from "@/plugins/vuetify";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-import { useConfirmEmailStore } from "@/store/confirmEmailStore";
-import { useGlobalStore } from "@/store/globalStore";
-import { useOkDialogStore } from "@/store/okDialogStore";
-import { useServiceFailStore } from "@/store/serviceFailStore";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore"
-import { useSudokuStore } from "@/store/sudokuStore";
-import { useUserStore } from "@/store/userStore";
-import { useValueStore } from "@/store/valueStore";
+import { useConfirmEmailStore } from "@/stores/confirmEmailStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useOkDialogStore } from "@/stores/okDialogStore";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore"
+import { useSudokuStore } from "@/stores/sudokuStore";
+import { useUserStore } from "@/stores/userStore";
+import { useValueStore } from "@/stores/valueStore";
 import AppBar from "@/components/navigation/AppBar.vue";
 import FooterNav from "@/components/navigation/FooterNav.vue";
 import NavigationDrawer from "@/components/navigation/NavigationDrawer.vue";
@@ -454,3 +454,4 @@ export default defineComponent({
 <style lang="scss">
 @import "@/assets/styles/site.scss";
 </style>
+@/stores/confirmEmailStore@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/okDialogStore@/stores/serviceFailStore@/stores/sudokuStore@/stores/userStore@/stores/valueStore

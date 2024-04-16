@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from "axios";
-import { useGlobalStore } from "@/store/globalStore/index";
-import { useServiceFailStore } from "@/store/serviceFailStore";
+import { useGlobalStore } from "@/stores/globalStore/index";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
 
 export class StaticServiceMethods {
   static processFailedResponse(response: AxiosResponse): void {

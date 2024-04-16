@@ -23,8 +23,8 @@ import {
 } from "vue";
 import AppRolodex from "@/components/apps/AppRolodex.vue";
 import SelectedAppForm from "@/components/forms/SelectedAppForm.vue"
-import { useAppStore } from "@/store/appStore";
-import { useUserStore } from "@/store/userStore";
+import { useAppStore } from "@/stores/appStore";
+import { useUserStore } from "@/stores/userStore";
 import { User } from "@/models/domain/user";
 import { App } from "@/models/domain/app";
 
@@ -59,3 +59,4 @@ onBeforeMount(async() => {
 });
 //#endregion
 </script>
+@/stores/appStore@/stores/userStore

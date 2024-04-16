@@ -83,8 +83,8 @@
 
 <script setup lang="ts">
 import { Ref, ref, ComputedRef, computed, toRaw, watch } from "vue";
-import { useSudokuStore } from "@/store/sudokuStore";
-import { useValueStore } from "@/store/valueStore";
+import { useSudokuStore } from "@/stores/sudokuStore";
+import { useValueStore } from "@/stores/valueStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
 import { GameState } from "@/enums/gameState";
@@ -250,3 +250,4 @@ watch(
   margin: 100px 0 100px 0;
 }
 </style>
+@/stores/sudokuStore@/stores/valueStore

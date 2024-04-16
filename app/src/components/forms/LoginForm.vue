@@ -176,11 +176,11 @@ import {
 } from "vue";
 import { VForm } from "vuetify/components";
 import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/store/globalStore";
-import { useLoginFormStore } from "@/store/forms/loginFormStore";
-import { useServiceFailStore } from "@/store/serviceFailStore";
-import { useSignUpFormStore } from "@/store/forms/signUpFormStore";
-import { useUserStore } from "@/store/userStore";
+import { useGlobalStore } from "@/stores/globalStore";
+import { useLoginFormStore } from "@/stores/formStores/loginFormStore";
+import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { useUserStore } from "@/stores/userStore";
 import AvailableActions from "@/components/buttons/AvailableActions.vue";
 import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 import { LoginRequestData } from "@/models/requests/loginRequestData";
@@ -433,3 +433,4 @@ onUnmounted(() => {
 });
 //#endregion
 </script>
+@/stores/formStores/loginFormStore@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

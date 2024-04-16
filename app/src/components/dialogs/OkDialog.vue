@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { Ref, ref } from "vue";
-import { useOkDialogStore } from "@/store/okDialogStore";
+import { useOkDialogStore } from "@/stores/okDialogStore";
 
 const emit = defineEmits(["close-ok-dialog"]);
 
@@ -36,3 +36,4 @@ const close = (event: Event | undefined = undefined): void => {
   emit("close-ok-dialog", undefined, undefined);
 };
 </script>
+@/stores/okDialogStore

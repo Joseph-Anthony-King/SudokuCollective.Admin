@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ComputedRef, Ref, computed, ref } from 'vue';
-import { useConfirmEmailStore } from "@/store/confirmEmailStore";
+import { useConfirmEmailStore } from "@/stores/confirmEmailStore";
 import { EmailConfirmationType } from '@/enums/emailConfirmationType';
 
 const emit = defineEmits(["close-email-confirmed-widget"]);
@@ -72,3 +72,4 @@ const close = (event: Event | undefined = undefined): void => {
   emit("close-email-confirmed-widget", undefined, undefined);
 };
 </script>
+@/stores/confirmEmailStore
