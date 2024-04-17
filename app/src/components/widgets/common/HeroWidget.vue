@@ -6,12 +6,7 @@
           <h1 class="text-center centered-welcome-message text-padding">
             {{ headline }}
           </h1>
-          <v-img
-            src="/images/logo.png"
-            class="my-3 centered-logo"
-            contain
-            height="200"
-          />
+          <v-img src="/images/logo.png" class="my-3 centered-logo" contain height="200" />
         </v-col>
       </v-row>
       <slot></slot>
@@ -20,11 +15,13 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 const props = defineProps({
   headline: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 </script>
@@ -51,7 +48,7 @@ const props = defineProps({
   border: 0;
   border-color: transparent;
   min-height: 500px;
-  background-image: url("@/assets/banner.jpg");
+  background-image: url('@/assets/banner.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;

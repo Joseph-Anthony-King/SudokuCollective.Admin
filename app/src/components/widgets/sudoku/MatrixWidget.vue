@@ -1,7 +1,5 @@
 <template>
-  <v-card-title class="justify-center text-center"
-    >Sudoku Collective</v-card-title
-  >
+  <v-card-title class="justify-center text-center">Sudoku Collective</v-card-title>
   <div>
     <v-row
       v-for="(row, rowIndex) in matrix"
@@ -28,15 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, watch } from "vue";
-import { useSudokuStore } from "@/stores/sudokuStore";
-import {
-  obtainMatrix,
-  applyOddRegion,
-  applyTextColor,
-} from "@/components/widgets/sudoku/common";
-import { GameState } from "@/enums/gameState";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { ref, onBeforeMount, watch } from 'vue';
+import { useSudokuStore } from '@/stores/sudokuStore';
+import { obtainMatrix, applyOddRegion, applyTextColor } from '@/components/widgets/sudoku/common';
+import { GameState } from '@/enums/gameState';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
 //#region Instantiate the Stores
 const sudokuStore = useSudokuStore();
@@ -48,10 +42,7 @@ let gameState: DropdownItem | null = sudokuStore.getGameState;
 //#endregion
 
 //#region Actions
-const applyOddRegionStyling = (
-  rowIndex: number,
-  cellIndex: number
-): boolean => {
+const applyOddRegionStyling = (rowIndex: number, cellIndex: number): boolean => {
   return applyOddRegion(rowIndex, cellIndex);
 };
 const applyTextColorStyling = (rowIndex: number, cellIndex: number): string => {
@@ -61,10 +52,9 @@ const validateEntry = (rowIndex: number, cellIndex: number): void => {
   var entry = parseInt(matrix.value[rowIndex][cellIndex]);
 
   if (entry < 1 || entry > 9) {
-    matrix.value[rowIndex][cellIndex] = "";
+    matrix.value[rowIndex][cellIndex] = '';
   } else {
-    matrix.value[rowIndex][cellIndex] =
-      matrix.value[rowIndex][cellIndex].toString();
+    matrix.value[rowIndex][cellIndex] = matrix.value[rowIndex][cellIndex].toString();
     const sudoku = Array<Array<string>>(9);
     for (let i = 0; i < 9; i++) {
       sudoku[i] = [];
@@ -83,7 +73,7 @@ const isReadOnly = (rowIndex: number, cellIndex: number): boolean => {
   if (gameState !== null) {
     if (gameState?.value === GameState.PLAYGAME) {
       const initialGame = sudokuStore.getInitialGame;
-      if (initialGame[rowIndex][cellIndex] === "") {
+      if (initialGame[rowIndex][cellIndex] === '') {
         return false;
       } else {
         return true;
@@ -105,7 +95,7 @@ watch(
   () => {
     gameState = sudokuStore.getGameState;
     matrix.value = obtainMatrix();
-  }
+  },
 );
 watch(
   () => sudokuStore.getGame,
@@ -121,7 +111,7 @@ watch(
         }
       }
     }
-  }
+  },
 );
 watch(
   () => sudokuStore.getPuzzle,
@@ -137,7 +127,7 @@ watch(
         }
       }
     }
-  }
+  },
 );
 watch(
   () => sudokuStore.getSolution,
@@ -153,7 +143,7 @@ watch(
         }
       }
     }
-  }
+  },
 );
 //#endregion
 
@@ -409,7 +399,10 @@ onBeforeMount(() => {
   flex-shrink: auto;
 }
 .sudoku-cell
-  :deep(input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button) {
+  :deep(
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button
+  ) {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
@@ -430,4 +423,3 @@ onBeforeMount(() => {
   color: yellow !important;
 }
 </style>
-@/stores/sudokuStore

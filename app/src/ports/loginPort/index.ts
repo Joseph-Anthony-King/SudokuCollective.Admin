@@ -1,28 +1,28 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { Endpoints } from "@/ports/loginPort/endpoints";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
+import axios, { AxiosError, type AxiosResponse } from 'axios';
+import { Endpoints } from '@/ports/loginPort/endpoints';
+import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 
 export class LoginPort {
   static async postLoginAsync(data: ILoginRequestData): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "post",
+        method: 'post',
         url: `${Endpoints.loginEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           userName: data.userName,
           password: data.password,
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -31,22 +31,22 @@ export class LoginPort {
   static async postConfirmUserNameAsync(email: string): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "post",
+        method: 'post',
         url: `${Endpoints.confirmUserNameEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           email: email,
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }

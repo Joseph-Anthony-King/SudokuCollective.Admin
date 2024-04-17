@@ -4,7 +4,7 @@ export class Methods {
     for (let i = 0; i < 9; i++) {
       matrix[i] = [];
       for (let j = 0; j < 9; j++) {
-        matrix[i][j] = "";
+        matrix[i][j] = '';
       }
     }
     return matrix;

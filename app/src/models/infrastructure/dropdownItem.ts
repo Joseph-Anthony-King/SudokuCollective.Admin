@@ -1,4 +1,4 @@
-import { IDropdownItem } from "@/interfaces/infrastructure/iDropdownItem";
+import type { IDropdownItem } from '@/interfaces/infrastructure/iDropdownItem';
 
 export class DropdownItem implements IDropdownItem {
   label: string;
@@ -6,7 +6,7 @@ export class DropdownItem implements IDropdownItem {
   appliesTo: string[];
 
   constructor(label?: string, value?: number, appliesTo?: string[]) {
-    this.label = label ? label : "";
+    this.label = label ? label : '';
     this.value = value ? value : 0;
     this.appliesTo = appliesTo ? appliesTo : [];
   }

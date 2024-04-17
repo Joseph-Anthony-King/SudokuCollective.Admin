@@ -1,7 +1,7 @@
-import { ReleaseEnvironment } from "@/enums/releaseEnvironment";
-import { TimeFrame } from "@/enums/timeFrame";
-import { ISmtpServerSettings } from "@/interfaces/domain/iSmtpServerSettings";
-import { User } from "@/models/domain/user";
+import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+import { TimeFrame } from '@/enums/timeFrame';
+import type { ISmtpServerSettings } from '@/interfaces/domain/iSmtpServerSettings';
+import { User } from '@/models/domain/user';
 
 export interface IApp {
   id: number;

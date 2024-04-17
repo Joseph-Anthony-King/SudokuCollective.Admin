@@ -1,13 +1,13 @@
-import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
-import { defineStore } from "pinia";
-import { ValuesService } from "@/services/valuesService";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { GameStates } from "@/utilities/dropdowns/gameStates";
-import { Difficulty } from "@/models/domain/difficulty";
-import { GalleryApp } from "@/models/domain/galleryApp";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
+import { ValuesService } from '@/services/valuesService';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { GameStates } from '@/utilities/dropdowns/gameStates';
+import { Difficulty } from '@/models/domain/difficulty';
+import { GalleryApp } from '@/models/domain/galleryApp';
 
-export const useValueStore = defineStore("valueStore", () => {
+export const useValueStore = defineStore('valueStore', () => {
   const difficulties: Ref<Array<Difficulty> | null> = ref(null);
   const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);
   const sortValues: Ref<Array<DropdownItem> | null> = ref(null);
@@ -18,36 +18,27 @@ export const useValueStore = defineStore("valueStore", () => {
   const storeExpirationDate: Ref<Date> = ref(new Date());
 
   const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>
-    difficulties.value !== null
-      ? toRaw(difficulties.value)
-      : new Array<Difficulty>()
+    difficulties.value !== null ? toRaw(difficulties.value) : new Array<Difficulty>(),
   );
-  const getReleaseEnvironments: ComputedRef<Array<DropdownItem>> = computed(
-    () =>
-      releaseEnvironments.value !== null
-        ? toRaw(releaseEnvironments.value)
-        : new Array<DropdownItem>()
+  const getReleaseEnvironments: ComputedRef<Array<DropdownItem>> = computed(() =>
+    releaseEnvironments.value !== null
+      ? toRaw(releaseEnvironments.value)
+      : new Array<DropdownItem>(),
   );
   const getSortValues: ComputedRef<Array<DropdownItem>> = computed(() =>
-    sortValues.value !== null
-      ? toRaw(sortValues.value)
-      : new Array<DropdownItem>()
+    sortValues.value !== null ? toRaw(sortValues.value) : new Array<DropdownItem>(),
   );
   const getTimeFrames: ComputedRef<Array<DropdownItem>> = computed(() =>
-    timeFrames.value !== null
-      ? toRaw(timeFrames.value)
-      : new Array<DropdownItem>()
+    timeFrames.value !== null ? toRaw(timeFrames.value) : new Array<DropdownItem>(),
   );
   const getGameStates: ComputedRef<Array<DropdownItem>> = computed(() =>
-    gameStates.value !== null
-      ? toRaw(gameStates.value)
-      : new Array<DropdownItem>()
+    gameStates.value !== null ? toRaw(gameStates.value) : new Array<DropdownItem>(),
   );
   const getGallery: ComputedRef<Array<GalleryApp>> = computed(() =>
-    gallery.value !== null ? toRaw(gallery.value) : new Array<GalleryApp>()
+    gallery.value !== null ? toRaw(gallery.value) : new Array<GalleryApp>(),
   );
   const getMissionStatement: ComputedRef<string> = computed(() =>
-    missionStatement.value ? toRaw(missionStatement.value) : ""
+    missionStatement.value ? toRaw(missionStatement.value) : '',
   );
 
   const initializeStoreAsync = async (): Promise<void> => {

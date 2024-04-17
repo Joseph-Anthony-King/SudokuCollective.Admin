@@ -1,6 +1,6 @@
-NODE_ENV=staging
-VUE_APP_ID=[Your value here]
-VUE_APP_LICENSE=[Your value here]
-VUE_APP_API_URL=[Your value here]
-VUE_APP_CACHE_KEY=[Your value here]
-VUE_APP_CACHE_SECRET=[Your value here]
+VITE_APP_ENV=staging
+VITE_APP_ID=[Your value here]
+VITE_APP_LICENSE=[Your value here]
+VITE_APP_API_URL=[Your value here]
+VITE_APP_CACHE_KEY=[Your value here]
+VITE_APP_CACHE_SECRET=[Your value here]

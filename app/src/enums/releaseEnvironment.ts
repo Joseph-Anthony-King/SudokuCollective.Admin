@@ -1,7 +1,7 @@
-export enum ReleaseEnvironment { 
-	NULL,
-	LOCAL,
-	QA,
-	STAGING,
-	PROD
+export enum ReleaseEnvironment {
+  NULL,
+  LOCAL,
+  QA,
+  STAGING,
+  PROD,
 }

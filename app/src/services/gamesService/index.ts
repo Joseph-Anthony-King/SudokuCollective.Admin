@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { AxiosResponse, AxiosError } from "axios";
-import { GamesPort } from "@/ports/gamesPort";
-import { SolutionsPort } from "@/ports/solutionsPort";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { ISudokuRequestData } from "@/interfaces/requests/iSudokuRequestData";
-import { SudokuRequestData } from "@/models/requests/sudokuRequestData";
-import { StaticServiceMethods } from "@/services/common";
+import { type AxiosResponse, AxiosError } from 'axios';
+import { GamesPort } from '@/ports/gamesPort';
+import { SolutionsPort } from '@/ports/solutionsPort';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
+import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
+import { StaticServiceMethods } from '@/services/common';
 
 export class GamesService {
   static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null =
-        StaticServiceMethods.numberCannotBeZero(difficultyLevel);
+      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(difficultyLevel);
 
       if (idIsZero !== null) {
         throw idIsZero;
@@ -26,7 +25,7 @@ export class GamesService {
         for (let i = 0; i < 9; i++) {
           game[i] = [];
           for (let j = 0; j < 9; j++) {
-            game[i][j] = "";
+            game[i][j] = '';
           }
         }
         let rowIndex = 0;
@@ -43,8 +42,8 @@ export class GamesService {
         result.game = game;
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -61,7 +60,7 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix)
+      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix);
 
       if (matrixNotValid !== null) {
         throw matrixNotValid;
@@ -72,7 +71,7 @@ export class GamesService {
       for (let i = 0; i < 9; i++) {
         if (i === 0) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.firstRow[j] = parseInt(matrix[i][j]);
             } else {
               data.firstRow[j] = 0;
@@ -80,7 +79,7 @@ export class GamesService {
           }
         } else if (i === 1) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.secondRow[j] = parseInt(matrix[i][j]);
             } else {
               data.secondRow[j] = 0;
@@ -88,7 +87,7 @@ export class GamesService {
           }
         } else if (i === 2) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.thirdRow[j] = parseInt(matrix[i][j]);
             } else {
               data.thirdRow[j] = 0;
@@ -96,7 +95,7 @@ export class GamesService {
           }
         } else if (i === 3) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.fourthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.fourthRow[j] = 0;
@@ -104,7 +103,7 @@ export class GamesService {
           }
         } else if (i === 4) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.fifthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.fifthRow[j] = 0;
@@ -112,7 +111,7 @@ export class GamesService {
           }
         } else if (i === 5) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.sixthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.sixthRow[j] = 0;
@@ -120,7 +119,7 @@ export class GamesService {
           }
         } else if (i === 6) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.seventhRow[j] = parseInt(matrix[i][j]);
             } else {
               data.seventhRow[j] = 0;
@@ -128,7 +127,7 @@ export class GamesService {
           }
         } else if (i === 7) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.eighthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.eighthRow[j] = 0;
@@ -136,7 +135,7 @@ export class GamesService {
           }
         } else if (i === 8) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.ninthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.ninthRow[j] = 0;
@@ -149,10 +148,9 @@ export class GamesService {
 
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message.substring(17);
-
     } catch (error: any) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -169,18 +167,18 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix)
+      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix);
 
       if (matrixNotValid !== null) {
         throw matrixNotValid;
       }
-      
+
       const data: ISudokuRequestData = new SudokuRequestData();
 
       for (let i = 0; i < 9; i++) {
         if (i === 0) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.firstRow[j] = parseInt(matrix[i][j]);
             } else {
               data.firstRow[j] = 0;
@@ -188,7 +186,7 @@ export class GamesService {
           }
         } else if (i === 1) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.secondRow[j] = parseInt(matrix[i][j]);
             } else {
               data.secondRow[j] = 0;
@@ -196,7 +194,7 @@ export class GamesService {
           }
         } else if (i === 2) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.thirdRow[j] = parseInt(matrix[i][j]);
             } else {
               data.thirdRow[j] = 0;
@@ -204,7 +202,7 @@ export class GamesService {
           }
         } else if (i === 3) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.fourthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.fourthRow[j] = 0;
@@ -212,7 +210,7 @@ export class GamesService {
           }
         } else if (i === 4) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.fifthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.fifthRow[j] = 0;
@@ -220,7 +218,7 @@ export class GamesService {
           }
         } else if (i === 5) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.sixthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.sixthRow[j] = 0;
@@ -228,7 +226,7 @@ export class GamesService {
           }
         } else if (i === 6) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.seventhRow[j] = parseInt(matrix[i][j]);
             } else {
               data.seventhRow[j] = 0;
@@ -236,7 +234,7 @@ export class GamesService {
           }
         } else if (i === 7) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.eighthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.eighthRow[j] = 0;
@@ -244,7 +242,7 @@ export class GamesService {
           }
         } else if (i === 8) {
           for (let j = 0; j < 9; j++) {
-            if (matrix[i][j] !== "") {
+            if (matrix[i][j] !== '') {
               data.ninthRow[j] = parseInt(matrix[i][j]);
             } else {
               data.ninthRow[j] = 0;
@@ -269,8 +267,8 @@ export class GamesService {
         result.puzzle = solvedPuzzle;
       }
     } catch (error: any) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -303,8 +301,8 @@ export class GamesService {
         result.solution = solution;
       }
     } catch (error: any) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -326,7 +324,7 @@ export class GamesService {
           status: 500,
           data: {
             isSuccess: false,
-            message: "Sudoku matrix is not valid",
+            message: 'Sudoku matrix is not valid',
           },
         },
       } as AxiosError;

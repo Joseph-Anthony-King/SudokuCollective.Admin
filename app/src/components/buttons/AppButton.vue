@@ -1,8 +1,5 @@
 <template>
-  <v-card
-    :color="evaluateColor(index)"
-    class="app-button"
-    @click="selectApp">
+  <v-card :color="evaluateColor(index)" class="app-button" @click="selectApp">
     <v-card-title>
       <span class="select-app-title">{{ formattedAppName }}</span>
     </v-card-title>
@@ -13,11 +10,11 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ReleaseEnvironment } from "@/enums/releaseEnvironment";
-import { App } from "@/models/domain/app";
-import { computed } from "vue";
-import { ComputedRef } from "vue";
+import { type ComputedRef, computed } from 'vue';
+import { App } from '@/models/domain/app';
+import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 
 const props = defineProps({
   app: {
@@ -26,22 +23,22 @@ const props = defineProps({
   },
   index: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
-const emit = defineEmits(["app-selected"]);
+const emit = defineEmits(['app-selected']);
 
 const formattedAppName: ComputedRef<string> = computed(() => {
   if (props.app.name === null) {
-    return "";
+    return '';
   } else if (props.app.name.length > 15) {
-    let formattedName = "";
-    const words = props.app.name?.split(" ");
+    let formattedName = '';
+    const words = props.app.name?.split(' ');
     let index = 0;
 
-    words?.forEach(word => {
+    words?.forEach((word) => {
       if (index < 4) {
-        if (formattedName === "") {
+        if (formattedName === '') {
           formattedName = word;
         } else {
           formattedName = `${formattedName}\n${word}`;
@@ -56,25 +53,29 @@ const formattedAppName: ComputedRef<string> = computed(() => {
 });
 
 const releaseStatus: ComputedRef<string> = computed(() => {
-  return props.app.environment === ReleaseEnvironment.LOCAL && props.app.isActive ? 
-    "In Development" : props.app.environment === ReleaseEnvironment.QA && props.app.isActive ? 
-    "In Quality Assurance" : props.app.environment === ReleaseEnvironment.STAGING && props.app.isActive ? 
-    "In Staging" : props.app.environment === ReleaseEnvironment.PROD && props.app.isActive ?
-    "In Production": !props.app.isActive ?
-    "Deactivated" : "Invalid Status";
+  return props.app.environment === ReleaseEnvironment.LOCAL && props.app.isActive
+    ? 'In Development'
+    : props.app.environment === ReleaseEnvironment.QA && props.app.isActive
+      ? 'In Quality Assurance'
+      : props.app.environment === ReleaseEnvironment.STAGING && props.app.isActive
+        ? 'In Staging'
+        : props.app.environment === ReleaseEnvironment.PROD && props.app.isActive
+          ? 'In Production'
+          : !props.app.isActive
+            ? 'Deactivated'
+            : 'Invalid Status';
 });
 
 const selectApp = (): void => {
-  emit("app-selected", props.app.id, null);
+  emit('app-selected', props.app.id, null);
 };
 
 const evaluateColor = (value: number): string => {
-  return value % 2 === 0 ? "secondary" : "error";
+  return value % 2 === 0 ? 'secondary' : 'error';
 };
 </script>
 
 <style scoped lang="scss">
-
 .select-app-title {
   white-space: pre-wrap;
   text-decoration: none !important;

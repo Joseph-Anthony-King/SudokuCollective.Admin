@@ -67,7 +67,12 @@
           <SignUpForm
             :formStatus="userIsSigningUp"
             :isRedirect="isRedirect"
-            v-on:cancel-signup="() => { user.isSigningUp = false; isRedirect = false }"
+            v-on:cancel-signup="
+              () => {
+                user.isSigningUp = false;
+                isRedirect = false;
+              }
+            "
             v-on:reset-redirect="isRedirect = false"
           />
         </v-dialog>
@@ -78,8 +83,10 @@
           :max-width="maxDialogWidth"
           hide-overlay
           transition="dialog-top-transition"
-        >        
-          <ConfirmEmailResultWidget v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
+        >
+          <ConfirmEmailResultWidget
+            v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget"
+          />
         </v-dialog>
         <v-dialog
           v-model="okDialogIsActive"
@@ -99,44 +106,44 @@
 
 <script lang="ts">
 import {
-  Ref,
-  ref,
-  ComputedRef,
+  type ComputedRef,
   computed,
+  type Ref,
+  ref,
   onMounted,
   onUnmounted,
   watch,
   toRaw,
   defineComponent,
-} from "vue";
-import router from "@/router/index";
-import vuetify from "@/plugins/vuetify";
-import { toast } from "vue3-toastify";
-import "vue3-toastify/dist/index.css";
-import { useConfirmEmailStore } from "@/stores/confirmEmailStore";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useOkDialogStore } from "@/stores/okDialogStore";
-import { useServiceFailStore } from "@/stores/serviceFailStore";
-import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore"
-import { useSudokuStore } from "@/stores/sudokuStore";
-import { useUserStore } from "@/stores/userStore";
-import { useValueStore } from "@/stores/valueStore";
-import AppBar from "@/components/navigation/AppBar.vue";
-import FooterNav from "@/components/navigation/FooterNav.vue";
-import NavigationDrawer from "@/components/navigation/NavigationDrawer.vue";
-import OkDialog from "@/components/dialogs/OkDialog.vue";
-import LoginForm from "@/components/forms/LoginForm.vue";
-import LoginAssistanceForm from "@/components/forms/LoginAssistanceForm.vue";
-import SignUpForm from "@/components/forms/SignUpForm.vue";
-import UpdatePasswordForm from "@/components/forms/UpdatePasswordForm.vue";
-import ProgressWidget from "@/components/widgets/common/ProgressWidget.vue";
-import ConfirmEmailResultWidget from "@/components/widgets/confirmEmail/ConfirmEmailResultWidget.vue";
-import { User } from "@/models/domain/user";
-import commonUtilities from "@/utilities/common";
+} from 'vue';
+import router from '@/router/index';
+import vuetify from '@/plugins/vuetify';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useOkDialogStore } from '@/stores/okDialogStore';
+import { useServiceFailStore } from '@/stores/serviceFailStore';
+import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
+import { useSudokuStore } from '@/stores/sudokuStore';
+import { useUserStore } from '@/stores/userStore';
+import { useValueStore } from '@/stores/valueStore';
+import AppBar from '@/components/navigation/AppBar.vue';
+import FooterNav from '@/components/navigation/FooterNav.vue';
+import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
+import OkDialog from '@/components/dialogs/OkDialog.vue';
+import LoginForm from '@/components/forms/LoginForm.vue';
+import LoginAssistanceForm from '@/components/forms/LoginAssistanceForm.vue';
+import SignUpForm from '@/components/forms/SignUpForm.vue';
+import UpdatePasswordForm from '@/components/forms/UpdatePasswordForm.vue';
+import ProgressWidget from '@/components/widgets/common/ProgressWidget.vue';
+import ConfirmEmailResultWidget from '@/components/widgets/confirmEmail/ConfirmEmailResultWidget.vue';
+import { User } from '@/models/domain/user';
+import commonUtilities from '@/utilities/common';
 
 // This vue file uses defineComponent in order to resolve a 'file is not a module' error in main.ts.
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     AppBar,
     FooterNav,
@@ -148,7 +155,7 @@ export default defineComponent({
     SignUpForm,
     UpdatePasswordForm,
     ConfirmEmailResultWidget,
-},
+  },
   setup() {
     const { clearStores, updateAppProcessingAsync } = commonUtilities();
 
@@ -175,7 +182,7 @@ export default defineComponent({
       () => userStore.getUser,
       () => {
         user.value = userStore.getUser;
-      }
+      },
     );
     //#endregion
 
@@ -192,10 +199,10 @@ export default defineComponent({
       const userName = user.value.userName;
       globalStore.logout();
       if (
-        router.currentRoute.value.name !== "home" &&
-        router.currentRoute.value.name !== "sudoku"
+        router.currentRoute.value.name !== 'home' &&
+        router.currentRoute.value.name !== 'sudoku'
       ) {
-        router.push("/");
+        router.push('/');
       }
       toast(`${userName}, you are logged out.`, {
         position: toast.POSITION.TOP_CENTER,
@@ -219,15 +226,14 @@ export default defineComponent({
       user.value.isSigningUp = true;
       userStore.updateUser(toRaw(user.value));
     };
-    
+
     watch(
       () => globalStore.getServiceMessage,
       () => {
         const serviceMessage = globalStore.getServiceMessage;
         if (
-          serviceMessage ===
-            "Status Code 200: Processed password reset request" ||
-          serviceMessage === "Status Code 200: Resent password reset request"
+          serviceMessage === 'Status Code 200: Processed password reset request' ||
+          serviceMessage === 'Status Code 200: Resent password reset request'
         ) {
           toast(serviceMessage, {
             position: toast.POSITION.TOP_CENTER,
@@ -235,9 +241,9 @@ export default defineComponent({
           });
           user.value.isLoggingIn = false;
           user.value.isObtainingAssistance = false;
-          globalStore.updateServiceMessage("");
+          globalStore.updateServiceMessage('');
         }
-      }
+      },
     );
     watch(
       () => user.value.isLoggingIn,
@@ -245,7 +251,7 @@ export default defineComponent({
         if (userStore.getUserIsLoggingIn !== user.value.isLoggingIn) {
           userStore.updateUserIsLoggingIn(toRaw(user.value.isLoggingIn));
         }
-      }
+      },
     );
     watch(
       () => userStore.getUserIsLoggingIn,
@@ -253,7 +259,7 @@ export default defineComponent({
         if (userStore.getUserIsLoggingIn !== user.value.isLoggingIn) {
           user.value.isLoggingIn = userStore.getUserIsLoggingIn;
         }
-      }
+      },
     );
     watch(
       () => userStore.getUserIsLoggedIn,
@@ -268,26 +274,26 @@ export default defineComponent({
               position: toast.POSITION.TOP_CENTER,
               type: toast.TYPE.SUCCESS,
             });
-            if (router.currentRoute.value.name !== "sudoku") {
-              router.push("/dashboard");
+            if (router.currentRoute.value.name !== 'sudoku') {
+              router.push('/dashboard');
             }
           } else {
             user.value.isSignedUp = false;
             userStore.updateUser(user.value);
-            window.location.href = "/user-profile";
+            window.location.href = '/user-profile';
             okDialogStore.updateIsActive(true);
           }
         }
-      }
+      },
     );
     watch(
       () => userStore.getConfirmedUserName,
       () => {
         const confirmedUserName = userStore.getConfirmedUserName;
-        if (confirmedUserName !== "") {
+        if (confirmedUserName !== '') {
           closeLoginAssistanceHandler();
         }
-      }
+      },
     );
     //#endregion
 
@@ -302,7 +308,7 @@ export default defineComponent({
         if (userStore.getUserIsSigningUp !== user.value.isSigningUp) {
           userStore.updateUserIsSigningUp(toRaw(user.value.isSigningUp));
         }
-      }
+      },
     );
     watch(
       () => userStore.getUserIsSigningUp,
@@ -310,7 +316,7 @@ export default defineComponent({
         if (userStore.getUserIsSigningUp !== user.value.isSigningUp) {
           user.value.isSigningUp = userStore.getUserIsSigningUp;
         }
-      }
+      },
     );
     //#endregion
 
@@ -331,33 +337,41 @@ export default defineComponent({
       }
     };
     //#endregion
-    
+
     //#region App Processing logic
     const processingStatus: Ref<boolean> = ref(globalStore.getProcessingStatus);
     watch(
       () => globalStore.getProcessingStatus,
       () => {
         processingStatus.value = globalStore.getProcessingStatus;
-      }
-    )
+      },
+    );
     //#endregion
 
     //#region Email confirmed results
-    const emailConfirmed: ComputedRef<boolean> = computed(() => confirmEmailStore.getIsSuccess ? confirmEmailStore.getIsSuccess && !processingStatus.value : false);
+    const emailConfirmed: ComputedRef<boolean> = computed(() =>
+      confirmEmailStore.getIsSuccess
+        ? confirmEmailStore.getIsSuccess && !processingStatus.value
+        : false,
+    );
     const closeConfirmEmailResultWidget = (): void => {
       confirmEmailStore.initializeStore();
     };
     //#endregion
 
     //#region Reset Password
-    const userResettingPassword: ComputedRef<boolean> = computed(() => signUpFormStore.getOpenPasswordResetForm && !processingStatus.value);
+    const userResettingPassword: ComputedRef<boolean> = computed(
+      () => signUpFormStore.getOpenPasswordResetForm && !processingStatus.value,
+    );
     const closeUpdatePasswordForm = (): void => {
       signUpFormStore.initializeStore();
     };
     //#endregion
 
     //#region Ok dialog
-    const okDialogIsActive: ComputedRef<boolean> = computed(() => okDialogStore.getIsActive && !processingStatus.value);
+    const okDialogIsActive: ComputedRef<boolean> = computed(
+      () => okDialogStore.getIsActive && !processingStatus.value,
+    );
     const closeOkDialog = (): void => {
       okDialogStore.initializeStore();
     };
@@ -365,16 +379,16 @@ export default defineComponent({
 
     //#region Dialog formatting
     const isSmallViewPort: Ref<boolean> = ref(true);
-    const maxDialogWidth: Ref<string> = ref("auto");
+    const maxDialogWidth: Ref<string> = ref('auto');
     const resetAppDialogViewPort = (): void => {
       if (window.innerWidth <= 960) {
         isSmallViewPort.value = true;
-        maxDialogWidth.value = "auto";
+        maxDialogWidth.value = 'auto';
         navDrawerStatus.value = false;
         globalStore.updateNavDrawerStatus(navDrawerStatus.value);
       } else {
         isSmallViewPort.value = false;
-        maxDialogWidth.value = "960px";
+        maxDialogWidth.value = '960px';
         navDrawerStatus.value = true;
         globalStore.updateNavDrawerStatus(navDrawerStatus.value);
       }
@@ -397,30 +411,24 @@ export default defineComponent({
         let resizeTimeout: number | undefined;
 
         // Add event listeners
-        window.addEventListener("resize", () => {
+        window.addEventListener('resize', () => {
           clearTimeout(resizeTimeout);
           resizeTimeout = setTimeout(
             () => {
               resetAppDialogViewPort();
             },
             250,
-            "Resized"
+            'Resized',
           );
-        });
-        window.addEventListener("beforeunload", (e) => {
-          e.preventDefault();
-          clearStoresIfUserIsNotLoggedIn();
         });
       });
     });
     onUnmounted(() => {
       // Remove event listeners
-      window.removeEventListener("resize", () => {
+      window.removeEventListener('resize', () => {
         resetAppDialogViewPort();
       });
-      window.removeEventListener("beforeunload", () => {
-        clearStoresIfUserIsNotLoggedIn();
-      });
+      clearStoresIfUserIsNotLoggedIn();
     });
     //#endregion
 
@@ -452,6 +460,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/styles/site.scss";
+@import '@/assets/styles/site.scss';
 </style>
-@/stores/confirmEmailStore@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/okDialogStore@/stores/serviceFailStore@/stores/sudokuStore@/stores/userStore@/stores/valueStore

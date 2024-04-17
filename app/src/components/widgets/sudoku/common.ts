@@ -1,6 +1,6 @@
-import { GameState } from "@/enums/gameState";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { useSudokuStore } from "@/stores/sudokuStore";
+import { GameState } from '@/enums/gameState';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { useSudokuStore } from '@/stores/sudokuStore';
 
 const oddRegionIndexes: Array<{ row: number; cell: number }> = [
   { row: 0, cell: 0 },
@@ -54,7 +54,7 @@ const initializeMatix = (): Array<Array<string>> => {
   for (let i = 0; i < 9; i++) {
     matrix[i] = [];
     for (let j = 0; j < 9; j++) {
-      matrix[i][j] = "";
+      matrix[i][j] = '';
     }
   }
   return matrix;
@@ -83,10 +83,7 @@ const obtainMatrix = (): Array<Array<string>> => {
         result[i][j] = puzzle[i][j];
       }
     }
-  } else if (
-    gameState !== null &&
-    gameState?.value === GameState.GENERATESUDOKU
-  ) {
+  } else if (gameState !== null && gameState?.value === GameState.GENERATESUDOKU) {
     const solution = sudokuStore.getSolution;
     result = Array<Array<string>>(9);
 
@@ -118,24 +115,24 @@ const applyTextColor = (rowIndex: number, cellIndex: number): string => {
   const isOddRegion = applyOddRegion(rowIndex, cellIndex);
 
   if (gameState?.value === GameState.PLAYGAME) {
-    if (initialGame[rowIndex][cellIndex] === "") {
+    if (initialGame[rowIndex][cellIndex] === '') {
       if (isOddRegion) {
-        return "text-white";
+        return 'text-white';
       } else {
-        return "text-black";
+        return 'text-black';
       }
     } else {
       if (isOddRegion) {
-        return "text-yellow";
+        return 'text-yellow';
       } else {
-        return "text-red";
+        return 'text-red';
       }
     }
   } else {
     if (isOddRegion) {
-      return "text-white";
+      return 'text-white';
     } else {
-      return "text-black";
+      return 'text-black';
     }
   }
 };
