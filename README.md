@@ -17,7 +17,7 @@ In the app directory you will find dummy implementations of the **.env** configu
 
 As note above in requirements you will need a local running instance of the [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective).  Installation instructions for the API can be found in the [README](https://github.com/Joseph-Anthony-King/SudokuCollective/blob/master/README.md) file.  The [Sudoku Collective API](https://github.com/Joseph-Anthony-King/SudokuCollective) has dependencies on [PostgreSQL 14](https://www.postgresql.org/download/) and [Redis Server - version 6.2.7](https://redis.io/download).
 
-This project was also developed using [Node.js version 20.12.2](https://nodejs.org/en) and [NPM version 10.5.2](https://www.npmjs.com/).  Installation of these tools will verify based on your platform.
+This project was also developed using [Node.js version 20.12.2](https://nodejs.org/en) and [NPM version 10.5.2](https://www.npmjs.com/).  Installation of these tools will depend based on your platform.
 
 Once this project and the api are installed this project can be started within the **app** directory with the following command:
 
