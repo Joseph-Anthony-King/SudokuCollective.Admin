@@ -1,9 +1,9 @@
-import { AxiosResponse, AxiosError } from "axios";
-import { LoginPort } from "@/ports/loginPort";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { User } from "@/models/domain/user";
-import { StaticServiceMethods } from "@/services/common";
+import { type AxiosResponse, AxiosError } from 'axios';
+import { LoginPort } from '@/ports/loginPort';
+import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { User } from '@/models/domain/user';
+import { StaticServiceMethods } from '@/services/common';
 
 export class LoginService {
   static async postLoginAsync(data: ILoginRequestData): Promise<IServicePayload> {
@@ -30,18 +30,17 @@ export class LoginService {
           response.data.payload[0].user.isAdmin,
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
-          true
+          true,
         );
         result.token = response.data.payload[0].token;
-        result.tokenExpirationDate =
-          response.data.payload[0].tokenExpirationDate;
+        result.tokenExpirationDate = response.data.payload[0].tokenExpirationDate;
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -63,7 +62,7 @@ export class LoginService {
       if (stringIsNullOrEmpty !== null) {
         throw stringIsNullOrEmpty;
       }
-      
+
       const response = (await LoginPort.postConfirmUserNameAsync(email)) as AxiosResponse;
 
       if (response.data.isSuccess) {
@@ -74,8 +73,8 @@ export class LoginService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;

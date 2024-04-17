@@ -1,7 +1,7 @@
-import { ref, Ref, computed, ComputedRef, toRaw } from "vue";
-import { defineStore } from "pinia";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
 
-export const useSignUpFormStore = defineStore("signUpFormStore", () => {
+export const useSignUpFormStore = defineStore('signUpFormStore', () => {
   const dirty: Ref<boolean> = ref(false);
   const userName: Ref<string | null> = ref(null);
   const firstName: Ref<string | null> = ref(null);
@@ -16,39 +16,21 @@ export const useSignUpFormStore = defineStore("signUpFormStore", () => {
   const invalidEmails: Ref<string[]> = ref([]);
 
   const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
-  const getUserName: ComputedRef<string | null> = computed(() =>
-    toRaw(userName.value)
-  );
-  const getFirstName: ComputedRef<string | null> = computed(() =>
-    toRaw(firstName.value)
-  );
-  const getLastName: ComputedRef<string | null> = computed(() =>
-    toRaw(lastName.value)
-  );
-  const getNickName: ComputedRef<string | null> = computed(() =>
-    toRaw(nickName.value)
-  );
-  const getEmail: ComputedRef<string | null> = computed(() =>
-    toRaw(email.value)
-  );
-  const getPassword: ComputedRef<string | null> = computed(() =>
-    toRaw(password.value)
-  );
+  const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
+  const getFirstName: ComputedRef<string | null> = computed(() => toRaw(firstName.value));
+  const getLastName: ComputedRef<string | null> = computed(() => toRaw(lastName.value));
+  const getNickName: ComputedRef<string | null> = computed(() => toRaw(nickName.value));
+  const getEmail: ComputedRef<string | null> = computed(() => toRaw(email.value));
+  const getPassword: ComputedRef<string | null> = computed(() => toRaw(password.value));
   const getConfirmPassword: ComputedRef<string | null> = computed(() =>
-    toRaw(confirmPassword.value)
+    toRaw(confirmPassword.value),
   );
-  const getPasswordToken: ComputedRef<string | null> = computed(() => 
-    toRaw(passwordToken.value)
+  const getPasswordToken: ComputedRef<string | null> = computed(() => toRaw(passwordToken.value));
+  const getOpenPasswordResetForm: ComputedRef<boolean> = computed(() =>
+    toRaw(openPasswordResetForm.value),
   );
-  const getOpenPasswordResetForm: ComputedRef<boolean> = computed(() => 
-    toRaw(openPasswordResetForm.value)
-  );
-  const getInvalidUserNames: ComputedRef<string[]> = computed(() =>
-    toRaw(invalidUserNames.value)
-  );
-  const getInvalidEmails: ComputedRef<string[]> = computed(() =>
-    toRaw(invalidEmails.value)
-  );
+  const getInvalidUserNames: ComputedRef<string[]> = computed(() => toRaw(invalidUserNames.value));
+  const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
 
   const initializeStore = (): void => {
     dirty.value = false;

@@ -1,12 +1,12 @@
-import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
-import { defineStore } from "pinia";
-import { Methods } from "@/stores/sudokuStore/common";
-import { GamesService } from "@/services/gamesService";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { Difficulty } from "@/models/domain/difficulty";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
+import { Methods } from '@/stores/sudokuStore/common';
+import { GamesService } from '@/services/gamesService';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { Difficulty } from '@/models/domain/difficulty';
 
-export const useSudokuStore = defineStore("sudokuStore", () => {
+export const useSudokuStore = defineStore('sudokuStore', () => {
   const initialGame: Ref<Array<Array<string>> | null> = ref(null);
   const game: Ref<Array<Array<string>> | null> = ref(null);
   const puzzle: Ref<Array<Array<string>> | null> = ref(null);
@@ -19,44 +19,36 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
   const isSolveDisabled: Ref<boolean | null> = ref(null);
 
   const getInitialGame: ComputedRef<Array<Array<string>>> = computed(() =>
-    initialGame.value !== null
-      ? toRaw(initialGame.value)
-      : new Array<Array<string>>()
+    initialGame.value !== null ? toRaw(initialGame.value) : new Array<Array<string>>(),
   );
   const getGame: ComputedRef<Array<Array<string>>> = computed(() =>
-    game.value !== null ? toRaw(game.value) : new Array<Array<string>>()
+    game.value !== null ? toRaw(game.value) : new Array<Array<string>>(),
   );
   const getPuzzle: ComputedRef<Array<Array<string>>> = computed(() =>
-    puzzle.value !== null ? toRaw(puzzle.value) : new Array<Array<string>>()
+    puzzle.value !== null ? toRaw(puzzle.value) : new Array<Array<string>>(),
   );
   const getSolution: ComputedRef<Array<Array<string>>> = computed(() =>
-    solution.value !== null ? toRaw(solution.value) : new Array<Array<string>>()
+    solution.value !== null ? toRaw(solution.value) : new Array<Array<string>>(),
   );
   const getGameState: ComputedRef<DropdownItem | null> = computed(() =>
-    gameState.value ? toRaw(gameState.value) : null
+    gameState.value ? toRaw(gameState.value) : null,
   );
   const getSelectedDifficulty: ComputedRef<Difficulty | null> = computed(() =>
-    selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null
+    selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null,
   );
   const getServiceResult: ComputedRef<boolean> = computed(() =>
-    serviceResult.value !== null ? toRaw(serviceResult.value) : false
+    serviceResult.value !== null ? toRaw(serviceResult.value) : false,
   );
   const getServiceMessage: ComputedRef<string> = computed(() =>
-    serviceMessage.value ? toRaw(serviceMessage.value) : ""
+    serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
-  const getProcessing: ComputedRef<boolean> = computed(() =>
-    toRaw(processing.value)
-  );
+  const getProcessing: ComputedRef<boolean> = computed(() => toRaw(processing.value));
   const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
-    isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false
+    isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false,
   );
 
   const initializeStore = (): void => {
-    if (
-      game.value === null &&
-      puzzle.value === null &&
-      solution.value === null
-    ) {
+    if (game.value === null && puzzle.value === null && solution.value === null) {
       initializeInitialGame();
       initializeGame();
       initializePuzzle();
@@ -99,7 +91,7 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
     processing.value = !processing.value;
     if (selectedDifficulty.value !== null) {
       const response: IServicePayload = await GamesService.createGameAsync(
-        selectedDifficulty.value.difficultyLevel
+        selectedDifficulty.value.difficultyLevel,
       );
       const game: Array<Array<string>> = Array<Array<string>>(9);
       for (let i = 0; i < 9; i++) {
@@ -118,18 +110,16 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
       updateInitialGame(initialGame);
       updateGame(game);
       serviceResult.value = null;
-      serviceMessage.value = "";
+      serviceMessage.value = '';
     }
     processing.value = !processing.value;
   };
   const checkGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
-    serviceMessage.value = "";
+    serviceMessage.value = '';
     if (game.value !== null) {
-      const response: IServicePayload = await GamesService.checkGameAsync(
-        game.value
-      );
+      const response: IServicePayload = await GamesService.checkGameAsync(game.value);
       if (response.isSuccess) {
         const solvedGame = Array<Array<string>>(9);
         for (let i = 0; i < 9; i++) {
@@ -148,11 +138,9 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
   const solvePuzzleAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
-    serviceMessage.value = "";
+    serviceMessage.value = '';
     if (puzzle.value !== null) {
-      const response: IServicePayload = await GamesService.solvePuzzleAsync(
-        puzzle.value
-      );
+      const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
       updatePuzzle(response.puzzle);
       serviceResult.value = response.isSuccess;
       serviceMessage.value = response.message;
@@ -162,9 +150,8 @@ export const useSudokuStore = defineStore("sudokuStore", () => {
   const generateSolutionAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
-    serviceMessage.value = "";
-    const response: IServicePayload =
-      await GamesService.generateSolutionAsync();
+    serviceMessage.value = '';
+    const response: IServicePayload = await GamesService.generateSolutionAsync();
     updateSolution(response.solution);
     serviceResult.value = response.isSuccess;
     serviceMessage.value = response.message;

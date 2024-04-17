@@ -1,4 +1,4 @@
-import { IMenuItem } from "@/interfaces/infrastructure/iMenuItem";
+import type { IMenuItem } from '@/interfaces/infrastructure/iMenuItem';
 
 export class MenuItem implements IMenuItem {
   url: string;
@@ -14,13 +14,13 @@ export class MenuItem implements IMenuItem {
     tooltip?: string,
     mdiIcon?: string,
     target?: string,
-    condition?: boolean
+    condition?: boolean,
   ) {
-    this.url = url ? url : "";
-    this.title = title ? title : "";
-    this.tooltip = tooltip ? tooltip : "";
-    this.mdiIcon = mdiIcon ? mdiIcon : "";
-    this.target = target ? target : "blank";
+    this.url = url ? url : '';
+    this.title = title ? title : '';
+    this.tooltip = tooltip ? tooltip : '';
+    this.mdiIcon = mdiIcon ? mdiIcon : '';
+    this.target = target ? target : 'blank';
     this.condition = condition === false ? false : true;
   }
 }

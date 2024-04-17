@@ -1,4 +1,4 @@
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
+import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 
 export class LoginRequestData implements ILoginRequestData {
   userName: string;

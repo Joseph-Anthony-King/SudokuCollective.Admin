@@ -1,54 +1,46 @@
-import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
-import { defineStore } from "pinia";
-import { AxiosResponse } from "axios";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
+import type { AxiosResponse } from 'axios';
 import { toast } from 'vue3-toastify';
-import { useAppStore } from "@/stores/appStore";
-import { useUserStore } from "@/stores/userStore";
-import { LoginService } from "@/services/loginService";
-import router from "@/router";
-import { ILoginRequestData } from "@/interfaces/requests/iLoginRequestData";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { User } from "@/models/domain/user";
-import commonUtitlities from "@/utilities/common";
+import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '@/stores/userStore';
+import { LoginService } from '@/services/loginService';
+import router from '@/router';
+import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { User } from '@/models/domain/user';
+import commonUtitlities from '@/utilities/common';
 
-export const useGlobalStore = defineStore("globalStore", () => {
-  const license: Ref<string | null> = ref(process.env.VUE_APP_LICENSE);
+export const useGlobalStore = defineStore('globalStore', () => {
+  const license: Ref<string | undefined> = ref(process.env.VITE_APP_LICENSE);
   const token: Ref<string | null> = ref(null);
   const tokenExpirationDate: Ref<Date | null> = ref(null);
   const redirectUrl: Ref<string | null> = ref(null);
-  const processingMessage: Ref<string | null> = ref("Processing, please do not navigate away");
+  const processingMessage: Ref<string | null> = ref('Processing, please do not navigate away');
   const serviceMessage: Ref<string | null> = ref(null);
   const processingStatus: Ref<boolean> = ref(false);
   const navDrawerStatus: Ref<boolean> = ref(false);
   const stayLoggedIn: Ref<boolean> = ref(true);
 
   const getLicense: ComputedRef<string> = computed(() =>
-    license.value ? toRaw(license.value) : ""
+    license.value ? toRaw(license.value) : '',
   );
-  const getToken: ComputedRef<string> = computed(() =>
-    token.value ? toRaw(token.value) : ""
-  );
+  const getToken: ComputedRef<string> = computed(() => (token.value ? toRaw(token.value) : ''));
   const getTokenExpirationDate: ComputedRef<Date | null> = computed(() =>
-    toRaw(tokenExpirationDate.value)
+    toRaw(tokenExpirationDate.value),
   );
   const getRedirectUrl: ComputedRef<string> = computed(() =>
-    redirectUrl.value ? toRaw(redirectUrl.value) : ""
+    redirectUrl.value ? toRaw(redirectUrl.value) : '',
   );
   const getProcessingMessage: ComputedRef<string> = computed(() =>
-    processingMessage.value ? toRaw(processingMessage.value) : ""
+    processingMessage.value ? toRaw(processingMessage.value) : '',
   );
   const getServiceMessage: ComputedRef<string> = computed(() =>
-    serviceMessage.value ? toRaw(serviceMessage.value) : ""
+    serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
-  const getProcessingStatus: ComputedRef<boolean> = computed(() =>
-    toRaw(processingStatus.value)
-  );
-  const getNavDrawerStatus: ComputedRef<boolean> = computed(() =>
-    toRaw(navDrawerStatus.value)
-  );
-  const getStayedLoggedIn: ComputedRef<boolean> = computed(() =>
-    toRaw(stayLoggedIn.value)
-  );
+  const getProcessingStatus: ComputedRef<boolean> = computed(() => toRaw(processingStatus.value));
+  const getNavDrawerStatus: ComputedRef<boolean> = computed(() => toRaw(navDrawerStatus.value));
+  const getStayedLoggedIn: ComputedRef<boolean> = computed(() => toRaw(stayLoggedIn.value));
 
   const initializeStore = (): void => {
     token.value = null;
@@ -104,8 +96,7 @@ export const useGlobalStore = defineStore("globalStore", () => {
     clearStores();
   };
   const confirmUserNameAsync = async (email: string): Promise<void> => {
-    const response: IServicePayload =
-      await LoginService.postConfirmUserNameAsync(email);
+    const response: IServicePayload = await LoginService.postConfirmUserNameAsync(email);
     if (response.isSuccess) {
       const userStore = useUserStore();
       userStore.updateConfirmedUserName(response.confirmedUserName);
@@ -114,10 +105,7 @@ export const useGlobalStore = defineStore("globalStore", () => {
   };
   const isTokenExpired = (): boolean => {
     let result = false;
-    if (
-      tokenExpirationDate.value !== null &&
-      new Date(tokenExpirationDate.value) < new Date()
-    ) {
+    if (tokenExpirationDate.value !== null && new Date(tokenExpirationDate.value) < new Date()) {
       redirectUrl.value = router.currentRoute.value.path;
       const user = new User();
       useUserStore().updateUser(user);
@@ -126,15 +114,19 @@ export const useGlobalStore = defineStore("globalStore", () => {
     return result;
   };
   const tokenHasExpired = (data: AxiosResponse): void => {
-    if (data.status === 401 || (data.status === 403 && data.data.message === "Status Code 403: Invalid request on this authorization token")) {
+    if (
+      data.status === 401 ||
+      (data.status === 403 &&
+        data.data.message === 'Status Code 403: Invalid request on this authorization token')
+    ) {
       const { clearStores } = commonUtitlities();
       clearStores();
       const user = new User();
       user.isLoggingIn = true;
       useUserStore().updateUser(user);
       updateRedirectUrl(router.currentRoute.value.path);
-      router.push("/login");
-      toast("The authorization token has expired, please sign in again", {
+      router.push('/login');
+      toast('The authorization token has expired, please sign in again', {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });

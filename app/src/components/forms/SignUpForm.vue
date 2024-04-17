@@ -8,13 +8,19 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="userName !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="userName !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="userName"
                     label="User Name"
                     prepend-icon="mdi-account-plus"
-                    :rules="!isRedirect ? userNameRules(invalidUserNames, 'User name not unique') : []"
+                    :rules="
+                      !isRedirect ? userNameRules(invalidUserNames, 'User name not unique') : []
+                    "
                     :required="!isRedirect ? true : false"
                     color="primary"
                     v-bind="props"
@@ -24,7 +30,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="firstName !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="firstName !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="firstName"
@@ -40,7 +50,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="lastName !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="lastName !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="lastName"
@@ -64,7 +78,11 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="email !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="email !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -80,7 +98,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="password !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="password !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -100,7 +122,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="confirmPassword !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="confirmPassword !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -129,7 +155,10 @@
                     v-bind="props"
                   ></v-checkbox>
                 </template>
-                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
+                <span
+                  >If set to false this will clear your authorization token when you navigate away
+                  from the app</span
+                >
               </v-tooltip>
             </v-col>
           </v-row>
@@ -142,7 +171,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="confirmFormReset = true"
                   v-bind="props"
                 >
@@ -157,7 +186,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="cancelHandlerAsync($event)"
                   v-bind="props"
                 >
@@ -168,11 +197,15 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!formValid || isSmallViewPort"
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props"
@@ -205,30 +238,32 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
-  Ref,
-  ref,
-  ComputedRef,
+  type ComputedRef,
   computed,
+  type Ref,
+  ref,
   onMounted,
   onUnmounted,
   toRaw,
-  watch
-} from "vue";
-import { VForm, VTextField } from "vuetify/components";
-import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useServiceFailStore } from "@/stores/serviceFailStore";
-import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
-import { useUserStore } from "@/stores/userStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import { SignupRequestData } from "@/models/requests/signupRequestData";
-import rules from "@/utilities/rules/index";
-import { RulesMessages } from "@/utilities/rules/rulesMessages";
-import commonUtilities from "@/utilities/common";
+  watch,
+} from 'vue';
+import { VForm, VTextField } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useServiceFailStore } from '@/stores/serviceFailStore';
+import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
+import { useUserStore } from '@/stores/userStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { SignupRequestData } from '@/models/requests/signupRequestData';
+import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
+import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
   formStatus: {
@@ -238,9 +273,9 @@ const props = defineProps({
   isRedirect: {
     type: Boolean,
     default: false,
-  }
+  },
 });
-const emit = defineEmits(["cancel-signup", "reset-redirect"]);
+const emit = defineEmits(['cancel-signup', 'reset-redirect']);
 
 const {
   isChrome,
@@ -249,13 +284,7 @@ const {
   resetViewPort,
   updateAppProcessingAsync,
 } = commonUtilities();
-const {
-  confirmPasswordRules,
-  emailRules,
-  requiredRules,
-  passwordRules,
-  userNameRules,
-} = rules();
+const { confirmPasswordRules, emailRules, requiredRules, passwordRules, userNameRules } = rules();
 
 //#region Instantiate the Stores
 const globalStore = useGlobalStore();
@@ -271,21 +300,17 @@ const lastName: Ref<string | null> = ref(signUpFormStore.getLastName);
 const nickName: Ref<string | null> = ref(signUpFormStore.getNickName);
 const email: Ref<string | null> = ref(signUpFormStore.getEmail);
 const password: Ref<string | null> = ref(signUpFormStore.getPassword);
-const confirmPassword: Ref<string | null> = ref(
-  signUpFormStore.getConfirmPassword
-);
+const confirmPassword: Ref<string | null> = ref(signUpFormStore.getConfirmPassword);
 const showPassword: Ref<boolean> = ref(false);
 const stayLoggedIn: Ref<boolean> = ref(globalStore.getStayedLoggedIn);
 const confirmFormReset: Ref<boolean> = ref(false);
-const invalidUserNames: Ref<string[]> = ref(
-  signUpFormStore.getInvalidUserNames
-);
+const invalidUserNames: Ref<string[]> = ref(signUpFormStore.getInvalidUserNames);
 const invalidEmails: Ref<string[]> = ref(signUpFormStore.getInvalidEmails);
 const firstNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace("{{value}}", "First Name")
+  RulesMessages.requiredMessage.replace('{{value}}', 'First Name'),
 );
 const lastNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
+  RulesMessages.requiredMessage.replace('{{value}}', 'Last Name'),
 );
 //#endregion
 
@@ -294,7 +319,7 @@ const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const userNameTextField: Ref<VTextField | null> = ref(null);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
@@ -317,13 +342,13 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
       signUpFormStore.updateConfirmPassword(toRaw(confirmPassword.value));
 
       const data = new SignupRequestData(
-        userName.value ? userName.value : "",
-        firstName.value ? firstName.value : "",
-        lastName.value ? lastName.value : "",
-        nickName.value ? nickName.value : "",
-        email.value ? email.value : "",
-        password.value ? password.value : "",
-        stayLoggedIn.value
+        userName.value ? userName.value : '',
+        firstName.value ? firstName.value : '',
+        lastName.value ? lastName.value : '',
+        nickName.value ? nickName.value : '',
+        email.value ? email.value : '',
+        password.value ? password.value : '',
+        stayLoggedIn.value,
       );
       await userStore.signupUserAsync(data);
       const failedToast = await displayFailedToastAsync(updateInvalidValues, {
@@ -335,18 +360,14 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
       if (failedToast.failed) {
         form.value?.validate();
         invalidUserNames.value = failedToast.methodResult.invalidUserNames;
-        signUpFormStore.updateInvalidUserNames(
-          failedToast.methodResult.invalidUserNames
-        );
+        signUpFormStore.updateInvalidUserNames(failedToast.methodResult.invalidUserNames);
         invalidEmails.value = failedToast.methodResult.invalidEmails;
-        signUpFormStore.updateInvalidEmails(
-          failedToast.methodResult.invalidEmails
-        );
+        signUpFormStore.updateInvalidEmails(failedToast.methodResult.invalidEmails);
       } else {
         signUpFormStore.initializeStore();
       }
     } else {
-      toast("Sign up form is invalid", {
+      toast('Sign up form is invalid', {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });
@@ -376,18 +397,18 @@ const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     signUpFormStore.initializeStore();
-    emit("cancel-signup", null, null);
+    emit('cancel-signup', null, null);
   });
 };
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === "Status Code 404: User name not unique" &&
+    message === 'Status Code 404: User name not unique' &&
     !options.invalidUserNames.includes(options.userName as string)
   ) {
     options.invalidUserNames.push(options.userName as string);
   }
   if (
-    message === "Status Code 404: Email not unique" &&
+    message === 'Status Code 404: Email not unique' &&
     !options.invalidEmails.includes(options.email as string)
   ) {
     options.invalidEmails.push(options.email as string);
@@ -403,8 +424,8 @@ const updateInvalidValues = (message: string, options: any): any => {
 watch(
   () => userName.value,
   () => {
-    emit("reset-redirect", null, null);
-  }
+    emit('reset-redirect', null, null);
+  },
 );
 //#endregion
 
@@ -415,14 +436,14 @@ onMounted(async () => {
   }
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      "Resized"
+      'Resized',
     );
   });
   if (signUpFormStore.getDirty && !props.isRedirect) {
@@ -432,10 +453,9 @@ onMounted(async () => {
   }
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
 //#endregion
 </script>
-@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

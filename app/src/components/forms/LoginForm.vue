@@ -8,13 +8,17 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="userName !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="userName !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="User Name"
                     v-model="userName"
                     prepend-icon="mdi-account-circle"
-                    :rules="userNameRules(invalidUserNames,'No user is using this user name')"
+                    :rules="userNameRules(invalidUserNames, 'No user is using this user name')"
                     autocomplete="off"
                     color="primary"
                     v-bind="props"
@@ -25,7 +29,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="password !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="password !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     label="Password"
@@ -54,7 +62,10 @@
                     v-bind="props"
                   ></v-checkbox>
                 </template>
-                <span>If set to false this will clear your authorization token when you navigate away from the app</span>
+                <span
+                  >If set to false this will clear your authorization token when you navigate away
+                  from the app</span
+                >
               </v-tooltip>
             </v-col>
           </v-row>
@@ -67,7 +78,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="helpHandlerAsync($event)"
                   v-bind="props"
                 >
@@ -82,7 +93,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="confirmFormReset = true"
                   v-bind="props"
                 >
@@ -97,7 +108,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="cancelHandlerAsync($event)"
                   v-bind="props"
                 >
@@ -112,7 +123,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="confirmSignUp = true"
                   v-bind="props"
                   :disabled="!loginFailed"
@@ -124,11 +135,15 @@
             </v-tooltip>
           </v-col>
           <v-col cols="2.4">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!formValid || isSmallViewPort"
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click.prevent="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props"
@@ -161,32 +176,34 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
-  Ref,
-  ref,
-  ComputedRef,
+  type ComputedRef,
   computed,
+  type Ref,
+  ref,
   toRaw,
   onMounted,
   onUpdated,
   onUnmounted,
   watch,
-} from "vue";
-import { VForm } from "vuetify/components";
-import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useLoginFormStore } from "@/stores/formStores/loginFormStore";
-import { useServiceFailStore } from "@/stores/serviceFailStore";
-import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
-import { useUserStore } from "@/stores/userStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import { LoginRequestData } from "@/models/requests/loginRequestData";
-import commonUtilities from "@/utilities/common";
-import rules from "@/utilities/rules/index";
-import { RulesMessages } from "@/utilities/rules/rulesMessages";
+} from 'vue';
+import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useLoginFormStore } from '@/stores/formStores/loginFormStore';
+import { useServiceFailStore } from '@/stores/serviceFailStore';
+import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
+import { useUserStore } from '@/stores/userStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { LoginRequestData } from '@/models/requests/loginRequestData';
+import commonUtilities from '@/utilities/common';
+import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
 const props = defineProps({
   formStatus: {
@@ -194,7 +211,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["obtain-login-assistance", "cancel-login", "redirect-to-signup"]);
+const emit = defineEmits(['obtain-login-assistance', 'cancel-login', 'redirect-to-signup']);
 
 const { passwordRules, userNameRules } = rules();
 const {
@@ -226,20 +243,20 @@ const invalidUserNames: Ref<string[]> = ref(loginFormStore.getInvalidUserNames);
 const invalidPasswords: Ref<string[]> = ref(loginFormStore.getInvalidPasswords);
 
 const confirmTitle: ComputedRef<string | undefined> = computed(() => {
-  let result = undefined
+  let result = undefined;
   if (confirmFormReset.value) {
-    result = "Reset Form"
+    result = 'Reset Form';
   } else if (confirmSignUp.value) {
-    result = "Confirm Redirect to Sign Up";
+    result = 'Confirm Redirect to Sign Up';
   }
   return result;
 });
 const confirmMessage: ComputedRef<string | undefined> = computed(() => {
-  let result = undefined
+  let result = undefined;
   if (confirmFormReset.value) {
-    result = "Are you sure you want to reset this form?"
+    result = 'Are you sure you want to reset this form?';
   } else if (confirmSignUp.value) {
-    result = "Are you sure you want to redirect to Sign Up?";
+    result = 'Are you sure you want to redirect to Sign Up?';
   }
   return result;
 });
@@ -249,7 +266,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
@@ -262,16 +279,8 @@ const resetFormStatus: ComputedRef<boolean> = computed(() => {
 const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
-    if (
-      getFormStatus.value &&
-      userName.value !== null &&
-      password.value !== null
-    ) {
-      const data = new LoginRequestData(
-        userName.value,
-        password.value,
-        stayLoggedIn.value
-      );
+    if (getFormStatus.value && userName.value !== null && password.value !== null) {
+      const data = new LoginRequestData(userName.value, password.value, stayLoggedIn.value);
       await globalStore.loginAsync(data);
       const failedToast = await displayFailedToastAsync(updateInvalidValues, {
         invalidUserNames: toRaw(invalidUserNames.value),
@@ -293,7 +302,7 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         loginFormStore.initializeStore();
       }
     } else {
-      toast("Login form is invalid", {
+      toast('Login form is invalid', {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });
@@ -303,13 +312,13 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
 const helpHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
-    emit("obtain-login-assistance", null, null);
+    emit('obtain-login-assistance', null, null);
   });
 };
 const actionConfirmedAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   if (confirmFormReset.value) {
-    await resetHandlerAsync()
+    await resetHandlerAsync();
   } else if (confirmSignUp.value) {
     redirectToSignUpAsync();
   }
@@ -319,7 +328,7 @@ const cancelHandlerAsync = async (event: Event | null = null): Promise<void> => 
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     loginFormStore.initializeStore();
-    emit("cancel-login", null, null);
+    emit('cancel-login', null, null);
   });
 };
 const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
@@ -342,18 +351,18 @@ const redirectToSignUpAsync = async (event: Event | null = null): Promise<void> 
   await updateAppProcessingAsync(() => {
     loginFormStore.initializeStore();
     signUpFormStore.updateUserName(toRaw(userName.value));
-    emit("redirect-to-signup", true, null);
+    emit('redirect-to-signup', true, null);
   });
 };
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === "Status Code 404: No user is using this user name" &&
+    message === 'Status Code 404: No user is using this user name' &&
     !options.invalidUserNames.includes(options.userName)
   ) {
     options.invalidUserNames.push(options.userName);
   }
   if (
-    message === "Status Code 404: Password is incorrect" &&
+    message === 'Status Code 404: Password is incorrect' &&
     !options.invalidPasswords.includes(options.password)
   ) {
     options.invalidPasswords.push(options.password);
@@ -373,7 +382,7 @@ watch(
       confirmSignUp.value = false;
       confirmDialog.value = confirmFormReset.value;
     }
-  }
+  },
 );
 watch(
   () => confirmSignUp.value,
@@ -382,7 +391,7 @@ watch(
       confirmFormReset.value = false;
       confirmDialog.value = confirmSignUp.value;
     }
-  }
+  },
 );
 watch(
   () => confirmDialog.value,
@@ -391,34 +400,41 @@ watch(
       confirmFormReset.value = confirmDialog.value;
       confirmSignUp.value = confirmDialog.value;
     }
-  }
+  },
 );
 //#endregion
 
 //#region Lifecycle Hooks
-onMounted(() => {
+onMounted(async () => {
   if (isChrome.value) {
     repairAutoComplete();
   }
   const confirmedUserName = userStore.getConfirmedUserName;
-  if (confirmedUserName !== "") {
+  if (confirmedUserName !== '') {
     userName.value = confirmedUserName;
-    userStore.updateConfirmedUserName("");
+    userStore.updateConfirmedUserName('');
   }
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      "Resized"
+      'Resized',
     );
   });
   if (loginFormStore.getDirty) {
     form.value?.validate();
+  }
+  if (props.formStatus) {
+    window.addEventListener('keyup', async (event) => {
+      if (event.key === 'Enter' && props.formStatus) {
+        await submitHandlerAsync();
+      }
+    });
   }
 });
 onUpdated(() => {
@@ -427,10 +443,10 @@ onUpdated(() => {
   }
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
+  window.removeEventListener('keyup', () => {});
 });
 //#endregion
 </script>
-@/stores/formStores/loginFormStore@/stores/formStores/signUpFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

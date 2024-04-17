@@ -1,21 +1,15 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Ref, ref, ComputedRef, computed, toRaw } from "vue";
-import { defineStore } from "pinia";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
 
-export const useServiceFailStore = defineStore("serviceFailStore", () => {
+export const useServiceFailStore = defineStore('serviceFailStore', () => {
   const isSuccess: Ref<boolean | null> = ref(null);
   const serviceMessage: Ref<string | null> = ref(null);
   const statusCode = ref(0);
 
-  const getIsSuccess: ComputedRef<boolean | null> = computed(() =>
-    toRaw(isSuccess.value)
-  );
-  const getServiceMessage: ComputedRef<string | null> = computed(() =>
-    toRaw(serviceMessage.value)
-  );
-  const getStatusCode: ComputedRef<number> = computed(() =>
-    toRaw(statusCode.value)
-  );
+  const getIsSuccess: ComputedRef<boolean | null> = computed(() => toRaw(isSuccess.value));
+  const getServiceMessage: ComputedRef<string | null> = computed(() => toRaw(serviceMessage.value));
+  const getStatusCode: ComputedRef<number> = computed(() => toRaw(statusCode.value));
 
   const initializeStore = (): void => {
     isSuccess.value = null;

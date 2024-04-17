@@ -1,7 +1,7 @@
-import { ComputedRef, computed, Ref, ref, toRaw } from "vue";
-import { defineStore } from "pinia";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { defineStore } from 'pinia';
 
-export const useOkDialogStore = defineStore("okDialogStore", () => {
+export const useOkDialogStore = defineStore('okDialogStore', () => {
   const title: Ref<string | null> = ref(null);
   const message: Ref<string | null> = ref(null);
   const isActive: Ref<boolean> = ref(false);
@@ -35,6 +35,6 @@ export const useOkDialogStore = defineStore("okDialogStore", () => {
     initializeStore,
     updateTitle,
     updateMessage,
-    updateIsActive
+    updateIsActive,
   };
 });

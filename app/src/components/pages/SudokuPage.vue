@@ -3,18 +3,19 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, watch } from "vue";
-import { useRoute } from "vue-router";
-import router from "@/router/index";
-import { useUserStore } from "@/stores/userStore";
-import SudokuWidget from "@/components/widgets/sudoku/SudokuWidget.vue";
-import commonUtitlities from "@/utilities/common";
-import { User } from "@/models/domain/user";
+/* eslint-disable no-undef */
+import { onBeforeMount, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import router from '@/router/index';
+import { useUserStore } from '@/stores/userStore';
+import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
+import commonUtitlities from '@/utilities/common';
+import { User } from '@/models/domain/user';
 
 const props = defineProps({
   action: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
@@ -26,28 +27,27 @@ watch(
   () => userStore.getUserIsLoggingIn,
   () => {
     const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-    updateUrlWithAction(userIsLoggingIn, "/sudoku", "login", router, route);
-  }
+    updateUrlWithAction(userIsLoggingIn, '/sudoku', 'login', router, route);
+  },
 );
 watch(
   () => userStore.getUserIsSigningUp,
   () => {
     const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-    updateUrlWithAction(userIsSigningUp, "/sudoku", "signup", router, route);
-  }
+    updateUrlWithAction(userIsSigningUp, '/sudoku', 'signup', router, route);
+  },
 );
 
 onBeforeMount(() => {
   if (router.options.history.state.position === 1) {
     const user: User = userStore.getUser;
-    if (props.action.toLowerCase() === "login") {
+    if (props.action.toLowerCase() === 'login') {
       user.isLoggingIn = true;
       userStore.updateUser(user);
-    } else if (props.action.toLowerCase() === "signup") {
+    } else if (props.action.toLowerCase() === 'signup') {
       user.isSigningUp = true;
       userStore.updateUser(user);
     }
   }
 });
 </script>
-@/stores/userStore

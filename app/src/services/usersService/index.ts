@@ -1,20 +1,19 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { SignupPort } from "@/ports/signupPort";
-import { UsersPort } from "@/ports/usersPort";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
-import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
-import { User } from "@/models/domain/user";
-import { ConfirmEmailResultData } from "@/models/results/confirmEmailResultData";
-import { StaticServiceMethods } from "@/services/common";
+import { AxiosError, type AxiosResponse } from 'axios';
+import { SignupPort } from '@/ports/signupPort';
+import { UsersPort } from '@/ports/usersPort';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import type { IResetPasswordRequestData } from '@/interfaces/requests/iResetPasswordRequestData';
+import type { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
+import { User } from '@/models/domain/user';
+import { ConfirmEmailResultData } from '@/models/results/confirmEmailResultData';
+import { StaticServiceMethods } from '@/services/common';
 
 export class UsersService {
   static async getUserAsync(id: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null =
-        StaticServiceMethods.numberCannotBeZero(id);
+      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(id);
 
       if (idIsZero !== null) {
         throw idIsZero;
@@ -41,15 +40,15 @@ export class UsersService {
           response.data.payload[0].isAdmin,
           response.data.payload[0].dateCreated,
           response.data.payload[0].dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -87,15 +86,15 @@ export class UsersService {
           response.data.payload[0].user.isAdmin,
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -112,8 +111,7 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null =
-        StaticServiceMethods.numberCannotBeZero(id);
+      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(id);
 
       if (idIsZero !== null) {
         throw idIsZero;
@@ -129,8 +127,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -155,15 +153,15 @@ export class UsersService {
         result.data = new ConfirmEmailResultData(
           response.data.payload[0].confirmationType,
           response.data.payload[0].userName,
-          response.data.payload[0].email
+          response.data.payload[0].email,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -180,14 +178,15 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null =
-        StaticServiceMethods.numberCannotBeZero(requestorId);
+      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(requestorId);
 
       if (idIsZero !== null) {
         throw idIsZero;
       }
-      
-      const response = (await SignupPort.putResendEmailConfirmationAsync(requestorId)) as AxiosResponse;
+
+      const response = (await SignupPort.putResendEmailConfirmationAsync(
+        requestorId,
+      )) as AxiosResponse;
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -197,8 +196,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -236,15 +235,15 @@ export class UsersService {
           response.data.payload[0].user.isAdmin,
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -271,8 +270,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -316,15 +315,15 @@ export class UsersService {
           response.data.payload[0].isAdmin,
           response.data.payload[0].dateCreated,
           response.data.payload[0].dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -341,13 +340,12 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null =
-        StaticServiceMethods.numberCannotBeZero(userId);
+      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(userId);
 
       if (idIsZero !== null) {
         throw idIsZero;
       }
-      
+
       const response = (await UsersPort.putResendPasswordResetAsync(userId)) as AxiosResponse;
 
       if (response.data.isSuccess) {
@@ -358,8 +356,8 @@ export class UsersService {
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -397,15 +395,15 @@ export class UsersService {
           response.data.payload[0].user.isAdmin,
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
@@ -443,15 +441,15 @@ export class UsersService {
           response.data.payload[0].user.isAdmin,
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
-          true
+          true,
         );
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;
