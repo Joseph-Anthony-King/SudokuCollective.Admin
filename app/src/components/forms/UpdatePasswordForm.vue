@@ -8,7 +8,11 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="password !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="password !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -28,7 +32,11 @@
               </v-tooltip>
             </v-col>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="confirmPassword !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="confirmPassword !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -57,7 +65,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="confirmFormReset = true"
                   v-bind="props"
                 >
@@ -72,7 +80,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="closeHandlerAsync($event)"
                   v-bind="props"
                 >
@@ -83,11 +91,15 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!formValid || isSmallViewPort"
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props"
@@ -120,37 +132,33 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
-import { ComputedRef, computed, Ref, ref, toRaw } from 'vue';
-import { VForm, VTextField } from "vuetify/components";
-import { toast } from "vue3-toastify";
-import router from "@/router/index";
-import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
-import { useUserStore } from "@/stores/userStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
+import { VForm, VTextField } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import router from '@/router/index';
+import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
+import { useUserStore } from '@/stores/userStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
 import { StoreType } from '@/enums/storeTypes';
 import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
-import rules from "@/utilities/rules/index";
-import { RulesMessages } from "@/utilities/rules/rulesMessages";
-import commonUtilities from "@/utilities/common";
+import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
+import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
   formStatus: {
     type: Boolean,
     default: false,
-  }
+  },
 });
-const emit = defineEmits(["close-update-password"]);
+const emit = defineEmits(['close-update-password']);
 
-const {
-  displayFailedToastAsync,
-  displaySuccessfulToast,
-  updateAppProcessingAsync,
-} = commonUtilities();
-const {
-  confirmPasswordRules,
-  passwordRules,
-} = rules();
+const { displayFailedToastAsync, displaySuccessfulToast, updateAppProcessingAsync } =
+  commonUtilities();
+const { confirmPasswordRules, passwordRules } = rules();
 
 //#region Instantiate the Stores
 const signUpFormStore = useSignUpFormStore();
@@ -159,10 +167,8 @@ const userStore = useUserStore();
 
 //#region Properties
 const password: Ref<string | null> = ref(signUpFormStore.getPassword);
-const confirmPassword: Ref<string | null> = ref(
-  signUpFormStore.getConfirmPassword
-);
-const token: string = signUpFormStore.getPasswordToken ? signUpFormStore.getPasswordToken : "";
+const confirmPassword: Ref<string | null> = ref(signUpFormStore.getConfirmPassword);
+const token: string = signUpFormStore.getPasswordToken ? signUpFormStore.getPasswordToken : '';
 const showPassword: Ref<boolean> = ref(false);
 const confirmFormReset: Ref<boolean> = ref(false);
 //#endregion
@@ -171,7 +177,7 @@ const confirmFormReset: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
@@ -188,7 +194,7 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
       signUpFormStore.updatePassword(toRaw(password.value));
       signUpFormStore.updateConfirmPassword(toRaw(confirmPassword.value));
 
-      const data = new ResetPasswordRequestData(token, password.value ? password.value : "")
+      const data = new ResetPasswordRequestData(token, password.value ? password.value : '');
       const result = await userStore.resetPasswordAsync(data);
       if (result) {
         signUpFormStore.initializeStore();
@@ -196,15 +202,15 @@ const submitHandlerAsync = async (event: Event | null = null): Promise<void> => 
         if (userStore.getUserIsLoggedIn) {
           await userStore.getUserAsync();
           userStore.updateServiceMessage();
-          router.push("/user-profile");            
+          router.push('/user-profile');
         } else {
-          router.push("/");
+          router.push('/');
         }
       } else {
         displayFailedToastAsync(undefined, undefined);
       }
     } else {
-      toast("Reset password form is invalid", {
+      toast('Reset password form is invalid', {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR,
       });
@@ -224,9 +230,8 @@ const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     signUpFormStore.initializeStore();
-    emit("close-update-password", null, null);
+    emit('close-update-password', null, null);
   });
 };
 //#endregion
 </script>
-@/stores/formStores/signUpFormStore@/stores/userStore

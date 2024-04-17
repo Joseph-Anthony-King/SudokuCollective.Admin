@@ -153,21 +153,18 @@
     <AvailableActions>
       <v-row dense>
         <v-col cols="12" sm="6" md="6" lg="3" xl="3" xxl="3">
-          <v-tooltip
-            open-delay="2000"
-            location="bottom"
-            :disabled="formValid || isSmallViewPort"
-          >
+          <v-tooltip open-delay="2000" location="bottom" :disabled="formValid || isSmallViewPort">
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="formValid"
                 @click.prevent="
                   user.isEditing === false
                     ? (user.isEditing = true)
-                    : (confirmEditSubmission = true)"
+                    : (confirmEditSubmission = true)
+                "
               >
                 {{ submitText }}
               </v-btn>
@@ -184,7 +181,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing"
                 @click="confirmRefresh = true"
@@ -204,7 +201,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="!user.isEditing"
                 @click="cancelHandler($event)"
@@ -224,7 +221,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="red darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing || user.isSuperUser"
                 @click="confirmDeleteSubmission = true"
@@ -244,7 +241,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
                 @click="confirmEmailResend = true"
@@ -259,15 +256,12 @@
           <v-tooltip
             open-delay="2000"
             location="bottom"
-            :disabled="
-              user.isEditing ||
-              !user.receivedRequestToUpdateEmail ||
-              isSmallViewPort"
+            :disabled="user.isEditing || !user.receivedRequestToUpdateEmail || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
                 @click="confirmCancelEmailResend = true"
@@ -286,14 +280,17 @@
               user.isEditing ||
               user.isEmailConfirmed ||
               user.receivedRequestToUpdatePassword ||
-              isSmallViewPort"
+              isSmallViewPort
+            "
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
-                :disabled="user.isEditing || !user.isEmailConfirmed || user.receivedRequestToUpdatePassword"
+                :disabled="
+                  user.isEditing || !user.isEmailConfirmed || user.receivedRequestToUpdatePassword
+                "
                 @click="confirmPasswordReset = true"
               >
                 Password Reset
@@ -306,15 +303,12 @@
           <v-tooltip
             open-delay="2000"
             location="bottom"
-            :disabled="
-              user.isEditing ||
-              !user.receivedRequestToUpdatePassword ||
-              isSmallViewPort"
+            :disabled="user.isEditing || !user.receivedRequestToUpdatePassword || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
                 @click="confirmResendPasswordReset = true"
@@ -329,15 +323,12 @@
           <v-tooltip
             open-delay="2000"
             location="bottom"
-            :disabled="
-              user.isEditing ||
-              !user.receivedRequestToUpdatePassword ||
-              isSmallViewPort"
+            :disabled="user.isEditing || !user.receivedRequestToUpdatePassword || isSmallViewPort"
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
                 @click="confirmCancelPasswordReset = true"
@@ -356,17 +347,19 @@
               user.isEditing ||
               !user.receivedRequestToUpdateEmail ||
               !user.receivedRequestToUpdatePassword ||
-              isSmallViewPort"
+              isSmallViewPort
+            "
           >
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text
+                text="true"
                 v-bind="props"
                 :disabled="
                   user.isEditing ||
                   !user.receivedRequestToUpdateEmail ||
-                  !user.receivedRequestToUpdatePassword"
+                  !user.receivedRequestToUpdatePassword
+                "
                 @click="confirmCancelAllRequestsReset = true"
               >
                 Cancel All Email Requests
@@ -396,31 +389,33 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
-  Ref,
-  ref,
-  ComputedRef,
+  type ComputedRef,
   computed,
+  type Ref,
+  ref,
   watch,
   onMounted,
   onUnmounted,
   toRaw,
-} from "vue";
-import router from "@/router/index";
-import { VForm } from "vuetify/components";
-import { toast } from "vue3-toastify";
-import "vue3-toastify/dist/index.css";
-import { useUserStore } from "@/stores/userStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import { UpdateUserRequestData } from "@/models/requests/updateUserRequestData";
-import { StoreType } from "@/enums/storeTypes";
-import { User } from "@/models/domain/user";
-import rules from "@/utilities/rules/index";
-import { RulesMessages } from "@/utilities/rules/rulesMessages";
-import commonUtilities from "@/utilities/common";
+} from 'vue';
+import router from '@/router/index';
+import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { useUserStore } from '@/stores/userStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
+import { StoreType } from '@/enums/storeTypes';
+import { User } from '@/models/domain/user';
+import rules from '@/utilities/rules/index';
+import { RulesMessages } from '@/utilities/rules/rulesMessages';
+import commonUtilities from '@/utilities/common';
 
 const props = defineProps({
   formStatus: {
@@ -428,15 +423,11 @@ const props = defineProps({
     default: true,
   },
 });
-const emit = defineEmits(["user-updated"]);
+const emit = defineEmits(['user-updated']);
 
 const { emailRules, requiredRules, userNameRules } = rules();
-const {
-  displaySuccessfulToast,
-  displayFailedToastAsync,
-  resetViewPort,
-  updateAppProcessingAsync,
-} = commonUtilities();
+const { displaySuccessfulToast, displayFailedToastAsync, resetViewPort, updateAppProcessingAsync } =
+  commonUtilities();
 
 //#region Instantiate the Stores
 const userStore = useUserStore();
@@ -452,17 +443,17 @@ const email: Ref<string | undefined> = ref(user.value.email);
 const invalidUserNames: Ref<string[]> = ref([]);
 const invalidEmails: Ref<string[]> = ref([]);
 const firstNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace("{{value}}", "First Name")
+  RulesMessages.requiredMessage.replace('{{value}}', 'First Name'),
 );
 const lastNameTooltip: ComputedRef<string> = computed(() =>
-  RulesMessages.requiredMessage.replace("{{value}}", "Last Name")
+  RulesMessages.requiredMessage.replace('{{value}}', 'Last Name'),
 );
 //#endregion
 
 //#region Form Logic
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(false);
-const formTitle: Ref<string> = ref("User Profile");
+const formTitle: Ref<string> = ref('User Profile');
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
@@ -474,7 +465,7 @@ const formattedDateCreated: ComputedRef<string | null> = computed(() => {
     return null;
   } else {
     return `${new Date(user.value.dateCreated).toLocaleDateString()} ${new Date(
-      user.value.dateCreated
+      user.value.dateCreated,
     ).toLocaleTimeString()}`;
   }
 });
@@ -484,42 +475,40 @@ const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
   } else {
     if (
       `${new Date(user.value.dateUpdated).toLocaleDateString()} ${new Date(
-        user.value.dateUpdated
-      ).toLocaleTimeString()}` === "1/1/1 12:00:00 AM"
+        user.value.dateUpdated,
+      ).toLocaleTimeString()}` === '1/1/1 12:00:00 AM'
     ) {
       return null;
     } else {
-      return `${new Date(
-        user.value.dateUpdated
-      ).toLocaleDateString()} ${new Date(
-        user.value.dateUpdated
+      return `${new Date(user.value.dateUpdated).toLocaleDateString()} ${new Date(
+        user.value.dateUpdated,
       ).toLocaleTimeString()}`;
     }
   }
 });
 const submitText: ComputedRef<string> = computed(() => {
   if (!user.value.isEditing) {
-    return "Edit";
+    return 'Edit';
   } else {
-    return "Submit";
+    return 'Submit';
   }
 });
 const submitHelperText: ComputedRef<string> = computed(() => {
   if (!user.value.isEditing) {
-    return "Edit your profile";
+    return 'Edit your profile';
   } else {
-    return "Submit your changes";
+    return 'Submit your changes';
   }
 });
 watch(
   () => user.value.isEditing,
   () => {
     if (user.value.isEditing) {
-      formTitle.value = "Edit User Profile";
+      formTitle.value = 'Edit User Profile';
     } else {
-      formTitle.value = "User Profile";
+      formTitle.value = 'User Profile';
     }
-  }
+  },
 );
 //#endregion
 
@@ -535,26 +524,26 @@ const confirmResendPasswordReset: Ref<boolean> = ref(false);
 const confirmCancelPasswordReset: Ref<boolean> = ref(false);
 const confirmCancelAllRequestsReset: Ref<boolean> = ref(false);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const confirmTitle: ComputedRef<string | undefined> = computed(() => {
   if (confirmEditSubmission.value) {
-    return "Confirm Edit";
+    return 'Confirm Edit';
   } else if (confirmRefresh.value) {
-    return "Confirm Refresh";
+    return 'Confirm Refresh';
   } else if (confirmDeleteSubmission.value) {
-    return "Confirm Delete";
+    return 'Confirm Delete';
   } else if (confirmEmailResend.value) {
-    return "Confirm Email Confirmation Resend";
+    return 'Confirm Email Confirmation Resend';
   } else if (confirmCancelEmailResend.value) {
-    return "Confirm Cancel Email Confirmation";
+    return 'Confirm Cancel Email Confirmation';
   } else if (confirmPasswordReset.value) {
-    return "Confirm Password Reset";
+    return 'Confirm Password Reset';
   } else if (confirmResendPasswordReset.value) {
-    return "Confirm Resend Password Reset";
+    return 'Confirm Resend Password Reset';
   } else if (confirmCancelPasswordReset.value) {
-    return "Confirm Cancel Password Reset";
+    return 'Confirm Cancel Password Reset';
   } else if (confirmCancelAllRequestsReset.value) {
-    return "Confirm Cancel Email Confirmation & Password Reset";
+    return 'Confirm Cancel Email Confirmation & Password Reset';
   } else {
     return undefined;
   }
@@ -586,9 +575,7 @@ const confirmMessage: ComputedRef<string | undefined> = computed(() => {
     return undefined;
   }
 });
-const actionConfirmedHandlerAsync = async (
-  event: Event | null = null
-): Promise<void> => {
+const actionConfirmedHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(async () => {
     if (confirmEditSubmission.value) {
@@ -609,7 +596,7 @@ const actionConfirmedHandlerAsync = async (
       if (result) {
         confirmDialog.value = false;
         confirmDeleteSubmission.value = false;
-        router.push("/");
+        router.push('/');
         toast(`Sad to see you go ${userName}, your profile has been deleted`, {
           position: toast.POSITION.TOP_CENTER,
           type: toast.TYPE.SUCCESS,
@@ -654,9 +641,7 @@ const actionConfirmedHandlerAsync = async (
     }
   });
 };
-const actionNotConfirmedHandler = async (
-  event: Event | null = null
-): Promise<void> => {
+const actionNotConfirmedHandler = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     if (confirmEditSubmission.value) {
@@ -691,13 +676,13 @@ const actionNotConfirmedHandler = async (
 };
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === "Status Code 404: User name not unique" &&
+    message === 'Status Code 404: User name not unique' &&
     !options.invalidUserNames.includes(options.userName as string)
   ) {
     options.invalidUserNames.push(options.userName as string);
   }
   if (
-    message === "Status Code 404: Email not unique" &&
+    message === 'Status Code 404: Email not unique' &&
     !options.invalidEmails.includes(options.email as string)
   ) {
     options.invalidEmails.push(options.email as string);
@@ -713,7 +698,7 @@ watch(
     if (confirmEditSubmission.value) {
       confirmDialog.value = confirmEditSubmission.value;
     }
-  }
+  },
 );
 watch(
   () => confirmRefresh.value,
@@ -721,7 +706,7 @@ watch(
     if (confirmRefresh.value) {
       confirmDialog.value = confirmRefresh.value;
     }
-  }
+  },
 );
 watch(
   () => confirmDeleteSubmission.value,
@@ -729,7 +714,7 @@ watch(
     if (confirmDeleteSubmission.value) {
       confirmDialog.value = confirmDeleteSubmission.value;
     }
-  }
+  },
 );
 watch(
   () => confirmEmailResend.value,
@@ -737,7 +722,7 @@ watch(
     if (confirmEmailResend.value) {
       confirmDialog.value = confirmEmailResend.value;
     }
-  }
+  },
 );
 watch(
   () => confirmCancelEmailResend.value,
@@ -745,7 +730,7 @@ watch(
     if (confirmCancelEmailResend.value) {
       confirmDialog.value = confirmCancelEmailResend.value;
     }
-  }
+  },
 );
 watch(
   () => confirmPasswordReset.value,
@@ -753,7 +738,7 @@ watch(
     if (confirmPasswordReset.value) {
       confirmDialog.value = confirmPasswordReset.value;
     }
-  }
+  },
 );
 watch(
   () => confirmResendPasswordReset.value,
@@ -761,7 +746,7 @@ watch(
     if (confirmResendPasswordReset.value) {
       confirmDialog.value = confirmResendPasswordReset.value;
     }
-  }
+  },
 );
 watch(
   () => confirmCancelPasswordReset.value,
@@ -769,7 +754,7 @@ watch(
     if (confirmCancelPasswordReset.value) {
       confirmDialog.value = confirmCancelPasswordReset.value;
     }
-  }
+  },
 );
 watch(
   () => confirmCancelAllRequestsReset.value,
@@ -777,7 +762,7 @@ watch(
     if (confirmCancelAllRequestsReset.value) {
       confirmDialog.value = confirmCancelAllRequestsReset.value;
     }
-  }
+  },
 );
 //#endregion
 
@@ -792,7 +777,7 @@ const editHandlerAsync = async (event: Event | null = null): Promise<boolean> =>
         firstName.value,
         lastName.value,
         nickName.value,
-        email.value
+        email.value,
       );
       result = await userStore.updateUserAsync(data);
     }
@@ -868,10 +853,12 @@ const cancelHandler = (event: Event | null = null): void => {
     lastName.value = user.value.lastName;
     nickName.value = user.value.nickName;
     email.value = user.value.email;
-    emit("user-updated", null);
+    emit('user-updated', null);
   });
 };
-const resendEmailConfirmationHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
+const resendEmailConfirmationHandlerAsync = async (
+  event: Event | null = null,
+): Promise<boolean> => {
   event?.preventDefault();
   return (await updateAppProcessingAsync(async () => {
     const result = await userStore.resendEmailConfirmationRequestAsync();
@@ -883,7 +870,9 @@ const resendEmailConfirmationHandlerAsync = async (event: Event | null = null): 
     return result;
   })) as Promise<boolean>;
 };
-const cancelEmailConfirmationHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
+const cancelEmailConfirmationHandlerAsync = async (
+  event: Event | null = null,
+): Promise<boolean> => {
   event?.preventDefault();
   return (await updateAppProcessingAsync(async () => {
     const result = await userStore.cancelEmailConfirmationRequestAsync();
@@ -961,7 +950,7 @@ watch(
     lastName.value = user.value.lastName;
     nickName.value = user.value.nickName;
     email.value = user.value.email;
-  }
+  },
 );
 //#endregion
 
@@ -969,22 +958,21 @@ watch(
 onMounted(async () => {
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      "Resized"
+      'Resized',
     );
   });
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
 //#endregion
 </script>
-@/stores/userStore

@@ -1,3 +1,3 @@
 export class Endpoints {
-    static getEndpoint = `${process.env.VUE_APP_API_URL}api/index`;
+  static getEndpoint = `${process.env.VITE_APP_API_URL}api/index`;
 }

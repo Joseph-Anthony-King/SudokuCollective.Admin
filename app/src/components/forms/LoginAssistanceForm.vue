@@ -8,7 +8,11 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-tooltip open-delay="2000" location="bottom" :disabled="email !== null || isSmallViewPort">
+              <v-tooltip
+                open-delay="2000"
+                location="bottom"
+                :disabled="email !== null || isSmallViewPort"
+              >
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="email"
@@ -30,11 +34,15 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!formValid || isSmallViewPort"
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="resetPasswordHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props"
@@ -42,15 +50,22 @@
                   Reset Password
                 </v-btn>
               </template>
-              <span>Send a link to your email to reset your password if your email has been confirmed</span>
+              <span
+                >Send a link to your email to reset your password if your email has been
+                confirmed</span
+              >
             </v-tooltip>
           </v-col>
           <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="!formValid || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="!formValid || isSmallViewPort"
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props"
@@ -62,11 +77,17 @@
             </v-tooltip>
           </v-col>
           <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="(email === '' || email === null) && invalidEmails.length === 0 || isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="
+                ((email === '' || email === null) && invalidEmails.length === 0) || isSmallViewPort
+              "
+            >
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="confirmFormReset = true"
                   :disabled="(email === '' || email === null) && invalidEmails.length === 0"
                   v-bind="props"
@@ -80,12 +101,7 @@
           <v-col cols="12" sm="3" md="3" lg="3" xl="3" xxl="3">
             <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="goBackHandlerAsync"
-                  v-bind="props"
-                >
+                <v-btn color="blue darken-1" text="true" @click="goBackHandlerAsync" v-bind="props">
                   Go Back
                 </v-btn>
               </template>
@@ -114,28 +130,30 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import {
-  Ref,
-  ref,
-  ComputedRef,
+  type ComputedRef,
   computed,
+  type Ref,
+  ref,
   onMounted,
   onUpdated,
   onUnmounted,
   watch,
   toRaw,
-} from "vue";
-import { VForm } from "vuetify/components";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useLoginFormStore } from "@/stores/formStores/loginFormStore";
-import { useServiceFailStore } from "@/stores/serviceFailStore";
-import { useUserStore } from "@/stores/userStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import commonUtilities from "@/utilities/common";
-import rules from "@/utilities/rules/index";
+} from 'vue';
+import { VForm } from 'vuetify/components';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useLoginFormStore } from '@/stores/formStores/loginFormStore';
+import { useServiceFailStore } from '@/stores/serviceFailStore';
+import { useUserStore } from '@/stores/userStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import commonUtilities from '@/utilities/common';
+import rules from '@/utilities/rules/index';
 import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
 const props = defineProps({
@@ -144,7 +162,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["return-to-login"]);
+const emit = defineEmits(['return-to-login']);
 
 const {
   isChrome,
@@ -172,7 +190,7 @@ const { emailRules } = rules();
 const form: Ref<VForm | null> = ref(null);
 const formValid: Ref<boolean> = ref(true);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const getFormStatus: ComputedRef<boolean> = computed(() => {
   return props.formStatus;
 });
@@ -217,7 +235,7 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
     if (getFormStatus.value) {
-      email.value = "";
+      email.value = '';
       invalidEmails.value = [];
       form.value?.reset();
       confirmFormReset.value = false;
@@ -229,12 +247,12 @@ const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
 const goBackHandlerAsync = async (event: Event | null = null): Promise<void> => {
   event?.preventDefault();
   await updateAppProcessingAsync(() => {
-    emit("return-to-login", null, null);
+    emit('return-to-login', null, null);
   });
 };
 const updateInvalidValues = (message: string, options: any): any => {
   if (
-    message === "Status Code 404: No user is using this email" &&
+    message === 'Status Code 404: No user is using this email' &&
     !options.invalidEmails.includes(options.email)
   ) {
     options.invalidEmails.push(options.email);
@@ -248,10 +266,10 @@ watch(
   () => userStore.getConfirmedUserName,
   () => {
     const confirmedUserName = userStore.getConfirmedUserName;
-    if (confirmedUserName !== "") {
-      emit("return-to-login", null, null);
+    if (confirmedUserName !== '') {
+      emit('return-to-login', null, null);
     }
-  }
+  },
 );
 //#endregion
 
@@ -265,14 +283,14 @@ onMounted(() => {
   }
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      "Resized"
+      'Resized',
     );
   });
 });
@@ -282,10 +300,9 @@ onUpdated(() => {
   }
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
 //#endregion
 </script>
-@/stores/formStores/loginFormStore@/stores/globalStore@/stores/serviceFailStore@/stores/userStore

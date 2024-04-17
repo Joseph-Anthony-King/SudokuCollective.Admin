@@ -15,14 +15,10 @@
     <v-card-actions>
       <v-row :dense="true">
         <v-col>
-          <v-btn color="blue darken-1" text @click="confirmedHandler">
-            Yes
-          </v-btn>
+          <v-btn color="blue darken-1" text="true" @click="confirmedHandler"> Yes </v-btn>
         </v-col>
         <v-col>
-          <v-btn color="blue darken-1" text @click="notConfirmedHandlder">
-            No
-          </v-btn>
+          <v-btn color="blue darken-1" text="true" @click="notConfirmedHandlder"> No </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -30,23 +26,25 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 const props = defineProps({
   title: {
     type: String,
-    default: "",
+    default: '',
   },
   message: {
     type: String,
-    default: "",
+    default: '',
   },
 });
-const emit = defineEmits(["action-confirmed", "action-not-confirmed"]);
+const emit = defineEmits(['action-confirmed', 'action-not-confirmed']);
 
 const confirmedHandler = (): void => {
-  emit("action-confirmed", null, null);
+  emit('action-confirmed', null, null);
 };
 const notConfirmedHandlder = (): void => {
-  emit("action-not-confirmed", null, null);
+  emit('action-not-confirmed', null, null);
 };
 </script>

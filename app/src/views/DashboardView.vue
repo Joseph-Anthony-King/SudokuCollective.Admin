@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import DashboardPage from "@/components/pages/DashboardPage.vue";
+import DashboardPage from '@/components/pages/DashboardPage.vue';
 </script>

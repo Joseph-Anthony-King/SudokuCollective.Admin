@@ -13,14 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
-import { useUserStore } from "@/stores/userStore";
-import { User } from "@/models/domain/user";
+/* eslint-disable no-undef */
+import { onBeforeMount } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { User } from '@/models/domain/user';
 
 const props = defineProps({
   action: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
@@ -28,10 +29,9 @@ const userStore = useUserStore();
 
 onBeforeMount(() => {
   const user: User = userStore.getUser;
-  if (props.action.toLowerCase() === "login") {
+  if (props.action.toLowerCase() === 'login') {
     user.isLoggingIn = true;
     userStore.updateUser(user);
   }
 });
 </script>
-@/stores/userStore

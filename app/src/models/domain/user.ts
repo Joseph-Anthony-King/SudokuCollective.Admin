@@ -1,4 +1,4 @@
-import { IUser } from "@/interfaces/domain/iUser";
+import type { IUser } from '@/interfaces/domain/iUser';
 
 export class User implements IUser {
   id: number;
@@ -40,29 +40,33 @@ export class User implements IUser {
     dateCreated?: Date,
     dateUpdated?: Date,
     isLoggedIn?: boolean,
-    isSignedUp?: boolean
+    isSignedUp?: boolean,
   ) {
-		id ? this.id = id : this.id = 0;
-		userName ? this.userName = userName : this.userName = undefined;
-		firstName ? this.firstName = firstName : this.firstName = undefined;
-		lastName ? this.lastName = lastName : this.lastName = undefined;
-		nickName ? this.nickName = nickName : this.nickName = undefined;
-		fullName ? this.fullName = fullName : this.fullName = undefined;
-		email ? this.email = email : this.email = undefined;
-		isEmailConfirmed ? this.isEmailConfirmed = isEmailConfirmed : this.isEmailConfirmed = false;
-		receivedRequestToUpdateEmail ? this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail : this.receivedRequestToUpdateEmail = false;
-		receivedRequestToUpdatePassword ? this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword : this.receivedRequestToUpdatePassword = false;
-		isActive ? this.isActive = isActive : this.isActive = false;
-		isSuperUser ? this.isSuperUser = isSuperUser : this.isSuperUser = false;
-		isAdmin ? this.isAdmin = isAdmin : this.isAdmin = false;
-		dateCreated ? this.dateCreated = dateCreated : this.dateCreated = undefined;
-		dateUpdated ? this.dateUpdated = dateUpdated : this.dateUpdated = undefined;
-		isLoggedIn ? this.isLoggedIn = isLoggedIn : this.isLoggedIn = false;
-		isSignedUp ? this.isSignedUp = isSignedUp : this.isSignedUp = false;
+    id ? (this.id = id) : (this.id = 0);
+    userName ? (this.userName = userName) : (this.userName = undefined);
+    firstName ? (this.firstName = firstName) : (this.firstName = undefined);
+    lastName ? (this.lastName = lastName) : (this.lastName = undefined);
+    nickName ? (this.nickName = nickName) : (this.nickName = undefined);
+    fullName ? (this.fullName = fullName) : (this.fullName = undefined);
+    email ? (this.email = email) : (this.email = undefined);
+    isEmailConfirmed ? (this.isEmailConfirmed = isEmailConfirmed) : (this.isEmailConfirmed = false);
+    receivedRequestToUpdateEmail
+      ? (this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail)
+      : (this.receivedRequestToUpdateEmail = false);
+    receivedRequestToUpdatePassword
+      ? (this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword)
+      : (this.receivedRequestToUpdatePassword = false);
+    isActive ? (this.isActive = isActive) : (this.isActive = false);
+    isSuperUser ? (this.isSuperUser = isSuperUser) : (this.isSuperUser = false);
+    isAdmin ? (this.isAdmin = isAdmin) : (this.isAdmin = false);
+    dateCreated ? (this.dateCreated = dateCreated) : (this.dateCreated = undefined);
+    dateUpdated ? (this.dateUpdated = dateUpdated) : (this.dateUpdated = undefined);
+    isLoggedIn ? (this.isLoggedIn = isLoggedIn) : (this.isLoggedIn = false);
+    isSignedUp ? (this.isSignedUp = isSignedUp) : (this.isSignedUp = false);
 
-		this.isLoggingIn = false;
+    this.isLoggingIn = false;
     this.isObtainingAssistance = false;
-		this.isSigningUp = false;
-		this.isEditing = false;
+    this.isSigningUp = false;
+    this.isEditing = false;
   }
 }

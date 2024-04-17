@@ -5,16 +5,13 @@
     </v-card-title>
     <v-card-text>
       <v-container>
-        <p v-html="message">
-        </p>
+        <p v-html="message"></p>
       </v-container>
     </v-card-text>
     <v-card-actions class="text-center">
       <v-row :dense="true">
         <v-col cols="12">
-          <v-btn color="blue darken-1" text @click="close($event)">
-            ok
-          </v-btn>
+          <v-btn color="blue darken-1" text="true" @click="close($event)"> ok </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -22,10 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from "vue";
-import { useOkDialogStore } from "@/stores/okDialogStore";
+/* eslint-disable no-undef */
+import { type Ref, ref } from 'vue';
+import { useOkDialogStore } from '@/stores/okDialogStore';
 
-const emit = defineEmits(["close-ok-dialog"]);
+const emit = defineEmits(['close-ok-dialog']);
 
 const okDialogStore = useOkDialogStore();
 const title: Ref<string | null> = ref(okDialogStore.getTitle);
@@ -33,7 +31,6 @@ const message: Ref<string | null> = ref(okDialogStore.getMessage);
 
 const close = (event: Event | undefined = undefined): void => {
   event?.preventDefault();
-  emit("close-ok-dialog", undefined, undefined);
+  emit('close-ok-dialog', undefined, undefined);
 };
 </script>
-@/stores/okDialogStore

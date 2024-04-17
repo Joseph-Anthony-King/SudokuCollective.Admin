@@ -9,7 +9,7 @@ app.use(history({ index: '/index.html' }));
 
 app.use('/', express.static('app/dist', { index: 'index.html' }));
 
-app.set('port', (process.env.PORT || 8082));
+app.set('port', (process.env.PORT || 5175));
 
 // get network interfaces in order to find the network address
 const nets = networkInterfaces();

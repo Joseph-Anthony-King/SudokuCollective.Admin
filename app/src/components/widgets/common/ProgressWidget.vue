@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { ComputedRef, computed, Ref, ref, onMounted, onUnmounted } from "vue";
-import { useGlobalStore } from "@/stores/globalStore";
+import { type ComputedRef, computed, type Ref, ref, onMounted, onUnmounted } from 'vue';
+import { useGlobalStore } from '@/stores/globalStore';
 
 //#region Instantiate the Stores
 const globalStore = useGlobalStore();
@@ -54,7 +54,7 @@ const progressWidth: ComputedRef<number> = computed(() => {
 const progressPadding = (outerColumn: boolean): number => {
   let result: number;
   if (outerColumn) {
-    if (progressMessage.value === "Processing, please do not navigate away") {
+    if (progressMessage.value === 'Processing, please do not navigate away') {
       if (windowWidth.value >= 1904) {
         result = 4;
       } else if (windowWidth.value < 1904 && windowWidth.value >= 1264) {
@@ -80,7 +80,7 @@ const progressPadding = (outerColumn: boolean): number => {
       }
     }
   } else {
-    if (progressMessage.value === "Processing, please do not navigate away") {
+    if (progressMessage.value === 'Processing, please do not navigate away') {
       if (windowWidth.value >= 1264) {
         return 6;
       } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
@@ -115,12 +115,12 @@ const resetProgressMessagePadding = (): void => {
 //#region Lifecycle Hooks
 onMounted(() => {
   resetProgressMessagePadding();
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     resetProgressMessagePadding();
   });
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetProgressMessagePadding();
   });
 });
@@ -154,7 +154,7 @@ onUnmounted(() => {
   vertical-align: bottom;
   -webkit-animation: ellipsis steps(4, end) 900ms infinite;
   animation: ellipsis steps(4, end) 900ms infinite;
-  content: "\2026";
+  content: '\2026';
   /* ascii code for the ellipsis character */
   width: 0px;
 }
@@ -171,4 +171,3 @@ onUnmounted(() => {
   }
 }
 </style>
-@/stores/globalStore

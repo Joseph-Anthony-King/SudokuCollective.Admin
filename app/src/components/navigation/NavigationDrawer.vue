@@ -32,14 +32,16 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
-import { Ref, ref, watch } from "vue";
-import { onBeforeMount } from "vue";
-import { onBeforeUpdate } from "vue";
-import { useUserStore } from "@/stores/userStore";
-import { NavDrawerLinks } from "@/utilities/links/navDrawerLinks";
-import { User } from "@/models/domain/user";
-import { MenuItem } from "@/models/infrastructure/menuItem";
+import { type Ref, ref, watch } from 'vue';
+import { onBeforeMount } from 'vue';
+import { onBeforeUpdate } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { NavDrawerLinks } from '@/utilities/links/navDrawerLinks';
+import { User } from '@/models/domain/user';
+import { MenuItem } from '@/models/infrastructure/menuItem';
 
 const props = defineProps({
   navDrawerStatus: {
@@ -57,7 +59,7 @@ const userStore = useUserStore();
 //#endregion
 
 //#region Properties
-const greeting: Ref<string> = ref("");
+const greeting: Ref<string> = ref('');
 const navDrawerItems: Ref<MenuItem[]> = ref(NavDrawerLinks);
 const user: Ref<User> = ref(userStore.getUser);
 //#endregion
@@ -67,11 +69,11 @@ const updateNow = () => {
   const now = new Date();
 
   if (now.getHours() < 12) {
-    greeting.value = "Good Morning,";
+    greeting.value = 'Good Morning,';
   } else if (now.getHours() < 18) {
-    greeting.value = "Good Afternoon,";
+    greeting.value = 'Good Afternoon,';
   } else {
-    greeting.value = "Good Evening,";
+    greeting.value = 'Good Evening,';
   }
 };
 const updateGreeting = () => {
@@ -83,7 +85,7 @@ const updateGreeting = () => {
 };
 const updateSiteAdminVisibility = () => {
   const navItemIndex = navDrawerItems.value.findIndex(
-    (item) => item.title === "Site Administration"
+    (item) => item.title === 'Site Administration',
   );
   if (navItemIndex !== -1) {
     if (user.value.isSuperUser === true) {
@@ -102,7 +104,7 @@ watch(
   () => userStore.getUser,
   () => {
     user.value = userStore.getUser;
-  }
+  },
 );
 //#endregion
 
@@ -139,7 +141,7 @@ onBeforeUpdate(() => {
 }
 
 .user-profile-subscript::after {
-  content: "\a";
+  content: '\a';
   white-space: pre;
 }
 
@@ -154,4 +156,3 @@ onBeforeUpdate(() => {
   padding-bottom: 5px;
 }
 </style>
-@/stores/userStore

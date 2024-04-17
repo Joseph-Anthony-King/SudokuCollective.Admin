@@ -1,7 +1,7 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, type AxiosResponse } from 'axios';
 import { SignupPort } from '@/ports/signupPort';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import type { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
 import { User } from '@/models/domain/user';
 import { StaticServiceMethods } from '@/services/common';
 
@@ -31,11 +31,10 @@ export class SignupService {
           response.data.payload[0].user.dateCreated,
           response.data.payload[0].user.dateUpdated,
           true,
-          true
+          true,
         );
         result.token = response.data.payload[0].token;
-        result.tokenExpirationDate =
-          response.data.payload[0].tokenExpirationDate;
+        result.tokenExpirationDate = response.data.payload[0].tokenExpirationDate;
       } else {
         result.isSuccess = response.data.isSuccess;
         StaticServiceMethods.processFailedResponse(response);

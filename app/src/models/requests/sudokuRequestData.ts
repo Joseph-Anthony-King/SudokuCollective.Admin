@@ -1,4 +1,4 @@
-import { ISudokuRequestData } from "@/interfaces/requests/iSudokuRequestData";
+import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class SudokuRequestData implements ISudokuRequestData {
   firstRow: number[];

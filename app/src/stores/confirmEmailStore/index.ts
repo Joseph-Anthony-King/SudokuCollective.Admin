@@ -1,15 +1,17 @@
-import { ComputedRef, computed, Ref, ref, toRaw } from 'vue';
+import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 import { EmailConfirmationType } from '@/enums/emailConfirmationType';
 
-export const useConfirmEmailStore = defineStore("confirmEmailStore", () => {
+export const useConfirmEmailStore = defineStore('confirmEmailStore', () => {
   const isSuccess: Ref<boolean | null> = ref(null);
   const confirmationType: Ref<EmailConfirmationType> = ref(EmailConfirmationType.NULL);
   const userName: Ref<string | null> = ref(null);
   const email: Ref<string | null> = ref(null);
 
   const getIsSuccess: ComputedRef<boolean | null> = computed(() => toRaw(isSuccess.value));
-  const getConfirmationType: ComputedRef<EmailConfirmationType> = computed(() => toRaw(confirmationType.value));
+  const getConfirmationType: ComputedRef<EmailConfirmationType> = computed(() =>
+    toRaw(confirmationType.value),
+  );
   const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
   const getEmail: ComputedRef<string | null> = computed(() => toRaw(email.value));
 
@@ -46,5 +48,5 @@ export const useConfirmEmailStore = defineStore("confirmEmailStore", () => {
     updateConfirmationType,
     updateUserName,
     updateEmail,
-  }
+  };
 });

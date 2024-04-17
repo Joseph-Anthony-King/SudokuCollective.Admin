@@ -1,11 +1,11 @@
-import { IndexPort } from "@/ports/indexPort";
-import { ValuesPort } from "@/ports/valuesPort";
-import { Difficulty } from "@/models/domain/difficulty";
-import { GalleryApp } from "@/models/domain/galleryApp";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
-import { AxiosResponse, AxiosError } from "axios";
-import { StaticServiceMethods } from "@/services/common";
+import { IndexPort } from '@/ports/indexPort';
+import { ValuesPort } from '@/ports/valuesPort';
+import { Difficulty } from '@/models/domain/difficulty';
+import { GalleryApp } from '@/models/domain/galleryApp';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { type AxiosResponse, AxiosError } from 'axios';
+import { StaticServiceMethods } from '@/services/common';
 
 export class ValuesService {
   static async getValuesAsync(): Promise<IServicePayload> {
@@ -17,8 +17,8 @@ export class ValuesService {
 
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(
-          "/swagger/index.html",
-          `${process.env.VUE_APP_API_URL}swagger/index.html`
+          '/swagger/index.html',
+          `${process.env.VITE_APP_API_URL}swagger/index.html`,
         );
       }
 
@@ -41,10 +41,10 @@ export class ValuesService {
                 difficulty.id,
                 difficulty.name,
                 difficulty.displayName,
-                difficulty.difficultyLevel
-              )
+                difficulty.difficultyLevel,
+              ),
             );
-          }
+          },
         );
 
         result.difficulties = difficulties;
@@ -59,10 +59,10 @@ export class ValuesService {
               new DropdownItem(
                 releaseEnvironment.label,
                 releaseEnvironment.value,
-                releaseEnvironment.appliesTo
-              )
+                releaseEnvironment.appliesTo,
+              ),
             );
-          }
+          },
         );
 
         result.releaseEnvironments = releaseEnvironments;
@@ -74,13 +74,9 @@ export class ValuesService {
             appliesTo: string[] | undefined;
           }) => {
             sortValues.push(
-              new DropdownItem(
-                sortValue.label,
-                sortValue.value,
-                sortValue.appliesTo
-              )
+              new DropdownItem(sortValue.label, sortValue.value, sortValue.appliesTo),
             );
-          }
+          },
         );
 
         result.sortValues = sortValues;
@@ -92,13 +88,9 @@ export class ValuesService {
             appliesTo: string[] | undefined;
           }) => {
             timeFrames.push(
-              new DropdownItem(
-                timeFrame.label,
-                timeFrame.value,
-                timeFrame.appliesTo
-              )
+              new DropdownItem(timeFrame.label, timeFrame.value, timeFrame.appliesTo),
             );
-          }
+          },
         );
 
         result.timeFrames = timeFrames;
@@ -123,17 +115,17 @@ export class ValuesService {
                 galleryApp.createdBy,
                 galleryApp.userCount,
                 galleryApp.dateCreated,
-                galleryApp.dateUpdated
-              )
+                galleryApp.dateUpdated,
+              ),
             );
-          }
+          },
         );
 
         result.gallery = gallery;
       }
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       if (error instanceof AxiosError && error.response) {
         result.isSuccess = error.response.data.isSuccess;

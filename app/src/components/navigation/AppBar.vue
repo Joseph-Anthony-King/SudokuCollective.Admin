@@ -40,11 +40,7 @@
                   <v-list-item v-bind="props">
                     <v-list-item-content>
                       <v-list-item-title>
-                        <a
-                          :href="link.url"
-                          :target="link.target"
-                          class="menu-item"
-                        >
+                        <a :href="link.url" :target="link.target" class="menu-item">
                           <v-icon>{{ link.mdiIcon }}</v-icon>
                           <span class="mr-2">{{ link.title }}</span>
                         </a>
@@ -138,11 +134,7 @@
                             <v-list-item v-bind="props">
                               <v-list-item-content>
                                 <v-list-item-title>
-                                  <a
-                                    :href="link.url"
-                                    :target="link.target"
-                                    class="menu-item"
-                                  >
+                                  <a :href="link.url" :target="link.target" class="menu-item">
                                     <v-icon>{{ link.mdiIcon }}</v-icon>
                                     <span class="mr-2">{{ link.title }}</span>
                                   </a>
@@ -182,28 +174,21 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Ref,
-  ref,
-  ComputedRef,
-  computed,
-  watch,
-  onMounted,
-  onUnmounted,
-} from "vue";
-import { useUserStore } from "@/stores/userStore";
-import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
-import { User } from "@/models/domain/user";
-import { MenuItem } from "@/models/infrastructure/menuItem";
-import { ExteriorLinks } from "@/utilities/links/exteriorLinks";
-import { InteriorLinks } from "@/utilities/links/interiorLinks";
-import commonUtilities from "@/utilities/common";
+/* eslint-disable no-undef */
+import { type ComputedRef, computed, type Ref, ref, watch, onMounted, onUnmounted } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
+import { User } from '@/models/domain/user';
+import { MenuItem } from '@/models/infrastructure/menuItem';
+import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
+import { InteriorLinks } from '@/utilities/links/interiorLinks';
+import commonUtilities from '@/utilities/common';
 
 const emit = defineEmits([
-  "user-logging-in",
-  "user-logging-out",
-  "user-signing-up",
-  "update-nav-drawer",
+  'user-logging-in',
+  'user-logging-out',
+  'user-signing-up',
+  'update-nav-drawer',
 ]);
 
 const { resetViewPort } = commonUtilities();
@@ -215,7 +200,7 @@ const user: Ref<User> = ref(userStore.getUser);
 const interiorLinks: Ref<MenuItem[]> = ref(InteriorLinks);
 const exteriorLinks: Ref<MenuItem[]> = ref(ExteriorLinks);
 const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref("auto");
+const maxDialogWidth: Ref<string> = ref('auto');
 const confirmUserLogout: Ref<boolean> = ref(false);
 const confirmMessage: ComputedRef<string> = computed(() => {
   return `Are you sure you want to log out ${user.value.userName}?`;
@@ -225,27 +210,27 @@ const confirmMessage: ComputedRef<string> = computed(() => {
 //#region Action Handlers
 const loginHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  emit("user-logging-in", null, null);
+  emit('user-logging-in', null, null);
 };
 const logoutHandler = (event: Event | null = null): void => {
   event?.preventDefault();
   confirmUserLogout.value = false;
-  emit("user-logging-out", null, null);
+  emit('user-logging-out', null, null);
 };
 const signUpHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  emit("user-signing-up", null, null);
+  emit('user-signing-up', null, null);
 };
 const updateNavDrawerHandler = (event: Event | null = null): void => {
   event?.preventDefault();
-  emit("update-nav-drawer", null, null);
+  emit('update-nav-drawer', null, null);
 };
 
 watch(
   () => userStore.getUser,
   () => {
     user.value = userStore.getUser;
-  }
+  },
 );
 //#endregion
 
@@ -253,19 +238,19 @@ watch(
 onMounted(async () => {
   resetViewPort(isSmallViewPort, maxDialogWidth);
   let resizeTimeout: number | undefined;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(
       () => {
         resetViewPort(isSmallViewPort, maxDialogWidth);
       },
       250,
-      "Resized"
+      'Resized',
     );
   });
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {
+  window.removeEventListener('resize', () => {
     resetViewPort(isSmallViewPort, maxDialogWidth);
   });
 });
@@ -309,4 +294,3 @@ onUnmounted(() => {
   cursor: pointer;
 }
 </style>
-@/stores/userStore

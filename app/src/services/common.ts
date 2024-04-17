@@ -1,6 +1,6 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { useGlobalStore } from "@/stores/globalStore/index";
-import { useServiceFailStore } from "@/stores/serviceFailStore";
+import { AxiosError, type AxiosResponse } from 'axios';
+import { useGlobalStore } from '@/stores/globalStore/index';
+import { useServiceFailStore } from '@/stores/serviceFailStore';
 
 export class StaticServiceMethods {
   static processFailedResponse(response: AxiosResponse): void {
@@ -10,7 +10,11 @@ export class StaticServiceMethods {
     serviceFailStore.updateServiceMessage(response.data.message);
     serviceFailStore.updateStatusCode(response.status);
 
-    if (response.status === 401 || (response.status === 403 && response.data.message === "Status Code 403: Invalid request on this authorization token")) {
+    if (
+      response.status === 401 ||
+      (response.status === 403 &&
+        response.data.message === 'Status Code 403: Invalid request on this authorization token')
+    ) {
       globalStore.tokenHasExpired(response);
     }
   }
@@ -24,7 +28,7 @@ export class StaticServiceMethods {
           status: 500,
           data: {
             isSuccess: false,
-            message: "Number cannot be zero",
+            message: 'Number cannot be zero',
           },
         },
       } as AxiosError;
@@ -35,7 +39,7 @@ export class StaticServiceMethods {
   }
 
   static stringCannotBeEmptyOrNull(str: string): AxiosError | null {
-    if (str === "" || str === null) {
+    if (str === '' || str === null) {
       const axiosError = {
         config: {},
         request: {},
@@ -43,7 +47,7 @@ export class StaticServiceMethods {
           status: 500,
           data: {
             isSuccess: false,
-            message: "String cannot be null or empty",
+            message: 'String cannot be null or empty',
           },
         },
       } as AxiosError;

@@ -2,32 +2,29 @@
   <HeroWidget headline="Welcome to Sudoku Collective Admin Console">
     <v-row>
       <v-col cols="12">
-        <p class="motto text-center text-padding">
-          Code, Create, Inspire...
-        </p>
-        <p
-          class="description text-center text-padding"
-          v-html="missionStatement"
-        ></p>
+        <p class="motto text-center text-padding">Code, Create, Inspire...</p>
+        <p class="description text-center text-padding" v-html="missionStatement"></p>
       </v-col>
     </v-row>
   </HeroWidget>
 </template>
 
 <script setup lang="ts">
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
-import router from "@/router/index";
-import { useUserStore } from "@/stores/userStore";
-import { useValueStore } from "@/stores/valueStore";
-import HeroWidget from "@/components/widgets/common/HeroWidget.vue";
-import commonUtitlities from "@/utilities/common";
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import router from '@/router/index';
+import { useUserStore } from '@/stores/userStore';
+import { useValueStore } from '@/stores/valueStore';
+import HeroWidget from '@/components/widgets/common/HeroWidget.vue';
+import commonUtitlities from '@/utilities/common';
 
 const props = defineProps({
   action: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
@@ -41,21 +38,21 @@ watch(
   () => valueStore.getMissionStatement,
   () => {
     missionStatement.value = valueStore.getMissionStatement;
-  }
+  },
 );
 watch(
   () => userStore.getUserIsLoggingIn,
   () => {
     const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-    updateUrlWithAction(userIsLoggingIn, "/", "login", router, route);
-  }
+    updateUrlWithAction(userIsLoggingIn, '/', 'login', router, route);
+  },
 );
 watch(
   () => userStore.getUserIsSigningUp,
   () => {
     const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-    updateUrlWithAction(userIsSigningUp, "/", "signup", router, route);
-  }
+    updateUrlWithAction(userIsSigningUp, '/', 'signup', router, route);
+  },
 );
 </script>
 
@@ -74,7 +71,7 @@ watch(
   color: var(--v-secondary);
   font-size: 2.5em;
   font-weight: 500;
-  font-family: "SegoeUI-BoldItalic", sans-serif;
+  font-family: 'SegoeUI-BoldItalic', sans-serif;
 }
 .description {
   color: var(--v-secondary);
@@ -82,4 +79,3 @@ watch(
   padding-bottom: 50px;
 }
 </style>
-@/stores/userStore@/stores/valueStore

@@ -15,23 +15,19 @@
 </template>
 
 <script setup lang="ts">
-import { 
-  Ref, 
-  ref, 
-  onBeforeMount, 
-  watch 
-} from "vue";
-import AppRolodex from "@/components/apps/AppRolodex.vue";
-import SelectedAppForm from "@/components/forms/SelectedAppForm.vue"
-import { useAppStore } from "@/stores/appStore";
-import { useUserStore } from "@/stores/userStore";
-import { User } from "@/models/domain/user";
-import { App } from "@/models/domain/app";
+/* eslint-disable no-undef */
+import { type Ref, ref, onBeforeMount, watch } from 'vue';
+import AppRolodex from '@/components/apps/AppRolodex.vue';
+import SelectedAppForm from '@/components/forms/SelectedAppForm.vue';
+import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '@/stores/userStore';
+import { User } from '@/models/domain/user';
+import { App } from '@/models/domain/app';
 
 const props = defineProps({
   action: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
@@ -45,18 +41,17 @@ const selectedApp: Ref<App | null | undefined> = ref(appStore.getSelectedApp);
 
 watch(
   () => appStore.getSelectedApp,
-  () => selectedApp.value = appStore.getSelectedApp
+  () => (selectedApp.value = appStore.getSelectedApp),
 );
 //#endregion
 
 //#region Lifecycle Hooks
-onBeforeMount(async() => {
+onBeforeMount(async () => {
   const user: User = userStore.getUser;
-  if (props.action.toLowerCase() === "login") {
+  if (props.action.toLowerCase() === 'login') {
     user.isLoggingIn = true;
     userStore.updateUser(user);
   }
 });
 //#endregion
 </script>
-@/stores/appStore@/stores/userStore

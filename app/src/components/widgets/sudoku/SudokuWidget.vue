@@ -34,7 +34,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="executeAsync($event)"
                   :disabled="isExectuteButtonDisabed"
                 >
@@ -45,7 +45,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="checkGameAsync($event)"
                   :disabled="isExectuteButtonDisabed"
                 >
@@ -56,7 +56,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text
+                  text="true"
                   @click="resetGameAsync($event)"
                   :disabled="isExectuteButtonDisabed"
                 >
@@ -64,12 +64,7 @@
                 </v-btn>
               </v-col>
               <v-col>
-                <v-btn
-                  class="button-full"
-                  color="blue darken-1"
-                  text
-                  @click="clear"
-                >
+                <v-btn class="button-full" color="blue darken-1" text="true" @click="clear">
                   {{ clearButtonText }}
                 </v-btn>
               </v-col>
@@ -82,37 +77,30 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, ComputedRef, computed, toRaw, watch } from "vue";
-import { useSudokuStore } from "@/stores/sudokuStore";
-import { useValueStore } from "@/stores/valueStore";
-import AvailableActions from "@/components/buttons/AvailableActions.vue";
-import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget.vue";
-import { GameState } from "@/enums/gameState";
-import { StoreType } from "@/enums/storeTypes";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
-import { Difficulty } from "@/models/domain/difficulty";
-import commonUtilities from "@/utilities/common";
+import { type ComputedRef, computed, type Ref, ref, toRaw, watch } from 'vue';
+import { useSudokuStore } from '@/stores/sudokuStore';
+import { useValueStore } from '@/stores/valueStore';
+import AvailableActions from '@/components/buttons/AvailableActions.vue';
+import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
+import { GameState } from '@/enums/gameState';
+import { StoreType } from '@/enums/storeTypes';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+import { Difficulty } from '@/models/domain/difficulty';
+import commonUtilities from '@/utilities/common';
 
 /* initialize stores */
 const sudokuStore = useSudokuStore();
 const valueStore = useValueStore();
 
-const {
-  displaySuccessfulToast,
-  displayFailedToastAsync,
-  updateAppProcessingAsync,
-} = commonUtilities();
+const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
+  commonUtilities();
 
 /* difficulty properties and methods */
 const difficulties: Ref<Difficulty[]> = ref(valueStore.getDifficulties);
-const selectedDifficulty: Ref<Difficulty | null> = ref(
-  sudokuStore.getSelectedDifficulty
-);
+const selectedDifficulty: Ref<Difficulty | null> = ref(sudokuStore.getSelectedDifficulty);
 /* Game state properties and methods */
 const gameStates: Ref<DropdownItem[]> = ref(valueStore.getGameStates);
-const selectedGameState: Ref<DropdownItem | null> = ref(
-  sudokuStore.getGameState
-);
+const selectedGameState: Ref<DropdownItem | null> = ref(sudokuStore.getGameState);
 const isGameStateSelected: ComputedRef<boolean> = computed(() => {
   {
     return sudokuStore.getGameState !== null;
@@ -142,21 +130,18 @@ const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
 });
 const executeButtonText: ComputedRef<string> = computed(() => {
   if (selectedGameState.value?.value === GameState.PLAYGAME) {
-    return "Create Game";
+    return 'Create Game';
   } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-    return "Solve Sudoku";
+    return 'Solve Sudoku';
   } else {
-    return "Generate Sudoku";
+    return 'Generate Sudoku';
   }
 });
 const clearButtonText: ComputedRef<string> = computed(() => {
-  if (
-    selectedDifficulty.value !== null &&
-    selectedGameState.value?.value === GameState.PLAYGAME
-  ) {
-    return "Clear Game";
+  if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
+    return 'Clear Game';
   } else {
-    return "Clear Sudoku";
+    return 'Clear Sudoku';
   }
 });
 const executeAsync = async (event: Event | null = null): Promise<void> => {
@@ -214,27 +199,27 @@ watch(
   () => valueStore.getGameStates,
   () => {
     gameStates.value = valueStore.getGameStates;
-  }
+  },
 );
 watch(
   () => selectedGameState?.value,
   () => {
     sudokuStore.updateGameState(toRaw(selectedGameState.value));
-  }
+  },
 );
 watch(
   () => valueStore.getDifficulties,
   () => {
     difficulties.value = valueStore.getDifficulties;
-  }
+  },
 );
 watch(
   () => selectedDifficulty?.value,
   () => {
     sudokuStore.updateSelectedDifficulty(
-      selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null
+      selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null,
     );
-  }
+  },
 );
 </script>
 
@@ -250,4 +235,3 @@ watch(
   margin: 100px 0 100px 0;
 }
 </style>
-@/stores/sudokuStore@/stores/valueStore

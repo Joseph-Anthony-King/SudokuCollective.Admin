@@ -1,9 +1,9 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { Endpoints } from "@/ports/usersPort/endpoints";
-import { IUpdateUserRequestData } from "@/interfaces/requests/iUpdateUserRequestData";
-import { IResetPasswordRequestData } from "@/interfaces/requests/iResetPasswordRequestData";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useUserStore } from "@/stores/userStore/index";
+import axios, { AxiosError, type AxiosResponse } from 'axios';
+import { Endpoints } from '@/ports/usersPort/endpoints';
+import type { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
+import type { IResetPasswordRequestData } from '@/interfaces/requests/iResetPasswordRequestData';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useUserStore } from '@/stores/userStore/index';
 
 export class UsersPort {
   static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
@@ -12,49 +12,51 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: "post",
+        method: 'post',
         url: `${Endpoints.usersEndpoint}/${id}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
   }
 
-  static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<AxiosResponse | AxiosError> {
+  static async putUpdateUserAsync(
+    data: IUpdateUserRequestData,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
       const config = {
-        method: "put",
+        method: 'put',
         url: `${Endpoints.usersEndpoint}/${userStore.getUser.id}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {
             userName: data.userName,
@@ -67,8 +69,8 @@ export class UsersPort {
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -80,26 +82,26 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: "delete",
+        method: 'delete',
         url: `${Endpoints.usersEndpoint}/${id}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -108,18 +110,18 @@ export class UsersPort {
   static async getConfirmEmailAsync(token: string): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "get",
-        url: `${Endpoints.confirmEmailEndpoint.replace("{{token}}", token)}`,
+        method: 'get',
+        url: `${Endpoints.confirmEmailEndpoint.replace('{{token}}', token)}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -131,49 +133,51 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: "put",
+        method: 'put',
         url: `${Endpoints.cancelEmailConfirmationRequestEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
   }
 
-  static async putResetPasswordAsync(data: IResetPasswordRequestData): Promise<AxiosResponse | AxiosError> {
+  static async putResetPasswordAsync(
+    data: IResetPasswordRequestData,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "put",
-        url: `${Endpoints.resetPasswordEndpoint.replace("{{token}}", data.token)}`,
+        method: 'put',
+        url: `${Endpoints.resetPasswordEndpoint.replace('{{token}}', data.token)}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         data: {
-          newPassword: data.newPassword
-        }
+          newPassword: data.newPassword,
+        },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -182,22 +186,22 @@ export class UsersPort {
   static async postRequestPasswordResetAsync(email: string): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "post",
+        method: 'post',
         url: `${Endpoints.requestPasswordResetEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           email: email,
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -206,22 +210,22 @@ export class UsersPort {
   static async putResendPasswordResetAsync(userId: number): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
-        method: "put",
+        method: 'put',
         url: `${Endpoints.resendPasswordResetEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         data: {
           userId,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -233,26 +237,26 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: "put",
+        method: 'put',
         url: `${Endpoints.cancelPasswordResetEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
@@ -264,26 +268,26 @@ export class UsersPort {
       const userStore = useUserStore();
 
       const config = {
-        method: "put",
+        method: 'put',
         url: `${Endpoints.cancelAllEmailRequestsEndpoint}`,
         headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${globalStore.getToken}`,
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
         },
         data: {
-          license: process.env.VUE_APP_LICENSE,
+          license: process.env.VITE_APP_LICENSE,
           requestorId: userStore.getUser.id as number,
-          appId: process.env.VUE_APP_ID as unknown as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
           paginator: {},
           payload: {},
         },
       };
       return axios(config);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("error: ", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
       }
       return error as AxiosError;
     }
