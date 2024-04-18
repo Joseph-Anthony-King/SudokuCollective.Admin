@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "version": "0.1.0",
+  "name": "@sudokucollective.admin/app",
+  "version": "0.9.1",
   "private": true,
   "scripts": {
     "serve": "vite --host",

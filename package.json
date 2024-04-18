@@ -1,7 +1,7 @@
 {
   "name": "sudokucollective.admin",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.9.1",
   "description": "The administrative client for the Sudoku Collective API.",
   "main": "server.js",
   "scripts": {

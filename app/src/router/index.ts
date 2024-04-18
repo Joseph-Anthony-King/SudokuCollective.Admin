@@ -17,41 +17,41 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import(/* webpackChunkName: 'dashboard' */ '../views/DashboardView.vue'),
+    component: () => import('../views/DashboardView.vue'),
   },
   {
     path: '/confirm-email/:token?',
     name: 'confirm-email',
-    component: () => import(/* webpackChunkName: 'dashboard' */ '../views/ConfirmEmailView.vue'),
+    component: () => import('../views/ConfirmEmailView.vue'),
     props: true,
   },
   {
     path: '/:action?',
     name: 'home',
-    component: () => import(/* webpackChunkName: 'home' */ '../views/HomeView.vue'),
+    component: () => import('../views/HomeView.vue'),
     props: true,
   },
   {
     path: '/reset-password/:token?',
     name: 'reset-password',
-    component: () => import(/* webpackChunkName: 'dashboard' */ '../views/ResetPasswordView.vue'),
+    component: () => import('../views/ResetPasswordView.vue'),
     props: true,
   },
   {
     path: '/site-admin',
     name: 'site-admin',
-    component: () => import(/* webpackChunkName: 'site-admin' */ '../views/SiteAdminView.vue'),
+    component: () => import('../views/SiteAdminView.vue'),
   },
   {
     path: '/sudoku/:action?',
     name: 'sudoku',
-    component: () => import(/* webpackChunkName: 'sudoku' */ '../views/SudokuView.vue'),
+    component: () => import('../views/SudokuView.vue'),
     props: true,
   },
   {
     path: '/user-profile',
     name: 'user-profile',
-    component: () => import(/* webpackChunkName: 'user' */ '../views/UserProfileView.vue'),
+    component: () => import('../views/UserProfileView.vue'),
   },
 ];
 //#endregion
