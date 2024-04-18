@@ -1,7 +1,7 @@
 {
   "name": "sudokucollective.admin",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.9.1",
   "description": "The administrative client for the Sudoku Collective API.",
   "main": "server.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "keywords": [
     "Vue.js"
   ],
-  "author": "Joe King",
+  "author": "joseph-anthony-king",
   "license": "GPL-3.0 license",
   "bugs": {
     "url": "https://github.com/Joseph-Anthony-King/SudokuCollective.Admin/issues"
