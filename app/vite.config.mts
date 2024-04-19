@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
+import packageJson from '../package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -17,6 +18,7 @@ export default defineConfig(({ command, mode }) => {
       "process.env.VITE_APP_API_URL": JSON.stringify(env.VITE_APP_API_URL),
       "process.env.VITE_APP_CACHE_KEY": JSON.stringify(env.VITE_APP_CACHE_KEY),
       "process.env.VITE_APP_CACHE_SECRET": JSON.stringify(env.VITE_APP_CACHE_SECRET),
+      "process.env.VITE_APP_VERSION": JSON.stringify(packageJson.version),
     },
     plugins: [
       vue(),
