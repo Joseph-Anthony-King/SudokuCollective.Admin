@@ -3,51 +3,63 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
-import { onBeforeMount, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import router from '@/router/index';
-import { useUserStore } from '@/stores/userStore';
-import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
-import commonUtitlities from '@/utilities/common';
-import { User } from '@/models/domain/user';
+  /* eslint-disable no-undef */
+  /* eslint-disable no-unused-vars */
+  import { onBeforeMount, watch } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import { useRoute } from 'vue-router';
+  import router from '@/router/index';
+  import { useUserStore } from '@/stores/userStore';
+  import SudokuWidget from '@/components/widgets/sudoku/SudokuWidget.vue';
+  import commonUtitlities from '@/utilities/common';
+  import { User } from '@/models/domain/user';
 
-const props = defineProps({
-  action: {
-    type: String,
-    default: '',
-  },
-});
+  const props = defineProps({
+    action: {
+      type: String,
+      default: '',
+    },
+  });
 
-const userStore = useUserStore();
-const route = useRoute();
-const { updateUrlWithAction } = commonUtitlities();
+  const { updateUrlWithAction } = commonUtitlities();
+  const route = useRoute();
 
-watch(
-  () => userStore.getUserIsLoggingIn,
-  () => {
-    const userIsLoggingIn: boolean = userStore.getUserIsLoggingIn;
-    updateUrlWithAction(userIsLoggingIn, '/sudoku', 'login', router, route);
-  },
-);
-watch(
-  () => userStore.getUserIsSigningUp,
-  () => {
-    const userIsSigningUp: boolean = userStore.getUserIsSigningUp;
-    updateUrlWithAction(userIsSigningUp, '/sudoku', 'signup', router, route);
-  },
-);
+  const userStore = useUserStore();
+  const { getUser, getUserIsLoggingIn, getUserIsSigningUp } = storeToRefs(userStore);
+  const { updateUser } = userStore;
 
-onBeforeMount(() => {
-  if (router.options.history.state.position === 1) {
-    const user: User = userStore.getUser;
-    if (props.action.toLowerCase() === 'login') {
-      user.isLoggingIn = true;
-      userStore.updateUser(user);
-    } else if (props.action.toLowerCase() === 'signup') {
-      user.isSigningUp = true;
-      userStore.updateUser(user);
+  watch(
+    () => getUserIsLoggingIn.value,
+    (newValue, oldValue) => {
+      const userIsLoggingIn: boolean = newValue;
+      updateUrlWithAction(userIsLoggingIn, '/sudoku', 'login', router, route);
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+  watch(
+    () => getUserIsSigningUp.value,
+    (newValue, oldValue) => {
+      const userIsSigningUp: boolean = newValue;
+      updateUrlWithAction(userIsSigningUp, '/sudoku', 'signup', router, route);
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+
+  onBeforeMount(() => {
+    if (router.options.history.state.position === 1) {
+      const user: User = getUser.value;
+      if (props.action.toLowerCase() === 'login') {
+        user.isLoggingIn = true;
+      } else if (props.action.toLowerCase() === 'signup') {
+        user.isSigningUp = true;
+      }
+      updateUser(user);
     }
-  }
-});
+  });
 </script>

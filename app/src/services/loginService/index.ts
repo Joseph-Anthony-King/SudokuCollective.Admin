@@ -12,6 +12,10 @@ export class LoginService {
     try {
       const response = (await LoginPort.postLoginAsync(data)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.user = new User(
@@ -64,6 +68,10 @@ export class LoginService {
       }
 
       const response = (await LoginPort.postConfirmUserNameAsync(email)) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;

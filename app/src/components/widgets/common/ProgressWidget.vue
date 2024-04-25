@@ -1,173 +1,101 @@
 <template>
   <v-container>
-    <v-row class="d-flex pa-12 justify-center" cols="12">
+    <v-row
+      class="d-flex justify-center"
+      cols="12">
       <v-progress-circular
         indeterminate
         color="primary"
         :size="progressSize"
-        :width="progressWidth"
-        class="progress-circular"
-      ></v-progress-circular>
-    </v-row>
-    <v-row :cols="progressPadding(true)" />
-    <v-row class="d-flex pa-12 justify-center" cols="12">
-      <v-col class="d-flex pa-3 ma-3" :cols="progressPadding(false)">
-        <h1 class="progress-message">{{ progressMessage }}</h1>
-      </v-col>
+        class="vertical-center">
+        <template v-slot:default>
+          <p class="loading-message">working, please do not navigate away</p>
+        </template>
+      </v-progress-circular>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, type Ref, ref, onMounted, onUnmounted } from 'vue';
-import { useGlobalStore } from '@/stores/globalStore';
+  import { type ComputedRef, computed, type Ref, ref, onMounted, onUnmounted } from 'vue';
 
-//#region Instantiate the Stores
-const globalStore = useGlobalStore();
-//#endregion
-
-//#region Properties
-let windowWidth: Ref<number> = ref(window.innerWidth);
-let progressMessage: Ref<string> = ref(globalStore.getProcessingMessage);
-const progressSize: ComputedRef<number> = computed(() => {
-  if (windowWidth.value > 1920) {
-    return 150;
-  } else if (windowWidth.value >= 960) {
-    return 100;
-  } else if (windowWidth.value >= 600) {
-    return 75;
-  } else {
-    return 50;
-  }
-});
-const progressWidth: ComputedRef<number> = computed(() => {
-  if (windowWidth.value > 1920) {
-    return 15;
-  } else if (windowWidth.value >= 960) {
-    return 10;
-  } else if (windowWidth.value >= 600) {
-    return 7;
-  } else {
-    return 5;
-  }
-});
-const progressPadding = (outerColumn: boolean): number => {
-  let result: number;
-  if (outerColumn) {
-    if (progressMessage.value === 'Processing, please do not navigate away') {
-      if (windowWidth.value >= 1904) {
-        result = 4;
-      } else if (windowWidth.value < 1904 && windowWidth.value >= 1264) {
-        result = 3;
-      } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
-        result = 2;
-      } else if (windowWidth.value < 960 && windowWidth.value >= 810) {
-        result = 1;
-      } else {
-        result = 2;
-      }
+  //#region Properties
+  let windowWidth: Ref<number> = ref(window.innerWidth);
+  const progressSize: ComputedRef<number> = computed(() => {
+    if (windowWidth.value > 1920) {
+      return 600;
+    } else if (windowWidth.value >= 960) {
+      return 500;
+    } else if (windowWidth.value >= 600) {
+      return 400;
     } else {
-      if (windowWidth.value >= 1904) {
-        result = 5;
-      } else if (windowWidth.value < 1904 && windowWidth.value >= 1264) {
-        result = 4;
-      } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
-        result = 4;
-      } else if (windowWidth.value < 960 && windowWidth.value >= 810) {
-        result = 3;
-      } else {
-        result = 3;
-      }
+      return 300;
     }
-  } else {
-    if (progressMessage.value === 'Processing, please do not navigate away') {
-      if (windowWidth.value >= 1264) {
-        return 6;
-      } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
-        result = 8;
-      } else if (windowWidth.value < 960 && windowWidth.value >= 810) {
-        result = 10;
-      } else {
-        result = 7;
-      }
-    } else {
-      if (windowWidth.value >= 1264) {
-        return 4;
-      } else if (windowWidth.value < 1264 && windowWidth.value >= 960) {
-        result = 5;
-      } else if (windowWidth.value < 960 && windowWidth.value >= 810) {
-        result = 6;
-      } else {
-        result = 6;
-      }
-    }
-  }
-  return result;
-};
-//#endregion
-
-//#region Actions
-const resetProgressMessagePadding = (): void => {
-  windowWidth.value = window.innerWidth;
-};
-//#endregion
-
-//#region Lifecycle Hooks
-onMounted(() => {
-  resetProgressMessagePadding();
-  window.addEventListener('resize', () => {
-    resetProgressMessagePadding();
   });
-});
-onUnmounted(() => {
-  window.removeEventListener('resize', () => {
+  //#endregion
+
+  //#region Action Handlers
+  const resetProgressMessagePadding = (): void => {
+    windowWidth.value = window.innerWidth;
+  };
+  //#endregion
+
+  //#region Lifecycle Hooks
+  onMounted(() => {
     resetProgressMessagePadding();
+    window.addEventListener(
+      'resize',
+      () => {
+        resetProgressMessagePadding();
+      },
+      { once: true },
+    );
   });
-});
-//#endregion
+  onUnmounted(() => {
+    window.removeEventListener('resize', () => {
+      resetProgressMessagePadding();
+    });
+  });
+  //#endregion
 </script>
 
 <style lang="scss" scoped>
-@media only screen and (max-width: 809px) {
-  .progress-message {
-    font-size: 15px;
-    min-width: 100px;
+  .vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
   }
-}
 
-@media only screen and (min-width: 810px) and (max-width: 1264) {
-  .progress-message {
-    font-size: 25px;
-    min-width: 100px;
+  .loading-message {
+    display: inline;
   }
-}
 
-@media only screen and (min-width: 1264) {
-  .progress-message {
-    font-size: 30px;
-    min-width: 100px;
+  .loading-message:after {
+    white-space: pre;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+    animation: ellipsis steps(4, end) 900ms infinite;
+    /* ascii code for the ellipsis character */
+    content: '\2026';
+    width: 0px;
+    margin-right: 1em;
   }
-}
-.progress-message:after {
-  overflow: hidden;
-  display: inline-block;
-  vertical-align: bottom;
-  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
-  animation: ellipsis steps(4, end) 900ms infinite;
-  content: '\2026';
-  /* ascii code for the ellipsis character */
-  width: 0px;
-}
 
-@keyframes ellipsis {
-  to {
-    width: 40px;
+  @keyframes ellipsis {
+    to {
+      width: 1em;
+      margin-right: 0;
+    }
   }
-}
 
-@-webkit-keyframes ellipsis {
-  to {
-    width: 40px;
+  @-webkit-keyframes ellipsis {
+    to {
+      width: 1em;
+      margin-right: 0;
+    }
   }
-}
 </style>

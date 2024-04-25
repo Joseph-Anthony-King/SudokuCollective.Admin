@@ -20,6 +20,10 @@ export class GamesService {
 
       const response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         const game: Array<Array<string>> = Array<Array<string>>();
         for (let i = 0; i < 9; i++) {
@@ -146,6 +150,10 @@ export class GamesService {
 
       const response = (await GamesPort.postCheckGameAsync(data)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message.substring(17);
     } catch (error: any) {
@@ -253,6 +261,10 @@ export class GamesService {
 
       const response = (await SolutionsPort.postSolveAsync(data)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message.substring(17);
 
@@ -286,6 +298,10 @@ export class GamesService {
 
     try {
       const response = (await SolutionsPort.getGenerateAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message;

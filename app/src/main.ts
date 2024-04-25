@@ -26,7 +26,7 @@ createApp(App)
           'confirmEmailStore',
           'loginFormStore',
           'signUpFormStore',
-          'okDialogStore',
+          'dialogStore',
           'serviceFailStore',
           'globalStore',
           'sudokuStore',

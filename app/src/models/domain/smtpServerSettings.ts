@@ -2,7 +2,7 @@ import type { ISmtpServerSettings } from '@/interfaces/domain/iSmtpServerSetting
 
 export class SmtpServerSettings implements ISmtpServerSettings {
   id: number;
-  smptServer: string | null;
+  smtpServer: string | null;
   port: number;
   userName: string | null;
   password: string | null;
@@ -11,7 +11,7 @@ export class SmtpServerSettings implements ISmtpServerSettings {
 
   constructor(
     id?: number,
-    smptServer?: string,
+    smtpServer?: string,
     port?: number,
     userName?: string,
     password?: string,
@@ -19,7 +19,7 @@ export class SmtpServerSettings implements ISmtpServerSettings {
     appId?: number,
   ) {
     id ? (this.id = id) : (this.id = 0);
-    smptServer ? (this.smptServer = smptServer) : (this.smptServer = null);
+    smtpServer ? (this.smtpServer = smtpServer) : (this.smtpServer = null);
     port ? (this.port = port) : (this.port = 0);
     userName ? (this.userName = userName) : (this.userName = null);
     password ? (this.password = password) : (this.password = null);

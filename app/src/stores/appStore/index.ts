@@ -28,7 +28,11 @@ export const useAppStore = defineStore('appStore', () => {
     const index = myApps.value.findIndex((a) => a.id === app.id);
     if (index !== -1) {
       myApps.value[index] = app;
-      if ((selectedApp.value !== null && selectedApp.value !== undefined) && selectedApp.value.id === app.id) {
+      if (
+        selectedApp.value !== null &&
+        selectedApp.value !== undefined &&
+        selectedApp.value.id === app.id
+      ) {
         selectedApp.value = app;
       }
     }

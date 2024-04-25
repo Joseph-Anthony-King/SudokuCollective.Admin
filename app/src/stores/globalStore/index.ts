@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import type { AxiosResponse } from 'axios';
 import { toast } from 'vue3-toastify';
 import { useAppStore } from '@/stores/appStore';
+import { useDialogStore } from '@/stores/dialogStore';
 import { useUserStore } from '@/stores/userStore';
 import { LoginService } from '@/services/loginService';
 import router from '@/router';
@@ -16,11 +17,11 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const token: Ref<string | null> = ref(null);
   const tokenExpirationDate: Ref<Date | null> = ref(null);
   const redirectUrl: Ref<string | null> = ref(null);
-  const processingMessage: Ref<string | null> = ref('Processing, please do not navigate away');
   const serviceMessage: Ref<string | null> = ref(null);
   const processingStatus: Ref<boolean> = ref(false);
   const navDrawerStatus: Ref<boolean> = ref(false);
   const stayLoggedIn: Ref<boolean> = ref(true);
+  const redirectToSignUp: Ref<boolean> = ref(false);
 
   const getLicense: ComputedRef<string> = computed(() =>
     license.value ? toRaw(license.value) : '',
@@ -32,15 +33,13 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const getRedirectUrl: ComputedRef<string> = computed(() =>
     redirectUrl.value ? toRaw(redirectUrl.value) : '',
   );
-  const getProcessingMessage: ComputedRef<string> = computed(() =>
-    processingMessage.value ? toRaw(processingMessage.value) : '',
-  );
   const getServiceMessage: ComputedRef<string> = computed(() =>
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   const getProcessingStatus: ComputedRef<boolean> = computed(() => toRaw(processingStatus.value));
   const getNavDrawerStatus: ComputedRef<boolean> = computed(() => toRaw(navDrawerStatus.value));
   const getStayedLoggedIn: ComputedRef<boolean> = computed(() => toRaw(stayLoggedIn.value));
+  const getRedirectToSignUp: ComputedRef<boolean> = computed(() => toRaw(redirectToSignUp.value));
 
   const initializeStore = (): void => {
     token.value = null;
@@ -50,6 +49,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     processingStatus.value = false;
     navDrawerStatus.value = false;
     stayLoggedIn.value = true;
+    redirectToSignUp.value = false;
   };
   const updateToken = (param: string | null = null): void => {
     token.value = param;
@@ -72,18 +72,23 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const updateStayLoggedIn = (param: boolean): void => {
     stayLoggedIn.value = param;
   };
+  const updateRedirectToSignUp = (param: boolean): void => {
+    redirectToSignUp.value = param;
+  };
   const loginAsync = async (data: ILoginRequestData): Promise<void> => {
     const response: IServicePayload = await LoginService.postLoginAsync(data);
     if (response.isSuccess) {
-      const appStore = useAppStore();
-      const userStore = useUserStore();
-      userStore.updateUser(response.user);
+      const { updateUser } = useUserStore();
+      const { getMyAppsAsync, getMyRegisteredAppsAsync } = useAppStore();
+      const { initializeStore } = useDialogStore();
+      updateUser(response.user);
       updateToken(response.token);
       updateTokenExpirationDate(response.tokenExpirationDate);
       updateStayLoggedIn(data.stayLoggedIn);
+      initializeStore();
 
-      await appStore.getMyAppsAsync();
-      await appStore.getMyRegisteredAppsAsync();
+      await getMyAppsAsync();
+      await getMyRegisteredAppsAsync();
 
       if (redirectUrl.value !== null) {
         window.location.href = redirectUrl.value;
@@ -138,20 +143,20 @@ export const useGlobalStore = defineStore('globalStore', () => {
     token,
     tokenExpirationDate,
     redirectUrl,
-    processingMessage,
     serviceMessage,
     processingStatus,
     navDrawerStatus,
     stayLoggedIn,
+    redirectToSignUp,
     getLicense,
     getToken,
     getTokenExpirationDate,
     getRedirectUrl,
-    getProcessingMessage,
     getServiceMessage,
     getProcessingStatus,
     getNavDrawerStatus,
     getStayedLoggedIn,
+    getRedirectToSignUp,
     initializeStore,
     updateToken,
     updateTokenExpirationDate,
@@ -160,6 +165,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     updateNavDrawerStatus,
     updateProcessingStatus,
     updateStayLoggedIn,
+    updateRedirectToSignUp,
     loginAsync,
     logout,
     confirmUserNameAsync,

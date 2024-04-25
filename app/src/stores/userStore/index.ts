@@ -2,22 +2,23 @@ import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
 import { useGlobalStore } from '@/stores/globalStore';
-import { useOkDialogStore } from '@/stores/okDialogStore';
+import { useDialogStore } from '@/stores/dialogStore';
 import { LoginService } from '@/services/loginService';
 import { SignupService } from '@/services/signupService';
 import { UsersService } from '@/services/usersService';
-import { User } from '@/models/domain/user';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import type { IResetPasswordRequestData } from '@/interfaces/requests/iResetPasswordRequestData';
 import type { ISignupRequestData } from '@/interfaces/requests/iSignupRequestData';
 import type { IUpdateUserRequestData } from '@/interfaces/requests/iUpdateUserRequestData';
+import { User } from '@/models/domain/user';
+import { DialogType } from '@/enums/dialogType';
 import commonUtitlities from '@/utilities/common';
 
 export const useUserStore = defineStore('userStore', () => {
   const user: Ref<User> = ref(new User());
   const confirmedUserName: Ref<string | null> = ref(null);
-  const processingMessage: Ref<string | null> = ref(null);
   const serviceMessage: Ref<string | null> = ref(null);
+  const userIsLoggingOut: Ref<boolean> = ref(false);
 
   const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
   const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn));
@@ -27,21 +28,21 @@ export const useUserStore = defineStore('userStore', () => {
   const getConfirmedUserName: ComputedRef<string> = computed(() =>
     confirmedUserName.value ? toRaw(confirmedUserName.value) : '',
   );
-  const getProcessingMessage: ComputedRef<string> = computed(() =>
-    processingMessage.value ? toRaw(processingMessage.value) : '',
-  );
   const getServiceMessage: ComputedRef<string> = computed(() =>
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
+  const getUserIsLoggingOut: ComputedRef<boolean> = computed(() => toRaw(userIsLoggingOut.value));
 
-  const globalStore = useGlobalStore();
-  const okDialogStore = useOkDialogStore();
+  const { updateConfirmationType, updateEmail, updateIsSuccess, updateUserName } =
+    useConfirmEmailStore();
+  const { updateDialog } = useDialogStore();
+  const { updateToken, updateTokenExpirationDate, updateStayLoggedIn } = useGlobalStore();
 
   const initializeStore = (): void => {
     user.value = new User();
     confirmedUserName.value = null;
-    processingMessage.value = null;
     serviceMessage.value = null;
+    userIsLoggingOut.value = false;
   };
   const updateUser = (param: User): void => {
     user.value = param;
@@ -55,22 +56,26 @@ export const useUserStore = defineStore('userStore', () => {
   const updateConfirmedUserName = (param: string | null = null): void => {
     confirmedUserName.value = param;
   };
-  const updateProcessingMessage = (param: string | null = null): void => {
-    processingMessage.value = param;
-  };
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
+  };
+  const updateUserIsLoggingOut = (param: boolean): void => {
+    userIsLoggingOut.value = param;
+    console.debug(
+      `userStore updateUserIsLoggingOut userIsLoggingOut.value: ${userIsLoggingOut.value}`,
+    );
   };
   const signupUserAsync = async (data: ISignupRequestData): Promise<boolean> => {
     const response: IServicePayload = await SignupService.postAsync(data);
     if (response.isSuccess) {
       updateUser(response.user);
-      globalStore.updateToken(response.token);
-      globalStore.updateTokenExpirationDate(response.tokenExpirationDate);
-      globalStore.updateStayLoggedIn(data.stayLoggedIn);
-      okDialogStore.updateTitle('Welcome to Sudoku Collective');
-      okDialogStore.updateMessage(
+      updateToken(response.token);
+      updateTokenExpirationDate(response.tokenExpirationDate);
+      updateStayLoggedIn(data.stayLoggedIn);
+      updateDialog(
+        'Welcome to Sudoku Collective',
         `Thank you for joining <span class="primary-color">Sudoku Collective</span> ${user.value.userName}!<br /><br />Please note that you will have to confirm your email adress of <span class="primary-color">${user.value.email}</span> or you may lose access to your profile if you forget your password.  An email from <span class="primary-color">sudokucollective@gmail.com</span> has been sent to <span class="primary-color">${user.value.email}</span>, please review the link contained within the email from <span class="primary-color">sudokucollective@gmail.com</span> to confirm the address you provided.  Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.<br /><br />If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />Most importantly I sincerely hope you have fun coding, welcome to <span class="primary-color">Sudoku Collective</span>!`,
+        DialogType.OK,
       );
     }
     return response.isSuccess;
@@ -112,10 +117,10 @@ export const useUserStore = defineStore('userStore', () => {
     const response: IServicePayload = await UsersService.getConfirmEmailAsync(token);
     if (response.isSuccess) {
       updateServiceMessage(response.message);
-      useConfirmEmailStore().updateConfirmationType(response.data.confirmationType);
-      useConfirmEmailStore().updateUserName(response.data.userName);
-      useConfirmEmailStore().updateEmail(response.data.email);
-      useConfirmEmailStore().updateIsSuccess(response.isSuccess);
+      updateConfirmationType(response.data.confirmationType);
+      updateUserName(response.data.userName);
+      updateEmail(response.data.email);
+      updateIsSuccess(response.isSuccess);
     }
     return response.isSuccess;
   };
@@ -174,24 +179,24 @@ export const useUserStore = defineStore('userStore', () => {
   return {
     user,
     confirmedUserName,
-    processingMessage,
     serviceMessage,
+    userIsLoggingOut,
     getUser,
     getUserIsLoggedIn,
     getUserIsLoggingIn,
     getUserIsSignedIn,
     getUserIsSigningUp,
     getConfirmedUserName,
-    getProcessingMessage,
     getServiceMessage,
+    getUserIsLoggingOut,
     initializeStore,
     updateUser,
     updateUserIsLoggingIn,
     updateUserIsSigningUp,
     deleteUserAsync,
     updateConfirmedUserName,
-    updateProcessingMessage,
     updateServiceMessage,
+    updateUserIsLoggingOut,
     signupUserAsync,
     getUserAsync,
     updateUserAsync,

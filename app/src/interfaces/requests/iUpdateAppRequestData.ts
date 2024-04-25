@@ -1,6 +1,6 @@
-import type { ReleaseEnvironment } from "@/enums/releaseEnvironment";
-import type { TimeFrame } from "@/enums/timeFrame";
-import type { ISmtpServerSettings } from "../domain/iSmtpServerSettings";
+import type { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+import type { TimeFrame } from '@/enums/timeFrame';
+import type { ISmtpServerSettings } from '../domain/iSmtpServerSettings';
 
 export interface IUpdateAppRequestData {
   id: number;

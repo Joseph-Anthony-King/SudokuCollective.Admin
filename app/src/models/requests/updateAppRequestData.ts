@@ -1,7 +1,7 @@
-import type { ISmtpServerSettings } from "@/interfaces/domain/iSmtpServerSettings";
-import type { IUpdateAppRequestData } from "@/interfaces/requests/iUpdateAppRequestData";
-import { ReleaseEnvironment } from "@/enums/releaseEnvironment";
-import { TimeFrame } from "@/enums/timeFrame";
+import type { ISmtpServerSettings } from '@/interfaces/domain/iSmtpServerSettings';
+import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
+import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+import { TimeFrame } from '@/enums/timeFrame';
 
 export class UpdateAppRequestData implements IUpdateAppRequestData {
   id: number;
@@ -24,8 +24,8 @@ export class UpdateAppRequestData implements IUpdateAppRequestData {
   smtpServerSettings: ISmtpServerSettings | null;
   timeFrame: TimeFrame;
   accessDuration: number;
-  
-  constructor (
+
+  constructor(
     id: number,
     name: string | null,
     license: string | null,
@@ -58,13 +58,27 @@ export class UpdateAppRequestData implements IUpdateAppRequestData {
     sourceCodeUrl ? (this.sourceCodeUrl = sourceCodeUrl) : (this.sourceCodeUrl = null);
     isActive ? (this.isActive = isActive) : (this.isActive = false);
     environment ? (this.environment = environment) : (this.environment = ReleaseEnvironment.NULL);
-    permitSuperUserAccess ? (this.permitSuperUserAccess = permitSuperUserAccess) : (this.permitSuperUserAccess = false);
-    permitCollectiveLogins ? (this.permitCollectiveLogins = permitCollectiveLogins) : (this.permitCollectiveLogins = false);
-    disableCustomUrls ? (this.disableCustomUrls = disableCustomUrls) : (this.disableCustomUrls = false);
-    customEmailConfirmationAction ? (this.customEmailConfirmationAction = customEmailConfirmationAction) : (this.customEmailConfirmationAction = null);
-    customPasswordResetAction ? (this.customPasswordResetAction = customPasswordResetAction) : (this.customPasswordResetAction = null);
-    useCustomSMTPServer ? (this.useCustomSMTPServer = useCustomSMTPServer) : (this.useCustomSMTPServer = false);
-    smtpServerSettings ? (this.smtpServerSettings = smtpServerSettings) : (this.smtpServerSettings = null);
+    permitSuperUserAccess
+      ? (this.permitSuperUserAccess = permitSuperUserAccess)
+      : (this.permitSuperUserAccess = false);
+    permitCollectiveLogins
+      ? (this.permitCollectiveLogins = permitCollectiveLogins)
+      : (this.permitCollectiveLogins = false);
+    disableCustomUrls
+      ? (this.disableCustomUrls = disableCustomUrls)
+      : (this.disableCustomUrls = false);
+    customEmailConfirmationAction
+      ? (this.customEmailConfirmationAction = customEmailConfirmationAction)
+      : (this.customEmailConfirmationAction = null);
+    customPasswordResetAction
+      ? (this.customPasswordResetAction = customPasswordResetAction)
+      : (this.customPasswordResetAction = null);
+    useCustomSMTPServer
+      ? (this.useCustomSMTPServer = useCustomSMTPServer)
+      : (this.useCustomSMTPServer = false);
+    smtpServerSettings
+      ? (this.smtpServerSettings = smtpServerSettings)
+      : (this.smtpServerSettings = null);
     timeFrame ? (this.timeFrame = timeFrame) : (this.timeFrame = TimeFrame.NULL);
     accessDuration ? (this.accessDuration = accessDuration) : (this.accessDuration = 0);
   }

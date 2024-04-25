@@ -1,6 +1,8 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto">
+    <v-card
+      elevation="6"
+      class="mx-auto">
       <v-card-text>
         <v-container fluid>
           <div class="center">
@@ -12,8 +14,7 @@
               item-value="value"
               label="Please make a selection"
               v-bind="{ 'return-object': true }"
-              single-line
-            ></v-select>
+              single-line></v-select>
             <div v-if="isCurrentGameStatePlayGame">
               <v-card-title class="justify-center">Difficulty Level</v-card-title>
               <v-select
@@ -23,8 +24,7 @@
                 item-value="difficultyLevel"
                 label="Please make a selection"
                 v-bind="{ 'return-object': true }"
-                single-line
-              ></v-select>
+                single-line></v-select>
             </div>
             <matrix-widget />
           </div>
@@ -35,9 +35,8 @@
                   class="button-full"
                   color="blue darken-1"
                   text="true"
-                  @click="executeAsync($event)"
-                  :disabled="isExectuteButtonDisabed"
-                >
+                  @click="executeHandlerAsync($event)"
+                  :disabled="isExectuteButtonDisabed">
                   {{ executeButtonText }}
                 </v-btn>
               </v-col>
@@ -46,9 +45,8 @@
                   class="button-full"
                   color="blue darken-1"
                   text="true"
-                  @click="checkGameAsync($event)"
-                  :disabled="isExectuteButtonDisabed"
-                >
+                  @click="checkGameHandlerAsync($event)"
+                  :disabled="isExectuteButtonDisabed">
                   Check Game
                 </v-btn>
               </v-col>
@@ -57,14 +55,17 @@
                   class="button-full"
                   color="blue darken-1"
                   text="true"
-                  @click="resetGameAsync($event)"
-                  :disabled="isExectuteButtonDisabed"
-                >
+                  @click="resetGameHandlerAsync($event)"
+                  :disabled="isExectuteButtonDisabed">
                   Reset Game
                 </v-btn>
               </v-col>
               <v-col>
-                <v-btn class="button-full" color="blue darken-1" text="true" @click="clear">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text="true"
+                  @click="clearHandler">
                   {{ clearButtonText }}
                 </v-btn>
               </v-col>
@@ -77,161 +78,245 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, type Ref, ref, toRaw, watch } from 'vue';
-import { useSudokuStore } from '@/stores/sudokuStore';
-import { useValueStore } from '@/stores/valueStore';
-import AvailableActions from '@/components/buttons/AvailableActions.vue';
-import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
-import { GameState } from '@/enums/gameState';
-import { StoreType } from '@/enums/storeTypes';
-import { DropdownItem } from '@/models/infrastructure/dropdownItem';
-import { Difficulty } from '@/models/domain/difficulty';
-import commonUtilities from '@/utilities/common';
+  /* eslint-disable no-unused-vars */
+  import {
+    type ComputedRef,
+    computed,
+    type Ref,
+    ref,
+    toRaw,
+    watch,
+    onMounted,
+    onUnmounted,
+  } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import { useSudokuStore } from '@/stores/sudokuStore';
+  import { useValueStore } from '@/stores/valueStore';
+  import AvailableActions from '@/components/buttons/AvailableActions.vue';
+  import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
+  import { GameState } from '@/enums/gameState';
+  import { StoreType } from '@/enums/storeTypes';
+  import { DropdownItem } from '@/models/infrastructure/dropdownItem';
+  import { Difficulty } from '@/models/domain/difficulty';
+  import commonUtilities from '@/utilities/common';
 
-/* initialize stores */
-const sudokuStore = useSudokuStore();
-const valueStore = useValueStore();
+  const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
+    commonUtilities();
 
-const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
-  commonUtilities();
+  //#region Destructure Stores
+  //#region SudokuStore
+  const sudokuStore = useSudokuStore();
+  const { getGameState, getSelectedDifficulty, getInitialGame, getIsSolvedDisabled } =
+    storeToRefs(sudokuStore);
+  const {
+    createGameAsync,
+    generateSolutionAsync,
+    initializeGame,
+    initializePuzzle,
+    initializeSolution,
+    checkGameAsync,
+    updateGame,
+    updateGameState,
+    updateSelectedDifficulty,
+    solvePuzzleAsync,
+  } = sudokuStore;
+  //#endregion
+  const valueStore = useValueStore();
+  const { getDifficulties, getGameStates } = storeToRefs(valueStore);
+  //#endregion
 
-/* difficulty properties and methods */
-const difficulties: Ref<Difficulty[]> = ref(valueStore.getDifficulties);
-const selectedDifficulty: Ref<Difficulty | null> = ref(sudokuStore.getSelectedDifficulty);
-/* Game state properties and methods */
-const gameStates: Ref<DropdownItem[]> = ref(valueStore.getGameStates);
-const selectedGameState: Ref<DropdownItem | null> = ref(sudokuStore.getGameState);
-const isGameStateSelected: ComputedRef<boolean> = computed(() => {
-  {
-    return sudokuStore.getGameState !== null;
-  }
-});
-const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
-  let result: boolean;
-  if (sudokuStore.getGameState !== null) {
-    result = sudokuStore.getGameState?.value === GameState.PLAYGAME;
-  } else {
-    result = false;
-  }
-  return result;
-});
-const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
-  if (selectedGameState.value?.value === GameState.PLAYGAME) {
-    if (selectedDifficulty?.value === null) {
-      return true;
+  //#region Properties
+  const difficulties: Ref<Difficulty[]> = ref(getDifficulties.value);
+  const selectedDifficulty: Ref<Difficulty | null> = ref(getSelectedDifficulty.value);
+  const gameStates: Ref<DropdownItem[]> = ref(getGameStates.value);
+  const selectedGameState: Ref<DropdownItem | null> = ref(getGameState.value);
+  //#endregion
+
+  //#region Computed Properties
+  const isGameStateSelected: ComputedRef<boolean> = computed(() => {
+    {
+      return getGameState !== null;
+    }
+  });
+  const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
+    let result: boolean;
+    if (getGameState.value !== null) {
+      result = getGameState.value.value === GameState.PLAYGAME;
+    } else {
+      result = false;
+    }
+    return result;
+  });
+  const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
+    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+      if (selectedDifficulty?.value === null) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      return getIsSolvedDisabled.value;
     } else {
       return false;
     }
-  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-    return sudokuStore.getIsSolvedDisabled;
-  } else {
-    return false;
-  }
-});
-const executeButtonText: ComputedRef<string> = computed(() => {
-  if (selectedGameState.value?.value === GameState.PLAYGAME) {
-    return 'Create Game';
-  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-    return 'Solve Sudoku';
-  } else {
-    return 'Generate Sudoku';
-  }
-});
-const clearButtonText: ComputedRef<string> = computed(() => {
-  if (selectedDifficulty.value !== null && selectedGameState.value?.value === GameState.PLAYGAME) {
-    return 'Clear Game';
-  } else {
-    return 'Clear Sudoku';
-  }
-});
-const executeAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  updateAppProcessingAsync(async () => {
+  });
+  const executeButtonText: ComputedRef<string> = computed(() => {
+    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+      return 'Create Game';
+    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      return 'Solve Sudoku';
+    } else {
+      return 'Generate Sudoku';
+    }
+  });
+  const clearButtonText: ComputedRef<string> = computed(() => {
     if (
       selectedDifficulty.value !== null &&
       selectedGameState.value?.value === GameState.PLAYGAME
     ) {
-      await sudokuStore.createGameAsync();
-    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-      await sudokuStore.solvePuzzleAsync();
+      return 'Clear Game';
     } else {
-      await sudokuStore.generateSolutionAsync();
+      return 'Clear Sudoku';
     }
-    displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    await displayFailedToastAsync(undefined, undefined);
   });
-};
-const checkGameAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  updateAppProcessingAsync(async () => {
-    sudokuStore.checkGameAsync();
-    displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    await displayFailedToastAsync(undefined, undefined);
-  });
-};
-const resetGameAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  await updateAppProcessingAsync(async () => {
-    const initialGame = sudokuStore.getInitialGame;
-    const game = Array<Array<string>>(9);
-    for (let i = 0; i < 9; i++) {
-      game[i] = [];
-      for (let j = 0; j < 9; j++) {
-        game[i][j] = initialGame[i][j];
-      }
-    }
-    sudokuStore.updateGame(game);
-    displaySuccessfulToast(StoreType.SUDOKUSTORE);
-    await displayFailedToastAsync(undefined, undefined);
-  });
-};
-const clear = (event: Event | null = null): void => {
-  event?.preventDefault();
-  if (selectedGameState.value?.value === GameState.PLAYGAME) {
-    sudokuStore.initializeGame();
-  } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
-    sudokuStore.initializePuzzle();
-  } else {
-    sudokuStore.initializeSolution();
-  }
-};
-watch(
-  () => valueStore.getGameStates,
-  () => {
-    gameStates.value = valueStore.getGameStates;
-  },
-);
-watch(
-  () => selectedGameState?.value,
-  () => {
-    sudokuStore.updateGameState(toRaw(selectedGameState.value));
-  },
-);
-watch(
-  () => valueStore.getDifficulties,
-  () => {
-    difficulties.value = valueStore.getDifficulties;
-  },
-);
-watch(
-  () => selectedDifficulty?.value,
-  () => {
-    sudokuStore.updateSelectedDifficulty(
-      selectedDifficulty.value ? toRaw(selectedDifficulty.value) : null,
+  //#endregion
+
+  //#region Action Handlers
+  const executeHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    console.debug(
+      'executeHandlerAsync invoked...',
+      `selectGameState: ${selectedGameState.value?.value}`,
     );
-  },
-);
+    await updateAppProcessingAsync(async () => {
+      if (
+        selectedDifficulty.value !== null &&
+        selectedGameState.value?.value === GameState.PLAYGAME
+      ) {
+        await createGameAsync();
+      } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+        await solvePuzzleAsync();
+      } else {
+        await generateSolutionAsync();
+      }
+      displaySuccessfulToast(StoreType.SUDOKUSTORE);
+      await displayFailedToastAsync(undefined, undefined);
+    });
+  };
+  const checkGameHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    await updateAppProcessingAsync(async () => {
+      await checkGameAsync();
+      displaySuccessfulToast(StoreType.SUDOKUSTORE);
+      await displayFailedToastAsync(undefined, undefined);
+    });
+  };
+  const resetGameHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    await updateAppProcessingAsync(async () => {
+      const initialGame = getInitialGame.value;
+      const game = Array<Array<string>>(9);
+      for (let i = 0; i < 9; i++) {
+        game[i] = [];
+        for (let j = 0; j < 9; j++) {
+          game[i][j] = initialGame[i][j];
+        }
+      }
+      updateGame(game);
+      displaySuccessfulToast(StoreType.SUDOKUSTORE);
+      await displayFailedToastAsync(undefined, undefined);
+    });
+  };
+  const clearHandler = (event: Event | null = null): void => {
+    event?.preventDefault();
+    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+      initializeGame();
+    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      initializePuzzle();
+    } else {
+      initializeSolution();
+    }
+  };
+  //#endregion
+
+  //#region Watchers
+  watch(
+    () => getGameStates.value,
+    (newValue, oldValue) => {
+      gameStates.value = newValue;
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+  watch(
+    () => selectedGameState?.value,
+    (newValue, oldValue) => {
+      updateGameState(toRaw(newValue));
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+  watch(
+    () => getDifficulties.value,
+    (newValue, oldValue) => {
+      difficulties.value = newValue;
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+  watch(
+    () => selectedDifficulty.value,
+    (newValue, oldValue) => {
+      updateSelectedDifficulty(newValue ? toRaw(newValue) : null);
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
+  //#endregion
+
+  //#region Lifecycle Hooks
+  onMounted(() => {
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && selectedGameState.value?.value !== undefined) {
+          if (selectedGameState.value?.value === 0) {
+            await checkGameHandlerAsync(event);
+          } else if (selectedGameState.value?.value === 1) {
+            await executeHandlerAsync(event);
+          } else {
+            await executeHandlerAsync(event);
+          }
+        }
+      },
+      { once: true },
+    );
+  });
+  onUnmounted(() => {
+    window.removeEventListener('keyup', () => {});
+  });
+  //#endregion
 </script>
 
 <style lang="scss" scoped>
-.v-card {
-  @media (max-width: 600px) {
-    padding: 0 0 0 0 !important;
-    margin: 0 0 0 0 !important;
+  .v-card {
+    @media (max-width: 600px) {
+      padding: 0 0 0 0 !important;
+      margin: 0 0 0 0 !important;
+    }
+
+    width: 100%;
   }
-  width: 100%;
-}
-.h1-margin {
-  margin: 100px 0 100px 0;
-}
+
+  .h1-margin {
+    margin: 100px 0 100px 0;
+  }
 </style>

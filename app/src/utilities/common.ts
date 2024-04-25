@@ -68,8 +68,13 @@ export default function () {
   };
   const isAsyncFunction = (
     fn:
+      | (() => void)
+      | (() => Promise<void>)
       | (() => unknown)
+      | (() => Promise<unknown>)
       | ((message: string, options: any) => any)
+      | ((message: string, options: any) => Promise<any>)
+      | ((event: Event | null) => void)
       | ((event: Event | null) => Promise<void>),
   ): boolean => {
     return fn.constructor.name === 'AsyncFunction';
@@ -79,13 +84,11 @@ export default function () {
       element.setAttribute('autocomplete', 'new-password');
     });
   };
-  const resetViewPort = (isSmallViewPort: Ref<boolean>, maxDialogWidth: Ref<string>): void => {
+  const resetViewPort = (isSmallViewPort: Ref<boolean>): void => {
     if (window.innerWidth <= 960) {
       isSmallViewPort.value = true;
-      maxDialogWidth.value = 'auto';
     } else {
       isSmallViewPort.value = false;
-      maxDialogWidth.value = '600px';
     }
   };
   const updateAppProcessingAsync = async (method: () => unknown): Promise<void | unknown> => {

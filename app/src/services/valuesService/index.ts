@@ -13,7 +13,16 @@ export class ValuesService {
 
     try {
       const indexResponse = (await IndexPort.getMissionStatementAsync()) as AxiosResponse;
+
+      if (indexResponse instanceof Error) {
+        throw indexResponse as unknown as AxiosError;
+      }
+
       const valuesResponse = (await ValuesPort.getValuesAsync()) as AxiosResponse;
+
+      if (valuesResponse instanceof Error) {
+        throw valuesResponse as unknown as AxiosError;
+      }
 
       if (indexResponse) {
         result.missionStatement = indexResponse.data.missionStatement.replace(

@@ -14,7 +14,11 @@ export class AppsService {
 
     try {
       const response = (await AppsPort.putUpdateAppAsync(data)) as AxiosResponse;
-      
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -40,6 +44,10 @@ export class AppsService {
 
     try {
       const response = (await AppsPort.getMyAppsAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -124,6 +132,10 @@ export class AppsService {
 
     try {
       const response = (await AppsPort.getMyRegisteredAppsAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;

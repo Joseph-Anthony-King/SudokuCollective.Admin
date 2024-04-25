@@ -7,21 +7,23 @@
           color="primary"
           label="Select"
           :items="['Your Apps', 'Your Registered Apps']"
-          v-model="selectedApps"
-        ></v-select>
+          v-model="selectedApps"></v-select>
       </v-col>
     </v-card-title>
     <v-card-text>
       <v-container fluid>
         <div class="app-buttons-scroll">
-          <span class="no-apps-message" v-if="apps.length === 0">Time to Get Coding!</span>
+          <span
+            class="no-apps-message"
+            v-if="apps.length === 0"
+            >Time to Get Coding!</span
+          >
           <AppButton
             v-for="(app, index) in apps"
             :app="app"
             :key="index"
             :index="index"
-            v-on:app-selected="appSelected"
-          />
+            v-on:app-selected="appSelected" />
         </div>
       </v-container>
     </v-card-text>
@@ -29,51 +31,63 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-unused-vars*/
-import { type Ref, ref, watch } from 'vue';
-import AppButton from '@/components/buttons/AppButton.vue';
-import { useAppStore } from '@/stores/appStore';
-import { App } from '@/models/domain/app';
-import commonUtilities from '@/utilities/common';
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable @typescript-eslint/no-unused-vars*/
+  import { type Ref, ref, watch } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import AppButton from '@/components/buttons/AppButton.vue';
+  import { useAppStore } from '@/stores/appStore';
+  import { App } from '@/models/domain/app';
+  import commonUtilities from '@/utilities/common';
 
-const { updateAppProcessingAsync } = commonUtilities();
+  const { updateAppProcessingAsync } = commonUtilities();
 
-const apps: Ref<App[]> = ref(useAppStore().getMyApps);
-const selectedApps: Ref<string> = ref('Your Apps');
+  const appStore = useAppStore();
+  const { getSelectedApp, getMyApps, getMyRegisteredApps } = storeToRefs(appStore);
+  const { updateSelectedApp } = appStore;
 
-watch(
-  () => selectedApps.value,
-  () => {
-    appStore.updateSelectedApp(0);
-    if (selectedApps.value === 'Your Apps') {
-      apps.value = appStore.getMyApps;
-    } else {
-      apps.value = appStore.getMyRegisteredApps;
-    }
-  },
-);
+  const apps: Ref<App[]> = ref(getMyApps.value);
+  const selectedApps: Ref<string> = ref('Your Apps');
 
-const appStore = useAppStore();
-
-const appSelected = (id: number) => {
-  updateAppProcessingAsync(() => {
-    if (id !== appStore.getSelectedApp?.id) {
-      appStore.updateSelectedApp(id);
-    } else {
+  watch(
+    () => selectedApps.value,
+    (newValue, oldValue) => {
       appStore.updateSelectedApp(0);
-    }
-  });
-};
+      if (newValue === 'Your Apps') {
+        apps.value = getMyApps.value;
+      } else {
+        apps.value = getMyRegisteredApps.value;
+      }
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
 
-watch(
-  () => useAppStore().getMyApps,
-  () => (apps.value = useAppStore().getMyApps),
-);
+  const appSelected = (id: number) => {
+    updateAppProcessingAsync(() => {
+      if (id !== getSelectedApp.value?.id) {
+        updateSelectedApp(id);
+      } else {
+        updateSelectedApp(0);
+      }
+    });
+  };
+
+  watch(
+    () => getMyApps.value,
+    (newValue, oldValue) => (apps.value = newValue),
+    {
+      immediate: true,
+      deep: true,
+    },
+  );
 </script>
 
 <style scoped lang="scss">
-.app-buttons-scroll {
-  display: flex;
-  overflow-x: auto;
-}
+  .app-buttons-scroll {
+    display: flex;
+    overflow-x: auto;
+  }
 </style>

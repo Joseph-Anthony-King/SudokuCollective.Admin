@@ -3,7 +3,10 @@
     <v-card-title class="justify-center text-center">
       <span class="headline">Update Password</span>
     </v-card-title>
-    <v-form v-model="formValid" ref="form" onsubmit="event.preventDefault();">
+    <v-form
+      v-model="formValid"
+      ref="form"
+      onsubmit="event.preventDefault();">
       <v-card-text>
         <v-container>
           <v-row>
@@ -11,8 +14,7 @@
               <v-tooltip
                 open-delay="2000"
                 location="bottom"
-                :disabled="password !== null || isSmallViewPort"
-              >
+                :disabled="password !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="password"
@@ -25,8 +27,7 @@
                     :rules="passwordRules()"
                     required
                     color="primary"
-                    v-bind="props"
-                  ></v-text-field>
+                    v-bind="props"></v-text-field>
                 </template>
                 <span>{{ RulesMessages.passwordRegexMessage }}</span>
               </v-tooltip>
@@ -35,8 +36,7 @@
               <v-tooltip
                 open-delay="2000"
                 location="bottom"
-                :disabled="confirmPassword !== null || isSmallViewPort"
-              >
+                :disabled="confirmPassword !== null || isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-text-field
                     v-model="confirmPassword"
@@ -49,8 +49,7 @@
                     :rules="confirmPasswordRules(password)"
                     required
                     color="primary"
-                    v-bind="props"
-                  ></v-text-field>
+                    v-bind="props"></v-text-field>
                 </template>
                 <span>{{ RulesMessages.passwordMatchMesssage }}</span>
               </v-tooltip>
@@ -61,14 +60,16 @@
       <AvailableActions>
         <v-row dense>
           <v-col cols="4">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
                   text="true"
-                  @click="confirmFormReset = true"
-                  v-bind="props"
-                >
+                  @click="confirmFormResetHandler($event)"
+                  v-bind="props">
                   Reset
                 </v-btn>
               </template>
@@ -76,14 +77,16 @@
             </v-tooltip>
           </v-col>
           <v-col cols="4">
-            <v-tooltip open-delay="2000" location="bottom" :disabled="isSmallViewPort">
+            <v-tooltip
+              open-delay="2000"
+              location="bottom"
+              :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
                   text="true"
                   @click="closeHandlerAsync($event)"
-                  v-bind="props"
-                >
+                  v-bind="props">
                   Close
                 </v-btn>
               </template>
@@ -94,16 +97,14 @@
             <v-tooltip
               open-delay="2000"
               location="bottom"
-              :disabled="!formValid || isSmallViewPort"
-            >
+              :disabled="!formValid || isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
                   text="true"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
-                  v-bind="props"
-                >
+                  v-bind="props">
                   Submit
                 </v-btn>
               </template>
@@ -114,124 +115,192 @@
       </AvailableActions>
     </v-form>
   </v-card>
-  <v-dialog
-    v-model="confirmFormReset"
-    persistent
-    :fullscreen="isSmallViewPort"
-    :max-width="maxDialogWidth"
-    hide-overlay
-    transition="dialog-top-transition"
-  >
-    <ConfirmDialog
-      title="Reset Form"
-      message="Are you sure you want to reset this form?"
-      v-on:action-confirmed="resetHandlerAsync"
-      v-on:action-not-confirmed="confirmFormReset = false"
-    />
-  </v-dialog>
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars*/
-import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
-import { VForm, VTextField } from 'vuetify/components';
-import { toast } from 'vue3-toastify';
-import router from '@/router/index';
-import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
-import { useUserStore } from '@/stores/userStore';
-import AvailableActions from '@/components/buttons/AvailableActions.vue';
-import { StoreType } from '@/enums/storeTypes';
-import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
-import rules from '@/utilities/rules/index';
-import { RulesMessages } from '@/utilities/rules/rulesMessages';
-import commonUtilities from '@/utilities/common';
+  /* eslint-disable no-undef */
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable @typescript-eslint/no-unused-vars*/
+  import {
+    type ComputedRef,
+    computed,
+    type Ref,
+    ref,
+    toRaw,
+    onMounted,
+    onUpdated,
+    onUnmounted,
+  } from 'vue';
+  import { VForm, VTextField } from 'vuetify/components';
+  import { toast } from 'vue3-toastify';
+  import { storeToRefs } from 'pinia';
+  import router from '@/router/index';
+  import { useDialogStore } from '@/stores/dialogStore';
+  import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
+  import { useUserStore } from '@/stores/userStore';
+  import AvailableActions from '@/components/buttons/AvailableActions.vue';
+  import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
+  import { DialogType } from '@/enums/dialogType';
+  import { StoreType } from '@/enums/storeTypes';
+  import commonUtilities from '@/utilities/common';
+  import rules from '@/utilities/rules/index';
+  import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
-const props = defineProps({
-  formStatus: {
-    type: Boolean,
-    default: false,
-  },
-});
-const emit = defineEmits(['close-update-password']);
+  const props = defineProps({
+    formStatus: {
+      type: Boolean,
+      default: false,
+    },
+  });
+  const emit = defineEmits(['close-update-password']);
 
-const { displayFailedToastAsync, displaySuccessfulToast, updateAppProcessingAsync } =
-  commonUtilities();
-const { confirmPasswordRules, passwordRules } = rules();
+  const {
+    isChrome,
+    displayFailedToastAsync,
+    displaySuccessfulToast,
+    updateAppProcessingAsync,
+    repairAutoComplete,
+    resetViewPort,
+  } = commonUtilities();
+  const { confirmPasswordRules, passwordRules } = rules();
 
-//#region Instantiate the Stores
-const signUpFormStore = useSignUpFormStore();
-const userStore = useUserStore();
-//#endregion
+  //#region Destructure Stores
+  //#region DialogStore
+  const dialogStore = useDialogStore();
+  const { updateDialog } = dialogStore;
+  //#endregion
+  //#region SignUpFormStore
+  const signUpFormStore = useSignUpFormStore();
+  const { getPassword, getConfirmPassword, getPasswordToken } = storeToRefs(signUpFormStore);
+  const { updatePassword, updateConfirmPassword } = signUpFormStore;
+  //#endregion
+  //#region UserStore
+  const userStore = useUserStore();
+  const { getUserIsLoggedIn } = storeToRefs(userStore);
+  const { getUserAsync, updateServiceMessage } = userStore;
+  //#endregion
+  //#endregion
 
-//#region Properties
-const password: Ref<string | null> = ref(signUpFormStore.getPassword);
-const confirmPassword: Ref<string | null> = ref(signUpFormStore.getConfirmPassword);
-const token: string = signUpFormStore.getPasswordToken ? signUpFormStore.getPasswordToken : '';
-const showPassword: Ref<boolean> = ref(false);
-const confirmFormReset: Ref<boolean> = ref(false);
-//#endregion
+  //#region Properties
+  const password: Ref<string | null> = ref(getPassword.value);
+  const confirmPassword: Ref<string | null> = ref(getConfirmPassword.value);
+  const token: string = getPasswordToken.value !== null ? getPasswordToken.value : '';
+  const showPassword: Ref<boolean> = ref(false);
+  //#endregion
 
-//#region Form Logic
-const form: Ref<VForm | null> = ref(null);
-const formValid: Ref<boolean> = ref(true);
-const isSmallViewPort: Ref<boolean> = ref(true);
-const maxDialogWidth: Ref<string> = ref('auto');
-const getFormStatus: ComputedRef<boolean> = computed(() => {
-  return props.formStatus;
-});
-const resetFormStatus: ComputedRef<boolean> = computed(() => {
-  return !props.formStatus;
-});
-//#endregion
+  //#region Form Logic
+  const form: Ref<VForm | null> = ref(null);
+  const formValid: Ref<boolean> = ref(true);
+  const isSmallViewPort: Ref<boolean> = ref(true);
+  const getFormStatus: ComputedRef<boolean> = computed(() => {
+    return props.formStatus;
+  });
+  const resetFormStatus: ComputedRef<boolean> = computed(() => {
+    return !props.formStatus;
+  });
+  //#endregion
 
-//#region Action Handlers
-const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  await updateAppProcessingAsync(async () => {
-    if (getFormStatus.value) {
-      signUpFormStore.updatePassword(toRaw(password.value));
-      signUpFormStore.updateConfirmPassword(toRaw(confirmPassword.value));
+  //#region Action Handlers
+  const submitHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    await updateAppProcessingAsync(async () => {
+      if (getFormStatus.value) {
+        updatePassword(toRaw(password.value));
+        updateConfirmPassword(toRaw(confirmPassword.value));
 
-      const data = new ResetPasswordRequestData(token, password.value ? password.value : '');
-      const result = await userStore.resetPasswordAsync(data);
-      if (result) {
-        signUpFormStore.initializeStore();
-        displaySuccessfulToast(StoreType.USERSTORE);
-        if (userStore.getUserIsLoggedIn) {
-          await userStore.getUserAsync();
-          userStore.updateServiceMessage();
-          router.push('/user-profile');
+        const data = new ResetPasswordRequestData(token, password.value ? password.value : '');
+        const result = await userStore.resetPasswordAsync(data);
+        if (result) {
+          signUpFormStore.initializeStore();
+          displaySuccessfulToast(StoreType.USERSTORE);
+          if (getUserIsLoggedIn.value) {
+            await getUserAsync();
+            updateServiceMessage();
+            router.push('/user-profile');
+          } else {
+            router.push('/');
+          }
         } else {
-          router.push('/');
+          displayFailedToastAsync(undefined, undefined);
         }
       } else {
-        displayFailedToastAsync(undefined, undefined);
+        toast('Reset password form is invalid', {
+          position: toast.POSITION.TOP_CENTER,
+          type: toast.TYPE.ERROR,
+        });
       }
-    } else {
-      toast('Reset password form is invalid', {
-        position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR,
-      });
+    });
+  };
+  const confirmFormResetHandler = (event: Event | null = null): void => {
+    event?.preventDefault();
+    updateDialog(
+      'Reset Form',
+      'Are you sure you want to reset this form?',
+      DialogType.CONFIRM,
+      resetHandlerAsync,
+    );
+  };
+  const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    await updateAppProcessingAsync(() => {
+      password.value = getPassword.value;
+      confirmPassword.value = getConfirmPassword.value;
+      form.value?.reset();
+      dialogStore.initializeStore();
+    });
+  };
+  const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
+    event?.preventDefault();
+    await updateAppProcessingAsync(() => {
+      signUpFormStore.initializeStore();
+      emit('close-update-password', null, null);
+    });
+  };
+  //#endregion
+
+  //#region Lifecycle Hooks
+  onMounted(() => {
+    if (isChrome.value) {
+      repairAutoComplete();
+    }
+    resetViewPort(isSmallViewPort);
+    let resizeTimeout: number | undefined;
+    window.addEventListener(
+      'resize',
+      () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(
+          () => {
+            resetViewPort(isSmallViewPort);
+          },
+          250,
+          'Resized',
+        );
+      },
+      { once: true },
+    );
+    if (getFormStatus.value) {
+      window.addEventListener(
+        'keyup',
+        async (event) => {
+          if (event.key === 'Enter' && getFormStatus.value) {
+            await submitHandlerAsync();
+          }
+        },
+        { once: true },
+      );
     }
   });
-};
-const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  await updateAppProcessingAsync(() => {
-    password.value = signUpFormStore.getPassword;
-    confirmPassword.value = signUpFormStore.getConfirmPassword;
-    form.value?.reset();
-    confirmFormReset.value = false;
+  onUpdated(() => {
+    if (isChrome.value) {
+      repairAutoComplete();
+    }
   });
-};
-const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
-  event?.preventDefault();
-  await updateAppProcessingAsync(() => {
-    signUpFormStore.initializeStore();
-    emit('close-update-password', null, null);
+  onUnmounted(() => {
+    window.removeEventListener('resize', () => {
+      resetViewPort(isSmallViewPort);
+    });
+    window.removeEventListener('keyup', () => {});
   });
-};
-//#endregion
+  //#endregion
 </script>

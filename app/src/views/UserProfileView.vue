@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import UserProfilePage from '@/components/pages/UserProfilePage.vue';
+  import UserProfilePage from '@/components/pages/UserProfilePage.vue';
 </script>
