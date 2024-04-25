@@ -2,17 +2,52 @@
 import { AxiosError, type AxiosResponse } from 'axios';
 import { AppsPort } from '@/ports/appsPort';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
-import { StaticServiceMethods } from '@/services/common';
+import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
 import type { IApp } from '@/interfaces/domain/iApp';
+import { StaticServiceMethods } from '@/services/common';
 import { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
 
 export class AppsService {
+  static putUpdateAppAsync = async (data: IUpdateAppRequestData): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await AppsPort.putUpdateAppAsync(data)) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+        result.app = response.data.payload[0];
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if (error instanceof AxiosError && error.response) {
+        result.isSuccess = error.response.data.isSuccess;
+        StaticServiceMethods.processFailedResponse(error.response);
+      } else {
+        result.isSuccess = false;
+      }
+    }
+
+    return result;
+  };
+
   static getMyAppsAsync = async (): Promise<IServicePayload> => {
     const result: IServicePayload = {};
 
     try {
       const response = (await AppsPort.getMyAppsAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -97,6 +132,10 @@ export class AppsService {
 
     try {
       const response = (await AppsPort.getMyRegisteredAppsAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;

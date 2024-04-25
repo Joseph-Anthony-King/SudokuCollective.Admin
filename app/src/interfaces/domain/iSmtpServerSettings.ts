@@ -1,6 +1,6 @@
 export interface ISmtpServerSettings {
   id: number;
-  smptServer: string | null;
+  smtpServer: string | null;
   port: number;
   userName: string | null;
   password: string | null;

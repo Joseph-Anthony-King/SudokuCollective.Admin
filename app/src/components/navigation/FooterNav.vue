@@ -1,6 +1,10 @@
 <template>
   <v-footer app>
-    <v-card elevation="0" rounded="0" width="100%" class="text-center">
+    <v-card
+      elevation="0"
+      rounded="0"
+      width="100%"
+      class="text-center">
       <v-divider></v-divider>
       <v-card-text>
         © Copyright {{ getCopyrightYear }}:
@@ -17,15 +21,15 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
-import { type ComputedRef, computed } from 'vue';
+  /* eslint-disable no-undef */
+  import { type ComputedRef, computed } from 'vue';
 
-const getCopyrightYear: ComputedRef<number> = computed(() => new Date().getFullYear());
-const getVersion: ComputedRef<string> = computed(() => `version ${process.env.VITE_APP_VERSION}`);
+  const getCopyrightYear: ComputedRef<number> = computed(() => new Date().getFullYear());
+  const getVersion: ComputedRef<string> = computed(() => `version ${process.env.VITE_APP_VERSION}`);
 </script>
 
 <style scoped>
-.version {
-  font-size: xx-small;
-}
+  .version {
+    font-size: xx-small;
+  }
 </style>

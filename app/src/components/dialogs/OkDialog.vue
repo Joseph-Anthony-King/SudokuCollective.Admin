@@ -11,7 +11,12 @@
     <v-card-actions class="text-center">
       <v-row :dense="true">
         <v-col cols="12">
-          <v-btn color="blue darken-1" text="true" @click="close($event)"> ok </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text="true"
+            @click="close($event)">
+            ok
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -19,18 +24,37 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
-import { type Ref, ref } from 'vue';
-import { useOkDialogStore } from '@/stores/okDialogStore';
+  /* eslint-disable no-undef */
+  import { type Ref, ref, onMounted, onUnmounted } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import { useDialogStore } from '@/stores/dialogStore';
 
-const emit = defineEmits(['close-ok-dialog']);
+  const dialogStore = useDialogStore();
+  const { getDialogTitle, getDialogMessage } = storeToRefs(dialogStore);
+  const { initializeStore } = dialogStore;
 
-const okDialogStore = useOkDialogStore();
-const title: Ref<string | null> = ref(okDialogStore.getTitle);
-const message: Ref<string | null> = ref(okDialogStore.getMessage);
+  const title: Ref<string | null> = ref(getDialogTitle.value);
+  const message: Ref<string | null> = ref(getDialogMessage.value);
 
-const close = (event: Event | undefined = undefined): void => {
-  event?.preventDefault();
-  emit('close-ok-dialog', undefined, undefined);
-};
+  const close = (event: Event | undefined = undefined): void => {
+    event?.preventDefault();
+    initializeStore();
+  };
+
+  //#region Lifecycle Hooks
+  onMounted(() => {
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter') {
+          close();
+        }
+      },
+      { once: true },
+    );
+  });
+  onUnmounted(() => {
+    window.removeEventListener('keyup', () => {});
+  });
+  //#endregion
 </script>

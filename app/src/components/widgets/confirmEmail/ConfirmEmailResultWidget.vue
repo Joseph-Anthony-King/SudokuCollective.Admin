@@ -12,8 +12,7 @@
       </v-container>
     </v-card-text>
     <v-card-text
-      v-else-if="isSuccess && confirmationType === EmailConfirmationType.OLDEMAILCONFIRMED"
-    >
+      v-else-if="isSuccess && confirmationType === EmailConfirmationType.OLDEMAILCONFIRMED">
       <v-container>
         <p>
           Thank you for confirming your old email address {{ userName }}, please review and confirm
@@ -38,7 +37,12 @@
     <v-card-actions class="text-center">
       <v-row :dense="true">
         <v-col cols="12">
-          <v-btn color="blue darken-1" text="true" @click="close($event)"> ok </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text="true"
+            @click="close($event)">
+            ok
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -46,36 +50,37 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
-import { type ComputedRef, computed, type Ref, ref } from 'vue';
-import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
-import { EmailConfirmationType } from '@/enums/emailConfirmationType';
+  /* eslint-disable no-undef */
+  import { type ComputedRef, computed, type Ref, ref } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
+  import { EmailConfirmationType } from '@/enums/emailConfirmationType';
 
-const emit = defineEmits(['close-email-confirmed-widget']);
+  const emit = defineEmits(['close-email-confirmed-widget']);
 
-const confirmEmailStore = useConfirmEmailStore();
+  const confirmEmailStore = useConfirmEmailStore();
+  const { getUserName, getEmail, getIsSuccess, getConfirmationType } =
+    storeToRefs(confirmEmailStore);
 
-const isSuccess: Ref<boolean | null> = ref(confirmEmailStore.getIsSuccess);
-const confirmationType: Ref<EmailConfirmationType | null> = ref(
-  confirmEmailStore.getConfirmationType,
-);
-const userName: Ref<string | null> = ref(confirmEmailStore.getUserName);
-const email: Ref<string | null> = ref(confirmEmailStore.getEmail);
+  const userName: Ref<string | null> = ref(getUserName.value);
+  const email: Ref<string | null> = ref(getEmail.value);
+  const isSuccess: Ref<boolean | null> = ref(getIsSuccess.value);
+  const confirmationType: Ref<EmailConfirmationType | null> = ref(getConfirmationType.value);
 
-const title: ComputedRef<string> = computed(() => {
-  if (confirmationType.value === EmailConfirmationType.NEWPROFILECONFIRMED) {
-    return 'Email Confirmed';
-  } else if (confirmationType.value === EmailConfirmationType.OLDEMAILCONFIRMED) {
-    return 'Old Email Confirmed';
-  } else if (confirmationType.value === EmailConfirmationType.NEWEMAILCONFIRMED) {
-    return 'New Email Confirmed';
-  } else {
-    return 'Email Not Confirmed';
-  }
-});
+  const title: ComputedRef<string> = computed(() => {
+    if (confirmationType.value === EmailConfirmationType.NEWPROFILECONFIRMED) {
+      return 'Email Confirmed';
+    } else if (confirmationType.value === EmailConfirmationType.OLDEMAILCONFIRMED) {
+      return 'Old Email Confirmed';
+    } else if (confirmationType.value === EmailConfirmationType.NEWEMAILCONFIRMED) {
+      return 'New Email Confirmed';
+    } else {
+      return 'Email Not Confirmed';
+    }
+  });
 
-const close = (event: Event | undefined = undefined): void => {
-  event?.preventDefault();
-  emit('close-email-confirmed-widget', undefined, undefined);
-};
+  const close = (event: Event | undefined = undefined): void => {
+    event?.preventDefault();
+    emit('close-email-confirmed-widget', undefined, undefined);
+  };
 </script>

@@ -21,6 +21,10 @@ export class UsersService {
 
       const response = (await UsersPort.getUserAsync(id)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -66,6 +70,10 @@ export class UsersService {
 
     try {
       const response = (await UsersPort.putUpdateUserAsync(data)) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -119,6 +127,10 @@ export class UsersService {
 
       const response = (await UsersPort.deleteUserAsync(id)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -146,6 +158,10 @@ export class UsersService {
 
     try {
       const response = (await UsersPort.getConfirmEmailAsync(token)) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -188,6 +204,10 @@ export class UsersService {
         requestorId,
       )) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -215,6 +235,10 @@ export class UsersService {
 
     try {
       const response = (await UsersPort.putCancelEmailConfirmationRequestAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -262,6 +286,10 @@ export class UsersService {
     try {
       const response = (await UsersPort.putResetPasswordAsync(data)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -295,6 +323,10 @@ export class UsersService {
       }
 
       const response = (await UsersPort.postRequestPasswordResetAsync(email)) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -348,6 +380,10 @@ export class UsersService {
 
       const response = (await UsersPort.putResendPasswordResetAsync(userId)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.message = response.data.message;
@@ -375,6 +411,10 @@ export class UsersService {
 
     try {
       const response = (await UsersPort.putCancelPasswordResetAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
@@ -421,6 +461,10 @@ export class UsersService {
 
     try {
       const response = (await UsersPort.putCancelAllEmailRequestsAsync()) as AxiosResponse;
+
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;

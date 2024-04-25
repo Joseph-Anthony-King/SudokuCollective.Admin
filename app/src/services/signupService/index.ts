@@ -12,6 +12,10 @@ export class SignupService {
     try {
       const response = (await SignupPort.postAsync(data)) as AxiosResponse;
 
+      if (response instanceof Error) {
+        throw response as unknown as AxiosError;
+      }
+
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
         result.user = new User(

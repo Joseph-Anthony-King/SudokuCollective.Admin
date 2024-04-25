@@ -3,7 +3,7 @@ import { useGlobalStore } from '@/stores/globalStore/index';
 import { useServiceFailStore } from '@/stores/serviceFailStore';
 
 export class StaticServiceMethods {
-  static processFailedResponse(response: AxiosResponse): void {
+  static processFailedResponse(response: any): void {
     const globalStore = useGlobalStore();
     const serviceFailStore = useServiceFailStore();
     serviceFailStore.updateIsSuccess(response.data.isSuccess);
