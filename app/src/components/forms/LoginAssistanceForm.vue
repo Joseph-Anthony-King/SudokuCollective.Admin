@@ -275,7 +275,6 @@
         form.value?.reset();
         serviceFailStore.initializeStore();
         loginFormStore.initializeAssistance();
-        dialogStore.initializeStore();
       }
     });
   };

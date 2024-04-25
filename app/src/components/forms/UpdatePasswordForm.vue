@@ -246,7 +246,6 @@
       password.value = getPassword.value;
       confirmPassword.value = getConfirmPassword.value;
       form.value?.reset();
-      dialogStore.initializeStore();
     });
   };
   const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {

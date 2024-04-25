@@ -333,7 +333,6 @@
       invalidUserNames.value = getInvalidUserNames.value;
       invalidPasswords.value = getInvalidEmails.value;
       form.value?.reset();
-      dialogStore.initializeStore();
       serviceFailStore.initializeStore();
       loginFormStore.initializeStore();
     });

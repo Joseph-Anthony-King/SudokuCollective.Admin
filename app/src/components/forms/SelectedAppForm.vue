@@ -830,7 +830,6 @@
         resolve(() => {
           console.debug('Edit logic will go here...');
           selectedApp.value.isEditing = false;
-          dialogStore.initializeStore();
         });
       }, 1000);
     });
@@ -844,7 +843,6 @@
       DialogType.CONFIRM,
       () => {
         console.debug('Refresh logic will go here...');
-        dialogStore.initializeStore();
       },
     );
   };
@@ -856,7 +854,6 @@
       DialogType.CONFIRM,
       () => {
         console.debug('Delete logic will go here...');
-        dialogStore.initializeStore();
       },
     );
   };

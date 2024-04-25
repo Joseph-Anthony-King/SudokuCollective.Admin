@@ -400,7 +400,6 @@
   const resetHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     await updateAppProcessingAsync(() => {
-      dialogStore.initializeStore();
       serviceFailStore.initializeStore();
       signUpFormStore.initializeStore();
       userName.value = getUserName.value;
