@@ -88,6 +88,7 @@
 
   .loading-message {
     display: inline;
+    color: #1976D2;
   }
 
   .loading-message:after {
