@@ -77,30 +77,24 @@ export const useDialogStore = defineStore('dialogStore', () => {
   };
   const performConfirmedAction = async (): Promise<void> => {
     if (confirmedActionDelegate.value !== null) {
-      const { isAsyncFunction } = commonUtilities();
-
-      const action = confirmedActionDelegate.value;
-
-      if (isAsyncFunction(action)) {
-        await action();
-      } else {
-        action();
-      }
+      performAction(confirmedActionDelegate.value);
     }
   };
   const performNotConfirmedAction = async (): Promise<void> => {
     if (notConfirmedActionDelegate.value !== null) {
-      const { isAsyncFunction } = commonUtilities();
-
-      const action = notConfirmedActionDelegate.value;
-
-      if (isAsyncFunction(action)) {
-        await action();
-      } else {
-        action();
-      }
+      performAction(notConfirmedActionDelegate.value);
     }
   };
+  // private action
+  const performAction = async(action: (() => void) | (() => Promise<void>)): Promise<void> => {
+    const { isAsyncFunction } = commonUtilities();
+
+    if (isAsyncFunction(action)) {
+      await action();
+    } else {
+      action();
+    }
+  }
   //#endregion
 
   return {
