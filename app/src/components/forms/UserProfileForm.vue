@@ -905,15 +905,17 @@
       },
       { once: true },
     );
-    window.addEventListener(
-      'keyup',
-      async (event) => {
-        if (event.key === 'Enter' && getFormStatus.value) {
-          await editHandlerAsync();
-        }
-      },
-      { once: true },
-    );
+    if (getFormStatus.value) {
+      window.addEventListener(
+        'keyup',
+        async (event) => {
+          if (event.key === 'Enter' && getFormStatus.value) {
+            await editHandlerAsync();
+          }
+        },
+        { once: true },
+      );
+    }
   });
   onUnmounted(() => {
     window.removeEventListener('resize', () => {
