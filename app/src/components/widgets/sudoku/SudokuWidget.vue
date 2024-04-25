@@ -115,8 +115,14 @@
   //#region Destructure Stores
   //#region SudokuStore
   const sudokuStore = useSudokuStore();
-  const { getGame, getGameState, getSelectedDifficulty, getInitialGame, getIsSolvedDisabled } =
-    storeToRefs(sudokuStore);
+  const {
+    getGame,
+    getGameState,
+    getSelectedDifficulty,
+    getInitialGame,
+    getIsSolvedDisabled,
+    getIsGameCurrent,
+  } = storeToRefs(sudokuStore);
   const {
     createGameAsync,
     generateSolutionAsync,
@@ -182,13 +188,7 @@
       return false;
     }
   });
-  const isCurrentGameInPlay: ComputedRef<boolean> = computed(() => {
-    if (selectedDifficulty?.value === null) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  const isCurrentGameInPlay: ComputedRef<boolean> = computed(() => !getIsGameCurrent.value);
   // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const executeButtonText: ComputedRef<string> = computed(() => {
     if (selectedGameState.value?.value === 0) {

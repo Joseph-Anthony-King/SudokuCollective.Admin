@@ -2,6 +2,7 @@ import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useLoginFormStore = defineStore('loginFormStore', () => {
+  //#region State
   const dirty: Ref<boolean> = ref(false);
   const emailDirty: Ref<boolean> = ref(false);
   const userName: Ref<string | null> = ref(null);
@@ -11,7 +12,9 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const invalidPasswords: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
   const loginFailed: Ref<boolean> = ref(false);
+  //#endregion
 
+  //#region Getters
   const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
   const getEmailDirty: ComputedRef<boolean> = computed(() => toRaw(emailDirty.value));
   const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
@@ -21,21 +24,9 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   const getInvalidPasswords: ComputedRef<string[]> = computed(() => toRaw(invalidPasswords.value));
   const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
   const getLoginFailed: ComputedRef<boolean> = computed(() => toRaw(loginFailed.value));
+  //#endregion
 
-  const initializeStore = (): void => {
-    dirty.value = false;
-    userName.value = null;
-    password.value = null;
-    email.value = null;
-    invalidUserNames.value = [];
-    invalidPasswords.value = [];
-    invalidEmails.value = [];
-    loginFailed.value = false;
-  };
-  const initializeAssistance = (): void => {
-    email.value = null;
-    invalidEmails.value = [];
-  };
+  //#region Mutations
   const updateUserName = (name: string | null) => {
     dirty.value = true;
     userName.value = name;
@@ -64,6 +55,24 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     dirty.value = true;
     loginFailed.value = failed;
   };
+  //#endregion
+
+  //#region Actions
+  const initializeStore = (): void => {
+    dirty.value = false;
+    userName.value = null;
+    password.value = null;
+    email.value = null;
+    invalidUserNames.value = [];
+    invalidPasswords.value = [];
+    invalidEmails.value = [];
+    loginFailed.value = false;
+  };
+  const initializeAssistance = (): void => {
+    email.value = null;
+    invalidEmails.value = [];
+  };
+  //#endregion
 
   return {
     dirty,
@@ -84,8 +93,6 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     getInvalidPasswords,
     getInvalidEmails,
     getLoginFailed,
-    initializeStore,
-    initializeAssistance,
     updateUserName,
     updatePassword,
     updateEmail,
@@ -93,5 +100,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     updateInvalidPasswords,
     updateInvalidEmails,
     updateLoginFailed,
+    initializeStore,
+    initializeAssistance,
   };
 });

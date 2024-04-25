@@ -10,7 +10,7 @@
         :size="progressSize"
         class="vertical-center">
         <template v-slot:default>
-          <p class="loading-message">{{ progressMessage }}</p>
+          <p class="loading-message text-grey-darken-4">{{ progressMessage }}</p>
         </template>
       </v-progress-circular>
       <div
@@ -20,7 +20,7 @@
           indeterminate
           color="primary">
         </v-progress-linear>
-        <p class="loading-message">{{ progressMessage }}</p>
+        <p class="loading-message text-grey-darken-4">{{ progressMessage }}</p>
       </div>
     </v-row>
   </v-container>
@@ -88,7 +88,6 @@
 
   .loading-message {
     display: inline;
-    color: #1976D2;
   }
 
   .loading-message:after {

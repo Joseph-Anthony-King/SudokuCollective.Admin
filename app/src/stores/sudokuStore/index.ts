@@ -7,6 +7,7 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 
 export const useSudokuStore = defineStore('sudokuStore', () => {
+  //#region State
   const initialGame: Ref<Array<Array<string>> | null> = ref(null);
   const game: Ref<Array<Array<string>> | null> = ref(null);
   const puzzle: Ref<Array<Array<string>> | null> = ref(null);
@@ -17,7 +18,9 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   const serviceMessage: Ref<string | null> = ref(null);
   const processing: Ref<boolean> = ref(false);
   const isSolveDisabled: Ref<boolean | null> = ref(null);
+  //#endregion
 
+  //#region Getters
   const getInitialGame: ComputedRef<Array<Array<string>>> = computed(() =>
     initialGame.value !== null ? toRaw(initialGame.value) : new Array<Array<string>>(),
   );
@@ -46,7 +49,42 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
     isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false,
   );
+  const getIsGameCurrent: ComputedRef<boolean> = computed(() => {
+    let result = false;
+    game.value?.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell !== '') {
+          result = true;
+        }
+      });
+    });
+    return result;
+  });
+  //#endregion
 
+  //#region Mutations
+  const updateInitialGame = (param: Array<Array<string>>): void => {
+    initialGame.value = param;
+  };
+  const updateGame = (param: Array<Array<string>>): void => {
+    game.value = param;
+  };
+  const updatePuzzle = (param: Array<Array<string>>): void => {
+    isSolveDisabled.value = false;
+    puzzle.value = param;
+  };
+  const updateSolution = (param: Array<Array<string>>): void => {
+    solution.value = param;
+  };
+  const updateGameState = (param: DropdownItem | null): void => {
+    gameState.value = param ? param : null;
+  };
+  const updateSelectedDifficulty = (param: Difficulty | null): void => {
+    selectedDifficulty.value = param ? param : null;
+  };
+  //#endregion
+
+  //#region Actions
   const initializeStore = (): void => {
     if (game.value === null && puzzle.value === null && solution.value === null) {
       initializeInitialGame();
@@ -67,25 +105,6 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   };
   const initializeSolution = (): void => {
     solution.value = Methods.InitializeMatix();
-  };
-  const updateInitialGame = (param: Array<Array<string>>): void => {
-    initialGame.value = param;
-  };
-  const updateGame = (param: Array<Array<string>>): void => {
-    game.value = param;
-  };
-  const updatePuzzle = (param: Array<Array<string>>): void => {
-    isSolveDisabled.value = false;
-    puzzle.value = param;
-  };
-  const updateSolution = (param: Array<Array<string>>): void => {
-    solution.value = param;
-  };
-  const updateGameState = (param: DropdownItem | null): void => {
-    gameState.value = param ? param : null;
-  };
-  const updateSelectedDifficulty = (param: Difficulty | null): void => {
-    selectedDifficulty.value = param ? param : null;
   };
   const createGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
@@ -157,6 +176,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     serviceMessage.value = response.message;
     processing.value = !processing.value;
   };
+  //#endregion
 
   return {
     initialGame,
@@ -179,17 +199,18 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     getServiceMessage,
     getProcessing,
     getIsSolvedDisabled,
-    initializeStore,
-    initializeInitialGame,
-    initializeGame,
-    initializePuzzle,
-    initializeSolution,
+    getIsGameCurrent,
     updateInitialGame,
     updateGame,
     updatePuzzle,
     updateSolution,
     updateGameState,
     updateSelectedDifficulty,
+    initializeStore,
+    initializeInitialGame,
+    initializeGame,
+    initializePuzzle,
+    initializeSolution,
     createGameAsync,
     checkGameAsync,
     solvePuzzleAsync,

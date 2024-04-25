@@ -8,6 +8,7 @@ import { Difficulty } from '@/models/domain/difficulty';
 import { GalleryApp } from '@/models/domain/galleryApp';
 
 export const useValueStore = defineStore('valueStore', () => {
+  //#region State
   const difficulties: Ref<Array<Difficulty> | null> = ref(null);
   const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);
   const sortValues: Ref<Array<DropdownItem> | null> = ref(null);
@@ -16,7 +17,9 @@ export const useValueStore = defineStore('valueStore', () => {
   const gallery: Ref<Array<GalleryApp> | null> = ref(null);
   const missionStatement: Ref<string | null> = ref(null);
   const storeExpirationDate: Ref<Date> = ref(new Date());
+  //#endregion
 
+  //#region Getters
   const getDifficulties: ComputedRef<Array<Difficulty>> = computed(() =>
     difficulties.value !== null ? toRaw(difficulties.value) : new Array<Difficulty>(),
   );
@@ -40,7 +43,9 @@ export const useValueStore = defineStore('valueStore', () => {
   const getMissionStatement: ComputedRef<string> = computed(() =>
     missionStatement.value ? toRaw(missionStatement.value) : '',
   );
+  //#endregion
 
+  //#region Actions
   const initializeStoreAsync = async (): Promise<void> => {
     if (new Date() > storeExpirationDate.value) {
       const response: IServicePayload = await ValuesService.getValuesAsync();
@@ -74,6 +79,7 @@ export const useValueStore = defineStore('valueStore', () => {
       storeExpirationDate.value?.setDate(new Date().getDate() + 1);
     }
   };
+  //#endregion
 
   return {
     difficulties,
