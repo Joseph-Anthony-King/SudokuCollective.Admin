@@ -15,11 +15,14 @@ import { DialogType } from '@/enums/dialogType';
 import commonUtitlities from '@/utilities/common';
 
 export const useUserStore = defineStore('userStore', () => {
+  //#region State
   const user: Ref<User> = ref(new User());
   const confirmedUserName: Ref<string | null> = ref(null);
   const serviceMessage: Ref<string | null> = ref(null);
   const userIsLoggingOut: Ref<boolean> = ref(false);
+  //#endregion
 
+  //#region Getters
   const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
   const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn));
   const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggingIn));
@@ -32,18 +35,16 @@ export const useUserStore = defineStore('userStore', () => {
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   const getUserIsLoggingOut: ComputedRef<boolean> = computed(() => toRaw(userIsLoggingOut.value));
+  //#endregion
 
+  //#region Destructure Stores
   const { updateConfirmationType, updateEmail, updateIsSuccess, updateUserName } =
     useConfirmEmailStore();
   const { updateDialog } = useDialogStore();
   const { updateToken, updateTokenExpirationDate, updateStayLoggedIn } = useGlobalStore();
+  //#endregion
 
-  const initializeStore = (): void => {
-    user.value = new User();
-    confirmedUserName.value = null;
-    serviceMessage.value = null;
-    userIsLoggingOut.value = false;
-  };
+  //#region Mutations
   const updateUser = (param: User): void => {
     user.value = param;
   };
@@ -64,6 +65,15 @@ export const useUserStore = defineStore('userStore', () => {
     console.debug(
       `userStore updateUserIsLoggingOut userIsLoggingOut.value: ${userIsLoggingOut.value}`,
     );
+  };
+  //#endregion
+
+  //#region Actions
+  const initializeStore = (): void => {
+    user.value = new User();
+    confirmedUserName.value = null;
+    serviceMessage.value = null;
+    userIsLoggingOut.value = false;
   };
   const signupUserAsync = async (data: ISignupRequestData): Promise<boolean> => {
     const response: IServicePayload = await SignupService.postAsync(data);
@@ -175,6 +185,7 @@ export const useUserStore = defineStore('userStore', () => {
     updateServiceMessage(response.message);
     return response.isSuccess;
   };
+  //#endregion
 
   return {
     user,
@@ -189,7 +200,6 @@ export const useUserStore = defineStore('userStore', () => {
     getConfirmedUserName,
     getServiceMessage,
     getUserIsLoggingOut,
-    initializeStore,
     updateUser,
     updateUserIsLoggingIn,
     updateUserIsSigningUp,
@@ -197,6 +207,7 @@ export const useUserStore = defineStore('userStore', () => {
     updateConfirmedUserName,
     updateServiceMessage,
     updateUserIsLoggingOut,
+    initializeStore,
     signupUserAsync,
     getUserAsync,
     updateUserAsync,

@@ -7,23 +7,24 @@ import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequ
 import type { App } from '@/models/domain/app';
 
 export const useAppStore = defineStore('appStore', () => {
+  //#region State
   const myApps: Ref<Array<IApp>> = ref([]);
   const myRegisteredApps: Ref<Array<IApp>> = ref([]);
   const selectedApp: Ref<IApp | null | undefined> = ref(null);
   const serviceMessage: Ref<string | null> = ref(null);
   const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
+  //#endregion
+
+  //#region Getters
   const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() =>
     toRaw(myRegisteredApps.value),
   );
   const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() =>
     toRaw(selectedApp.value),
   );
+  //#endregion
 
-  const initializeStore = (): void => {
-    myApps.value = [];
-    myRegisteredApps.value = [];
-    selectedApp.value = null;
-  };
+  //#region Mutations
   const updateApp = (app: App): void => {
     const index = myApps.value.findIndex((a) => a.id === app.id);
     if (index !== -1) {
@@ -46,6 +47,14 @@ export const useAppStore = defineStore('appStore', () => {
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
+  //#endregion
+
+  //#region Actions
+  const initializeStore = (): void => {
+    myApps.value = [];
+    myRegisteredApps.value = [];
+    selectedApp.value = null;
+  };
   const putUpdateAppAsync = async (data: IUpdateAppRequestData): Promise<boolean> => {
     const response: IServicePayload = await AppsService.putUpdateAppAsync(data);
     if (response.isSuccess) {
@@ -64,6 +73,7 @@ export const useAppStore = defineStore('appStore', () => {
     myRegisteredApps.value = response.apps;
     return response.isSuccess;
   };
+  //#endregion
 
   return {
     myApps,
@@ -73,10 +83,10 @@ export const useAppStore = defineStore('appStore', () => {
     getMyApps,
     getMyRegisteredApps,
     getSelectedApp,
-    initializeStore,
     updateApp,
     updateSelectedApp,
     updateServiceMessage,
+    initializeStore,
     putUpdateAppAsync,
     getMyAppsAsync,
     getMyRegisteredAppsAsync,

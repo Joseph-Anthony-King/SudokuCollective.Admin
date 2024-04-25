@@ -13,6 +13,7 @@ import { User } from '@/models/domain/user';
 import commonUtitlities from '@/utilities/common';
 
 export const useGlobalStore = defineStore('globalStore', () => {
+  //#region State
   const license: Ref<string | undefined> = ref(process.env.VITE_APP_LICENSE);
   const token: Ref<string | null> = ref(null);
   const tokenExpirationDate: Ref<Date | null> = ref(null);
@@ -22,7 +23,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const navDrawerStatus: Ref<boolean> = ref(false);
   const stayLoggedIn: Ref<boolean> = ref(true);
   const redirectToSignUp: Ref<boolean> = ref(false);
+  //#endregion
 
+  //#region Getters
   const getLicense: ComputedRef<string> = computed(() =>
     license.value ? toRaw(license.value) : '',
   );
@@ -40,17 +43,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const getNavDrawerStatus: ComputedRef<boolean> = computed(() => toRaw(navDrawerStatus.value));
   const getStayedLoggedIn: ComputedRef<boolean> = computed(() => toRaw(stayLoggedIn.value));
   const getRedirectToSignUp: ComputedRef<boolean> = computed(() => toRaw(redirectToSignUp.value));
+  //#endregion
 
-  const initializeStore = (): void => {
-    token.value = null;
-    tokenExpirationDate.value = null;
-    redirectUrl.value = null;
-    serviceMessage.value = null;
-    processingStatus.value = false;
-    navDrawerStatus.value = false;
-    stayLoggedIn.value = true;
-    redirectToSignUp.value = false;
-  };
+  //#region Mutations
   const updateToken = (param: string | null = null): void => {
     token.value = param;
   };
@@ -74,6 +69,19 @@ export const useGlobalStore = defineStore('globalStore', () => {
   };
   const updateRedirectToSignUp = (param: boolean): void => {
     redirectToSignUp.value = param;
+  };
+  //#endregion
+
+  //#region Actions
+  const initializeStore = (): void => {
+    token.value = null;
+    tokenExpirationDate.value = null;
+    redirectUrl.value = null;
+    serviceMessage.value = null;
+    processingStatus.value = false;
+    navDrawerStatus.value = false;
+    stayLoggedIn.value = true;
+    redirectToSignUp.value = false;
   };
   const loginAsync = async (data: ILoginRequestData): Promise<void> => {
     const response: IServicePayload = await LoginService.postLoginAsync(data);
@@ -137,6 +145,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
       });
     }
   };
+  //#endregion
 
   return {
     license,
@@ -157,7 +166,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
     getNavDrawerStatus,
     getStayedLoggedIn,
     getRedirectToSignUp,
-    initializeStore,
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,
@@ -166,6 +174,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     updateProcessingStatus,
     updateStayLoggedIn,
     updateRedirectToSignUp,
+    initializeStore,
     loginAsync,
     logout,
     confirmUserNameAsync,

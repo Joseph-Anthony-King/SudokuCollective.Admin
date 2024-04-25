@@ -2,6 +2,7 @@ import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useSignUpFormStore = defineStore('signUpFormStore', () => {
+  //#region State
   const dirty: Ref<boolean> = ref(false);
   const userName: Ref<string | null> = ref(null);
   const firstName: Ref<string | null> = ref(null);
@@ -14,7 +15,9 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
   const openPasswordResetForm: Ref<boolean> = ref(false);
   const invalidUserNames: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
+  //#endregion
 
+  //#region Getters
   const getDirty: ComputedRef<boolean> = computed(() => toRaw(dirty.value));
   const getUserName: ComputedRef<string | null> = computed(() => toRaw(userName.value));
   const getFirstName: ComputedRef<string | null> = computed(() => toRaw(firstName.value));
@@ -31,21 +34,9 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
   );
   const getInvalidUserNames: ComputedRef<string[]> = computed(() => toRaw(invalidUserNames.value));
   const getInvalidEmails: ComputedRef<string[]> = computed(() => toRaw(invalidEmails.value));
+  //#endregion
 
-  const initializeStore = (): void => {
-    dirty.value = false;
-    userName.value = null;
-    firstName.value = null;
-    lastName.value = null;
-    nickName.value = null;
-    email.value = null;
-    password.value = null;
-    confirmPassword.value = null;
-    passwordToken.value = null;
-    openPasswordResetForm.value = false;
-    invalidUserNames.value = [];
-    invalidEmails.value = [];
-  };
+  //#region Mutations
   const updateUserName = (param: string | null): void => {
     dirty.value = true;
     userName.value = param;
@@ -87,6 +78,24 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
     dirty.value = true;
     invalidEmails.value = emails;
   };
+  //#endregion
+
+  //#region Actions
+  const initializeStore = (): void => {
+    dirty.value = false;
+    userName.value = null;
+    firstName.value = null;
+    lastName.value = null;
+    nickName.value = null;
+    email.value = null;
+    password.value = null;
+    confirmPassword.value = null;
+    passwordToken.value = null;
+    openPasswordResetForm.value = false;
+    invalidUserNames.value = [];
+    invalidEmails.value = [];
+  };
+  //#endregion
 
   return {
     dirty,
@@ -112,7 +121,6 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
     getOpenPasswordResetForm,
     getInvalidUserNames,
     getInvalidEmails,
-    initializeStore,
     updateUserName,
     updateFirstName,
     updateLastName,
@@ -123,5 +131,6 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
     updatePasswordToken,
     updateInvalidUserNames,
     updateInvalidEmails,
+    initializeStore,
   };
 });

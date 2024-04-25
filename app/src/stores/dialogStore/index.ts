@@ -66,7 +66,7 @@ export const useDialogStore = defineStore('dialogStore', () => {
   };
   //#endregion
 
-  //#region Action Handlers
+  //#region Actions
   const initializeStore = (): void => {
     title.value = null;
     message.value = null;
