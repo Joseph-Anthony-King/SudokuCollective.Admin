@@ -275,7 +275,6 @@
         form.value?.reset();
         serviceFailStore.initializeStore();
         loginFormStore.initializeAssistance();
-        dialogStore.initializeStore();
       }
     });
   };
@@ -335,17 +334,15 @@
       },
       { once: true },
     );
-    if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await submitHandlerAsync();
-          }
-        },
-        { once: true },
-      );
-    }
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await submitHandlerAsync();
+        }
+      },
+      { once: true },
+    );
   });
   onUpdated(() => {
     if (isChrome.value) {

@@ -47,6 +47,7 @@
 
   const confirmedHandlerAsync = async (): Promise<void> => {
     await performConfirmedAction();
+    initializeStore();
   };
   const notConfirmedHandlder = async (): Promise<void> => {
     await performNotConfirmedAction();

@@ -246,7 +246,6 @@
       password.value = getPassword.value;
       confirmPassword.value = getConfirmPassword.value;
       form.value?.reset();
-      dialogStore.initializeStore();
     });
   };
   const closeHandlerAsync = async (event: Event | null = null): Promise<void> => {
@@ -279,17 +278,15 @@
       },
       { once: true },
     );
-    if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await submitHandlerAsync();
-          }
-        },
-        { once: true },
-      );
-    }
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await submitHandlerAsync();
+        }
+      },
+      { once: true },
+    );
   });
   onUpdated(() => {
     if (isChrome.value) {
