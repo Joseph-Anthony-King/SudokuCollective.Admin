@@ -37,7 +37,6 @@
 
 <script setup lang="ts">
   /* eslint-disable no-undef */
-  import { onMounted, onUnmounted } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useDialogStore } from '@/stores/dialogStore';
 
@@ -53,21 +52,4 @@
     await performNotConfirmedAction();
     initializeStore();
   };
-
-  //#region Lifecycle Hooks
-  onMounted(() => {
-    window.addEventListener(
-      'keyup',
-      async (event) => {
-        if (event.key === 'Enter') {
-          await confirmedHandlerAsync();
-        }
-      },
-      { once: true },
-    );
-  });
-  onUnmounted(() => {
-    window.removeEventListener('keyup', () => {});
-  });
-  //#endregion
 </script>

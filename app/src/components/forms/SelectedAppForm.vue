@@ -820,20 +820,19 @@
       'Confirm Edit',
       'Are you sure you want to submit these edits for this app?',
       DialogType.CONFIRM,
-      editHandlerAync,
+      async () => await editHandlerAync(),
     );
   };
   const editHandlerAync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
-    const promise = new Promise((resolve) => {
+    const promise = new Promise<void>((resolve) => {
       setTimeout(() => {
-        resolve(() => {
-          console.debug('Edit logic will go here...');
-          selectedApp.value.isEditing = false;
-        });
-      }, 1000);
+        console.debug('Edit logic will go here...');
+        selectedApp.value.isEditing = false;
+        resolve();
+      }, 250);
     });
-    await promise;
+    return await promise;
   };
   const confirmRefreshHandler = (event: Event | null = null): void => {
     event?.preventDefault();
@@ -881,7 +880,7 @@
       { once: true },
     );
     if (getFormStatus.value) {
-      window.addEventListener(
+      document.addEventListener(
         'keyup',
         async (event) => {
           if (event.key === 'Enter' && getFormStatus.value) {
@@ -901,7 +900,7 @@
     window.removeEventListener('resize', () => {
       resetViewPort(isSmallViewPort);
     });
-    window.removeEventListener('keyup', () => {});
+    document.removeEventListener('keyup', () => {});
   });
   //#endregion
 </script>

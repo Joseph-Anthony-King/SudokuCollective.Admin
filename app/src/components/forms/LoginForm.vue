@@ -411,15 +411,11 @@
       form.value?.validate();
     }
     if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await submitHandlerAsync();
-          }
-        },
-        { once: true },
-      );
+      document.addEventListener('keyup', async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await submitHandlerAsync();
+        }
+      });
     }
   });
   onUpdated(() => {
@@ -431,7 +427,7 @@
     window.removeEventListener('resize', () => {
       resetViewPort(isSmallViewPort);
     });
-    window.removeEventListener('keyup', () => {});
+    document.removeEventListener('keyup', () => {});
   });
   //#endregion
 </script>

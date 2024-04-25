@@ -23,7 +23,7 @@ export const useUserStore = defineStore('userStore', () => {
   const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
   const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn));
   const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggingIn));
-  const getUserIsSignedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isSignedUp));
+  const getUserIsSignedUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSignedUp));
   const getUserIsSigningUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSigningUp));
   const getConfirmedUserName: ComputedRef<string> = computed(() =>
     confirmedUserName.value ? toRaw(confirmedUserName.value) : '',
@@ -74,7 +74,7 @@ export const useUserStore = defineStore('userStore', () => {
       updateStayLoggedIn(data.stayLoggedIn);
       updateDialog(
         'Welcome to Sudoku Collective',
-        `Thank you for joining <span class="primary-color">Sudoku Collective</span> ${user.value.userName}!<br /><br />Please note that you will have to confirm your email adress of <span class="primary-color">${user.value.email}</span> or you may lose access to your profile if you forget your password.  An email from <span class="primary-color">sudokucollective@gmail.com</span> has been sent to <span class="primary-color">${user.value.email}</span>, please review the link contained within the email from <span class="primary-color">sudokucollective@gmail.com</span> to confirm the address you provided.  Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.<br /><br />If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />Most importantly I sincerely hope you have fun coding, welcome to <span class="primary-color">Sudoku Collective</span>!`,
+        `Thank you for joining <span class="primary-color">Sudoku Collective</span> ${user.value.userName}!<br /><br />Please note that you will have to confirm your email adress of <span class="primary-color">${user.value.email}</span> or you may lose access to your profile if you forget your password.  An email from <span class="primary-color">sudokucollective@gmail.com</span> has been sent to <span class="primary-color">${user.value.email}</span>, please review the link contained within the email.  Please do not respond to <span class="primary-color">sudokucollective@gmail.com</span> as this email is not monitored.<br /><br />If you cannot find the email from <span class="primary-color">sudokucollective@gmail.com</span> please review your spam folder and you can always request another copy if you cannot find the original.<br /><br />Most importantly I sincerely hope you have fun coding, welcome to <span class="primary-color">Sudoku Collective</span>!`,
         DialogType.OK,
       );
     }
@@ -184,7 +184,7 @@ export const useUserStore = defineStore('userStore', () => {
     getUser,
     getUserIsLoggedIn,
     getUserIsLoggingIn,
-    getUserIsSignedIn,
+    getUserIsSignedUp,
     getUserIsSigningUp,
     getConfirmedUserName,
     getServiceMessage,
