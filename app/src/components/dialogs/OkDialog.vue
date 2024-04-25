@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
   /* eslint-disable no-undef */
-  import { type Ref, ref, onMounted, onUnmounted } from 'vue';
+  import { type Ref, ref } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useDialogStore } from '@/stores/dialogStore';
 
@@ -40,21 +40,4 @@
     event?.preventDefault();
     initializeStore();
   };
-
-  //#region Lifecycle Hooks
-  onMounted(() => {
-    window.addEventListener(
-      'keyup',
-      async (event) => {
-        if (event.key === 'Enter') {
-          close();
-        }
-      },
-      { once: true },
-    );
-  });
-  onUnmounted(() => {
-    window.removeEventListener('keyup', () => {});
-  });
-  //#endregion
 </script>

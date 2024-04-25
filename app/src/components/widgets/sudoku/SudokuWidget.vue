@@ -60,6 +60,16 @@
                   Reset Game
                 </v-btn>
               </v-col>
+              <v-col v-if="isCurrentGameStateSolveSudoku">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text="true"
+                  @click="getCurrentGameHandler($event)"
+                  :disabled="isCurrentGameInPlay">
+                  Current Game
+                </v-btn>
+              </v-col>
               <v-col>
                 <v-btn
                   class="button-full"
@@ -94,7 +104,6 @@
   import { useValueStore } from '@/stores/valueStore';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
-  import { GameState } from '@/enums/gameState';
   import { StoreType } from '@/enums/storeTypes';
   import { DropdownItem } from '@/models/infrastructure/dropdownItem';
   import { Difficulty } from '@/models/domain/difficulty';
@@ -106,7 +115,7 @@
   //#region Destructure Stores
   //#region SudokuStore
   const sudokuStore = useSudokuStore();
-  const { getGameState, getSelectedDifficulty, getInitialGame, getIsSolvedDisabled } =
+  const { getGame, getGameState, getSelectedDifficulty, getInitialGame, getIsSolvedDisabled } =
     storeToRefs(sudokuStore);
   const {
     createGameAsync,
@@ -117,6 +126,7 @@
     checkGameAsync,
     updateGame,
     updateGameState,
+    updatePuzzle,
     updateSelectedDifficulty,
     solvePuzzleAsync,
   } = sudokuStore;
@@ -135,45 +145,63 @@
   //#region Computed Properties
   const isGameStateSelected: ComputedRef<boolean> = computed(() => {
     {
-      return getGameState !== null;
+      return selectedGameState.value !== null;
     }
   });
+  // GameState.PLAYGAME = 0
   const isCurrentGameStatePlayGame: ComputedRef<boolean> = computed(() => {
     let result: boolean;
-    if (getGameState.value !== null) {
-      result = getGameState.value.value === GameState.PLAYGAME;
+    if (selectedGameState.value !== null) {
+      result = selectedGameState.value.value === 0;
     } else {
       result = false;
     }
     return result;
   });
+  // GameState.SOLVESUDOKU = 1
+  const isCurrentGameStateSolveSudoku: ComputedRef<boolean> = computed(() => {
+    let result: boolean;
+    if (selectedGameState.value !== null) {
+      result = selectedGameState.value.value === 1;
+    } else {
+      result = false;
+    }
+    return result;
+  });
+  // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const isExectuteButtonDisabed: ComputedRef<boolean> = computed(() => {
-    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+    if (selectedGameState.value?.value === 0) {
       if (selectedDifficulty?.value === null) {
         return true;
       } else {
         return false;
       }
-    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+    } else if (selectedGameState.value?.value === 1) {
       return getIsSolvedDisabled.value;
     } else {
       return false;
     }
   });
+  const isCurrentGameInPlay: ComputedRef<boolean> = computed(() => {
+    if (selectedDifficulty?.value === null) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const executeButtonText: ComputedRef<string> = computed(() => {
-    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+    if (selectedGameState.value?.value === 0) {
       return 'Create Game';
-    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+    } else if (selectedGameState.value?.value === 1) {
       return 'Solve Sudoku';
     } else {
       return 'Generate Sudoku';
     }
   });
+  // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const clearButtonText: ComputedRef<string> = computed(() => {
-    if (
-      selectedDifficulty.value !== null &&
-      selectedGameState.value?.value === GameState.PLAYGAME
-    ) {
+    if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
       return 'Clear Game';
     } else {
       return 'Clear Sudoku';
@@ -182,6 +210,7 @@
   //#endregion
 
   //#region Action Handlers
+  // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const executeHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     console.debug(
@@ -189,12 +218,9 @@
       `selectGameState: ${selectedGameState.value?.value}`,
     );
     await updateAppProcessingAsync(async () => {
-      if (
-        selectedDifficulty.value !== null &&
-        selectedGameState.value?.value === GameState.PLAYGAME
-      ) {
+      if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
         await createGameAsync();
-      } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+      } else if (selectedGameState.value?.value === 1) {
         await solvePuzzleAsync();
       } else {
         await generateSolutionAsync();
@@ -227,11 +253,15 @@
       await displayFailedToastAsync(undefined, undefined);
     });
   };
+  const getCurrentGameHandler = (event: Event | null = null): void => {
+    updatePuzzle(getGame.value);
+  };
+  // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const clearHandler = (event: Event | null = null): void => {
     event?.preventDefault();
-    if (selectedGameState.value?.value === GameState.PLAYGAME) {
+    if (selectedGameState.value?.value === 0) {
       initializeGame();
-    } else if (selectedGameState.value?.value === GameState.SOLVESUDOKU) {
+    } else if (selectedGameState.value?.value === 1) {
       initializePuzzle();
     } else {
       initializeSolution();
@@ -284,7 +314,7 @@
 
   //#region Lifecycle Hooks
   onMounted(() => {
-    window.addEventListener(
+    document.addEventListener(
       'keyup',
       async (event) => {
         if (event.key === 'Enter' && selectedGameState.value?.value !== undefined) {
@@ -301,7 +331,7 @@
     );
   });
   onUnmounted(() => {
-    window.removeEventListener('keyup', () => {});
+    document.removeEventListener('keyup', () => {});
   });
   //#endregion
 </script>

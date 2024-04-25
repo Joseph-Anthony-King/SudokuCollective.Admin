@@ -906,7 +906,7 @@
       { once: true },
     );
     if (getFormStatus.value) {
-      window.addEventListener(
+      document.addEventListener(
         'keyup',
         async (event) => {
           if (event.key === 'Enter' && getFormStatus.value) {
@@ -921,7 +921,7 @@
     window.removeEventListener('resize', () => {
       resetViewPort(isSmallViewPort);
     });
-    window.removeEventListener('keyup', () => {});
+    document.removeEventListener('keyup', () => {});
   });
   //#endregion
 </script>

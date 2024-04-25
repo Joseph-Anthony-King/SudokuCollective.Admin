@@ -201,13 +201,45 @@
         getUserIsLoggedIn,
         getUserIsLoggingIn,
         getUserIsLoggingOut,
-        getUserIsSignedIn,
+        getUserIsSignedUp,
         getUserIsSigningUp,
       } = storeToRefs(userStore);
       const { updateUser, updateUserIsLoggingIn, updateUserIsLoggingOut, updateUserIsSigningUp } =
         userStore;
       //#endregion
       const valueStore = useValueStore();
+      //#endregion
+
+      //#region Navbar functionality
+      const navDrawerStatus: Ref<boolean> = ref(getNavDrawerStatus.value);
+      const updateNavDrawerHandler = (): void => {
+        if (vuetify.display.smAndDown.value) {
+          navDrawerStatus.value = !navDrawerStatus.value;
+        } else {
+          navDrawerStatus.value = true;
+        }
+        updateNavDrawerStatus(navDrawerStatus.value);
+      };
+      const closeNavDrawerHandler = (modelValue: boolean): void => {
+        if (modelValue === false && navDrawerStatus.value === true) {
+          navDrawerStatus.value = modelValue;
+          updateNavDrawerStatus(navDrawerStatus.value);
+        }
+      };
+      //#endregion
+
+      //#region App Processing logic
+      const processingStatus: Ref<boolean> = ref(getProcessingStatus.value);
+      watch(
+        () => getProcessingStatus.value,
+        (newValue, oldValue) => {
+          processingStatus.value = newValue;
+        },
+        {
+          immediate: true,
+          deep: true,
+        },
+      );
       //#endregion
 
       //#region User set up
@@ -285,10 +317,6 @@
             updateServiceMessage('');
           }
         },
-        {
-          immediate: true,
-          deep: true,
-        },
       );
       watch(
         () => user.value.isLoggingIn,
@@ -296,10 +324,6 @@
           if (getUserIsLoggingIn.value !== newValue) {
             updateUserIsLoggingIn(newValue);
           }
-        },
-        {
-          immediate: true,
-          deep: true,
         },
       );
       watch(
@@ -309,15 +333,11 @@
             user.value.isLoggingIn = newValue;
           }
         },
-        {
-          immediate: true,
-          deep: true,
-        },
       );
       watch(
         () => getUserIsLoggedIn.value,
         (newValue, oldValue) => {
-          const isSignedUp = getUserIsSignedIn.value;
+          const isSignedUp = getUserIsSignedUp.value;
           if (newValue) {
             updateNavDrawerHandler();
             user.value = getUser.value;
@@ -336,10 +356,6 @@
               updateDialogIsActive(true);
             }
           }
-        },
-        {
-          immediate: true,
-          deep: true,
         },
       );
       watch(
@@ -360,10 +376,6 @@
           if (newValue !== '') {
             closeLoginAssistanceHandler();
           }
-        },
-        {
-          immediate: true,
-          deep: true,
         },
       );
       //#endregion
@@ -403,38 +415,6 @@
           if (newValue) {
             redirectToSignUpHandler(newValue);
           }
-        },
-        {
-          immediate: true,
-          deep: true,
-        },
-      );
-      //#endregion
-
-      //#region Navbar functionality
-      const navDrawerStatus: Ref<boolean> = ref(getNavDrawerStatus.value);
-      const updateNavDrawerHandler = (): void => {
-        if (vuetify.display.smAndDown.value) {
-          navDrawerStatus.value = !navDrawerStatus.value;
-        } else {
-          navDrawerStatus.value = true;
-        }
-        updateNavDrawerStatus(navDrawerStatus.value);
-      };
-      const closeNavDrawerHandler = (modelValue: boolean): void => {
-        if (modelValue === false && navDrawerStatus.value === true) {
-          navDrawerStatus.value = modelValue;
-          updateNavDrawerStatus(navDrawerStatus.value);
-        }
-      };
-      //#endregion
-
-      //#region App Processing logic
-      const processingStatus: Ref<boolean> = ref(getProcessingStatus.value);
-      watch(
-        () => getProcessingStatus.value,
-        (newValue, oldValue) => {
-          processingStatus.value = newValue;
         },
         {
           immediate: true,

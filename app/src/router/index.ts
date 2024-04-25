@@ -159,11 +159,7 @@ router.beforeEach(async (to, from, next) => {
           if (useUserStore().getUserIsLoggedIn) {
             await useUserStore().getUserAsync();
             useUserStore().updateServiceMessage();
-            if (to.name === 'confirm-email') {
-              router.push('/user-profile');
-            } else {
-              router.push('/');
-            }
+            router.push('/user-profile');
           } else {
             router.push('/');
           }
