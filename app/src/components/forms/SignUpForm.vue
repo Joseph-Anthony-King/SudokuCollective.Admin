@@ -482,17 +482,15 @@
     } else if (userName.value !== null) {
       userNameTextField.value?.validate();
     }
-    if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await submitHandlerAsync();
-          }
-        },
-        { once: true },
-      );
-    }
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await submitHandlerAsync();
+        }
+      },
+      { once: true },
+    );
   });
   onUnmounted(() => {
     window.removeEventListener('resize', () => {

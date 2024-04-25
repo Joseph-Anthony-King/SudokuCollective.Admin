@@ -411,17 +411,15 @@
     if (getDirty.value) {
       form.value?.validate();
     }
-    if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await submitHandlerAsync();
-          }
-        },
-        { once: true },
-      );
-    }
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await submitHandlerAsync();
+        }
+      },
+      { once: true },
+    );
   });
   onUpdated(() => {
     if (isChrome.value) {

@@ -883,17 +883,15 @@
       },
       { once: true },
     );
-    if (getFormStatus.value) {
-      window.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await editHandlerAync();
-          }
-        },
-        { once: true },
-      );
-    }
+    window.addEventListener(
+      'keyup',
+      async (event) => {
+        if (event.key === 'Enter' && getFormStatus.value) {
+          await editHandlerAync();
+        }
+      },
+      { once: true },
+    );
   });
   onUpdated(() => {
     if (isChrome.value) {
