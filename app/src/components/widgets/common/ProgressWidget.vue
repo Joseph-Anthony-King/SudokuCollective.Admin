@@ -4,14 +4,24 @@
       class="d-flex justify-center"
       cols="12">
       <v-progress-circular
+        v-if="!isMobile"
         indeterminate
         color="primary"
         :size="progressSize"
         class="vertical-center">
         <template v-slot:default>
-          <p class="loading-message">working, please do not navigate away</p>
+          <p class="loading-message">{{ progressMessage }}</p>
         </template>
       </v-progress-circular>
+      <div
+        v-if="isMobile"
+        class="vertical-center">
+        <v-progress-linear
+          indeterminate
+          color="primary">
+        </v-progress-linear>
+        <p class="loading-message">{{ progressMessage }}</p>
+      </div>
     </v-row>
   </v-container>
 </template>
@@ -20,6 +30,7 @@
   import { type ComputedRef, computed, type Ref, ref, onMounted, onUnmounted } from 'vue';
 
   //#region Properties
+  const progressMessage: Ref<string> = ref('working, please do not navigate away');
   let windowWidth: Ref<number> = ref(window.innerWidth);
   const progressSize: ComputedRef<number> = computed(() => {
     if (windowWidth.value > 1920) {
@@ -30,6 +41,13 @@
       return 400;
     } else {
       return 300;
+    }
+  });
+  const isMobile: ComputedRef<boolean> = computed(() => {
+    if (windowWidth.value < 960) {
+      return true;
+    } else {
+      return false;
     }
   });
   //#endregion
