@@ -460,14 +460,14 @@
       const resetAppDialogViewPort = (): void => {
         if (window.innerWidth <= 960) {
           isSmallViewPort.value = true;
-          maxFormWidth.value = "auto";
-          maxDialogWidth.value = "auto";
+          maxFormWidth.value = 'auto';
+          maxDialogWidth.value = 'auto';
           navDrawerStatus.value = false;
           updateNavDrawerStatus(navDrawerStatus.value);
         } else {
           isSmallViewPort.value = false;
-          maxFormWidth.value = "960px";
-          maxDialogWidth.value = "480px";
+          maxFormWidth.value = '960px';
+          maxDialogWidth.value = '480px';
           navDrawerStatus.value = true;
           updateNavDrawerStatus(navDrawerStatus.value);
         }

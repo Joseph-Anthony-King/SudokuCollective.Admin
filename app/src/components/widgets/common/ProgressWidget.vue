@@ -10,7 +10,9 @@
           :size="progressSize"
           class="vertical-center">
           <template v-slot:default>
-            <p class="loading-message text-grey-darken-4" v-html="progressMessage"></p>
+            <p
+              class="loading-message text-grey-darken-4"
+              v-html="progressMessage"></p>
           </template>
         </v-progress-circular>
         <div
@@ -36,12 +38,14 @@
       </div>
       <div
         v-if="isMobile"
-        class="vertical-center">
+        class="vertical-center-mobile">
         <v-progress-linear
           indeterminate
           color="primary">
         </v-progress-linear>
-        <p class="loading-message text-grey-darken-4" v-html="progressMessage"></p>
+        <p
+          class="loading-message text-grey-darken-4"
+          v-html="progressMessage"></p>
         <div
           v-if="getCancelApiRequestDelegateIsNotNull && showCancelButton"
           class="justify-center text-center">
@@ -60,6 +64,12 @@
             </template>
             <span>Cancel the outstanding api request</span>
           </v-tooltip>
+        </div>
+        <div
+          v-if="getCancelApiRequestDelegateIsNotNull && !showCancelButton"
+          class="justify-center text-center"
+          style="height: 2.4em">
+          <!-- blank placeholder for the cancel button -->
         </div>
       </div>
     </v-row>
@@ -134,6 +144,16 @@
   .vertical-center {
     margin: 0;
     position: absolute;
+    top: 25%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+
+  .vertical-center-mobile {
+    margin: 0;
+    position: absolute;
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
@@ -158,12 +178,16 @@
 
   .progress-button {
     @media (min-width: 601px) {
-      padding-top: 415px;
+      padding-top: 425px;
     }
+
     @media (max-width: 600px) {
       padding-top: 315px;
     }
+
     position: absolute;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
   }
 
   @keyframes ellipsis {
