@@ -39,7 +39,7 @@
         <v-col cols="12">
           <v-btn
             color="blue darken-1"
-            text="true"
+            variant="text"
             @click="close($event)">
             ok
           </v-btn>

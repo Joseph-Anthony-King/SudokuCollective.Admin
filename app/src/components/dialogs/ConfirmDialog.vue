@@ -1,7 +1,9 @@
 <template>
   <v-card class="justify-center text-center">
     <v-card-title>
-      <span class="headline">{{ getDialogTitle }}</span>
+      <span
+        class="headline"
+        v-html="getDialogTitle"></span>
     </v-card-title>
     <v-card-text>
       <v-container>
@@ -17,7 +19,7 @@
         <v-col>
           <v-btn
             color="blue darken-1"
-            text="true"
+            variant="text"
             @click="confirmedHandlerAsync">
             Yes
           </v-btn>
@@ -25,7 +27,7 @@
         <v-col>
           <v-btn
             color="blue darken-1"
-            text="true"
+            variant="text"
             @click="notConfirmedHandlder">
             No
           </v-btn>
@@ -40,16 +42,27 @@
   import { storeToRefs } from 'pinia';
   import { useDialogStore } from '@/stores/dialogStore';
 
+  //#region Destructure Stores
   const dialogStore = useDialogStore();
   const { getDialogTitle, getDialogMessage } = storeToRefs(dialogStore);
-  const { performConfirmedAction, performNotConfirmedAction, initializeStore } = useDialogStore();
+  const {
+    updateDialogIsActive,
+    performConfirmedAction,
+    performNotConfirmedAction,
+    initializeStore,
+  } = useDialogStore();
+  //#endregion
 
+  //#region Action Handlers
   const confirmedHandlerAsync = async (): Promise<void> => {
+    updateDialogIsActive(false);
     await performConfirmedAction();
     initializeStore();
   };
   const notConfirmedHandlder = async (): Promise<void> => {
+    updateDialogIsActive(false);
     await performNotConfirmedAction();
     initializeStore();
   };
+  //#endregion
 </script>

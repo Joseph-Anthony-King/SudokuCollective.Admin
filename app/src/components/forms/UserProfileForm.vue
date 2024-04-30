@@ -158,7 +158,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="!formValid"
                 @click.prevent="
@@ -184,7 +184,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing"
                 @click="confirmRefreshHandler($event)">
@@ -208,7 +208,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="!user.isEditing"
                 @click="cancelHandler($event)">
@@ -232,7 +232,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="red darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing || user.isSuperUser"
                 @click="confirmDeleteHandler($event)">
@@ -256,7 +256,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
                 @click="confirmResendEmailConfirmationHandler($event)">
@@ -280,7 +280,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdateEmail"
                 @click="confirmCancelEmailConfirmationHandler($event)">
@@ -309,7 +309,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="
                   user.isEditing || !user.isEmailConfirmed || user.receivedRequestToUpdatePassword
@@ -335,7 +335,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
                 @click="confirmResendPasswordResetHandler($event)">
@@ -359,7 +359,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="user.isEditing || !user.receivedRequestToUpdatePassword"
                 @click="confirmCancelPasswordResetHandler($event)">
@@ -388,7 +388,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
-                text="true"
+                variant="text"
                 v-bind="props"
                 :disabled="
                   user.isEditing ||

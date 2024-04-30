@@ -15,6 +15,13 @@ import { DialogType } from '@/enums/dialogType';
 import commonUtitlities from '@/utilities/common';
 
 export const useUserStore = defineStore('userStore', () => {
+  //#region Destructure Stores
+  const { updateConfirmationType, updateEmail, updateIsSuccess, updateUserName } =
+    useConfirmEmailStore();
+  const { updateDialog } = useDialogStore();
+  const { updateToken, updateTokenExpirationDate, updateStayLoggedIn } = useGlobalStore();
+  //#endregion
+
   //#region State
   const user: Ref<User> = ref(new User());
   const confirmedUserName: Ref<string | null> = ref(null);
@@ -35,13 +42,6 @@ export const useUserStore = defineStore('userStore', () => {
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   const getUserIsLoggingOut: ComputedRef<boolean> = computed(() => toRaw(userIsLoggingOut.value));
-  //#endregion
-
-  //#region Destructure Stores
-  const { updateConfirmationType, updateEmail, updateIsSuccess, updateUserName } =
-    useConfirmEmailStore();
-  const { updateDialog } = useDialogStore();
-  const { updateToken, updateTokenExpirationDate, updateStayLoggedIn } = useGlobalStore();
   //#endregion
 
   //#region Mutations

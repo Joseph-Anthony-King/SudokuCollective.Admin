@@ -498,20 +498,16 @@
           let resizeTimeout: number | undefined;
 
           // Add event listeners
-          window.addEventListener(
-            'resize',
-            () => {
-              clearTimeout(resizeTimeout);
-              resizeTimeout = setTimeout(
-                () => {
-                  resetAppDialogViewPort();
-                },
-                250,
-                'Resized',
-              );
-            },
-            { once: true },
-          );
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(
+              () => {
+                resetAppDialogViewPort();
+              },
+              250,
+              'Resized',
+            );
+          });
         });
       });
       onUnmounted(() => {

@@ -12,7 +12,6 @@ export const useAppStore = defineStore('appStore', () => {
   const myRegisteredApps: Ref<Array<IApp>> = ref([]);
   const selectedApp: Ref<IApp | null | undefined> = ref(null);
   const serviceMessage: Ref<string | null> = ref(null);
-  const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
   //#endregion
 
   //#region Getters
@@ -22,6 +21,7 @@ export const useAppStore = defineStore('appStore', () => {
   const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() =>
     toRaw(selectedApp.value),
   );
+  const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
   //#endregion
 
   //#region Mutations
