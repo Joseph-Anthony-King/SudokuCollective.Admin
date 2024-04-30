@@ -42,7 +42,7 @@
         </v-progress-linear>
         <p class="loading-message text-grey-darken-4">{{ progressMessage }}</p>
         <div
-          v-if="getCancelApiRequestDelegateIsNotNull"
+          v-if="getCancelApiRequestDelegateIsNotNull && showCancelButton"
           class="justify-center text-center">
           <v-tooltip
             open-delay="2000"
