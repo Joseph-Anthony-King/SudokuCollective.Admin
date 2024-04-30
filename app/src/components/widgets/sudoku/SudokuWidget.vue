@@ -224,7 +224,7 @@
       ) {
         updateDialog(
           'Confirm Mighty Mountain Lion<br/>Sneaky Shark',
-          'Games with a <b>Mighty Mountain Lion</b> or <b>Sneaky Shark</b> difficulty level can take up to 5 minutes or more to generate.  You will be able to cancel the request after 10 seconds.  Are you sure you want to continue?',
+          'Games with a <b>Mighty Mountain Lion</b> or <b>Sneaky Shark</b> difficulty level can take up to 5 minutes or more to generate.  You will be able to cancel the request after 10 seconds.<br /><br />Are you sure you want to continue?',
           DialogType.CONFIRM,
           async () => {
             await updateAppProcessingAsync(async () => {
