@@ -23,6 +23,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const navDrawerStatus: Ref<boolean> = ref(false);
   const stayLoggedIn: Ref<boolean> = ref(true);
   const redirectToSignUp: Ref<boolean> = ref(false);
+  const cancelApiRequestDelegate: Ref<(() => void) | null> = ref(null);
   //#endregion
 
   //#region Getters
@@ -43,6 +44,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const getNavDrawerStatus: ComputedRef<boolean> = computed(() => toRaw(navDrawerStatus.value));
   const getStayedLoggedIn: ComputedRef<boolean> = computed(() => toRaw(stayLoggedIn.value));
   const getRedirectToSignUp: ComputedRef<boolean> = computed(() => toRaw(redirectToSignUp.value));
+  const getCancelApiRequestDelegateIsNotNull: ComputedRef<boolean> = computed(() =>
+    cancelApiRequestDelegate.value !== null ? true : false,
+  );
   //#endregion
 
   //#region Mutations
@@ -70,6 +74,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const updateRedirectToSignUp = (param: boolean): void => {
     redirectToSignUp.value = param;
   };
+  const updateCancelApiRequestDelegate = (action: (() => void) | null = null): void => {
+    cancelApiRequestDelegate.value = action;
+  };
   //#endregion
 
   //#region Actions
@@ -82,6 +89,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     navDrawerStatus.value = false;
     stayLoggedIn.value = true;
     redirectToSignUp.value = false;
+    cancelApiRequestDelegate.value = null;
   };
   const loginAsync = async (data: ILoginRequestData): Promise<void> => {
     const response: IServicePayload = await LoginService.postLoginAsync(data);
@@ -145,6 +153,12 @@ export const useGlobalStore = defineStore('globalStore', () => {
       });
     }
   };
+  const cancelApiRequest = (event: Event | null = null): void => {
+    event?.preventDefault();
+    if (cancelApiRequestDelegate.value !== null) {
+      cancelApiRequestDelegate.value();
+    }
+  };
   //#endregion
 
   return {
@@ -157,6 +171,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     navDrawerStatus,
     stayLoggedIn,
     redirectToSignUp,
+    cancelApiRequestDelegate,
     getLicense,
     getToken,
     getTokenExpirationDate,
@@ -166,6 +181,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     getNavDrawerStatus,
     getStayedLoggedIn,
     getRedirectToSignUp,
+    getCancelApiRequestDelegateIsNotNull,
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,
@@ -174,11 +190,13 @@ export const useGlobalStore = defineStore('globalStore', () => {
     updateProcessingStatus,
     updateStayLoggedIn,
     updateRedirectToSignUp,
+    updateCancelApiRequestDelegate,
     initializeStore,
     loginAsync,
     logout,
     confirmUserNameAsync,
     isTokenExpired,
     tokenHasExpired,
+    cancelApiRequest,
   };
 });

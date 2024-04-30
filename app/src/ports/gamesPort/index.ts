@@ -1,6 +1,10 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { Endpoints } from '@/ports/gamesPort/endpoints';
+import { useGlobalStore } from '@/stores/globalStore';
 import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
+
+const controller = new AbortController();
+const signal = controller.signal;
 
 export class GamesPort {
   static async getCreateGameAsync(difficultyLevel: number): Promise<AxiosResponse | AxiosError> {
@@ -13,7 +17,10 @@ export class GamesPort {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
+        signal,
       };
+      const { updateCancelApiRequestDelegate } = useGlobalStore();
+      updateCancelApiRequestDelegate(this.cancelApiRequest);
       return axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -51,5 +58,10 @@ export class GamesPort {
       }
       return error as AxiosError;
     }
+  }
+
+  static cancelApiRequest(): void {
+    controller.abort();
+    location.reload();
   }
 }

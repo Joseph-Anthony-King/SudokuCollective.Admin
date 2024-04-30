@@ -48,7 +48,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="resetPasswordHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props">
@@ -75,7 +75,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props">
@@ -101,7 +101,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="confirmFormResetHandler($event)"
                   :disabled="(email === '' || email === null) && invalidEmails.length === 0"
                   v-bind="props">
@@ -125,7 +125,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="goBackHandlerAsync"
                   v-bind="props">
                   Go Back

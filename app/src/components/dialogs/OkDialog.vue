@@ -1,11 +1,15 @@
 <template>
   <v-card class="justify-center text-center">
     <v-card-title>
-      <span class="headline">{{ title }}</span>
+      <span
+        class="headline"
+        v-html="getDialogTitle"></span>
     </v-card-title>
     <v-card-text>
       <v-container>
-        <p v-html="message"></p>
+        <v-col cols="12">
+          <p v-html="getDialogMessage"></p>
+        </v-col>
       </v-container>
     </v-card-text>
     <v-card-actions class="text-center">
@@ -13,8 +17,8 @@
         <v-col cols="12">
           <v-btn
             color="blue darken-1"
-            text="true"
-            @click="close($event)">
+            variant="text"
+            @click="closeHandler($event)">
             ok
           </v-btn>
         </v-col>
@@ -25,19 +29,19 @@
 
 <script setup lang="ts">
   /* eslint-disable no-undef */
-  import { type Ref, ref } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useDialogStore } from '@/stores/dialogStore';
 
+  //#region Destructure Stores
   const dialogStore = useDialogStore();
   const { getDialogTitle, getDialogMessage } = storeToRefs(dialogStore);
   const { initializeStore } = dialogStore;
+  //#endregion
 
-  const title: Ref<string | null> = ref(getDialogTitle.value);
-  const message: Ref<string | null> = ref(getDialogMessage.value);
-
-  const close = (event: Event | undefined = undefined): void => {
+  //#region Action Handlers
+  const closeHandler = (event: Event | undefined = undefined): void => {
     event?.preventDefault();
     initializeStore();
   };
+  //#endregion
 </script>

@@ -165,7 +165,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="confirmFormResetHandler($event)"
                   v-bind="props">
                   Reset
@@ -182,7 +182,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="cancelHandlerAsync($event)"
                   v-bind="props">
                   Cancel
@@ -199,7 +199,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="submitHandlerAsync($event)"
                   :disabled="!formValid"
                   v-bind="props">

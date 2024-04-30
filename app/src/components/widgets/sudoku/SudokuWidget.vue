@@ -34,7 +34,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="executeHandlerAsync($event)"
                   :disabled="isExectuteButtonDisabed">
                   {{ executeButtonText }}
@@ -44,7 +44,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="checkGameHandlerAsync($event)"
                   :disabled="isExectuteButtonDisabed">
                   Check Game
@@ -54,7 +54,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="resetGameHandlerAsync($event)"
                   :disabled="isExectuteButtonDisabed">
                   Reset Game
@@ -64,7 +64,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="getCurrentGameHandler($event)"
                   :disabled="isCurrentGameInPlay">
                   Current Game
@@ -74,7 +74,7 @@
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   @click="clearHandler">
                   {{ clearButtonText }}
                 </v-btn>
@@ -100,10 +100,12 @@
     onUnmounted,
   } from 'vue';
   import { storeToRefs } from 'pinia';
+  import { useDialogStore } from '@/stores/dialogStore';
   import { useSudokuStore } from '@/stores/sudokuStore';
   import { useValueStore } from '@/stores/valueStore';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
+  import { DialogType } from '@/enums/dialogType';
   import { StoreType } from '@/enums/storeTypes';
   import { DropdownItem } from '@/models/infrastructure/dropdownItem';
   import { Difficulty } from '@/models/domain/difficulty';
@@ -113,6 +115,8 @@
     commonUtilities();
 
   //#region Destructure Stores
+  const dialogStore = useDialogStore();
+  const { updateDialog } = dialogStore;
   //#region SudokuStore
   const sudokuStore = useSudokuStore();
   const {
@@ -213,21 +217,43 @@
   // GameState.PLAYGAME = 0 and GameState.SOLVESUDOKU = 1
   const executeHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
-    console.debug(
-      'executeHandlerAsync invoked...',
-      `selectGameState: ${selectedGameState.value?.value}`,
-    );
-    await updateAppProcessingAsync(async () => {
-      if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
-        await createGameAsync();
-      } else if (selectedGameState.value?.value === 1) {
-        await solvePuzzleAsync();
+    if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
+      if (
+        selectedDifficulty.value.difficultyLevel === 4 ||
+        selectedDifficulty.value.difficultyLevel === 5
+      ) {
+        updateDialog(
+          'Confirm Mighty Mountain Lion<br/>Sneaky Shark',
+          'Games with a <b>Mighty Mountain Lion</b> or <b>Sneaky Shark</b> difficulty level can take up to 5 minutes or more to generate.  You will be able to cancel the request after 10 seconds.  Are you sure you want to continue?',
+          DialogType.CONFIRM,
+          async () => {
+            await updateAppProcessingAsync(async () => {
+              await createGameAsync();
+              displaySuccessfulToast(StoreType.SUDOKUSTORE);
+              await displayFailedToastAsync(undefined, undefined);
+            });
+          },
+        );
       } else {
-        await generateSolutionAsync();
+        await updateAppProcessingAsync(async () => {
+          await createGameAsync();
+          displaySuccessfulToast(StoreType.SUDOKUSTORE);
+          await displayFailedToastAsync(undefined, undefined);
+        });
       }
-      displaySuccessfulToast(StoreType.SUDOKUSTORE);
-      await displayFailedToastAsync(undefined, undefined);
-    });
+    } else if (selectedGameState.value?.value === 1) {
+      await updateAppProcessingAsync(async () => {
+        await solvePuzzleAsync();
+        displaySuccessfulToast(StoreType.SUDOKUSTORE);
+        await displayFailedToastAsync(undefined, undefined);
+      });
+    } else {
+      await updateAppProcessingAsync(async () => {
+        await generateSolutionAsync();
+        displaySuccessfulToast(StoreType.SUDOKUSTORE);
+        await displayFailedToastAsync(undefined, undefined);
+      });
+    }
   };
   const checkGameHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();

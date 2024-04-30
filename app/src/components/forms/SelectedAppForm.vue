@@ -468,7 +468,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   v-bind="props"
                   :disabled="formValid"
                   @click.prevent="
@@ -496,7 +496,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   v-bind="props"
                   :disabled="selectedApp.isEditing"
                   @click="confirmRefreshHandler">
@@ -520,7 +520,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="blue darken-1"
-                  text="true"
+                  variant="text"
                   v-bind="props"
                   :disabled="!selectedApp.isEditing"
                   @click="cancelHandler($event)">
@@ -544,7 +544,7 @@
               <template v-slot:activator="{ props }">
                 <v-btn
                   color="red darken-1"
-                  text="true"
+                  variant="text"
                   v-bind="props"
                   :disabled="selectedApp.isEditing || selectedApp.id === 1"
                   @click="confirmDeleteHandler">
