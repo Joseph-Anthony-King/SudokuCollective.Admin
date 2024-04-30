@@ -3,35 +3,36 @@
     <v-row
       class="d-flex justify-center"
       cols="12">
-      <v-progress-circular
-        v-if="!isMobile"
-        indeterminate
-        color="primary"
-        :size="progressSize"
-        class="vertical-center">
-        <template v-slot:default>
-          <p class="loading-message text-grey-darken-4">{{ progressMessage }}</p>
-        </template>
-      </v-progress-circular>
-      <div
-        v-if="getCancelApiRequestDelegateIsNotNull && !isMobile && showCancelButton"
-        class="justify-center text-center progress-button"
-        style="margin-top: 10px">
-        <v-tooltip
-          open-delay="2000"
-          location="bottom"
-          :disabled="isSmallViewPort">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              color="blue darken-1"
-              variant="text"
-              @click="cancelApiRequest($event)"
-              v-bind="props">
-              Cancel
-            </v-btn>
+      <div v-if="!isMobile">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          :size="progressSize"
+          class="vertical-center">
+          <template v-slot:default>
+            <p class="loading-message text-grey-darken-4" v-html="progressMessage"></p>
           </template>
-          <span>Cancel the outstanding api request</span>
-        </v-tooltip>
+        </v-progress-circular>
+        <div
+          v-if="getCancelApiRequestDelegateIsNotNull && showCancelButton"
+          class="justify-center text-center progress-button"
+          style="margin-top: 10px">
+          <v-tooltip
+            open-delay="2000"
+            location="bottom"
+            :disabled="isSmallViewPort">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                color="blue darken-1"
+                variant="text"
+                @click="cancelApiRequest($event)"
+                v-bind="props">
+                Cancel
+              </v-btn>
+            </template>
+            <span>Cancel the outstanding api request</span>
+          </v-tooltip>
+        </div>
       </div>
       <div
         v-if="isMobile"
@@ -40,7 +41,7 @@
           indeterminate
           color="primary">
         </v-progress-linear>
-        <p class="loading-message text-grey-darken-4">{{ progressMessage }}</p>
+        <p class="loading-message text-grey-darken-4" v-html="progressMessage"></p>
         <div
           v-if="getCancelApiRequestDelegateIsNotNull && showCancelButton"
           class="justify-center text-center">
