@@ -443,20 +443,8 @@
 
       //#region Dialog Logic
       const isSmallViewPort: Ref<boolean> = ref(true);
-      const maxFormWidth: ComputedRef<string> = computed(() => {
-        if (window.innerWidth <= 960) {
-          return 'auto';
-        } else {
-          return '960px';
-        }
-      });
-      const maxDialogWidth: ComputedRef<string> = computed(() => {
-        if (window.innerWidth <= 960) {
-          return 'auto';
-        } else {
-          return '480px';
-        }
-      });
+      const maxFormWidth: Ref<string> = ref(window.innerWidth <= 960 ? 'auto' : '960px');
+      const maxDialogWidth: Ref<string> = ref(window.innerWidth <= 960 ? 'auto' : '480px');
       const okDialogIsActive: ComputedRef<boolean> = computed(
         () =>
           getDialogIsActive.value &&
@@ -472,10 +460,14 @@
       const resetAppDialogViewPort = (): void => {
         if (window.innerWidth <= 960) {
           isSmallViewPort.value = true;
+          maxFormWidth.value = "auto";
+          maxDialogWidth.value = "auto";
           navDrawerStatus.value = false;
           updateNavDrawerStatus(navDrawerStatus.value);
         } else {
           isSmallViewPort.value = false;
+          maxFormWidth.value = "960px";
+          maxDialogWidth.value = "480px";
           navDrawerStatus.value = true;
           updateNavDrawerStatus(navDrawerStatus.value);
         }
@@ -507,6 +499,7 @@
               250,
               'Resized',
             );
+            resizeTimeout;
           });
         });
       });
