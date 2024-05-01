@@ -124,8 +124,9 @@
     getGameState,
     getSelectedDifficulty,
     getInitialGame,
-    getIsSolvedDisabled,
     getIsGameCurrent,
+    getIsSolvedDisabled,
+    getPuzzleIsReady,
   } = storeToRefs(sudokuStore);
   const {
     createGameAsync,
@@ -187,7 +188,7 @@
         return false;
       }
     } else if (selectedGameState.value?.value === 1) {
-      return getIsSolvedDisabled.value;
+      return getIsSolvedDisabled.value || getPuzzleIsReady.value;
     } else {
       return false;
     }
@@ -218,17 +219,15 @@
   const executeHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
-      if (
-        selectedDifficulty.value.difficultyLevel === 4 ||
-        selectedDifficulty.value.difficultyLevel === 5
-      ) {
+      if (selectedDifficulty.value.difficultyLevel === 5) {
         updateDialog(
-          'Confirm Mighty Mountain Lion<br/>Sneaky Shark',
-          'Games with a <b>Mighty Mountain Lion</b> or <b>Sneaky Shark</b> difficulty level can take up to 5 minutes or more to generate.  You will be able to cancel the request after 10 seconds.<br /><br />Are you sure you want to continue?',
+          'Confirm Sneaky Shark',
+          'Games with a <b>Sneaky Shark</b> difficulty level can take up to 2 minutes or more to generate.  You will be able to cancel the request after 30 seconds.<br /><br />Are you sure you want to continue?',
           DialogType.CONFIRM,
           async () => {
             await updateAppProcessingAsync(async () => {
-              await createGameAsync();
+              const apiDelay = 30000;
+              await createGameAsync(apiDelay);
               displaySuccessfulToast(StoreType.SUDOKUSTORE);
               await displayFailedToastAsync(undefined, undefined);
             });
@@ -236,7 +235,8 @@
         );
       } else {
         await updateAppProcessingAsync(async () => {
-          await createGameAsync();
+          const apiDelay = 30000;
+          await createGameAsync(apiDelay);
           displaySuccessfulToast(StoreType.SUDOKUSTORE);
           await displayFailedToastAsync(undefined, undefined);
         });

@@ -24,6 +24,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const stayLoggedIn: Ref<boolean> = ref(true);
   const redirectToSignUp: Ref<boolean> = ref(false);
   const cancelApiRequestDelegate: Ref<(() => void) | null> = ref(null);
+  const cancelApiRequestDelayInMilliseconds: Ref<number | null> = ref(null);
   //#endregion
 
   //#region Getters
@@ -46,6 +47,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const getRedirectToSignUp: ComputedRef<boolean> = computed(() => toRaw(redirectToSignUp.value));
   const getCancelApiRequestDelegateIsNotNull: ComputedRef<boolean> = computed(() =>
     cancelApiRequestDelegate.value !== null ? true : false,
+  );
+  const getCancelApiRequestDelayInMilliseconds: ComputedRef<number | null> = computed(() =>
+    toRaw(cancelApiRequestDelayInMilliseconds.value),
   );
   //#endregion
 
@@ -74,8 +78,12 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const updateRedirectToSignUp = (param: boolean): void => {
     redirectToSignUp.value = param;
   };
-  const updateCancelApiRequestDelegate = (action: (() => void) | null = null): void => {
+  const updateCancelApiRequestDelegate = (
+    action: (() => void) | null = null,
+    milliseconds: number | null = null,
+  ): void => {
     cancelApiRequestDelegate.value = action;
+    cancelApiRequestDelayInMilliseconds.value = milliseconds;
   };
   //#endregion
 
@@ -172,6 +180,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     stayLoggedIn,
     redirectToSignUp,
     cancelApiRequestDelegate,
+    cancelApiRequestDelayInMilliseconds,
     getLicense,
     getToken,
     getTokenExpirationDate,
@@ -182,6 +191,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     getStayedLoggedIn,
     getRedirectToSignUp,
     getCancelApiRequestDelegateIsNotNull,
+    getCancelApiRequestDelayInMilliseconds,
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,

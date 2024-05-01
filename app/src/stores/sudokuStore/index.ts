@@ -1,5 +1,6 @@
 import { type ComputedRef, computed, type Ref, ref, toRaw } from 'vue';
 import { defineStore } from 'pinia';
+import { useGlobalStore } from '@/stores/globalStore';
 import { Methods } from '@/stores/sudokuStore/common';
 import { GamesService } from '@/services/gamesService';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
@@ -7,6 +8,11 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import { Difficulty } from '@/models/domain/difficulty';
 
 export const useSudokuStore = defineStore('sudokuStore', () => {
+  //#region Destructure Stores
+  const globalStore = useGlobalStore();
+  const { updateCancelApiRequestDelegate } = globalStore;
+  //#endregion
+
   //#region State
   const initialGame: Ref<Array<Array<string>> | null> = ref(null);
   const game: Ref<Array<Array<string>> | null> = ref(null);
@@ -46,9 +52,6 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   const getProcessing: ComputedRef<boolean> = computed(() => toRaw(processing.value));
-  const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
-    isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false,
-  );
   const getIsGameCurrent: ComputedRef<boolean> = computed(() => {
     let result = false;
     game.value?.forEach((row) => {
@@ -59,6 +62,25 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
       });
     });
     return result;
+  });
+  const getIsSolvedDisabled: ComputedRef<boolean> = computed(() =>
+    isSolveDisabled.value !== null ? toRaw(isSolveDisabled.value) : false,
+  );
+  const getPuzzleIsReady: ComputedRef<boolean> = computed(() => {
+    let knowns = 0;
+    puzzle.value?.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell !== '') {
+          knowns++;
+        }
+      });
+    });
+
+    if (knowns > 13) {
+      return false;
+    } else {
+      return true;
+    }
   });
   //#endregion
 
@@ -106,11 +128,12 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   const initializeSolution = (): void => {
     solution.value = Methods.InitializeMatix();
   };
-  const createGameAsync = async (): Promise<void> => {
+  const createGameAsync = async (milliseconds: number | null = null): Promise<void> => {
     processing.value = !processing.value;
     if (selectedDifficulty.value !== null) {
       const response: IServicePayload = await GamesService.createGameAsync(
         selectedDifficulty.value.difficultyLevel,
+        milliseconds,
       );
       const game: Array<Array<string>> = Array<Array<string>>(9);
       for (let i = 0; i < 9; i++) {
@@ -128,6 +151,7 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
       }
       updateInitialGame(initialGame);
       updateGame(game);
+      updateCancelApiRequestDelegate();
       serviceResult.value = null;
       serviceMessage.value = '';
     }
@@ -198,8 +222,9 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     getServiceResult,
     getServiceMessage,
     getProcessing,
-    getIsSolvedDisabled,
     getIsGameCurrent,
+    getIsSolvedDisabled,
+    getPuzzleIsReady,
     updateInitialGame,
     updateGame,
     updatePuzzle,

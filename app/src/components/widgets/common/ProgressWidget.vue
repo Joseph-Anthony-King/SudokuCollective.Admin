@@ -86,7 +86,8 @@
 
   //#region Destructure Stores
   const globalStore = useGlobalStore();
-  const { getCancelApiRequestDelegateIsNotNull } = storeToRefs(globalStore);
+  const { getCancelApiRequestDelegateIsNotNull, getCancelApiRequestDelayInMilliseconds } =
+    storeToRefs(globalStore);
   const { cancelApiRequest } = globalStore;
   //#endregion
 
@@ -130,7 +131,12 @@
       resetViewPort(isSmallViewPort);
       resetProgressMessagePadding();
     });
-    setTimeout(() => (showCancelButton.value = true), 10000);
+    setTimeout(
+      () => (showCancelButton.value = true),
+      getCancelApiRequestDelayInMilliseconds.value
+        ? getCancelApiRequestDelayInMilliseconds.value
+        : 60000,
+    );
   });
   onUnmounted(() => {
     window.removeEventListener('resize', () => {
@@ -177,12 +183,12 @@
   }
 
   .progress-button {
-    @media (min-width: 601px) {
-      padding-top: 425px;
+    @media (min-width: 1921px) {
+      padding-top: 575px;
     }
 
-    @media (max-width: 600px) {
-      padding-top: 315px;
+    @media (min-width: 961px) and (max-width: 1920px) {
+      padding-top: 525px;
     }
 
     position: absolute;
