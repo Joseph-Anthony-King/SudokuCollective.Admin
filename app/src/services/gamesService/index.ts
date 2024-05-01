@@ -8,7 +8,10 @@ import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
 import { StaticServiceMethods } from '@/services/common';
 
 export class GamesService {
-  static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
+  static async createGameAsync(
+    difficultyLevel: number,
+    milliseconds: number | null = null,
+  ): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -18,7 +21,10 @@ export class GamesService {
         throw idIsZero;
       }
 
-      const response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
+      const response = (await GamesPort.getCreateGameAsync(
+        difficultyLevel,
+        milliseconds,
+      )) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
