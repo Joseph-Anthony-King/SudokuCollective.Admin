@@ -2,5 +2,6 @@ VITE_APP_ENV=iisexpress
 VITE_APP_ID=[Your value here]
 VITE_APP_LICENSE=[Your value here]
 VITE_APP_API_URL=[Your value here]
+VITE_APP_BASE_URL=[Your value here]
 VITE_APP_CACHE_KEY=[Your value here]
 VITE_APP_CACHE_SECRET=[Your value here]
