@@ -16,6 +16,7 @@ export default defineConfig(({ command, mode }) => {
       "process.env.VITE_APP_ID": JSON.stringify(env.VITE_APP_ID),
       "process.env.VITE_APP_LICENSE": JSON.stringify(env.VITE_APP_LICENSE),
       "process.env.VITE_APP_API_URL": JSON.stringify(env.VITE_APP_API_URL),
+      "process.env.VITE_APP_BASE_URL": JSON.stringify(env.VITE_APP_BASE_URL),
       "process.env.VITE_APP_CACHE_KEY": JSON.stringify(env.VITE_APP_CACHE_KEY),
       "process.env.VITE_APP_CACHE_SECRET": JSON.stringify(env.VITE_APP_CACHE_SECRET),
       "process.env.VITE_APP_VERSION": JSON.stringify(packageJson.version),
@@ -44,7 +45,7 @@ export default defineConfig(({ command, mode }) => {
         }
       }
     },
-    base: "./",
+    base: env.VITE_APP_BASE_URL,
     test: {
       environment: "jsdom",
       server: {
