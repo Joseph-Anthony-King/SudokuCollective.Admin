@@ -19,6 +19,7 @@ export class GamesPort {
           accept: 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          'Keep-Alive': 'timeout=600, max=1000'
         },
         signal,
       };
