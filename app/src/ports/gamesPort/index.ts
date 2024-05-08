@@ -17,8 +17,9 @@ export class GamesPort {
         url: `${Endpoints.createEndpoint}${difficultyLevel}`,
         headers: {
           accept: 'application/json',
-          'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          'Access-Control-Request-Headers': 'content-type',
+          'Content-Type': 'application/json',
           'Keep-Alive': 'timeout=600, max=1000'
         },
         signal,
