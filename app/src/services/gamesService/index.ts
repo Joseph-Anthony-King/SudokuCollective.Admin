@@ -66,7 +66,10 @@ export class GamesService {
     return result;
   }
 
-  static async checkGameAsync(matrix: Array<Array<string>>): Promise<IServicePayload> {
+  static async checkGameAsync(
+    matrix: Array<Array<string>>,
+    milliseconds: number | null = null,
+  ): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -154,7 +157,7 @@ export class GamesService {
         }
       }
 
-      const response = (await GamesPort.postCheckGameAsync(data)) as AxiosResponse;
+      const response = (await GamesPort.postCheckGameAsync(data, milliseconds)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
@@ -177,7 +180,10 @@ export class GamesService {
     return result;
   }
 
-  static async solvePuzzleAsync(matrix: Array<Array<string>>): Promise<IServicePayload> {
+  static async solvePuzzleAsync(
+    matrix: Array<Array<string>>,
+    milliseconds: number | null = null,
+  ): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -265,7 +271,7 @@ export class GamesService {
         }
       }
 
-      const response = (await SolutionsPort.postSolveAsync(data)) as AxiosResponse;
+      const response = (await SolutionsPort.postSolveAsync(data, milliseconds)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;

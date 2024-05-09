@@ -243,7 +243,8 @@
       }
     } else if (selectedGameState.value?.value === 1) {
       await updateAppProcessingAsync(async () => {
-        await solvePuzzleAsync();
+        const apiDelay = 30000;
+        await solvePuzzleAsync(apiDelay);
         displaySuccessfulToast(StoreType.SUDOKUSTORE);
         await displayFailedToastAsync(undefined, undefined);
       });
@@ -258,7 +259,8 @@
   const checkGameHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     await updateAppProcessingAsync(async () => {
-      await checkGameAsync();
+      const apiDelay = 30000;
+      await checkGameAsync(apiDelay);
       displaySuccessfulToast(StoreType.SUDOKUSTORE);
       await displayFailedToastAsync(undefined, undefined);
     });

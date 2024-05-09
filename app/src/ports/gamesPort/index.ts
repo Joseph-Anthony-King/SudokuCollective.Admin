@@ -18,11 +18,11 @@ export class GamesPort {
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Request-Headers': 'content-type',
           'Access-Control-Allow-Origin': '*',
           'Keep-Alive': 'timeout=600, max=1000'
         },
         signal,
+        timeout: 600000,
       };
       const { updateCancelApiRequestDelegate } = useGlobalStore();
       updateCancelApiRequestDelegate(this.cancelApiRequest, milliseconds);
@@ -34,7 +34,10 @@ export class GamesPort {
       return error as AxiosError;
     }
   }
-  static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postCheckGameAsync(
+    matrix: ISudokuRequestData,
+    milliseconds: number | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       const config = {
         method: 'post',
@@ -43,6 +46,7 @@ export class GamesPort {
           accept: 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          'Keep-Alive': 'timeout=600, max=1000'
         },
         data: {
           firstRow: matrix.firstRow,
@@ -55,7 +59,11 @@ export class GamesPort {
           eighthRow: matrix.eighthRow,
           ninthRow: matrix.ninthRow,
         },
+        signal,
+        timeout: 600000,
       };
+      const { updateCancelApiRequestDelegate } = useGlobalStore();
+      updateCancelApiRequestDelegate(this.cancelApiRequest, milliseconds);
       return axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
