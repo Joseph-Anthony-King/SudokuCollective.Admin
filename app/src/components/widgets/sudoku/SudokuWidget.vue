@@ -222,12 +222,11 @@
       if (selectedDifficulty.value.difficultyLevel === 5) {
         updateDialog(
           'Confirm Sneaky Shark',
-          'Games with a <b>Sneaky Shark</b> difficulty level can take up to 2 minutes or more to generate.  You will be able to cancel the request after 30 seconds.<br /><br />Are you sure you want to continue?',
+          'Games with a <b>Sneaky Shark</b> difficulty level can take more than the time limit of 30 seconds to generate.  If your request has not completed within that limit your request will be cancelled and you will have to resubmit if you want to generate another <b>Sneaky Shark</b> game. <br /><br />Are you sure you want to continue?',
           DialogType.CONFIRM,
           async () => {
             await updateAppProcessingAsync(async () => {
-              const apiDelay = 30000;
-              await createGameAsync(apiDelay);
+              await createGameAsync();
               displaySuccessfulToast(StoreType.SUDOKUSTORE);
               await displayFailedToastAsync(undefined, undefined);
             });
@@ -235,16 +234,14 @@
         );
       } else {
         await updateAppProcessingAsync(async () => {
-          const apiDelay = 30000;
-          await createGameAsync(apiDelay);
+          await createGameAsync();
           displaySuccessfulToast(StoreType.SUDOKUSTORE);
           await displayFailedToastAsync(undefined, undefined);
         });
       }
     } else if (selectedGameState.value?.value === 1) {
       await updateAppProcessingAsync(async () => {
-        const apiDelay = 30000;
-        await solvePuzzleAsync(apiDelay);
+        await solvePuzzleAsync();
         displaySuccessfulToast(StoreType.SUDOKUSTORE);
         await displayFailedToastAsync(undefined, undefined);
       });
@@ -259,8 +256,7 @@
   const checkGameHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     await updateAppProcessingAsync(async () => {
-      const apiDelay = 30000;
-      await checkGameAsync(apiDelay);
+      await checkGameAsync();
       displaySuccessfulToast(StoreType.SUDOKUSTORE);
       await displayFailedToastAsync(undefined, undefined);
     });

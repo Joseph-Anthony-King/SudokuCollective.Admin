@@ -8,10 +8,7 @@ import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
 import { StaticServiceMethods } from '@/services/common';
 
 export class GamesService {
-  static async createGameAsync(
-    difficultyLevel: number,
-    milliseconds: number | null = null,
-  ): Promise<IServicePayload> {
+  static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -21,10 +18,7 @@ export class GamesService {
         throw idIsZero;
       }
 
-      const response = (await GamesPort.getCreateGameAsync(
-        difficultyLevel,
-        milliseconds,
-      )) as AxiosResponse;
+      const response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
@@ -66,10 +60,7 @@ export class GamesService {
     return result;
   }
 
-  static async checkGameAsync(
-    matrix: Array<Array<string>>,
-    milliseconds: number | null = null,
-  ): Promise<IServicePayload> {
+  static async checkGameAsync(matrix: Array<Array<string>>): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -157,7 +148,7 @@ export class GamesService {
         }
       }
 
-      const response = (await GamesPort.postCheckGameAsync(data, milliseconds)) as AxiosResponse;
+      const response = (await GamesPort.postCheckGameAsync(data)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
@@ -180,10 +171,7 @@ export class GamesService {
     return result;
   }
 
-  static async solvePuzzleAsync(
-    matrix: Array<Array<string>>,
-    milliseconds: number | null = null,
-  ): Promise<IServicePayload> {
+  static async solvePuzzleAsync(matrix: Array<Array<string>>): Promise<IServicePayload> {
     const result: IServicePayload = {};
 
     try {
@@ -271,7 +259,7 @@ export class GamesService {
         }
       }
 
-      const response = (await SolutionsPort.postSolveAsync(data, milliseconds)) as AxiosResponse;
+      const response = (await SolutionsPort.postSolveAsync(data)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
