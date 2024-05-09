@@ -157,12 +157,15 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     }
     processing.value = !processing.value;
   };
-  const checkGameAsync = async (): Promise<void> => {
+  const checkGameAsync = async (milliseconds: number | null = null): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
     if (game.value !== null) {
-      const response: IServicePayload = await GamesService.checkGameAsync(game.value);
+      const response: IServicePayload = await GamesService.checkGameAsync(
+        game.value,
+        milliseconds,
+      );
       if (response.isSuccess) {
         const solvedGame = Array<Array<string>>(9);
         for (let i = 0; i < 9; i++) {
@@ -178,12 +181,15 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
       processing.value = !processing.value;
     }
   };
-  const solvePuzzleAsync = async (): Promise<void> => {
+  const solvePuzzleAsync = async (milliseconds: number | null = null): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
     if (puzzle.value !== null) {
-      const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
+      const response: IServicePayload = await GamesService.solvePuzzleAsync(
+        puzzle.value,
+        milliseconds
+      );
       updatePuzzle(response.puzzle);
       serviceResult.value = response.isSuccess;
       serviceMessage.value = response.message;
