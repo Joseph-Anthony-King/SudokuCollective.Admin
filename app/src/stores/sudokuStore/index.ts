@@ -128,13 +128,10 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   const initializeSolution = (): void => {
     solution.value = Methods.InitializeMatix();
   };
-  const createGameAsync = async (milliseconds: number | null = null): Promise<void> => {
+  const createGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     if (selectedDifficulty.value !== null) {
-      const response: IServicePayload = await GamesService.createGameAsync(
-        selectedDifficulty.value.difficultyLevel,
-        milliseconds,
-      );
+      const response: IServicePayload = await GamesService.createGameAsync(selectedDifficulty.value.difficultyLevel);
       const game: Array<Array<string>> = Array<Array<string>>(9);
       for (let i = 0; i < 9; i++) {
         game[i] = [];
@@ -157,15 +154,12 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     }
     processing.value = !processing.value;
   };
-  const checkGameAsync = async (milliseconds: number | null = null): Promise<void> => {
+  const checkGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
     if (game.value !== null) {
-      const response: IServicePayload = await GamesService.checkGameAsync(
-        game.value,
-        milliseconds,
-      );
+      const response: IServicePayload = await GamesService.checkGameAsync(game.value);
       if (response.isSuccess) {
         const solvedGame = Array<Array<string>>(9);
         for (let i = 0; i < 9; i++) {
@@ -181,15 +175,12 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
       processing.value = !processing.value;
     }
   };
-  const solvePuzzleAsync = async (milliseconds: number | null = null): Promise<void> => {
+  const solvePuzzleAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
     if (puzzle.value !== null) {
-      const response: IServicePayload = await GamesService.solvePuzzleAsync(
-        puzzle.value,
-        milliseconds
-      );
+      const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
       updatePuzzle(response.puzzle);
       serviceResult.value = response.isSuccess;
       serviceMessage.value = response.message;
