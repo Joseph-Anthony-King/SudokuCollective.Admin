@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { type AxiosResponse, AxiosError } from 'axios';
 import { GamesPort } from '@/ports/gamesPort';
+import { JobsPort } from '@/ports/jobsPort';
 import { SolutionsPort } from '@/ports/solutionsPort';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
 import { StaticServiceMethods } from '@/services/common';
+import commonUtilities from '@/utilities/common';
 
 export class GamesService {
   static async createGameAsync(difficultyLevel: number): Promise<IServicePayload> {
@@ -18,32 +20,41 @@ export class GamesService {
         throw idIsZero;
       }
 
-      const response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
+      let response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
 
       if (response instanceof Error) {
         throw response as unknown as AxiosError;
       }
 
-      if (response.data.isSuccess) {
-        const game: Array<Array<string>> = Array<Array<string>>();
-        for (let i = 0; i < 9; i++) {
-          game[i] = [];
-          for (let j = 0; j < 9; j++) {
-            game[i][j] = '';
+      if (response.status === 200) {
+        result.game = this.downloadTheGame(response);
+      } else if (response.status === 202) {
+        const { sleepAsync } = commonUtilities();
+        const jobId = <string>response.data.payload[0].jobId;
+        let processing = true;
+        do {
+          await sleepAsync(5000);
+
+          const jobResponse = (await JobsPort.pollJobAsync(jobId)) as AxiosResponse;
+
+          if (jobResponse instanceof Error) {
+            throw jobResponse as unknown as AxiosError;
           }
+
+          if (jobResponse.data.isSuccess) {
+            processing = false;
+          }
+        } while (processing);
+
+        response = (await JobsPort.getJobAsync(jobId)) as AxiosResponse;
+
+        if (response.data.isSuccess) {
+          result.game = this.downloadTheGame(response);
         }
-        let rowIndex = 0;
-        response.data.payload[0].rows.forEach((row: Array<number>) => {
-          let cellIndex = 0;
-          row.forEach((integer) => {
-            if (integer !== 0) {
-              game[rowIndex][cellIndex] = integer.toString();
-            }
-            cellIndex++;
-          });
-          rowIndex++;
-        });
-        result.game = game;
+
+        if (response instanceof Error) {
+          throw response as unknown as AxiosError;
+        }
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -329,6 +340,28 @@ export class GamesService {
     }
 
     return result;
+  }
+
+  static downloadTheGame(response: AxiosResponse): Array<Array<string>> {
+    const game: Array<Array<string>> = Array<Array<string>>();
+    for (let i = 0; i < 9; i++) {
+      game[i] = [];
+      for (let j = 0; j < 9; j++) {
+        game[i][j] = '';
+      }
+    }
+    let rowIndex = 0;
+    response.data.payload[0].rows.forEach((row: Array<number>) => {
+      let cellIndex = 0;
+      row.forEach((integer) => {
+        if (integer !== 0) {
+          game[rowIndex][cellIndex] = integer.toString();
+        }
+        cellIndex++;
+      });
+      rowIndex++;
+    });
+    return game;
   }
 
   static sudokuMatixIsNotValid(matrix: Array<Array<string>>): AxiosError | null {

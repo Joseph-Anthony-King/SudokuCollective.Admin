@@ -1,9 +1,9 @@
-import { storeToRefs } from "pinia";
-import { toast } from "vue3-toastify";
-import { useGlobalStore } from "@/stores/globalStore";
+import { storeToRefs } from 'pinia';
+import { toast } from 'vue3-toastify';
+import { useGlobalStore } from '@/stores/globalStore';
 
 // Defaults to 30 seconds
-export const abortSignal = (timeoutMs: number = 30000) => {
+export const abortSignal = (timeoutMs: number = 30000): AbortSignal => {
   const { getProcessingStatus } = storeToRefs(useGlobalStore());
   const controller = new AbortController();
   setTimeout(() => {
@@ -18,4 +18,11 @@ export const abortSignal = (timeoutMs: number = 30000) => {
   }, timeoutMs);
 
   return controller.signal;
-}
+};
+
+export const manualAbortSignal = (): AbortSignal => {
+  const { updateProcessingStatus } = useGlobalStore();
+  const controller = new AbortController();
+  updateProcessingStatus(false);
+  return controller.signal;
+};
