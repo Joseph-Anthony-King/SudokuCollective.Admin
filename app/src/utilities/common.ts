@@ -91,6 +91,7 @@ export default function () {
       isSmallViewPort.value = false;
     }
   };
+  const sleepAsync = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
   const updateAppProcessingAsync = async (method: () => unknown): Promise<void | unknown> => {
     useGlobalStore().updateProcessingStatus(true);
     let result: unknown;
@@ -129,6 +130,7 @@ export default function () {
     isAsyncFunction,
     repairAutoComplete,
     resetViewPort,
+    sleepAsync,
     updateAppProcessingAsync,
     updateUrlWithAction,
   };

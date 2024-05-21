@@ -30,7 +30,11 @@
           </div>
           <AvailableActions v-if="isGameStateSelected">
             <v-row dense>
-              <v-col>
+              <v-col
+                cols="12"
+                :md="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6"
+                :lg="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6"
+                :xl="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6">
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
@@ -40,7 +44,12 @@
                   {{ executeButtonText }}
                 </v-btn>
               </v-col>
-              <v-col v-if="isCurrentGameStatePlayGame">
+              <v-col
+                v-if="isCurrentGameStatePlayGame"
+                cols="12"
+                md="3"
+                lg="3"
+                xl="3">
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
@@ -50,7 +59,12 @@
                   Check Game
                 </v-btn>
               </v-col>
-              <v-col v-if="isCurrentGameStatePlayGame">
+              <v-col
+                v-if="isCurrentGameStatePlayGame"
+                cols="12"
+                md="3"
+                lg="3"
+                xl="3">
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
@@ -60,7 +74,12 @@
                   Reset Game
                 </v-btn>
               </v-col>
-              <v-col v-if="isCurrentGameStateSolveSudoku">
+              <v-col
+                v-if="isCurrentGameStateSolveSudoku"
+                cols="12"
+                md="4"
+                lg="4"
+                xl="4">
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
@@ -70,7 +89,11 @@
                   Current Game
                 </v-btn>
               </v-col>
-              <v-col>
+              <v-col
+                cols="12"
+                :md="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6"
+                :lg="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6"
+                :xl="isCurrentGameStatePlayGame ? 3 : isCurrentGameStateSolveSudoku ? 4 : 6">
                 <v-btn
                   class="button-full"
                   color="blue darken-1"
@@ -222,7 +245,7 @@
       if (selectedDifficulty.value.difficultyLevel === 5) {
         updateDialog(
           'Confirm Sneaky Shark',
-          'Games with a <b>Sneaky Shark</b> difficulty level can take more than the time limit of 30 seconds to generate.  If your request has not completed within that limit your request will be cancelled and you will have to resubmit if you want to generate another <b>Sneaky Shark</b> game. <br /><br />Are you sure you want to continue?',
+          'Games with a <b>Sneaky Shark</b> difficulty level can average between 30 seconds to 1 minute to generate.  You will have the option to cancel this request after 10 seconds. <br /><br />Are you sure you want to continue?',
           DialogType.CONFIRM,
           async () => {
             await updateAppProcessingAsync(async () => {

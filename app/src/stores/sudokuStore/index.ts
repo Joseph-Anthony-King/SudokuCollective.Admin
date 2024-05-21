@@ -131,7 +131,9 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   const createGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     if (selectedDifficulty.value !== null) {
-      const response: IServicePayload = await GamesService.createGameAsync(selectedDifficulty.value.difficultyLevel);
+      const response: IServicePayload = await GamesService.createGameAsync(
+        selectedDifficulty.value.difficultyLevel,
+      );
       const game: Array<Array<string>> = Array<Array<string>>(9);
       for (let i = 0; i < 9; i++) {
         game[i] = [];
