@@ -55,7 +55,7 @@
                   color="blue darken-1"
                   variant="text"
                   @click="checkGameHandlerAsync($event)"
-                  :disabled="isExectuteButtonDisabed">
+                  :disabled="isExectuteButtonDisabed || isCurrentGameInPlay">
                   Check Game
                 </v-btn>
               </v-col>
@@ -70,7 +70,7 @@
                   color="blue darken-1"
                   variant="text"
                   @click="resetGameHandlerAsync($event)"
-                  :disabled="isExectuteButtonDisabed">
+                  :disabled="isExectuteButtonDisabed || isCurrentGameInPlay">
                   Reset Game
                 </v-btn>
               </v-col>
@@ -242,10 +242,13 @@
   const executeHandlerAsync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     if (selectedDifficulty.value !== null && selectedGameState.value?.value === 0) {
-      if (selectedDifficulty.value.difficultyLevel === 5) {
+      if (
+        selectedDifficulty.value.difficultyLevel === 4 ||
+        selectedDifficulty.value.difficultyLevel === 5
+      ) {
         updateDialog(
-          'Confirm Sneaky Shark',
-          'Games with a <b>Sneaky Shark</b> difficulty level can average between 30 seconds to 1 minute to generate.  You will have the option to cancel this request after 10 seconds. <br /><br />Are you sure you want to continue?',
+          'Confirm Mighty Mountain Lion / <br/>Sneaky Shark',
+          'Games with a <b>Mighty Mountain Lion</b> or <b>Sneaky Shark</b> difficulty level can average between 30 seconds to 1 minute to generate.  You will have the option to cancel this request after 10 seconds. <br /><br />Are you sure you want to continue?',
           DialogType.CONFIRM,
           async () => {
             await updateAppProcessingAsync(async () => {
