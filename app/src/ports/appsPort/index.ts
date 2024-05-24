@@ -29,7 +29,7 @@ export class AppsPort {
             license: data.license,
             ownerId: data.ownerId,
             localUrl: data.localUrl,
-            qaUrl: data.qaUrl,
+            testUrl: data.testUrl,
             stagingUrl: data.stagingUrl,
             prodUrl: data.prodUrl,
             sourceCodeUrl: data.sourceCodeUrl,

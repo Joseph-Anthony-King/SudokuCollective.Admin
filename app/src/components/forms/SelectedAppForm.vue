@@ -92,14 +92,14 @@
             :disabled="!selectedApp.isEditing || isSmallViewPort">
             <template v-slot:activator="{ props }">
               <v-text-field
-                v-model="qaUrl"
-                label="Quality Assurance URL"
+                v-model="testUrl"
+                label="Test URL"
                 prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
                 :append-icon="
                   selectedApp.isActive &&
-                  selectedReleaseEnvironment === ReleaseEnvironment.QA &&
-                  qaUrl !== null
+                  selectedReleaseEnvironment === ReleaseEnvironment.TEST &&
+                  testUrl !== null
                     ? 'mdi-launch'
                     : ''
                 "
@@ -623,7 +623,9 @@
   const localUrl: Ref<string | null> = ref(
     getSelectedApp.value ? getSelectedApp.value.localUrl : null,
   );
-  const qaUrl: Ref<string | null> = ref(getSelectedApp.value ? getSelectedApp.value.qaUrl : null);
+  const testUrl: Ref<string | null> = ref(
+    getSelectedApp.value ? getSelectedApp.value.testUrl : null,
+  );
   const stagingUrl: Ref<string | null> = ref(
     getSelectedApp.value ? getSelectedApp.value.stagingUrl : null,
   );
@@ -735,7 +737,7 @@
       selectedApp.value = newValue ? newValue : new App();
       name.value = newValue ? newValue.name : null;
       localUrl.value = newValue ? newValue.localUrl : null;
-      qaUrl.value = newValue ? newValue.qaUrl : null;
+      testUrl.value = newValue ? newValue.testUrl : null;
       stagingUrl.value = newValue ? newValue.stagingUrl : null;
       prodUrl.value = newValue ? newValue.prodUrl : null;
       sourceCodeUrl.value = newValue ? newValue.sourceCodeUrl : null;
@@ -767,7 +769,7 @@
       selectedApp.value = getSelectedApp.value ? getSelectedApp.value : new App();
       name.value = getSelectedApp.value ? getSelectedApp.value.name : null;
       localUrl.value = getSelectedApp.value ? getSelectedApp.value.localUrl : null;
-      qaUrl.value = getSelectedApp.value ? getSelectedApp.value.qaUrl : null;
+      testUrl.value = getSelectedApp.value ? getSelectedApp.value.testUrl : null;
       stagingUrl.value = getSelectedApp.value ? getSelectedApp.value.stagingUrl : null;
       prodUrl.value = getSelectedApp.value ? getSelectedApp.value.prodUrl : null;
       sourceCodeUrl.value = getSelectedApp.value ? getSelectedApp.value.sourceCodeUrl : null;
@@ -802,8 +804,8 @@
   const navigateToUrlHandler = (): void => {
     if (selectedReleaseEnvironment.value === ReleaseEnvironment.LOCAL) {
       window.open(localUrl.value?.toString(), '_blank');
-    } else if (selectedReleaseEnvironment.value === ReleaseEnvironment.QA) {
-      window.open(qaUrl.value?.toString(), '_blank');
+    } else if (selectedReleaseEnvironment.value === ReleaseEnvironment.TEST) {
+      window.open(testUrl.value?.toString(), '_blank');
     } else if (selectedReleaseEnvironment.value === ReleaseEnvironment.STAGING) {
       window.open(stagingUrl.value?.toString(), '_blank');
     } else {
