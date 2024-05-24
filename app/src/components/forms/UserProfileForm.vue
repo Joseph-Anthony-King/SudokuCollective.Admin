@@ -425,6 +425,7 @@
   import { VForm } from 'vuetify/components';
   import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
+  import router from '@/router/index';
   import { useDialogStore } from '@/stores/dialogStore';
   import { useUserStore } from '@/stores/userStore';
   import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
@@ -754,7 +755,10 @@
       if (getFormStatus.value) {
         result = await deleteUserAsync();
       }
-      if (!result) {
+      if (result) {
+        displaySuccessfulToast(StoreType.USERSTORE);
+        router.push('/');
+      } else {
         const failedToast = await displayFailedToastAsync(updateInvalidValues, {
           invalidUserNames: toRaw(invalidUserNames.value),
           invalidEmails: toRaw(invalidUserNames.value),

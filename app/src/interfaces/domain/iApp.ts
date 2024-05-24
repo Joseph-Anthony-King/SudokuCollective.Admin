@@ -9,7 +9,7 @@ export interface IApp {
   license: string | null;
   ownerId: number;
   localUrl: string | null;
-  qaUrl: string | null;
+  testUrl: string | null;
   stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;

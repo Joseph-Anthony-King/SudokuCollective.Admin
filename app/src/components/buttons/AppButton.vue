@@ -57,8 +57,8 @@
   const releaseStatus: ComputedRef<string> = computed(() => {
     return props.app.environment === ReleaseEnvironment.LOCAL && props.app.isActive
       ? 'In Development'
-      : props.app.environment === ReleaseEnvironment.QA && props.app.isActive
-        ? 'In Quality Assurance'
+      : props.app.environment === ReleaseEnvironment.TEST && props.app.isActive
+        ? 'In Test'
         : props.app.environment === ReleaseEnvironment.STAGING && props.app.isActive
           ? 'In Staging'
           : props.app.environment === ReleaseEnvironment.PROD && props.app.isActive

@@ -9,7 +9,7 @@ export class UpdateAppRequestData implements IUpdateAppRequestData {
   license: string | null;
   ownerId: number;
   localUrl: string | null;
-  qaUrl: string | null;
+  testUrl: string | null;
   stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;
@@ -31,7 +31,7 @@ export class UpdateAppRequestData implements IUpdateAppRequestData {
     license: string | null,
     ownerId: number,
     localUrl: string | null,
-    qaUrl: string | null,
+    testUrl: string | null,
     stagingUrl: string | null,
     prodUrl: string | null,
     sourceCodeUrl: string | null,
@@ -52,7 +52,7 @@ export class UpdateAppRequestData implements IUpdateAppRequestData {
     license ? (this.license = license) : (this.license = null);
     ownerId ? (this.ownerId = ownerId) : (this.ownerId = 0);
     localUrl ? (this.localUrl = localUrl) : (this.localUrl = null);
-    qaUrl ? (this.qaUrl = qaUrl) : (this.qaUrl = null);
+    testUrl ? (this.testUrl = testUrl) : (this.testUrl = null);
     stagingUrl ? (this.stagingUrl = stagingUrl) : (this.stagingUrl = null);
     prodUrl ? (this.prodUrl = prodUrl) : (this.prodUrl = null);
     sourceCodeUrl ? (this.sourceCodeUrl = sourceCodeUrl) : (this.sourceCodeUrl = null);
