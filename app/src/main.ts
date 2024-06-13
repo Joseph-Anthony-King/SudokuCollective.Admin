@@ -3,14 +3,13 @@ import App from '@/App.vue';
 import router from '@/router';
 import { createPinia } from 'pinia';
 import createPersistedState from 'pinia-persistedstate';
-import SecureLS from 'secure-ls';
+import { EncryptStorage } from 'encrypt-storage';
 import { loadFonts } from '@/plugins/webfontloader';
 import vuetify from '@/plugins/vuetify';
 
-const ls = new SecureLS({
-  encodingType: 'aes',
-  isCompression: false,
-  encryptionSecret: process.env.VITE_APP_CACHE_SECRET,
+const encryptStorage = new EncryptStorage(<string>process.env.VITE_APP_CACHE_SECRET, {
+  storageType: 'localStorage',
+  encAlgorithm: 'AES'
 });
 
 loadFonts();
@@ -34,9 +33,9 @@ createApp(App)
           'valueStore',
         ],
         storage: {
-          getItem: (key) => ls.get(key),
-          setItem: (key, value) => ls.set(key, value),
-          removeItem: (key) => ls.remove(key),
+          getItem: (key) => encryptStorage.getItem(key),
+          setItem: (key, value) => encryptStorage.setItem(key, value),
+          removeItem: (key) => encryptStorage.removeItem(key),
         },
       }),
     ),
