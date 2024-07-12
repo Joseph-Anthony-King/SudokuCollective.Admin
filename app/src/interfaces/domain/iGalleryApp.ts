@@ -1,10 +1,10 @@
 export interface IGalleryApp {
-  id: number;
-  name: string;
-  url: string;
-  sourceCodeUrl: string;
-  createdBy: string;
-  userCount: number;
-  dateCreated: Date;
-  dateUpdated: Date;
+  id: number | null;
+  name: string | null;
+  url: string | null;
+  sourceCodeUrl: string | null;
+  createdBy: string | null;
+  userCount: number | null;
+  dateCreated: Date | null;
+  dateUpdated: Date | null;
 }

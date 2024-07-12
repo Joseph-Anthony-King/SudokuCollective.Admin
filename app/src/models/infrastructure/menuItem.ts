@@ -16,11 +16,11 @@ export class MenuItem implements IMenuItem {
     target?: string,
     condition?: boolean,
   ) {
-    this.url = url ? url : '';
-    this.title = title ? title : '';
-    this.tooltip = tooltip ? tooltip : '';
-    this.mdiIcon = mdiIcon ? mdiIcon : '';
-    this.target = target ? target : 'blank';
-    this.condition = condition === false ? false : true;
+    url !== undefined ? (this.url = url) : (this.url = '');
+    title !== undefined ? (this.title = title) : (this.title = '');
+    tooltip !== undefined ? (this.tooltip = tooltip) : (this.tooltip = '');
+    mdiIcon !== undefined ? (this.mdiIcon = mdiIcon) : (this.mdiIcon = '');
+    target !== undefined ? (this.target = target) : (this.target = 'blank');
+    condition !== undefined ? (this.condition = condition) : (this.condition = false);
   }
 }

@@ -1,6 +1,6 @@
 export interface IDifficulty {
-  id: number;
-  name: string;
-  displayName: string;
-  difficultyLevel: number;
+  id: number | null;
+  name: string | null;
+  displayName: string | null;
+  difficultyLevel: number | null;
 }

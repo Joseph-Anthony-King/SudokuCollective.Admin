@@ -8,16 +8,16 @@ export class UpdateUserRequestData implements IUpdateUserRequestData {
   email: string;
 
   constructor(
-    userName: string | undefined,
-    firstName: string | undefined,
-    lastName: string | undefined,
-    nickName: string | undefined,
-    email: string | undefined,
+    userName: string,
+    firstName: string,
+    lastName: string,
+    nickName: string | null,
+    email: string,
   ) {
-    userName ? (this.userName = userName) : (this.userName = '');
-    firstName ? (this.firstName = firstName) : (this.firstName = '');
-    lastName ? (this.lastName = lastName) : (this.lastName = '');
-    nickName ? (this.nickName = nickName) : (this.nickName = '');
-    email ? (this.email = email) : (this.email = '');
+    this.userName = userName;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.nickName = nickName;
+    this.email = email;
   }
 }

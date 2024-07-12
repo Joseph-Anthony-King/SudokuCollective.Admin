@@ -18,12 +18,12 @@ export class SignupRequestData implements ISignupRequestData {
     password: string,
     stayLoggedIn: boolean,
   ) {
-    userName ? (this.userName = userName) : (this.userName = '');
-    firstName ? (this.firstName = firstName) : (this.firstName = '');
-    lastName ? (this.lastName = lastName) : (this.lastName = '');
-    nickName ? (this.nickName = nickName) : (this.nickName = '');
-    email ? (this.email = email) : (this.email = '');
-    password ? (this.password = password) : (this.password = '');
+    this.userName = userName;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.nickName = nickName;
+    this.email = email;
+    this.password = password;
     this.stayLoggedIn = stayLoggedIn;
   }
 }
