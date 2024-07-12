@@ -1,5 +1,5 @@
 export enum StoreType {
-  globalStore,
+  GLOBALSTORE,
   USERSTORE,
   SUDOKUSTORE,
 }

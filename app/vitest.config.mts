@@ -9,7 +9,14 @@ export default defineConfig(configEnv => mergeConfig(
       coverage: {
         provider: 'v8',
         enabled: true,
-        exclude: ['src/interfaces/**']
+        exclude: [
+          'src/interfaces/**',          
+          'src/plugins/**',
+          'src/router/**',
+          'src/App.vue',
+          'src/main.ts',
+          '.eslintrc.cjs',
+        ]
       },
       reporters: ['verbose'],
       environment: 'jsdom',

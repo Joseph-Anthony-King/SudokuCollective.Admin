@@ -4,30 +4,30 @@ import type { ISmtpServerSettings } from '@/interfaces/domain/iSmtpServerSetting
 import { User } from '@/models/domain/user';
 
 export interface IApp {
-  id: number;
+  id: number | null;
   name: string | null;
   license: string | null;
-  ownerId: number;
+  ownerId: number | null;
   localUrl: string | null;
   testUrl: string | null;
   stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;
-  isActive: boolean;
-  environment: ReleaseEnvironment;
-  permitSuperUserAccess: boolean;
-  permitCollectiveLogins: boolean;
-  disableCustomUrls: boolean;
+  isActive: boolean | null;
+  environment: ReleaseEnvironment | null;
+  permitSuperUserAccess: boolean | null;
+  permitCollectiveLogins: boolean | null;
+  disableCustomUrls: boolean | null;
   customEmailConfirmationAction: string | null;
   customPasswordResetAction: string | null;
-  useCustomSMTPServer: boolean;
+  useCustomSMTPServer: boolean | null;
   smtpServerSettings: ISmtpServerSettings | null;
-  userCount: number;
-  timeFrame: TimeFrame;
-  accessDuration: number;
-  displayInGallery: boolean;
-  dateCreated: Date | undefined;
-  dateUpdated: Date | undefined;
-  users: User[];
-  isEditing: boolean;
+  userCount: number | null;
+  timeFrame: TimeFrame | null;
+  accessDuration: number | null;
+  displayInGallery: boolean | null;
+  dateCreated: Date | null;
+  dateUpdated: Date | null;
+  users: User[] | null;
+  isEditing: boolean | null;
 }

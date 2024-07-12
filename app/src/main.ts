@@ -9,7 +9,7 @@ import vuetify from '@/plugins/vuetify';
 
 const encryptStorage = new EncryptStorage(<string>process.env.VITE_APP_CACHE_SECRET, {
   storageType: 'localStorage',
-  encAlgorithm: 'AES'
+  encAlgorithm: 'AES',
 });
 
 loadFonts();
