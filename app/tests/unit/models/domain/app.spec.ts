@@ -25,7 +25,6 @@ describe('the app domain model', () => {
     expectTypeOf(App).instance.toHaveProperty('customEmailConfirmationAction').toBeString;
     expectTypeOf(App).instance.toHaveProperty('customPasswordResetAction').toBeString;
     expectTypeOf(App).instance.toHaveProperty('useCustomSMTPServer').toBeBoolean;
-    expectTypeOf(App).instance.toHaveProperty('smtpServerSettings');
     expectTypeOf(App).instance.toHaveProperty('smtpServerSettings').toBeObject;
     expectTypeOf(App).instance.toHaveProperty('accessDuration').toBeNumber;
     expectTypeOf(App).instance.toHaveProperty('displayInGallery').toBeBoolean;
