@@ -22,7 +22,6 @@ export interface IApp {
   customPasswordResetAction: string | null;
   useCustomSMTPServer: boolean | null;
   smtpServerSettings: ISmtpServerSettings | null;
-  userCount: number | null;
   timeFrame: TimeFrame | null;
   accessDuration: number | null;
   displayInGallery: boolean | null;
@@ -30,4 +29,6 @@ export interface IApp {
   dateUpdated: Date | null;
   users: User[] | null;
   isEditing: boolean | null;
+
+  get userCount(): number | null;
 }

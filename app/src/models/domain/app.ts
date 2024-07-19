@@ -23,7 +23,6 @@ export class App implements IApp {
   customPasswordResetAction: string | null;
   useCustomSMTPServer: boolean | null;
   smtpServerSettings: ISmtpServerSettings | null;
-  userCount: number | null;
   timeFrame: TimeFrame | null;
   accessDuration: number | null;
   displayInGallery: boolean | null;
@@ -31,6 +30,14 @@ export class App implements IApp {
   dateUpdated: Date | null;
   users: User[] | null;
   isEditing: boolean | null;
+
+  get userCount(): number | null {
+    if (this.users !== null) {
+      return this.users.length;
+    } else {
+      return null;
+    }
+  }
 
   constructor(
     id?: number,
@@ -51,7 +58,6 @@ export class App implements IApp {
     customPasswordResetAction?: string,
     useCutomSMTPServer?: boolean,
     smtpServerSettings?: ISmtpServerSettings,
-    userCount?: number,
     timeFrame?: number,
     accessDuration?: number,
     displayInGallery?: boolean,
@@ -91,7 +97,6 @@ export class App implements IApp {
     smtpServerSettings
       ? (this.smtpServerSettings = smtpServerSettings)
       : (this.smtpServerSettings = null);
-    userCount ? (this.userCount = userCount) : (this.userCount = null);
     timeFrame
       ? timeFrame === 1
         ? (this.timeFrame = TimeFrame.SECONDS)
