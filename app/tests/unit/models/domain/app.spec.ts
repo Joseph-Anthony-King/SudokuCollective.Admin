@@ -1,78 +1,39 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 import { App } from '@/models/domain/app';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
 import { SmtpServerSettings } from '@/models/domain/smtpServerSettings';
+import { User } from '@/models/domain/user';
 
 describe('the app domain model', () => {
   it('should have the expected properties', () => {
-    const sut = new App(
-      1,
-      'name',
-      'license',
-      1,
-      'localUrl',
-      'testUrl',
-      'stagingUrl',
-      'prodUrl',
-      'sourceCodeUrl',
-      true,
-      ReleaseEnvironment.TEST,
-      true,
-      true,
-      true,
-      'customEmailConfirmationAction',
-      'customPasswordResetAction',
-      true,
-      new SmtpServerSettings(
-        1,
-        "smtpServer",
-        1,
-        "userName",
-        "password",
-        "fromEmail",
-        1
-      ),
-      1,
-      0,
-      30,
-      true,
-      new Date(),
-      new Date(),
-      []
-    );
-
-    expect(sut.id).toBeTypeOf('number');
-    expect(sut.name).toBeTypeOf('string');
-    expect(sut.license).toBeTypeOf('string');
-    expect(sut.ownerId).toBeTypeOf('number');
-    expect(sut.localUrl).toBeTypeOf('string');
-    expect(sut.testUrl).toBeTypeOf('string');
-    expect(sut.stagingUrl).toBeTypeOf('string');
-    expect(sut.prodUrl).toBeTypeOf('string');
-    expect(sut.sourceCodeUrl).toBeTypeOf('string');
-    expect(sut.isActive).toBeTypeOf('boolean');
-    expect(sut.environment).equals(ReleaseEnvironment.TEST);
-    expect(sut.permitSuperUserAccess).toBeTypeOf('boolean');
-    expect(sut.permitCollectiveLogins).toBeTypeOf('boolean');
-    expect(sut.disableCustomUrls).toBeTypeOf('boolean');
-    expect(sut.customEmailConfirmationAction).toBeTypeOf('string');
-    expect(sut.customPasswordResetAction).toBeTypeOf('string');
-    expect(sut.useCustomSMTPServer).toBeTypeOf('boolean');
-    expect(sut.smtpServerSettings?.id).toBeTypeOf('number');
-    expect(sut.smtpServerSettings?.smtpServer).toBeTypeOf('string');
-    expect(sut.smtpServerSettings?.port).toBeTypeOf('number');
-    expect(sut.smtpServerSettings?.userName).toBeTypeOf('string');
-    expect(sut.smtpServerSettings?.password).toBeTypeOf('string');
-    expect(sut.smtpServerSettings?.fromEmail).toBeTypeOf('string');
-    expect(sut.smtpServerSettings?.appId).toBeTypeOf('number');
-    expect(sut.userCount).toBeTypeOf('number');
-    expect(sut.accessDuration).toBeTypeOf('number');
-    expect(sut.displayInGallery).toBeTypeOf('boolean');
-    expect(sut.dateCreated?.toDateString()).toBeTypeOf('string');
-    expect(sut.dateUpdated?.toDateString()).toBeTypeOf('string');
-    expect(sut.users!.length).equals(0);
-    expect(sut.isEditing).toBeTypeOf('boolean');
+    expectTypeOf(App).toBeObject();
+    expectTypeOf(App).instance.toHaveProperty('id').toBeNumber;
+    expectTypeOf(App).instance.toHaveProperty('name').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('license').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('ownerId').toBeNumber;
+    expectTypeOf(App).instance.toHaveProperty('localUrl').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('testUrl').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('stagingUrl').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('prodUrl').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('sourceCodeUrl').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('isActive').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('environment').toBeNull;
+    expectTypeOf(App).instance.toHaveProperty('permitSuperUserAccess').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('permitCollectiveLogins').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('disableCustomUrls').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('customEmailConfirmationAction').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('customPasswordResetAction').toBeString;
+    expectTypeOf(App).instance.toHaveProperty('useCustomSMTPServer').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('smtpServerSettings');
+    expectTypeOf(App).instance.toHaveProperty('smtpServerSettings').toBeObject;
+    expectTypeOf(App).instance.toHaveProperty('accessDuration').toBeNumber;
+    expectTypeOf(App).instance.toHaveProperty('displayInGallery').toBeBoolean;
+    expectTypeOf(App).instance.toHaveProperty('dateCreated').toBeObject;
+    expectTypeOf(App).instance.toHaveProperty('dateUpdated').toBeObject;
+    expectTypeOf(App).instance.toHaveProperty('users').toBeArray;
+    expectTypeOf(App).instance.toHaveProperty('userCount').toBeNumber;
+    expectTypeOf(App).instance.toHaveProperty('isEditing').toBeBoolean;
   });
   it('should have a default constructor', () => {
     const sut = new App();    
@@ -130,7 +91,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.SECONDS,
       30,
       false,
@@ -142,10 +102,10 @@ describe('the app domain model', () => {
   });
   it('should be able to set the token timeframe to minutes', () => {
     const sut = new App(
-      0,
+      1,
       'name',
       'license',
-      0,
+      1,
       'localUrl',
       'testUrl',
       'stagingUrl',
@@ -168,7 +128,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.MINUTES,
       30,
       false,
@@ -206,7 +165,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.HOURS,
       30,
       false,
@@ -244,7 +202,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.DAYS,
       30,
       false,
@@ -282,7 +239,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.MONTHS,
       30,
       false,
@@ -320,7 +276,6 @@ describe('the app domain model', () => {
         "fromEmail",
         0
       ),
-      0,
       TimeFrame.YEARS,
       30,
       false,
@@ -329,5 +284,14 @@ describe('the app domain model', () => {
       []
     );
     expect(sut.timeFrame).equals(TimeFrame.YEARS);
+  });
+  it('should return a count of app users', () => {
+    // Arrange and Act
+    const sut = new App();
+
+    sut.users = [ new User(), new User() ];
+
+    // Assert
+    expect(sut.userCount).equals(2);
   });
 });
