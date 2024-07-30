@@ -31,10 +31,18 @@ export const useUserStore = defineStore('userStore', () => {
 
   //#region Getters
   const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
-  const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn));
-  const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggingIn));
-  const getUserIsSignedUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSignedUp));
-  const getUserIsSigningUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSigningUp));
+  const getUserIsLoggedIn: ComputedRef<boolean> = computed(() =>
+    toRaw(user.value.isLoggedIn!),
+  );
+  const getUserIsLoggingIn: ComputedRef<boolean> = computed(() =>
+    toRaw(user.value.isLoggingIn!),
+  );
+  const getUserIsSignedUp: ComputedRef<boolean> = computed(() =>
+    toRaw(user.value.isSignedUp!),
+  );
+  const getUserIsSigningUp: ComputedRef<boolean> = computed(() =>
+    toRaw(user.value.isSigningUp!),
+  );
   const getConfirmedUserName: ComputedRef<string> = computed(() =>
     confirmedUserName.value ? toRaw(confirmedUserName.value) : '',
   );
@@ -91,7 +99,7 @@ export const useUserStore = defineStore('userStore', () => {
     return response.isSuccess;
   };
   const getUserAsync = async (): Promise<boolean> => {
-    const response: IServicePayload = await UsersService.getUserAsync(user.value.id);
+    const response: IServicePayload = await UsersService.getUserAsync(user.value.id!);
     if (response.isSuccess) {
       updateUser(response.user);
       updateServiceMessage(response.message);
@@ -107,7 +115,7 @@ export const useUserStore = defineStore('userStore', () => {
     return response.isSuccess;
   };
   const deleteUserAsync = async (): Promise<boolean> => {
-    const response: IServicePayload = await UsersService.deleteUserAsync(user.value.id);
+    const response: IServicePayload = await UsersService.deleteUserAsync(user.value.id!);
     if (response.isSuccess) {
       const { clearStores } = commonUtitlities();
       clearStores();
@@ -136,7 +144,7 @@ export const useUserStore = defineStore('userStore', () => {
   };
   const resendEmailConfirmationRequestAsync = async (): Promise<boolean> => {
     const response: IServicePayload = await UsersService.putResendEmailConfirmationAsync(
-      user.value.id,
+      user.value.id!,
     );
     updateServiceMessage(response.message);
     return response.isSuccess;
@@ -165,7 +173,9 @@ export const useUserStore = defineStore('userStore', () => {
     return response.isSuccess;
   };
   const resendPasswordResetAsync = async (): Promise<boolean> => {
-    const response: IServicePayload = await UsersService.putResendPasswordResetAsync(user.value.id);
+    const response: IServicePayload = await UsersService.putResendPasswordResetAsync(
+      user.value.id!,
+    );
     updateServiceMessage(response.message);
     return response.isSuccess;
   };

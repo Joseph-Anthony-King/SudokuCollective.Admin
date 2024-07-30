@@ -5,8 +5,15 @@ import { useUserStore } from '@/stores/userStore';
 import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
 
 export class AppsPort {
-  static async putUpdateAppAsync(data: IUpdateAppRequestData): Promise<AxiosResponse | AxiosError> {
+  static async putUpdateAppAsync(
+    data: IUpdateAppRequestData,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -56,8 +63,14 @@ export class AppsPort {
     }
   }
 
-  static async getMyAppsAsync(): Promise<AxiosResponse | AxiosError> {
+  static async getMyAppsAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -87,8 +100,14 @@ export class AppsPort {
     }
   }
 
-  static async getMyRegisteredAppsAsync(): Promise<AxiosResponse | AxiosError> {
+  static async getMyRegisteredAppsAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 

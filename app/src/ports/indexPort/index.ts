@@ -2,8 +2,13 @@ import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { Endpoints } from '@/ports/indexPort/endpoints';
 
 export class IndexPort {
-  static async getMissionStatementAsync(): Promise<AxiosResponse | AxiosError> {
+  static async getMissionStatementAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'get',
         url: Endpoints.getEndpoint,

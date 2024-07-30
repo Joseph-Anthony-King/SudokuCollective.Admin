@@ -3,8 +3,14 @@ import type { ISignupRequestData } from '@/interfaces/requests/iSignupRequestDat
 import { Endpoints } from '@/ports/signupPort/endpoints';
 
 export class SignupPort {
-  static async postAsync(data: ISignupRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postAsync(
+    data: ISignupRequestData,
+    testErrorHandling: boolean | null = null
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'post',
         url: Endpoints.signupEndpoint,
@@ -34,8 +40,12 @@ export class SignupPort {
 
   static async putResendEmailConfirmationAsync(
     requestorId: number,
+    testErrorHandling: boolean | null = null
   ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'put',
         url: Endpoints.resendEmailConfirmationEndpoint,

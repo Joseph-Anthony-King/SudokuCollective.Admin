@@ -3,8 +3,14 @@ import { Endpoints } from '@/ports/loginPort/endpoints';
 import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 
 export class LoginPort {
-  static async postLoginAsync(data: ILoginRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postLoginAsync(
+    data: ILoginRequestData,
+    testErrorHandling: boolean | null = null
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'post',
         url: `${Endpoints.loginEndpoint}`,
@@ -28,8 +34,14 @@ export class LoginPort {
     }
   }
 
-  static async postConfirmUserNameAsync(email: string): Promise<AxiosResponse | AxiosError> {
+  static async postConfirmUserNameAsync(
+    email: string,
+    testErrorHandling: boolean | null = null
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'post',
         url: `${Endpoints.confirmUserNameEndpoint}`,
