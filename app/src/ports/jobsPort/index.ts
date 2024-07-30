@@ -3,8 +3,14 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import { Endpoints } from '@/ports/jobsPort/endpoints';
 
 export class JobsPort {
-  static async getJobAsync(jobId: string): Promise<AxiosResponse | AxiosError> {
+  static async getJobAsync(
+    jobId: string,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'get',
         url: `${Endpoints.getEndpoint}${jobId}`,
@@ -23,8 +29,14 @@ export class JobsPort {
     }
   }
 
-  static async pollJobAsync(jobId: string): Promise<AxiosResponse | AxiosError> {
+  static async pollJobAsync(
+    jobId: string,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'get',
         url: `${Endpoints.pollEndpoint}${jobId}`,

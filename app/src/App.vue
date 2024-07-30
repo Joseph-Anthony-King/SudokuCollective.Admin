@@ -2,7 +2,7 @@
   <v-app>
     <NavigationDrawer
       :navDrawerStatus="navDrawerStatus"
-      :userLoggedIn="user.isLoggedIn"
+      :userLoggedIn="user.isLoggedIn!"
       @update:modelValue="(modelValue: boolean) => closeNavDrawerHandler(modelValue)" />
     <v-content>
       <AppBar
@@ -20,7 +20,7 @@
           hide-overlay
           transition="dialog-top-transition">
           <LoginForm
-            :formStatus="userIsLoggingIn"
+            :formStatus="userIsLoggingIn!"
             v-on:cancel-login="user.isLoggingIn = false"
             v-on:obtain-login-assistance="openLoginAssistanceHandler"
             v-on:redirect-to-signup="redirectToSignUpHandler" />
@@ -44,7 +44,7 @@
           hide-overlay
           transition="dialog-top-transition">
           <LoginAssistanceForm
-            :formStatus="userObtainingLoginAssistance"
+            :formStatus="userObtainingLoginAssistance!"
             v-on:return-to-login="closeLoginAssistanceHandler" />
         </v-dialog>
         <v-dialog
@@ -258,10 +258,10 @@
 
       //#region Login/logout functionality
       const userObtainingLoginAssistance: ComputedRef<boolean> = computed(() => {
-        return user.value?.isObtainingAssistance && !processingStatus.value;
+        return user.value?.isObtainingAssistance! && !processingStatus.value;
       });
       const userIsLoggingIn: ComputedRef<boolean> = computed(() => {
-        return user.value?.isLoggingIn && !processingStatus.value;
+        return user.value?.isLoggingIn! && !processingStatus.value;
       });
       const logoutHandler = (event: Event | null = null): void => {
         event?.preventDefault();
@@ -322,7 +322,7 @@
         () => user.value.isLoggingIn,
         (newValue, oldValue) => {
           if (getUserIsLoggingIn.value !== newValue) {
-            updateUserIsLoggingIn(newValue);
+            updateUserIsLoggingIn(newValue!);
           }
         },
       );
@@ -383,13 +383,13 @@
       //#region Sign up functionality
       const isRedirect: Ref<boolean> = ref(false);
       const userIsSigningUp: ComputedRef<boolean> = computed(() => {
-        return user.value?.isSigningUp && !processingStatus.value;
+        return user.value?.isSigningUp! && !processingStatus.value;
       });
       watch(
         () => user.value.isSigningUp,
         (newValue, oldValue) => {
           if (getUserIsSigningUp.value !== newValue) {
-            updateUserIsSigningUp(newValue);
+            updateUserIsSigningUp(newValue!);
           }
         },
         {

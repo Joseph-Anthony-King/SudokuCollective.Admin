@@ -2,7 +2,7 @@
   <v-navigation-drawer
     color="secondary"
     :model-value="navDrawerStatus"
-    :permanent="user.isLoggedIn && $vuetify.display.mdAndUp"
+    :permanent="user.isLoggedIn! && $vuetify.display.mdAndUp"
     v-if="userLoggedIn">
     <v-list>
       <v-list-item class="list-item">

@@ -6,8 +6,15 @@ import { useGlobalStore } from '@/stores/globalStore';
 import { useUserStore } from '@/stores/userStore/index';
 
 export class UsersPort {
-  static async getUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
+  static async getUserAsync(
+    id: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -39,8 +46,13 @@ export class UsersPort {
 
   static async putUpdateUserAsync(
     data: IUpdateUserRequestData,
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -76,8 +88,15 @@ export class UsersPort {
     }
   }
 
-  static async deleteUserAsync(id: number): Promise<AxiosResponse | AxiosError> {
+  static async deleteUserAsync(
+    id: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -107,8 +126,15 @@ export class UsersPort {
     }
   }
 
-  static async getConfirmEmailAsync(token: string): Promise<AxiosResponse | AxiosError> {
+  static async getConfirmEmailAsync(
+    token: string,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const config = {
         method: 'get',
         url: `${Endpoints.confirmEmailEndpoint.replace('{{token}}', token)}`,
@@ -127,8 +153,12 @@ export class UsersPort {
     }
   }
 
-  static async putCancelEmailConfirmationRequestAsync(): Promise<AxiosResponse | AxiosError> {
+  static async putCancelEmailConfirmationRequestAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -158,33 +188,15 @@ export class UsersPort {
     }
   }
 
-  static async putResetPasswordAsync(
-    data: IResetPasswordRequestData,
+  static async postRequestPasswordResetAsync(
+    email: string,
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
-      const config = {
-        method: 'put',
-        url: `${Endpoints.resetPasswordEndpoint.replace('{{token}}', data.token)}`,
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        data: {
-          newPassword: data.newPassword,
-        },
-      };
-      return axios(config);
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('error: ', error);
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
       }
-      return error as AxiosError;
-    }
-  }
 
-  static async postRequestPasswordResetAsync(email: string): Promise<AxiosResponse | AxiosError> {
-    try {
       const config = {
         method: 'post',
         url: `${Endpoints.requestPasswordResetEndpoint}`,
@@ -207,8 +219,45 @@ export class UsersPort {
     }
   }
 
-  static async putResendPasswordResetAsync(userId: number): Promise<AxiosResponse | AxiosError> {
+  static async putResetPasswordAsync(
+    data: IResetPasswordRequestData,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
+      const config = {
+        method: 'put',
+        url: `${Endpoints.resetPasswordEndpoint.replace('{{token}}', data.token)}`,
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        data: {
+          newPassword: data.newPassword,
+        },
+      };
+      return axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putResendPasswordResetAsync(
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const config = {
         method: 'put',
         url: `${Endpoints.resendPasswordResetEndpoint}`,
@@ -231,8 +280,12 @@ export class UsersPort {
     }
   }
 
-  static async putCancelPasswordResetAsync(): Promise<AxiosResponse | AxiosError> {
+  static async putCancelPasswordResetAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
@@ -262,8 +315,12 @@ export class UsersPort {
     }
   }
 
-  static async putCancelAllEmailRequestsAsync(): Promise<AxiosResponse | AxiosError> {
+  static async putCancelAllEmailRequestsAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 

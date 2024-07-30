@@ -1,4 +1,4 @@
-import { AxiosError, type AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { useGlobalStore } from '@/stores/globalStore/index';
 import { useServiceFailStore } from '@/stores/serviceFailStore';
 

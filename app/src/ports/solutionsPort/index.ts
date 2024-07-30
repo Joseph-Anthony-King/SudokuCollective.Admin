@@ -4,8 +4,14 @@ import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestDat
 import { abortSignal } from '@/ports/common';
 
 export class SolutionsPort {
-  static async postSolveAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postSolveAsync(
+    matrix: ISudokuRequestData,
+    testErrorHandling: boolean | null = null
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'post',
         url: Endpoints.solveEndpoint,
@@ -36,8 +42,11 @@ export class SolutionsPort {
     }
   }
 
-  static async getGenerateAsync(): Promise<AxiosResponse | AxiosError> {
+  static async getGenerateAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
       const config = {
         method: 'get',
         url: Endpoints.generateEndpoint,

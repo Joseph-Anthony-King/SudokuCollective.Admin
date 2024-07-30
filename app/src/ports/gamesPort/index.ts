@@ -5,8 +5,15 @@ import { abortSignal, manualAbortSignal } from '@/ports/common';
 import type { ISudokuRequestData } from '@/interfaces/requests/iSudokuRequestData';
 
 export class GamesPort {
-  static async getCreateGameAsync(difficultyLevel: number): Promise<AxiosResponse | AxiosError> {
+  static async getCreateGameAsync(
+    difficultyLevel: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const config = {
         method: 'get',
         url: `${Endpoints.createEndpoint}${difficultyLevel}`,
@@ -26,8 +33,15 @@ export class GamesPort {
       return error as AxiosError;
     }
   }
-  static async postCheckGameAsync(matrix: ISudokuRequestData): Promise<AxiosResponse | AxiosError> {
+  static async postCheckGameAsync(
+    matrix: ISudokuRequestData,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
       const config = {
         method: 'post',
         url: Endpoints.checkEndpoint,
