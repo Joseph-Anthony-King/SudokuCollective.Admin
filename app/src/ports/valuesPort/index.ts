@@ -2,7 +2,9 @@ import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { Endpoints } from '@/ports/valuesPort/endpoints';
 
 export class ValuesPort {
-  static async getValuesAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
+  static async getValuesAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);

@@ -86,7 +86,7 @@ describe('the gamesPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: Game was not created.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',

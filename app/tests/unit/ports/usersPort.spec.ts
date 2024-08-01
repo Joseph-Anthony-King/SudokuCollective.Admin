@@ -125,7 +125,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: User was not found.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -279,7 +279,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: User was not updated.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -386,7 +386,7 @@ describe('the usersPort port', () => {
           isSuccess: true,
           isFromCache: false,
           message: 'Status Code 200: User was deleted.',
-          payload: [ ]
+          payload: []
         }, {
           status: 200,
           statusText: 'OK',
@@ -426,7 +426,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: User was not deleted.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -469,7 +469,7 @@ describe('the usersPort port', () => {
             isSuccess: true,
             isFromCache: false,
             message: 'Status Code 200: User was deleted.',
-            payload: [ ]
+            payload: []
           }, {
             status: 200,
             statusText: 'OK',
@@ -598,7 +598,7 @@ describe('the usersPort port', () => {
             isSuccess: true,
             isFromCache: false,
             message: 'Status Code 200: Email was confirmed.',
-            payload: [ ]
+            payload: []
           }, {
             status: 200,
             statusText: 'OK',
@@ -687,7 +687,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Email confirmation request was not cancelled.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -831,7 +831,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Unable to process the password reset request.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -978,7 +978,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Password was not reset.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'OK',
@@ -1076,7 +1076,7 @@ describe('the usersPort port', () => {
           isSuccess: true,
           isFromCache: false,
           message: 'Status Code 200: Password reset email was resent.',
-          payload: [ ]
+          payload: []
         }, {
           status: 200,
           statusText: 'OK',
@@ -1108,7 +1108,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Password reset email was not resent.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -1144,7 +1144,7 @@ describe('the usersPort port', () => {
             isSuccess: true,
             isFromCache: false,
             message: 'Status Code 200: Password reset email was resent.',
-            payload: [ ]
+            payload: []
           }, {
             status: 200,
             statusText: 'OK',
@@ -1176,7 +1176,7 @@ describe('the usersPort port', () => {
           isSuccess: true,
           isFromCache: false,
           message: 'Status Code 200: Password reset request was cancelled.',
-          payload: [ ]
+          payload: []
         }, {
           status: 200,
           statusText: 'OK',
@@ -1208,7 +1208,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Password reset request was not cancelled.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -1243,7 +1243,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Password reset request was not cancelled.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -1275,7 +1275,7 @@ describe('the usersPort port', () => {
           isSuccess: true,
           isFromCache: false,
           message: 'Status Code 200: Email confirmation request was cancelled and Password reset request was cancelled.',
-          payload: [ ]
+          payload: []
         }, {
           status: 200,
           statusText: 'OK',
@@ -1307,7 +1307,7 @@ describe('the usersPort port', () => {
             isSuccess: false,
             isFromCache: false,
             message: 'Status Code 404: Email confirmation request was not cancelled and Password reset request was not cancelled.',
-            payload: [ ]
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -1342,7 +1342,7 @@ describe('the usersPort port', () => {
             isSuccess: true,
             isFromCache: false,
             message: 'Status Code 200: Email confirmation request was cancelled and Password reset request was cancelled.',
-            payload: [ ]
+            payload: []
           }, {
             status: 200,
             statusText: 'OK',

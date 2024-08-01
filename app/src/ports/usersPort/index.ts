@@ -153,7 +153,9 @@ export class UsersPort {
     }
   }
 
-  static async putCancelEmailConfirmationRequestAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
+  static async putCancelEmailConfirmationRequestAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
@@ -280,7 +282,9 @@ export class UsersPort {
     }
   }
 
-  static async putCancelPasswordResetAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
+  static async putCancelPasswordResetAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
@@ -315,7 +319,9 @@ export class UsersPort {
     }
   }
 
-  static async putCancelAllEmailRequestsAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
+  static async putCancelAllEmailRequestsAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);

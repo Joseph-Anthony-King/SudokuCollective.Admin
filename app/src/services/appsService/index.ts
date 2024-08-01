@@ -15,24 +15,29 @@ export class AppsService {
     try {
       const response = (await AppsPort.putUpdateAppAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
-        result.isSuccess = response.data.isSuccess;
-        result.message = response.data.message;
         result.app = response.data.payload[0];
+      } else {
+        throw new Error(response.data.message);
       }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -45,13 +50,11 @@ export class AppsService {
     try {
       const response = (await AppsPort.getMyAppsAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
-        result.isSuccess = response.data.isSuccess;
-        result.message = response.data.message;
         result.apps = Array<IApp>();
         response.data.payload.forEach((app: any) => {
           const users = Array<User>();
@@ -108,18 +111,22 @@ export class AppsService {
           );
         });
       } else {
-        result.isSuccess = response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(response);
+        throw new Error(response.data.message);
       }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -132,13 +139,11 @@ export class AppsService {
     try {
       const response = (await AppsPort.getMyRegisteredAppsAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
-        result.isSuccess = response.data.isSuccess;
-        result.message = response.data.message;
         result.apps = Array<IApp>();
         response.data.payload.forEach((app: any) => {
           const users = Array<User>();
@@ -195,18 +200,22 @@ export class AppsService {
           );
         });
       } else {
-        result.isSuccess = response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(response);
+        throw new Error(response.data.message);
       }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
