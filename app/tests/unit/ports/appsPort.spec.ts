@@ -65,31 +65,31 @@ describe('the appsPort port', () => {
           isSuccess: true, 
           isFromCache: false, 
           message: 'Status Code 200: App was updated.', 
-          payload: [ new App(
-            1,
-            'test-app',
-            '7700a640-6816-477c-9085-95d2df94284b',
-            1,
-            'https://localhost:8080',
-            undefined,
-            undefined,
-            undefined,
-            'https://github.com/test-user/test-repo',
-            true,
-            ReleaseEnvironment.LOCAL,
-            true,
-            false,
-            true,
-            undefined,
-            undefined,
-            false,
-            undefined,
-            TimeFrame.DAYS,
-            1,
-            false,
-            new Date(new Date().setDate(new Date().getDate() - 7)),
-            new Date()
-          ) ] 
+          payload: [{
+            id: 1,
+            name: 'test-app',
+            license: '7700a640-6816-477c-9085-95d2df94284b',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-repo',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+            dateUpdated: new Date().toISOString()
+          }] 
         }, {
           status: 200,
           statusText: 'OK',
@@ -144,7 +144,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: App was not updated.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -204,7 +204,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: App was not updated.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -259,7 +259,55 @@ describe('the appsPort port', () => {
           isSuccess: true, 
           isFromCache: false, 
           message: 'Status Code 200: Apps were found.', 
-          payload: [ new App(), new App() ] 
+          payload: [{
+            id: 1,
+            name: 'test-app',
+            license: '7700a640-6816-477c-9085-95d2df94284b',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-app',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+            dateUpdated: new Date().toISOString()
+          }, {
+            id: 2,
+            name: 'test-app-2',
+            license: '5a4a196a-897d-4f5a-b971-053503be6e2a',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-app-2',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString(),
+            dateUpdated: undefined
+          }] 
         }, {
           status: 200,
           statusText: 'OK',
@@ -292,7 +340,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: Apps were not found.', 
-            payload: [ ] 
+            payload: []
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -331,7 +379,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: Apps were not found.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -364,7 +412,33 @@ describe('the appsPort port', () => {
           isSuccess: true, 
           isFromCache: false, 
           message: 'Status Code 200: Apps were found.', 
-          payload: [ new App(), new App() ] 
+          payload: [ 
+            {
+              id: 3,
+              name: 'test-app-3',
+              license: '867e81cd-4dcb-48f1-a22e-cdbb45159d1e',
+              ownerId: 2,
+              localUrl: 'https://localhost:8080',
+              testUrl: undefined,
+              stagingUrl: undefined,
+              prodUrl: undefined,
+              sourceCodeUrl: 'https://github.com/test-user/test-app-3',
+              isActive: true,
+              environment: ReleaseEnvironment.LOCAL,
+              permitSuperUserAccess: true,
+              permitCollectiveLogins: false,
+              disableCustomUrls: true,
+              customEmailConfirmationAction: undefined,
+              customPasswordResetAction: undefined,
+              useCustomSMTPServer: false,
+              smtpServerSettings: undefined,
+              timeFrame: TimeFrame.DAYS,
+              accessDuration: 1,
+              displayInGallery: false,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+              dateUpdated: new Date().toISOString()
+            } 
+          ] 
         }, {
           status: 200,
           statusText: 'OK',
@@ -386,7 +460,7 @@ describe('the appsPort port', () => {
     expect(result.data.isSuccess).toBe(true);
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Apps were found.');
-    expect(result.data.payload).toHaveLength(2);
+    expect(result.data.payload).toHaveLength(1);
   });
   it('should catch any errors thrown by the getMyRegisteredAppsAsync method', async () => {
     try {
@@ -397,7 +471,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: Apps were not found.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',
@@ -436,7 +510,7 @@ describe('the appsPort port', () => {
             isSuccess: false, 
             isFromCache: false, 
             message: 'Status Code 404: Apps were not found.', 
-            payload: [ ] 
+            payload: [] 
           }, {
             status: 404,
             statusText: 'NOT FOUND',

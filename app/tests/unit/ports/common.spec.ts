@@ -7,7 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { abortSignal, manualAbortSignal } from '@/ports/common';
 import { useGlobalStore } from '@/stores/globalStore';
 
-describe('common port abortSignal method', () => {
+describe('the common port file', () => {
   let testingPinia: TestingPinia;
   beforeEach(() => {
     testingPinia = createTestingPinia({
@@ -18,7 +18,7 @@ describe('common port abortSignal method', () => {
     globalStore.$state.processingStatus = true;
     setActivePinia(testingPinia);
   });
-  it('should obtain an Axios abort signal', async () => {
+  it('should obtain an Axios abort signal with the abortSignal method', async () => {
     const delayTimeout = 10000 // 10 seconds
     const abortTimeout = 1000 // 1 second
     try {
@@ -56,7 +56,7 @@ describe('common port abortSignal method', () => {
       expect(message).equals('canceled');
     }
   });
-  it('should return a manual abort signal', () => {
+  it('should return a manual abort signal with the manualAbortSignal method', () => {
     let result = false
     try {
       // Arrange and Act

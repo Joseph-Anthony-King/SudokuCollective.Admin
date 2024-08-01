@@ -5,7 +5,7 @@ import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData'
 export class LoginPort {
   static async postLoginAsync(
     data: ILoginRequestData,
-    testErrorHandling: boolean | null = null
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
@@ -36,7 +36,7 @@ export class LoginPort {
 
   static async postConfirmUserNameAsync(
     email: string,
-    testErrorHandling: boolean | null = null
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {

@@ -6,7 +6,7 @@ import { abortSignal } from '@/ports/common';
 export class SolutionsPort {
   static async postSolveAsync(
     matrix: ISudokuRequestData,
-    testErrorHandling: boolean | null = null
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
@@ -42,7 +42,9 @@ export class SolutionsPort {
     }
   }
 
-  static async getGenerateAsync(testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
+  static async getGenerateAsync(
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);

@@ -31,18 +31,10 @@ export const useUserStore = defineStore('userStore', () => {
 
   //#region Getters
   const getUser: ComputedRef<User> = computed(() => toRaw(user.value));
-  const getUserIsLoggedIn: ComputedRef<boolean> = computed(() =>
-    toRaw(user.value.isLoggedIn!),
-  );
-  const getUserIsLoggingIn: ComputedRef<boolean> = computed(() =>
-    toRaw(user.value.isLoggingIn!),
-  );
-  const getUserIsSignedUp: ComputedRef<boolean> = computed(() =>
-    toRaw(user.value.isSignedUp!),
-  );
-  const getUserIsSigningUp: ComputedRef<boolean> = computed(() =>
-    toRaw(user.value.isSigningUp!),
-  );
+  const getUserIsLoggedIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggedIn!));
+  const getUserIsLoggingIn: ComputedRef<boolean> = computed(() => toRaw(user.value.isLoggingIn!));
+  const getUserIsSignedUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSignedUp!));
+  const getUserIsSigningUp: ComputedRef<boolean> = computed(() => toRaw(user.value.isSigningUp!));
   const getConfirmedUserName: ComputedRef<string> = computed(() =>
     confirmedUserName.value ? toRaw(confirmedUserName.value) : '',
   );

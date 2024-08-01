@@ -5,7 +5,7 @@ import { Endpoints } from '@/ports/signupPort/endpoints';
 export class SignupPort {
   static async postAsync(
     data: ISignupRequestData,
-    testErrorHandling: boolean | null = null
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
@@ -40,7 +40,7 @@ export class SignupPort {
 
   static async putResendEmailConfirmationAsync(
     requestorId: number,
-    testErrorHandling: boolean | null = null
+    testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
       if (testErrorHandling) {
