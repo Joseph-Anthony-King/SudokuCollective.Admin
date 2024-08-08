@@ -12,12 +12,13 @@ export class LoginService {
     try {
       const response = (await LoginPort.postLoginAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         result.user = new User(
           response.data.payload[0].user.id,
           response.data.payload[0].user.userName,
@@ -40,17 +41,20 @@ export class LoginService {
         result.tokenExpirationDate = response.data.payload[0].tokenExpirationDate;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -80,26 +84,30 @@ export class LoginService {
 
       const response = (await LoginPort.postConfirmUserNameAsync(email)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         result.confirmedUserName = response.data.payload[0].userName;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
