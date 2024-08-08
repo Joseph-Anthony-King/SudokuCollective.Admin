@@ -14,14 +14,20 @@ export class ValuesService {
     try {
       const indexResponse = (await IndexPort.getMissionStatementAsync()) as AxiosResponse;
 
-      if (indexResponse instanceof Error) {
-        throw indexResponse as unknown as AxiosError;
+      if (
+        (<AxiosError>(<unknown>indexResponse)).response !== undefined ||
+        indexResponse instanceof Error
+      ) {
+        throw indexResponse;
       }
 
       const valuesResponse = (await ValuesPort.getValuesAsync()) as AxiosResponse;
 
-      if (valuesResponse instanceof Error) {
-        throw valuesResponse as unknown as AxiosError;
+      if (
+        (<AxiosError>(<unknown>valuesResponse)).response !== undefined ||
+        valuesResponse instanceof Error
+      ) {
+        throw valuesResponse;
       }
 
       if (indexResponse) {
@@ -136,11 +142,13 @@ export class ValuesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
