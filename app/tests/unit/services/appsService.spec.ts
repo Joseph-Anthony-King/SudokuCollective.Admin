@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StaticServiceMethods } from '@/services/common';
 import { AppsPort } from '@/ports/appsPort/index';
 import type { AxiosError, AxiosResponse } from 'axios';
@@ -14,7 +14,7 @@ describe('the appsService service', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
-  it('should update apps using the putUpdateAppAsync method', async () => {
+  it('should update apps by running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(() => {
       return {
@@ -93,7 +93,7 @@ describe('the appsService service', () => {
     expect(result.message).equals('Status Code 200: App was updated.');
     expect(result.app.name).equals('test-app');
   });
-  it('should process AxiosErrors experienced when running the putUpdateAppAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(async () => {
       return {
@@ -150,7 +150,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 404: App was not updated.');
   });
-  it('should process any errors experienced when running the putUpdateAppAsync method', async () => {
+  it('should catch any errors thrown when running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(async () => {
       return new Error("NETWORK ERR");
@@ -190,7 +190,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
   });
-  it('should throw an error is isSuccess if false in the putUpdateAppAsync method', async () => {
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(() => {
       return {
@@ -244,7 +244,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
   });
-  it('should get the apps where the user is the admin using the getMyAppsAsync method', async () => {
+  it('should get the apps where the user is the admin by running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyAppsAsync = vi.fn().mockImplementation(() => {
       return {
@@ -399,7 +399,7 @@ describe('the appsService service', () => {
     expect(result.apps[0].name).equals('test-app');
     expect(result.apps[1].name).equals('test-app-2');
   });
-  it('should process AxiosErrors experienced when running the getMyAppsAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyAppsAsync = vi.fn().mockImplementation(async () => {
       return {
@@ -433,7 +433,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 404: Apps were not found.');
   });
-  it('should process any errors experienced when running the getMyAppsAsync method', async () => {
+  it('should catch any errors thrown when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyAppsAsync = vi.fn().mockImplementation(async () => {
       return new Error("NETWORK ERR");
@@ -451,7 +451,7 @@ describe('the appsService service', () => {
     expect(result.message).equals('NETWORK ERR');
 
   });
-  it('should throw an error is isSuccess if false in the getMyAppsAsync method', async () => {
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyAppsAsync = vi.fn().mockImplementation(() => {
       return {
@@ -482,7 +482,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
   });
-  it('should get the apps where the user is a registered user using the getMyRegisteredAppsAsync method', async () => {
+  it('should get the apps where the user is a registered user by running the getMyRegisteredAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyRegisteredAppsAsync = vi.fn().mockImplementation(() => {
       return {
@@ -577,7 +577,7 @@ describe('the appsService service', () => {
     expect(result.message).equals('Status Code 200: Apps were found.');
     expect(result.apps[0].name).equals('test-app-3');
   });
-  it('should process AxiosErrors experienced when running the getMyRegisteredAppsAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getMyRegisteredAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyRegisteredAppsAsync = vi.fn().mockImplementation(async () => {
       return {
@@ -611,7 +611,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 404: Apps were not found.');
   });
-  it('should process any errors experienced when running the getMyAppsAsync method', async () => {
+  it('should catch any errors thrown when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyRegisteredAppsAsync = vi.fn().mockImplementation(async () => {
       return new Error("NETWORK ERR");
@@ -628,7 +628,7 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
   });
-  it('should throw an error is isSuccess if false in the getMyAppsAsync method', async () => {
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyRegisteredAppsAsync = vi.fn().mockImplementation(() => {
       return {

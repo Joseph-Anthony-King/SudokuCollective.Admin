@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import { setActivePinia } from 'pinia';
@@ -31,7 +31,7 @@ describe('the gamesPort port', () => {
     expect(Endpoints.createEndpoint).equals('https://localhost:5001/api/v1/games/createannonymous?difficultyLevel=');
     expect(Endpoints.checkEndpoint).equals('https://localhost:5001/api/v1/games/checkannonymous');
   });
-  it('should create annonymous games using the getCreateGameAsync method', async () => {
+  it('should create annonymous games by running the getCreateGameAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.get('https://localhost:5001/api/v1/games/createannonymous?difficultyLevel=3', () => {
@@ -53,7 +53,7 @@ describe('the gamesPort port', () => {
                 [ 4, 0, 0, 8, 0, 0, 0, 3, 0 ]
               ]
             }
-          ] 
+          ]
         }, {
           status: 200,
           statusText: 'OK',
@@ -77,7 +77,7 @@ describe('the gamesPort port', () => {
     expect(result.data.message).equals('Status Code 200: Game was created.');
     expect(result.data.payload[0].rows.length).equals(9);
   });
-  it('should catch any errors thrown by Axios in the getCreateGameAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getCreateGameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -113,7 +113,7 @@ describe('the gamesPort port', () => {
       expect(result.message).equals('Status Code 404: Game was not created.');
     }
   });
-  it('should catch any errors thrown by the getCreateGameAsync method', async () => {
+  it('should catch any errors thrown when running the getCreateGameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -161,7 +161,7 @@ describe('the gamesPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should check annonymous games using the postCheckGameAsync method', async () => {
+  it('should check annonymous games by running the postCheckGameAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/games/checkannonymous', () => {
@@ -203,7 +203,7 @@ describe('the gamesPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Game was solved.');
   });
-  it('should catch any errors thrown by Axios in the postCheckGameAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postCheckGameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -250,7 +250,7 @@ describe('the gamesPort port', () => {
       expect(result.message).equals('Status Code 404: Game was not solved.');
     }
   });
-  it('should catch any errors thrown by the postCheckGameAsync method', async () => {
+  it('should catch any errors thrown when running the postCheckGameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(

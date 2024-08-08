@@ -22,11 +22,16 @@ export class GamesService {
 
       let response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.status === 200) {
+        if (!response.data.isSuccess) {
+          throw new Error(response.data.message);
+        }
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         result.game = this.downloadTheGame(response);
       } else if (response.status === 202) {
         const { sleepAsync } = commonUtilities();
@@ -37,8 +42,11 @@ export class GamesService {
 
           const jobResponse = (await JobsPort.pollJobAsync(jobId)) as AxiosResponse;
 
-          if (jobResponse instanceof Error) {
-            throw jobResponse as unknown as AxiosError;
+          if (
+            (<AxiosError>(<unknown>jobResponse)).response !== undefined ||
+            jobResponse instanceof Error
+          ) {
+            throw jobResponse;
           }
 
           if (jobResponse.data.isSuccess) {
@@ -48,23 +56,29 @@ export class GamesService {
 
         response = (await JobsPort.getJobAsync(jobId)) as AxiosResponse;
 
-        if (response.data.isSuccess) {
-          result.game = this.downloadTheGame(response);
+        if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+          throw response;
         }
 
-        if (response instanceof Error) {
-          throw response as unknown as AxiosError;
+        if (response.data.isSuccess) {
+          result.isSuccess = response.data.isSuccess;
+          result.message = response.data.message;
+          result.game = this.downloadTheGame(response);
+        } else {
+          throw new Error(response.data.message);
         }
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -75,10 +89,20 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix);
+      const matrixValid = this.isSudokuMatrixValid(matrix);
 
-      if (matrixNotValid !== null) {
-        throw matrixNotValid;
+      if (!matrixValid) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            status: 500,
+            data: {
+              isSuccess: false,
+              message: 'Sudoku matrix is not valid.',
+            },
+          },
+        } as AxiosError;
       }
 
       const data: ISudokuRequestData = new SudokuRequestData();
@@ -161,21 +185,27 @@ export class GamesService {
 
       const response = (await GamesPort.postCheckGameAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (!response.data.isSuccess) {
+        throw new Error(response.data.message);
       }
 
       result.isSuccess = response.data.isSuccess;
-      result.message = response.data.message.substring(17);
+      result.message = response.data.message;
     } catch (error: any) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -186,10 +216,20 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixNotValid: AxiosError | null = this.sudokuMatixIsNotValid(matrix);
+      const matrixValid = this.isSudokuMatrixValid(matrix);
 
-      if (matrixNotValid !== null) {
-        throw matrixNotValid;
+      if (!matrixValid) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            status: 500,
+            data: {
+              isSuccess: false,
+              message: 'Sudoku matrix is not valid.',
+            },
+          },
+        } as AxiosError;
       }
 
       const data: ISudokuRequestData = new SudokuRequestData();
@@ -272,12 +312,16 @@ export class GamesService {
 
       const response = (await SolutionsPort.postSolveAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (!response.data.isSuccess) {
+        throw new Error(response.data.message);
       }
 
       result.isSuccess = response.data.isSuccess;
-      result.message = response.data.message.substring(17);
+      result.message = response.data.message;
 
       if (response.data.isSuccess) {
         const solvedPuzzle = Array<Array<string>>(9);
@@ -293,11 +337,13 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -310,8 +356,12 @@ export class GamesService {
     try {
       const response = (await SolutionsPort.getGenerateAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (!response.data.isSuccess) {
+        throw new Error(response.data.message);
       }
 
       result.isSuccess = response.data.isSuccess;
@@ -331,11 +381,13 @@ export class GamesService {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -343,43 +395,47 @@ export class GamesService {
   }
 
   static downloadTheGame(response: AxiosResponse): Array<Array<string>> {
-    const game: Array<Array<string>> = Array<Array<string>>();
-    for (let i = 0; i < 9; i++) {
-      game[i] = [];
-      for (let j = 0; j < 9; j++) {
-        game[i][j] = '';
+    try {
+      if (
+        response.data.payload[0].rows === undefined ||
+        response.data.payload[0].rows.length !== 9 ||
+        response.data.payload[0].rows.filter((row: Array<number>) => row.length !== 9).length > 0
+      ) {
+        throw new Error('Rows are invalid.');
       }
-    }
-    let rowIndex = 0;
-    response.data.payload[0].rows.forEach((row: Array<number>) => {
-      let cellIndex = 0;
-      row.forEach((integer) => {
-        if (integer !== 0) {
-          game[rowIndex][cellIndex] = integer.toString();
+
+      const game: Array<Array<string>> = Array<Array<string>>();
+      for (let i = 0; i < 9; i++) {
+        game[i] = [];
+        for (let j = 0; j < 9; j++) {
+          game[i][j] = '';
         }
-        cellIndex++;
+      }
+      let rowIndex = 0;
+      response.data.payload[0].rows.forEach((row: Array<number>) => {
+        let cellIndex = 0;
+        row.forEach((integer) => {
+          if (integer !== 0) {
+            game[rowIndex][cellIndex] = integer.toString();
+          }
+          cellIndex++;
+        });
+        rowIndex++;
       });
-      rowIndex++;
-    });
-    return game;
+      return game;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      throw error;
+    }
   }
 
-  static sudokuMatixIsNotValid(matrix: Array<Array<string>>): AxiosError | null {
+  static isSudokuMatrixValid(matrix: Array<Array<string>>): boolean {
     if (matrix.length !== 9 || matrix.filter((row) => row.length !== 9).length > 0) {
-      const axiosError = {
-        config: {},
-        request: {},
-        response: {
-          status: 500,
-          data: {
-            isSuccess: false,
-            message: 'Sudoku matrix is not valid',
-          },
-        },
-      } as AxiosError;
-      return axiosError;
+      return false;
     } else {
-      return null;
+      return true;
     }
   }
 }

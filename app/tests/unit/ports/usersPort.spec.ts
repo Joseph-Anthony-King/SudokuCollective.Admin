@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, SetupServerApi } from 'msw/node';
 import { setActivePinia } from 'pinia';
@@ -60,7 +60,7 @@ describe('the usersPort port', () => {
     expect(Endpoints.cancelPasswordResetEndpoint).equals('https://localhost:5001/api/v1/users/cancelpasswordreset');
     expect(Endpoints.cancelAllEmailRequestsEndpoint).equals('https://localhost:5001/api/v1/users/cancelallemailrequests');
   });
-  it('should get users using the getUserAsync method', async () => {
+  it('should get users by running the getUserAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/users/1', () => {
@@ -116,7 +116,7 @@ describe('the usersPort port', () => {
     expect(result.data.payload[0].user.userName).equals('userName');
     expect(result.data.payload[0].token).equals('+nb96gt6vU6qE9cTgnqOkA==');
   });
-  it('should catch any errors thrown by Axios in the getUserAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -151,7 +151,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: User was not found.');
     }
   });
-  it('should catch any errors thrown by the getUserAsync method', async () => {
+  it('should catch any errors thrown when running the getUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -207,7 +207,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should update users using the putUpdateUserAsync method', async () => {
+  it('should update users by running the putUpdateUserAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/1', () => {
@@ -270,7 +270,7 @@ describe('the usersPort port', () => {
     expect(result.data.message).equals('Status Code 200: User was updated.');
     expect(result.data.payload[0].user.userName).equals('userName');
   });
-  it('should catch any errors thrown by Axios in the putUpdateUserAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putUpdateUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -314,7 +314,7 @@ describe('the usersPort port', () => {
       
     }
   });
-  it('should catch any errors thrown by the putUpdateUserAsync method', async () => {
+  it('should catch any errors thrown when running the putUpdateUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -378,7 +378,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should delete users using the deleteUserAsync method', async () => {
+  it('should delete users by running the deleteUserAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.delete('https://localhost:5001/api/v1/users/1', () => {
@@ -417,7 +417,7 @@ describe('the usersPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: User was deleted.');
   });
-  it('should catch any errors thrown by Axios in the deleteUserAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the deleteUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -460,7 +460,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: User was not deleted.');
     }
   });
-  it('should catch any errors thrown by the deleteUserAsync method', async () => {
+  it('should catch any errors thrown when running the deleteUserAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -499,7 +499,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should confirm the validity of emails by email confirmation tokens to the API via the getConfirmEmailAsync method', async () => {
+  it('should confirm the validity of emails by email confirmation tokens to the API by running the getConfirmEmailAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.get('https://localhost:5001/api/v1/users/confirmemail/14bbe47c-89ce-44a4-894a-6e12bcef7e9f', () => {
@@ -542,7 +542,7 @@ describe('the usersPort port', () => {
     expect(result.data.message).equals('Status Code 200: Email was confirmed.');
     expect(result.data.payload[0].confirmationEmailSuccessfullySent).toBe(true);
   });
-  it('should catch any errors thrown by Axios in the getConfirmEmailAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getConfirmEmailAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -589,7 +589,7 @@ describe('the usersPort port', () => {
       expect(result.data.payload[0].confirmationEmailSuccessfullySent).toBe(false);
     }
   });
-  it('should catch any errors thrown by the getConfirmEmailAsync method', async () => {
+  it('should catch any errors thrown when running the getConfirmEmailAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -622,7 +622,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should cancel email confirmation requests for the signed in user using the putCancelEmailConfirmationRequestAsync method', async () => {
+  it('should cancel email confirmation requests for the signed in user by running the putCancelEmailConfirmationRequestAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/cancelemailconfirmation', () => {
@@ -678,7 +678,7 @@ describe('the usersPort port', () => {
     expect(result.data.payload[0].user.isEmailConfirmed).toBe(true);
     expect(result.data.payload[0].user.receivedRequestToUpdateEmail).toBe(false);
   });
-  it('should catch any errors thrown by Axios in the putCancelEmailConfirmationRequestAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putCancelEmailConfirmationRequestAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -713,7 +713,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Email confirmation request was not cancelled.');
     }
   });
-  it('should catch any errors thrown by the putCancelEmailConfirmationRequestAsync method', async () => {
+  it('should catch any errors thrown when running the putCancelEmailConfirmationRequestAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -769,7 +769,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should submit user request to update passwords using the postRequestPasswordResetAsync method', async () => {
+  it('should submit user request to update passwords by running the postRequestPasswordResetAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/users/requestpasswordreset', () => {
@@ -822,7 +822,7 @@ describe('the usersPort port', () => {
     expect(result.data.message).equals('Status Code 200: Password reset request was processed, please check your email.');
     expect(result.data.payload[0].user.receivedRequestToUpdatePassword).toBe(true);
   });
-  it('should catch any error thrown by Axios in the postRequestPasswordResetAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postRequestPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -857,7 +857,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Unable to process the password reset request.');
     }
   });
-  it('should catch any errors thrown by the postRequestPasswordResetAsync method', async () => {
+  it('should catch any errors thrown when running the postRequestPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -911,7 +911,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should submit new passwords using the putResetPasswordAsync method', async () => {
+  it('should submit new passwords by running the putResetPasswordAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/resetpassword/14bbe47c-89ce-44a4-894a-6e12bcef7e9f', () => {
@@ -969,7 +969,7 @@ describe('the usersPort port', () => {
     expect(result.data.message).equals('Status Code 200: Password was reset.');
     expect(result.data.payload[0].user.receivedRequestToUpdatePassword).toBe(false);
   });
-  it('should catch any error thrown by Axios in the putResetPasswordAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putResetPasswordAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1009,7 +1009,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Password was not reset.');
     }
   });
-  it('should catch any errors thrown by the putResetPasswordAsync method', async () => {
+  it('should catch any errors thrown when running the putResetPasswordAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1068,7 +1068,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should resubmit password reset requests using the putResendPasswordResetAsync method', async () => {
+  it('should resubmit password reset requests by running the putResendPasswordResetAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/resendpasswordreset', () => {
@@ -1099,7 +1099,7 @@ describe('the usersPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Password reset email was resent.');
   });
-  it('should catch any errors thrown by Axios in the putResendPasswordResetAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putResendPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1135,7 +1135,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Password reset email was not resent.');
     }
   });
-  it('should catch any errors thrown by the putResendPasswordResetAsync method', async () => {
+  it('should catch any errors thrown when running the putResendPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1168,7 +1168,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should cancel password reset requests for the signed in user using the putCancelPasswordResetAsync method', async () => {
+  it('should cancel password reset requests for the signed in user by running the putCancelPasswordResetAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/cancelpasswordreset', () => {
@@ -1199,7 +1199,7 @@ describe('the usersPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Password reset request was cancelled.');
   });
-  it('should catch any errors thrown by Axios in the putCancelPasswordResetAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putCancelPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1234,7 +1234,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Password reset request was not cancelled.');
     }
   });
-  it('should catch any errors thrown by the putCancelPasswordResetAsync method', async () => {
+  it('should catch any errors thrown when running the putCancelPasswordResetAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1267,7 +1267,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should cancel all email confirmation and password reset requests using the putCancelAllEmailRequestsAsync method', async () => {
+  it('should cancel all email confirmation and password reset requests by running the putCancelAllEmailRequestsAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/users/cancelallemailrequests', () => {
@@ -1298,7 +1298,7 @@ describe('the usersPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Email confirmation request was cancelled and Password reset request was cancelled.');
   });
-  it('should catch any errors thrown by Axios in the putCancelAllEmailRequestsAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putCancelAllEmailRequestsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -1333,7 +1333,7 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: Email confirmation request was not cancelled and Password reset request was not cancelled.');
     }
   });
-  it('should catch any errors thrown by the putCancelAllEmailRequestsAsync method', async () => {
+  it('should catch any errors thrown when running the putCancelAllEmailRequestsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(

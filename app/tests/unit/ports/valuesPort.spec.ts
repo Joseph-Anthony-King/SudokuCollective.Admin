@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import type { AxiosError, AxiosResponse } from 'axios';
@@ -17,7 +17,7 @@ describe('the valuesPort port', () => {
     expect(process.env.VITE_APP_API_URL).equals('https://localhost:5001/');
     expect(Endpoints.getEndpoint).equals('https://localhost:5001/api/v1/values');
   });
-  it('should obtain dropdown values using the getValuesAsync method', async () => {
+  it('should obtain dropdown values by running the getValuesAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/values', () => {
@@ -286,7 +286,7 @@ describe('the valuesPort port', () => {
     expect(result.data.payload[0].timeFrames.length).equals(6);
     expect(result.data.payload[0].gallery.length).equals(1);
   });
-  it('should catch any errors thrown by Axios in the getValuesAsync method', async () => {
+  it('should catch any AxiosErrors thrown when running the getValuesAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -321,7 +321,7 @@ describe('the valuesPort port', () => {
       expect(result.message).equals('Status Code 404: Service unavailable.');
     }
   });
-  it('should catch any errors thrown by the getValuesAsync method', async () => {
+  it('should catch any errors thrown when running the getValuesAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(

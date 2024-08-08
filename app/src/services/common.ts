@@ -27,7 +27,7 @@ export class StaticServiceMethods {
         response: {
           data: {
             isSuccess: false,
-            message: 'Number cannot be zero',
+            message: 'Number cannot be zero.',
           },
           status: 500,
           statusText: 'BAD REQUEST',
@@ -47,7 +47,7 @@ export class StaticServiceMethods {
         response: {
           data: {
             isSuccess: false,
-            message: 'String cannot be null or empty',
+            message: 'String cannot be null or empty.',
           },
           status: 500,
           statusText: 'BAD REQUEST',

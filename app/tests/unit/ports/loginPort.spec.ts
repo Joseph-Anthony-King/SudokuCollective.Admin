@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import type { AxiosError, AxiosResponse } from 'axios';
@@ -19,7 +19,7 @@ describe('the loginPort port', () => {
     expect(Endpoints.loginEndpoint).equals('https://localhost:5001/api/v1/login');
     expect(Endpoints.confirmUserNameEndpoint).equals('https://localhost:5001/api/v1/login/confirmusername');
   });
-  it('should login users with when they submit valid credentials using the postLoginAsync method', async () => {
+  it('should login users with when they submit valid credentials by running the postLoginAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/login', () => {
@@ -77,7 +77,7 @@ describe('the loginPort port', () => {
     expect(result.data.payload[0].user.userName).equals('Test User 2');
     expect(result.data.payload[0].token).equals('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjpbIkpvZSBLaW5nIiwiMiIsIjMiXSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVVNFUiIsIm5iZiI6MTcyMTkzOTI5MCwiZXhwIjoxNzIyMDI1NjkwLCJpc3MiOiJodHRwczovL3N1ZG9rdWNvbGxlY3RpdmUuY29tIiwiYXVkIjoiY2xpZW50cyJ9.RPBT1-baA_WGr5MIcQk-HSFP4Ax1fjjPOyRlIOp1LKM');
   });
-  it('should catch any errors thrown by Axios in the postLoginAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postLoginAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -115,7 +115,7 @@ describe('the loginPort port', () => {
       expect(result.message).equals('Status Code 400: Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of [! @ # $ % ^ & * + = ? - _ . ,].');
     }
   });
-  it('should catch any errors thrown by the postLoginAsync method', async () => {
+  it('should catch any errors thrown when running the postLoginAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -173,7 +173,7 @@ describe('the loginPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should confirm the validity of user names using the postConfirmUserNameAsync method', async () => {
+  it('should confirm the validity of user names by running the postConfirmUserNameAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/login/confirmusername', () => {
@@ -209,7 +209,7 @@ describe('the loginPort port', () => {
     expect(result.data.message).equals('Status Code 200: User name was confirmed.');
     expect(result.data.payload[0].userName).equals('Test User 2');
   });
-  it('should catch any errors thrown by Axios in the postConfirmUserNameAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postConfirmUserNameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -244,7 +244,7 @@ describe('the loginPort port', () => {
       expect(result.message).equals('Status Code 404: No user is using this email.');
     }
   });
-  it('should catch any errors thrown nby the postConfirmUserNameAsync method', async () => {
+  it('should catch any errors thrown when running the postConfirmUserNameAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(

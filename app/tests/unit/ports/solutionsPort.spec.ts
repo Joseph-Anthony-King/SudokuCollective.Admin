@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import { setActivePinia } from 'pinia';
@@ -28,7 +28,7 @@ describe('the solutionsPort port', () => {
     expect(Endpoints.solveEndpoint).equals('https://localhost:5001/api/v1/solutions/solve');
     expect(Endpoints.generateEndpoint).equals('https://localhost:5001/api/v1/solutions/generate');
   });
-  it('should solve unfinished sudoku matrices using the postSolveAsync method', async () => {
+  it('should solve unfinished sudoku matrices by running the postSolveAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/solutions/solve', () => {
@@ -53,7 +53,7 @@ describe('the solutionsPort port', () => {
           ]
         }, {
           status: 201,
-          statusText: 'OK',
+          statusText: 'CREATED',
           headers: {
             'content-type': 'application/json'
           }
@@ -85,7 +85,7 @@ describe('the solutionsPort port', () => {
     expect(result.data.message).equals('Status Code 201: Sudoku solution was found.');
     expect(result.data.payload[0].rows.length).equals(9);
   });
-  it('should catch any errors thrown by Axios in the postSolveAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postSolveAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -132,7 +132,7 @@ describe('the solutionsPort port', () => {
       expect(result.message).equals('Status Code 400: First row is invalid.');
     }
   });
-  it('should catch any errors thrown by the postSolveAsync method', async () => {
+  it('should catch any errors thrown when running the postSolveAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -158,7 +158,7 @@ describe('the solutionsPort port', () => {
             ]
           }, {
             status: 201,
-            statusText: 'OK',
+            statusText: 'CREATED',
             headers: {
               'content-type': 'application/json'
             }
@@ -191,7 +191,7 @@ describe('the solutionsPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should generate completed sudoku matrices using the getGenerateAsync method', async () => {
+  it('should generate completed sudoku matrices by running the getGenerateAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.get('https://localhost:5001/api/v1/solutions/generate', () => {
@@ -237,7 +237,7 @@ describe('the solutionsPort port', () => {
     expect(result.data.message).equals('Status Code 200: Solution was generated.');
     expect(result.data.payload[0].rows.length).equals(9);
   });
-  it('should catch any errors thrown by Axios in the getGenerateAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getGenerateAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -273,7 +273,7 @@ describe('the solutionsPort port', () => {
       expect(result.message).equals('Status Code 404: Service not available.');
     }
   });
-  it('should catch any errors thrown by the getGenerateAsync method', async () => {
+  it('should catch any errors thrown when running the getGenerateAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(

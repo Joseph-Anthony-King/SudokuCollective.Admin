@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import type { AxiosError, AxiosResponse } from 'axios';
@@ -18,7 +18,7 @@ describe('the jobsPort port', () => {
     expect(Endpoints.getEndpoint).equals('https://localhost:5001/api/v1/jobs/get?jobId=');
     expect(Endpoints.pollEndpoint).equals('https://localhost:5001/api/v1/jobs/poll?jobId=');
   });
-  it('should get the results of a completed job using the getJobAsync method', async () => {
+  it('should get the results of a completed job by running the getJobAsync method', async () => {
     testServer = setupServer(
       http.get('https://localhost:5001/api/v1/jobs/get?jobId=acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7', () => {
         return HttpResponse.json({
@@ -62,14 +62,14 @@ describe('the jobsPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Game was created.');
   });
-  it('should catch any error thrown by Axios in the getJobAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getJobAsync method', async () => {
     try {
       testServer = setupServer(
         http.get('https://localhost:5001/api/v1/jobs/get?jobId=acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7', () => {
           return HttpResponse.json({
             isSuccess: false,
             isFromCache: false,
-            message: "Status Code 404: Job retrieval for job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed due to job state processing.",
+            message: "Status Code 404: Job retrieval for job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed.",
             payload: []
           }, {
             status: 404,
@@ -93,11 +93,11 @@ describe('the jobsPort port', () => {
 
       expect(result.isSuccess).toBe(false);
       expect(result.isFromCache).toBe(false);
-      expect(result.message).equals('Status Code 404: Job retrieval for job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed due to job state processing.');
+      expect(result.message).equals('Status Code 404: Job retrieval for job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed.');
       
     }
   });
-  it('should catch any errors thrown by the getJobAsync method', async () => {
+  it('should catch any errors thrown when running the getJobAsync method', async () => {
     try {
       testServer = setupServer(
         http.get('https://localhost:5001/api/v1/jobs/get?jobId=acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7', () => {
@@ -143,7 +143,7 @@ describe('the jobsPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should poll the api to obtain the status of a job using the pollJobAsync method', async () => {
+  it('should poll the api to obtain the status of a job by running the pollJobAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.get('https://localhost:5001/api/v1/jobs/poll?jobId=acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7', () => {
@@ -174,7 +174,7 @@ describe('the jobsPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 is completed with status succeeded.');
   });
-  it('should catch any error thrown by Axios in the pollJobAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the pollJobAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -182,7 +182,7 @@ describe('the jobsPort port', () => {
           return HttpResponse.json({
             isSuccess: false,
             isFromCache: false,
-            message: 'Status Code 404: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 is not completed with status processing.',
+            message: 'Status Code 404: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed.',
             payload: []
           }, {
             status: 404,
@@ -206,10 +206,10 @@ describe('the jobsPort port', () => {
 
       expect(result.isSuccess).toBe(false);
       expect(result.isFromCache).toBe(false);
-      expect(result.message).equals('Status Code 404: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 is not completed with status processing.');
+      expect(result.message).equals('Status Code 404: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed.');
     }
   });
-  it('should catch any errors thrown by the pollJobAsync method', async () => {
+  it('should catch any errors thrown when running the pollJobAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -217,7 +217,7 @@ describe('the jobsPort port', () => {
           return HttpResponse.json({
             isSuccess: true,
             isFromCache: false,
-            message: 'Status Code 200: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 is completed with status succeeded.',
+            message: 'Status Code 200: Job acd0bcf9-26c5-4dc0-9c5b-7ea8333bd0a7 failed.',
             payload: []
           }, {
             status: 200,

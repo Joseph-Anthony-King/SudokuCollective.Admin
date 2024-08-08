@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, SetupServerApi } from 'msw/node';
 import { setActivePinia } from 'pinia';
@@ -8,7 +8,6 @@ import { AppsPort } from '@/ports/appsPort/index';
 import { Endpoints } from '@/ports/appsPort/endpoints';
 import { useGlobalStore } from '@/stores/globalStore';
 import { useUserStore } from '@/stores/userStore';
-import { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
 import { UpdateAppRequestData } from '@/models/requests/updateAppRequestData';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
@@ -57,7 +56,7 @@ describe('the appsPort port', () => {
     expect(Endpoints.getMyAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyapps');
     expect(Endpoints.getMyRegisteredAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyregisteredapps');
   });
-  it('should update a users app using the putUpdateAppAsync method', async () => {
+  it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/apps/1', () => {
@@ -135,7 +134,7 @@ describe('the appsPort port', () => {
     expect(result.data.isFromCache).toBe(false);
     expect(result.data.message).equals('Status Code 200: App was updated.');
   });
-  it('should catch any errors thrown by Axios in the putUpdateAppAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putUpdateAppAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -195,7 +194,7 @@ describe('the appsPort port', () => {
       expect(result.message).equals('Status Code 404: App was not updated.');
     }
   });
-  it('should catch any errors thrown by the putUpdateAppAsync method', async () => {
+  it('should catch any errors thrown when running the putUpdateAppAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -251,7 +250,7 @@ describe('the appsPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should get apps where the user is an admin using the getMyAppsAsync method', async () => {
+  it('should get apps where the user is an admin by running the getMyAppsAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/apps/getmyapps', () => {
@@ -331,7 +330,7 @@ describe('the appsPort port', () => {
     expect(result.data.message).equals('Status Code 200: Apps were found.');
     expect(result.data.payload).toHaveLength(2);
   });
-  it('should catch any errors thrown by Axios in the getMyAppsAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getMyAppsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -370,7 +369,7 @@ describe('the appsPort port', () => {
       expect(result.payload).toHaveLength(0);
     }
   });
-  it('should catch any errors thrown by the getMyAppsAsync method', async () => {
+  it('should catch any errors thrown when running the getMyAppsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -404,7 +403,7 @@ describe('the appsPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should get apps where the user is a registered user using the getMyRegisteredAppsAsync method', async () => {
+  it('should get apps where the user is a registered user by running the getMyRegisteredAppsAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/apps/getmyregisteredapps', () => {
@@ -462,7 +461,7 @@ describe('the appsPort port', () => {
     expect(result.data.message).equals('Status Code 200: Apps were found.');
     expect(result.data.payload).toHaveLength(1);
   });
-  it('should catch any errors thrown by the getMyRegisteredAppsAsync method', async () => {
+  it('should catch any errors thrown when running the getMyRegisteredAppsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -501,7 +500,7 @@ describe('the appsPort port', () => {
       expect(result.payload).toHaveLength(0);
     }
   });
-  it('should catch any errors thrown by the getMyRegisteredAppsAsync method', async () => {
+  it('should catch any errors thrown when running the getMyRegisteredAppsAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
