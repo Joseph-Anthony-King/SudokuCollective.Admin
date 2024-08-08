@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import type { AxiosResponse } from 'axios';
@@ -17,7 +17,7 @@ describe('the indexPort port', () => {
     expect(process.env.VITE_APP_API_URL).equals('https://localhost:5001/');
     expect(Endpoints.getEndpoint).equals('https://localhost:5001/api/index');
   });
-  it('should get the mission statement using the getMissionStatementAsync method', async () => {
+  it('should get the mission statement by running the getMissionStatementAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.get('https://localhost:5001/api/index', () => {
@@ -43,7 +43,7 @@ describe('the indexPort port', () => {
     // Assert
     expect(result.data.missionStatement).toBeTypeOf('string');
   });
-  it('should catch any errors thrown by Axios in the getMissionStatementAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the getMissionStatementAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -71,7 +71,7 @@ describe('the indexPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should catch any errors thrown by the getMissionStatementAsync method', async () => {
+  it('should catch any errors thrown when running the getMissionStatementAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(

@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import type { AxiosError, AxiosResponse } from 'axios';
@@ -19,7 +19,7 @@ describe('the signupPort port', () => {
     expect(Endpoints.signupEndpoint).equals('https://localhost:5001/api/v1/signup');
     expect(Endpoints.resendEmailConfirmationEndpoint).equals('https://localhost:5001/api/v1/signup/resendemailconfirmation');
   });
-  it('should sign up new users using the postAsync method', async () => {
+  it('should sign up new users by running the postAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/signup', () => {
@@ -54,7 +54,7 @@ describe('the signupPort port', () => {
           ]
         }, {
           status: 201,
-          statusText: 'OK',
+          statusText: 'CREATED',
           headers: {
             'content-type': 'application/json'
           }
@@ -86,7 +86,7 @@ describe('the signupPort port', () => {
     expect(result.data.payload[0].user.userName).equals('Test User 2');
     expect(result.data.payload[0].token).equals('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjpbIkpvZSBLaW5nIiwiMiIsIjMiXSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVVNFUiIsIm5iZiI6MTcyMTkzOTI5MCwiZXhwIjoxNzIyMDI1NjkwLCJpc3MiOiJodHRwczovL3N1ZG9rdWNvbGxlY3RpdmUuY29tIiwiYXVkIjoiY2xpZW50cyJ9.RPBT1-baA_WGr5MIcQk-HSFP4Ax1fjjPOyRlIOp1LKM');
   });
-  it('should catch any errors thrown by Axios in the postAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -132,7 +132,7 @@ describe('the signupPort port', () => {
       expect(result.message).equals('Status Code 400: Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, and 1 special character of [! @ # $ % ^ & * + = ? - _ . ,].');
     }
   });
-  it('should catch any errors thrown by the postAsync method', async () => {
+  it('should catch any errors thrown when running the postAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -168,7 +168,7 @@ describe('the signupPort port', () => {
             ]
           }, {
             status: 201,
-            statusText: 'OK',
+            statusText: 'CREATED',
             headers: {
               'content-type': 'application/json'
             }
@@ -200,7 +200,7 @@ describe('the signupPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should resend email confirmations using putResendEmailConfirmationAsync method', async () => {
+  it('should resend email confirmations by running putResendEmailConfirmationAsync method', async () => {
     // Arrange
     testServer = setupServer(
       http.put('https://localhost:5001/api/v1/signup/resendemailconfirmation', () => {
@@ -257,7 +257,7 @@ describe('the signupPort port', () => {
     expect(result.data.payload[0].user.isEmailConfirmed).toBe(false);
     expect(result.data.payload[0].user.receivedRequestToUpdateEmail).toBe(true);
   });
-  it('should catch any errors thrown by Axios in the putResendEmailConfirmationAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the putResendEmailConfirmationAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
@@ -292,7 +292,7 @@ describe('the signupPort port', () => {
       expect(result.message).equals('Status Code 404: User was not found.');
     }
   });
-  it('should catch any errors thrown by the putResendEmailConfirmationAsync method', async () => {
+  it('should catch any errors thrown when running the putResendEmailConfirmationAsync method', async () => {
     try {
       // Arrange
       testServer = setupServer(
