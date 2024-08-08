@@ -13,16 +13,27 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(id);
+      const idIsGreaterThanZero = StaticServiceMethods.isNumberGreaterThanZero(id);
 
-      if (idIsZero !== null) {
-        throw idIsZero;
+      if (!idIsGreaterThanZero) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'Number cannot be zero.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await UsersPort.getUserAsync(id)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -48,17 +59,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -71,8 +85,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.putUpdateUserAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -98,17 +112,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -119,16 +136,27 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(id);
+      const idIsGreaterThanZero = StaticServiceMethods.isNumberGreaterThanZero(id);
 
-      if (idIsZero !== null) {
-        throw idIsZero;
+      if (!idIsGreaterThanZero) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'Number cannot be zero.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await UsersPort.deleteUserAsync(id)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -136,17 +164,20 @@ export class UsersService {
         result.message = response.data.message;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -159,8 +190,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.getConfirmEmailAsync(token)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -173,17 +204,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -194,18 +228,29 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(requestorId);
+      const idIsGreaterThanZero = StaticServiceMethods.isNumberGreaterThanZero(requestorId);
 
-      if (idIsZero !== null) {
-        throw idIsZero;
+      if (!idIsGreaterThanZero) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'Number cannot be zero.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await SignupPort.putResendEmailConfirmationAsync(
         requestorId,
       )) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -213,17 +258,20 @@ export class UsersService {
         result.message = response.data.message;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -236,8 +284,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.putCancelEmailConfirmationRequestAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -263,17 +311,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -286,8 +337,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.putResetPasswordAsync(data)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -295,17 +346,20 @@ export class UsersService {
         result.message = response.data.message;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -316,16 +370,27 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const stringIsNullOrEmpty = StaticServiceMethods.stringCannotBeEmptyOrNull(email);
+      const stringIsNotNullOrEmpty = StaticServiceMethods.isStringNotEmptyOrNull(email);
 
-      if (stringIsNullOrEmpty !== null) {
-        throw stringIsNullOrEmpty;
+      if (!stringIsNotNullOrEmpty) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'String cannot be null or empty.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await UsersPort.postRequestPasswordResetAsync(email)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -351,17 +416,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -372,16 +440,27 @@ export class UsersService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(userId);
+      const idIsGreaterThanZero = StaticServiceMethods.isNumberGreaterThanZero(userId);
 
-      if (idIsZero !== null) {
-        throw idIsZero;
+      if (!idIsGreaterThanZero) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'Number cannot be zero.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await UsersPort.putResendPasswordResetAsync(userId)) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -389,17 +468,20 @@ export class UsersService {
         result.message = response.data.message;
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -412,8 +494,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.putCancelPasswordResetAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -439,17 +521,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
@@ -462,8 +547,8 @@ export class UsersService {
     try {
       const response = (await UsersPort.putCancelAllEmailRequestsAsync()) as AxiosResponse;
 
-      if (response instanceof Error) {
-        throw response as unknown as AxiosError;
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
       }
 
       if (response.data.isSuccess) {
@@ -489,17 +574,20 @@ export class UsersService {
         );
       } else {
         result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
         StaticServiceMethods.processFailedResponse(response);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
-      if (error instanceof AxiosError && error.response) {
-        result.isSuccess = error.response.data.isSuccess;
-        StaticServiceMethods.processFailedResponse(error.response);
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
       } else {
         result.isSuccess = false;
+        result.message = (<Error>error).message;
       }
     }
 
