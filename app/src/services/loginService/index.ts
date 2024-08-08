@@ -61,10 +61,21 @@ export class LoginService {
     const result: IServicePayload = {};
 
     try {
-      const stringIsNullOrEmpty = StaticServiceMethods.stringCannotBeEmptyOrNull(email);
+      const stringIsNotNullOrEmpty = StaticServiceMethods.isStringNotEmptyOrNull(email);
 
-      if (stringIsNullOrEmpty !== null) {
-        throw stringIsNullOrEmpty;
+      if (!stringIsNotNullOrEmpty) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'String cannot be null or empty.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       const response = (await LoginPort.postConfirmUserNameAsync(email)) as AxiosResponse;

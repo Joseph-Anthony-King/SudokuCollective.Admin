@@ -19,43 +19,19 @@ export class StaticServiceMethods {
     }
   }
 
-  static numberCannotBeZero(id: number): AxiosError | null {
+  static isNumberGreaterThanZero(id: number): boolean {
     if (id <= 0) {
-      const axiosError = {
-        config: {},
-        request: {},
-        response: {
-          data: {
-            isSuccess: false,
-            message: 'Number cannot be zero.',
-          },
-          status: 500,
-          statusText: 'BAD REQUEST',
-        },
-      } as AxiosError;
-      return axiosError;
+      return false;
     } else {
-      return null;
+      return true;
     }
   }
 
-  static stringCannotBeEmptyOrNull(str: string): AxiosError | null {
+  static isStringNotEmptyOrNull(str: string): boolean {
     if (str === '' || str === null) {
-      const axiosError = {
-        config: {},
-        request: {},
-        response: {
-          data: {
-            isSuccess: false,
-            message: 'String cannot be null or empty.',
-          },
-          status: 500,
-          statusText: 'BAD REQUEST',
-        },
-      } as AxiosError;
-      return axiosError;
+      return false;
     } else {
-      return null;
+      return true;
     }
   }
 }

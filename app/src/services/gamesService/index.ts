@@ -14,10 +14,21 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const idIsZero: AxiosError | null = StaticServiceMethods.numberCannotBeZero(difficultyLevel);
+      const numberIsGreaterThanZero = StaticServiceMethods.isNumberGreaterThanZero(difficultyLevel);
 
-      if (idIsZero !== null) {
-        throw idIsZero;
+      if (!numberIsGreaterThanZero) {
+        throw {
+          config: {},
+          request: {},
+          response: {
+            data: {
+              isSuccess: false,
+              message: 'Number cannot be zero.',
+            },
+            status: 500,
+            statusText: 'BAD REQUEST',
+          },
+        } as AxiosError;
       }
 
       let response = (await GamesPort.getCreateGameAsync(difficultyLevel)) as AxiosResponse;
@@ -89,9 +100,9 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixValid = this.isSudokuMatrixValid(matrix);
+      const matrixIsValid = this.isSudokuMatrixValid(matrix);
 
-      if (!matrixValid) {
+      if (!matrixIsValid) {
         throw {
           config: {},
           request: {},
@@ -216,9 +227,9 @@ export class GamesService {
     const result: IServicePayload = {};
 
     try {
-      const matrixValid = this.isSudokuMatrixValid(matrix);
+      const matrixIsValid = this.isSudokuMatrixValid(matrix);
 
-      if (!matrixValid) {
+      if (!matrixIsValid) {
         throw {
           config: {},
           request: {},
@@ -403,7 +414,6 @@ export class GamesService {
       ) {
         throw new Error('Rows are invalid.');
       }
-
       const game: Array<Array<string>> = Array<Array<string>>();
       for (let i = 0; i < 9; i++) {
         game[i] = [];

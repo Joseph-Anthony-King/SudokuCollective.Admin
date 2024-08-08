@@ -72,54 +72,46 @@ describe('the common port file', () => {
     expect(result).toBe(true);
     expect(globalStore.tokenHasExpired).toHaveBeenCalledOnce();
   });
-  it('should return null if id is greater than 0 when running the numberCannotBeZero method', () => {
+  it('should return true if id is greater than 0 when running the isNumberGreaterThanZero method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.numberCannotBeZero(1);
+    const result = StaticServiceMethods.isNumberGreaterThanZero(1);
 
     // Assert
-    expect(result).toBeNull();
+    expect(result).toBe(true);
   });
-  it('should return an AxiosError if id is 0 when running the numberCannotBeZero method', () => {
+  it('should return an false if id is 0 when running the isNumberGreaterThanZero method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.numberCannotBeZero(0) as AxiosError;
+    const result = StaticServiceMethods.isNumberGreaterThanZero(0);
 
     // Assert
-    expect(result.response?.status).equals(500);
-    expect((<any>result.response?.data).isSuccess).toBe(false);
-    expect((<any>result.response?.data).message).toBe('Number cannot be zero.');
+    expect(result).toBe(false);
   });
-  it('should return an AxiosError if id is negative when running the numberCannotBeZero method', () => {
+  it('should return an false if id is negative when running the isNumberGreaterThanZero method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.numberCannotBeZero(-1) as AxiosError;
+    const result = StaticServiceMethods.isNumberGreaterThanZero(-1);
 
     // Assert
-    expect(result.response?.status).equals(500);
-    expect((<any>result.response?.data).isSuccess).toBe(false);
-    expect((<any>result.response?.data).message).toBe('Number cannot be zero.');
+    expect(result).toBe(false);
   });
-  it('should return null if string is valid when running the stringCannotBeEmptyOrNull method', () => {
+  it('should return true if string is valid when running the isStringNotEmptyOrNull method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.stringCannotBeEmptyOrNull('test string');
+    const result = StaticServiceMethods.isStringNotEmptyOrNull('test string');
 
     // Assert
-    expect(result).toBeNull();
+    expect(result).toBe(true);
   });
-  it('should return an AxiosError if string is empty when running the stringCannotBeEmptyOrNull method', () => {
+  it('should return false if string is empty when running the isStringNotEmptyOrNull method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.stringCannotBeEmptyOrNull('') as AxiosError;
+    const result = StaticServiceMethods.isStringNotEmptyOrNull('');
 
     // Assert
-    expect(result.response?.status).equals(500);
-    expect((<any>result.response?.data).isSuccess).toBe(false);
-    expect((<any>result.response?.data).message).toBe('String cannot be null or empty.');
+    expect(result).toBe(false);
   });
-  it('should return an AxiosError if string is null when running the stringCannotBeEmptyOrNull method', () => {
+  it('should return false if string is null when running the isStringNotEmptyOrNull method', () => {
     // Arrange and Act
-    const result = StaticServiceMethods.stringCannotBeEmptyOrNull(null!) as AxiosError;
+    const result = StaticServiceMethods.isStringNotEmptyOrNull(null!);
 
     // Assert
-    expect(result.response?.status).equals(500);
-    expect((<any>result.response?.data).isSuccess).toBe(false);
-    expect((<any>result.response?.data).message).toBe('String cannot be null or empty.');
+    expect(result).toBe(false);
   });
 });

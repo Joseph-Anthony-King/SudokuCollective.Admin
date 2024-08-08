@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { GamesService } from '@/services/gamesService/index';
 import { StaticServiceMethods } from '@/services/common';
@@ -7,6 +7,9 @@ import { JobsPort } from '@/ports/jobsPort';
 import { SolutionsPort } from '@/ports/solutionsPort';
 
 describe('the gamesService service', () => {
+  beforeEach(() => {
+    StaticServiceMethods.processFailedResponse = vi.fn();
+  });
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -262,8 +265,6 @@ describe('the gamesService service', () => {
       } as AxiosResponse;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     vi.stubEnv('NODE_ENV', 'development');
 
     const downloadTheGameSpy = vi.spyOn(GamesService, 'downloadTheGame');
@@ -357,8 +358,6 @@ describe('the gamesService service', () => {
         request: {}
       } as AxiosResponse;
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -475,8 +474,6 @@ describe('the gamesService service', () => {
       } as AxiosResponse;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     vi.stubEnv('NODE_ENV', 'development');
 
     const downloadTheGameSpy = vi.spyOn(GamesService, 'downloadTheGame');
@@ -574,8 +571,6 @@ describe('the gamesService service', () => {
         request: {}
       } as AxiosResponse;
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -678,8 +673,6 @@ describe('the gamesService service', () => {
       } as AxiosError;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     vi.stubEnv('NODE_ENV', 'development');
 
     const downloadTheGameSpy = vi.spyOn(GamesService, 'downloadTheGame');
@@ -763,8 +756,6 @@ describe('the gamesService service', () => {
     JobsPort.getJobAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -1194,8 +1185,6 @@ describe('the gamesService service', () => {
       } as AxiosError;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
     isSudokuMatrixValidSpy.mockImplementation(() => {
@@ -1230,8 +1219,6 @@ describe('the gamesService service', () => {
     GamesPort.postCheckGameAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     vi.stubEnv('NODE_ENV', 'development');
     
@@ -1284,8 +1271,6 @@ describe('the gamesService service', () => {
       } as AxiosResponse;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
     isSudokuMatrixValidSpy.mockImplementation(() => {
@@ -1336,8 +1321,6 @@ describe('the gamesService service', () => {
         request: {}
       } as AxiosResponse;
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
@@ -1456,8 +1439,6 @@ describe('the gamesService service', () => {
       } as AxiosError;
     });
 
-    StaticServiceMethods.processFailedResponse = vi.fn();
-
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
     isSudokuMatrixValidSpy.mockImplementation(() => {
@@ -1492,8 +1473,6 @@ describe('the gamesService service', () => {
     SolutionsPort.postSolveAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
@@ -1545,8 +1524,6 @@ describe('the gamesService service', () => {
         request: {}
       } as AxiosResponse;
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
@@ -1612,8 +1589,6 @@ describe('the gamesService service', () => {
         request: {}
       } as AxiosResponse;
     });
-
-    StaticServiceMethods.processFailedResponse = vi.fn();
 
     const isSudokuMatrixValidSpy = vi.spyOn(GamesService, 'isSudokuMatrixValid');
 
