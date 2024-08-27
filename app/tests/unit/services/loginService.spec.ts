@@ -1,4 +1,3 @@
-
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { LoginService } from '@/services/loginService';
@@ -44,7 +43,7 @@ describe('the loginService service', () => {
               games: []
             },
             token: 'fGevSi7pb0KZ0LuQlWN0og==',
-            tokenExpirationDate: 'fGevSi7pb0KZ0LuQlWN0og=='
+            tokenExpirationDate: '2024-08-28T20:56:42.8609588Z'
           }]
         },
         status: 200,
@@ -70,7 +69,7 @@ describe('the loginService service', () => {
     expect(result.isSuccess).toBe(true);
     expect(result.message).equals('Status Code 200: User was found.');
     expect(result.token).equals('fGevSi7pb0KZ0LuQlWN0og==');
-    expect(result.tokenExpirationDate).equals('fGevSi7pb0KZ0LuQlWN0og==');
+    expect(result.tokenExpirationDate).equals('2024-08-28T20:56:42.8609588Z');
   });
   it('should catch AxiosErrors thrown when running the postLoginAsync method', async () => {
     // Arrange
