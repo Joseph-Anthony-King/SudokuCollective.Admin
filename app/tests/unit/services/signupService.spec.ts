@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { SignupPort } from '@/ports/signupPort';
 import { SignupService } from '@/services/signupService';
