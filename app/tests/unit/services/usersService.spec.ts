@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { UsersService } from '@/services/usersService';
-import { StaticServiceMethods } from '@/services/common';
 import { SignupPort } from '@/ports/signupPort';
 import { UsersPort } from '@/ports/usersPort';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
+import { StaticServiceMethods } from '@/services/common';
 
 describe('the usersService serivce', () => {
   let isNumberGreaterThanZeroSpy: MockInstance<[id: number], boolean>;

@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
-import { StaticServiceMethods } from '@/services/common';
-import { AppsPort } from '@/ports/appsPort/index';
 import { AppsService } from '@/services/appsService';
+import { AppsPort } from '@/ports/appsPort/index';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
 import { UpdateAppRequestData } from '@/models/requests/updateAppRequestData';
+import { StaticServiceMethods } from '@/services/common';
 
 describe('the appsService service', () => {
   beforeEach(() => {
