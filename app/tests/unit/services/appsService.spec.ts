@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { AxiosError, AxiosResponse } from 'axios';
 import { StaticServiceMethods } from '@/services/common';
 import { AppsPort } from '@/ports/appsPort/index';
-import type { AxiosError, AxiosResponse } from 'axios';
 import { AppsService } from '@/services/appsService';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
@@ -141,7 +141,7 @@ describe('the appsService service', () => {
       null,
       TimeFrame.DAYS,
       1
-    )
+    );
 
     // Act
     const result = await sut.putUpdateAppAsync(data);
@@ -153,7 +153,7 @@ describe('the appsService service', () => {
   it('should catch any errors thrown when running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(async () => {
-      return new Error("NETWORK ERR");
+      return new Error('NETWORK ERR');
     });
 
     vi.stubEnv('NODE_ENV', 'development');
@@ -436,7 +436,7 @@ describe('the appsService service', () => {
   it('should catch any errors thrown when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyAppsAsync = vi.fn().mockImplementation(async () => {
-      return new Error("NETWORK ERR");
+      return new Error('NETWORK ERR');
     });
 
     vi.stubEnv('NODE_ENV', 'development');
@@ -614,7 +614,7 @@ describe('the appsService service', () => {
   it('should catch any errors thrown when running the getMyAppsAsync method', async () => {
     // Arrange
     AppsPort.getMyRegisteredAppsAsync = vi.fn().mockImplementation(async () => {
-      return new Error("NETWORK ERR");
+      return new Error('NETWORK ERR');
     });
 
     vi.stubEnv('NODE_ENV', 'development');
