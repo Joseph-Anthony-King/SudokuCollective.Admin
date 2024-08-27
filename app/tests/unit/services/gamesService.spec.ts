@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { GamesService } from '@/services/gamesService/index';
-import { StaticServiceMethods } from '@/services/common';
 import { GamesPort } from '@/ports/gamesPort';
 import { JobsPort } from '@/ports/jobsPort';
 import { SolutionsPort } from '@/ports/solutionsPort';
+import { StaticServiceMethods } from '@/services/common';
 
 describe('the gamesService service', () => {
   beforeEach(() => {
