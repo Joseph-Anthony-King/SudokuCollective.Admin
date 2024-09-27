@@ -2,13 +2,13 @@ import {
   createRouter,
   createWebHistory,
   type NavigationGuardNext,
-  type RouteLocationNormalized,
   type RouteRecordRaw,
 } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { useGlobalStore } from '@/stores/globalStore';
 import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
 import { useUserStore } from '@/stores/userStore';
+import type { User } from '@/models/domain/user';
 import { StoreType } from '@/enums/storeTypes';
 import commonUtilities from '@/utilities/common';
 
@@ -57,14 +57,17 @@ const routes: Array<RouteRecordRaw> = [
 //#endregion
 
 //#region Methods
-const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext): void => {
-  const user = useUserStore().getUser;
+const refreshToken = (
+  next: NavigationGuardNext,
+  user: User,
+  updateUser: (param: User) => void,
+): void => {
   if (user.isLoggedIn && !user.isLoggingIn) {
     const { clearStores } = commonUtilities();
     clearStores();
   }
   user.isLoggingIn = true;
-  useUserStore().updateUser(user);
+  updateUser(user);
   toast('The authorization token has expired, please sign in again', {
     position: toast.POSITION.TOP_CENTER,
     type: toast.TYPE.WARNING,
@@ -72,8 +75,7 @@ const refreshToken = (from: RouteLocationNormalized, next: NavigationGuardNext):
   next(`/login`);
 };
 
-const applyUserLoggedInGuardRail = (next: NavigationGuardNext): void => {
-  const user = useUserStore().getUser;
+const applyUserLoggedInGuardRail = (next: NavigationGuardNext, user: User): void => {
   if (user.isLoggedIn) {
     next();
   } else {
@@ -85,8 +87,7 @@ const applyUserLoggedInGuardRail = (next: NavigationGuardNext): void => {
   }
 };
 
-const applySuperAdminGuardRail = (next: NavigationGuardNext): void => {
-  const user = useUserStore().getUser;
+const applySuperAdminGuardRail = (next: NavigationGuardNext, user: User): void => {
   if (user.isSuperUser) {
     next();
   } else {
@@ -108,6 +109,22 @@ const router = createRouter({
 
 //#region BeforeEach guard rails
 router.beforeEach(async (to, from, next) => {
+  //#region Destructure Assignments
+  const { isTokenExpired } = useGlobalStore();
+  const { updatePasswordToken } = useSignUpFormStore();
+  const {
+    getUser,
+    getUserIsLoggedIn,
+    getUserAsync,
+    confirmEmailAsync,
+    setServiceMessage: setUserStoreServiceMessage,
+    updateUserIsLoggingIn,
+    updateUserIsSigningUp,
+    updateUser,
+  } = useUserStore();
+  const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
+    commonUtilities();
+  //#endregion
   if (
     (to.name === undefined || to.name?.toString().toLowerCase() === 'home') &&
     to.path.toLowerCase() !== '/' &&
@@ -121,25 +138,18 @@ router.beforeEach(async (to, from, next) => {
     });
     next('/');
   } else if (to.name === 'home' || to.name === 'sudoku') {
-    // Handle requests to home and sudoku and process the action prop
-    const { updateAppProcessingAsync } = commonUtilities();
-
     updateAppProcessingAsync(() => {
       if (to.params.action.toString().toLowerCase() === 'login') {
-        useUserStore().updateUserIsLoggingIn(true);
-        useUserStore().updateUserIsSigningUp(false);
+        updateUserIsLoggingIn(true);
+        updateUserIsSigningUp(false);
       }
       if (to.params.action.toString().toLowerCase() === 'signup') {
-        useUserStore().updateUserIsLoggingIn(false);
-        useUserStore().updateUserIsSigningUp(true);
+        updateUserIsLoggingIn(false);
+        updateUserIsSigningUp(true);
       }
       next();
     });
   } else if (to.name === 'confirm-email' || to.name === 'reset-password') {
-    // Handle requests to confirm-email and reset-password and process the token prop
-    const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
-      commonUtilities();
-
     updateAppProcessingAsync(async () => {
       if (
         /^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/.test(
@@ -149,16 +159,16 @@ router.beforeEach(async (to, from, next) => {
         let result = true;
 
         if (to.name === 'confirm-email') {
-          result = await useUserStore().confirmEmailAsync(to.params.token.toString());
+          result = await confirmEmailAsync(to.params.token.toString());
         } else {
-          useSignUpFormStore().updatePasswordToken(to.params.token.toString());
+          updatePasswordToken(to.params.token.toString());
         }
 
         if (result) {
           displaySuccessfulToast(StoreType.USERSTORE);
-          if (useUserStore().getUserIsLoggedIn) {
-            await useUserStore().getUserAsync();
-            useUserStore().updateServiceMessage();
+          if (getUserIsLoggedIn) {
+            await getUserAsync();
+            setUserStoreServiceMessage();
             router.push('/user-profile');
           } else {
             router.push('/');
@@ -177,19 +187,15 @@ router.beforeEach(async (to, from, next) => {
       next();
     });
   } else {
-    /* Handle protected routes by first checking if the auth token has expired and if not
-       apply check super admin and user logged in guard rails */
-    const { updateAppProcessingAsync } = commonUtilities();
-
     updateAppProcessingAsync(() => {
-      if (useGlobalStore().isTokenExpired()) {
-        refreshToken(from, next);
+      if (isTokenExpired()) {
+        refreshToken(next, getUser, updateUser);
       }
 
       if (to.name === 'site-admin') {
-        applySuperAdminGuardRail(next);
+        applySuperAdminGuardRail(next, getUser);
       } else {
-        applyUserLoggedInGuardRail(next);
+        applyUserLoggedInGuardRail(next, getUser);
       }
     });
   }

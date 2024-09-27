@@ -44,7 +44,7 @@
 
   const appStore = useAppStore();
   const { getSelectedApp, getMyApps, getMyRegisteredApps } = storeToRefs(appStore);
-  const { updateSelectedApp } = appStore;
+  const { setSelectedApp } = appStore;
 
   const apps: Ref<App[]> = ref(getMyApps.value);
   const selectedApps: Ref<string> = ref('Your Apps');
@@ -52,7 +52,7 @@
   watch(
     () => selectedApps.value,
     (newValue, oldValue) => {
-      appStore.updateSelectedApp(0);
+      setSelectedApp();
       if (newValue === 'Your Apps') {
         apps.value = getMyApps.value;
       } else {
@@ -68,9 +68,9 @@
   const appSelected = (id: number) => {
     updateAppProcessingAsync(() => {
       if (id !== getSelectedApp.value?.id) {
-        updateSelectedApp(id);
+        setSelectedApp(id);
       } else {
-        updateSelectedApp(0);
+        setSelectedApp();
       }
     });
   };
