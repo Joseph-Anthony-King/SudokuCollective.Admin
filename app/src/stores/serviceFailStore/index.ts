@@ -19,7 +19,7 @@ export const useServiceFailStore = defineStore('serviceFailStore', () => {
   const updateIsSuccess = (success: boolean | null = null): void => {
     isSuccess.value = success;
   };
-  const updateServiceMessage = (param: string | null = null): void => {
+  const setServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
   const updateStatusCode = (code: number = 0): void => {
@@ -43,7 +43,7 @@ export const useServiceFailStore = defineStore('serviceFailStore', () => {
     getServiceMessage,
     getStatusCode,
     updateIsSuccess,
-    updateServiceMessage,
+    setServiceMessage,
     updateStatusCode,
     initializeStore,
   };

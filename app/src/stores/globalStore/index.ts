@@ -63,7 +63,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const updateRedirectUrl = (param: string | null = null): void => {
     redirectUrl.value = param;
   };
-  const updateServiceMessage = (param: string | null = null): void => {
+  const setServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
   const updateProcessingStatus = (param: boolean): void => {
@@ -195,7 +195,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,
-    updateServiceMessage,
+    setServiceMessage,
     updateNavDrawerStatus,
     updateProcessingStatus,
     updateStayLoggedIn,

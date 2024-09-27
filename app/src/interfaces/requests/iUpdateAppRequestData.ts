@@ -3,24 +3,24 @@ import type { TimeFrame } from '@/enums/timeFrame';
 import type { ISmtpServerSettings } from '../domain/iSmtpServerSettings';
 
 export interface IUpdateAppRequestData {
-  id: number;
+  id: number | null;
   name: string | null;
   license: string | null;
-  ownerId: number;
+  ownerId: number | null;
   localUrl: string | null;
   testUrl: string | null;
   stagingUrl: string | null;
   prodUrl: string | null;
   sourceCodeUrl: string | null;
-  isActive: boolean;
-  environment: ReleaseEnvironment;
-  permitSuperUserAccess: boolean;
-  permitCollectiveLogins: boolean;
-  disableCustomUrls: boolean;
+  isActive: boolean | null;
+  environment: ReleaseEnvironment | null;
+  permitSuperUserAccess: boolean | null;
+  permitCollectiveLogins: boolean | null;
+  disableCustomUrls: boolean | null;
   customEmailConfirmationAction: string | null;
   customPasswordResetAction: string | null;
-  useCustomSMTPServer: boolean;
+  useCustomSMTPServer: boolean | null;
   smtpServerSettings: ISmtpServerSettings | null;
-  timeFrame: TimeFrame;
-  accessDuration: number;
+  timeFrame: TimeFrame | null;
+  accessDuration: number | null;
 }
