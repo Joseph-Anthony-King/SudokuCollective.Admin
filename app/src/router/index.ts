@@ -60,10 +60,10 @@ const routes: Array<RouteRecordRaw> = [
 const refreshToken = (
   next: NavigationGuardNext,
   user: User,
+  clearStores: () => void,
   updateUser: (param: User) => void,
 ): void => {
   if (user.isLoggedIn && !user.isLoggingIn) {
-    const { clearStores } = commonUtilities();
     clearStores();
   }
   user.isLoggingIn = true;
@@ -122,7 +122,7 @@ router.beforeEach(async (to, from, next) => {
     updateUserIsSigningUp,
     updateUser,
   } = useUserStore();
-  const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
+  const { clearStores, displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
     commonUtilities();
   //#endregion
   if (
@@ -189,7 +189,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     updateAppProcessingAsync(() => {
       if (isTokenExpired()) {
-        refreshToken(next, getUser, updateUser);
+        refreshToken(next, getUser, clearStores, updateUser);
       }
 
       if (to.name === 'site-admin') {
