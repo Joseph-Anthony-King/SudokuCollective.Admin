@@ -56,50 +56,6 @@ const routes: Array<RouteRecordRaw> = [
 ];
 //#endregion
 
-//#region Methods
-const refreshToken = (
-  next: NavigationGuardNext,
-  user: User,
-  clearStores: () => void,
-  updateUser: (param: User) => void,
-): void => {
-  if (user.isLoggedIn && !user.isLoggingIn) {
-    clearStores();
-  }
-  user.isLoggingIn = true;
-  updateUser(user);
-  toast('The authorization token has expired, please sign in again', {
-    position: toast.POSITION.TOP_CENTER,
-    type: toast.TYPE.WARNING,
-  });
-  next(`/login`);
-};
-
-const applyUserLoggedInGuardRail = (next: NavigationGuardNext, user: User): void => {
-  if (user.isLoggedIn) {
-    next();
-  } else {
-    toast('You must be logged in to view this page', {
-      position: toast.POSITION.TOP_CENTER,
-      type: toast.TYPE.ERROR,
-    });
-    next('/');
-  }
-};
-
-const applySuperAdminGuardRail = (next: NavigationGuardNext, user: User): void => {
-  if (user.isSuperUser) {
-    next();
-  } else {
-    toast('You must be a super user to access this page', {
-      position: toast.POSITION.TOP_CENTER,
-      type: toast.TYPE.ERROR,
-    });
-    next('/');
-  }
-};
-//#endregion
-
 //#region CreateRouter
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -200,6 +156,50 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 });
+//#endregion
+
+//#region Methods
+const refreshToken = (
+  next: NavigationGuardNext,
+  user: User,
+  clearStores: () => void,
+  updateUser: (param: User) => void,
+): void => {
+  if (user.isLoggedIn && !user.isLoggingIn) {
+    clearStores();
+  }
+  user.isLoggingIn = true;
+  updateUser(user);
+  toast('The authorization token has expired, please sign in again', {
+    position: toast.POSITION.TOP_CENTER,
+    type: toast.TYPE.WARNING,
+  });
+  next(`/login`);
+};
+
+const applyUserLoggedInGuardRail = (next: NavigationGuardNext, user: User): void => {
+  if (user.isLoggedIn) {
+    next();
+  } else {
+    toast('You must be logged in to view this page', {
+      position: toast.POSITION.TOP_CENTER,
+      type: toast.TYPE.ERROR,
+    });
+    next('/');
+  }
+};
+
+const applySuperAdminGuardRail = (next: NavigationGuardNext, user: User): void => {
+  if (user.isSuperUser) {
+    next();
+  } else {
+    toast('You must be a super user to access this page', {
+      position: toast.POSITION.TOP_CENTER,
+      type: toast.TYPE.ERROR,
+    });
+    next('/');
+  }
+};
 //#endregion
 
 export default router;
