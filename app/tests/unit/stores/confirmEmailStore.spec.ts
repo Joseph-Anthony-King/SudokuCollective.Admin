@@ -82,7 +82,7 @@ describe('the confirmEmailStore store', () => {
 
     // Assert
     expect(initialState).equals(false);
-    expect(finalState).equals(finalState);
+    expect(finalState).equals(true);
     expect(initialState).not.equals(finalState);
   });
   it('should update the confirmationType property using the updateConfirmationType mutation', () => {

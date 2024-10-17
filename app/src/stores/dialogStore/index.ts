@@ -74,6 +74,7 @@ export const useDialogStore = defineStore('dialogStore', () => {
     response.value = null;
     isActive.value = false;
     confirmedActionDelegate.value = null;
+    notConfirmedActionDelegate.value = null;
   };
   const performConfirmedAction = async (): Promise<void> => {
     if (confirmedActionDelegate.value !== null) {
@@ -104,6 +105,7 @@ export const useDialogStore = defineStore('dialogStore', () => {
     response,
     isActive,
     confirmedActionDelegate,
+    notConfirmedActionDelegate,
     getDialogTitle,
     getDialogMessage,
     getDialogType,
