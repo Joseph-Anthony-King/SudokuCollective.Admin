@@ -199,10 +199,10 @@ describe('the loginFormStore store', () => {
 
 		// Assert
 		expect(sut.dirty).toBeFalsy();
-		expect(sut.emailDirty).toBeFalsy()
+		expect(sut.emailDirty).toBeFalsy();
 		expect(sut.userName).toBeNull();
 		expect(sut.password).toBeNull();
-		expect(sut.email).toBeNull()
+		expect(sut.email).toBeNull();
 		expect(sut.invalidUserNames).toBeTypeOf('object');
 		expect(sut.invalidUserNames.length).equals(0);
 		expect(sut.invalidPasswords).toBeTypeOf('object');
