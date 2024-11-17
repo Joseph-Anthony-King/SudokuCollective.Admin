@@ -105,6 +105,7 @@ export const useSignUpFormStore = defineStore('signUpFormStore', () => {
     nickName,
     email,
     password,
+    confirmPassword,
     invalidUserNames,
     invalidEmails,
     passwordToken,
