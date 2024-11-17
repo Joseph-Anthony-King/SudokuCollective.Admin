@@ -48,7 +48,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
     invalidPasswords.value = passwords;
   };
   const updateInvalidEmails = (emails: string[]) => {
-    emailDirty.value = true;
+    dirty.value = true;
     invalidEmails.value = emails;
   };
   const updateLoginFailed = (failed: boolean) => {
@@ -60,6 +60,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   //#region Actions
   const initializeStore = (): void => {
     dirty.value = false;
+    emailDirty.value = false;
     userName.value = null;
     password.value = null;
     email.value = null;
@@ -70,6 +71,7 @@ export const useLoginFormStore = defineStore('loginFormStore', () => {
   };
   const initializeAssistance = (): void => {
     email.value = null;
+    emailDirty.value = false;
     invalidEmails.value = [];
   };
   //#endregion
