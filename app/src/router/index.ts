@@ -73,7 +73,7 @@ router.beforeEach(async (to, from, next) => {
     getUserIsLoggedIn,
     getUserAsync,
     confirmEmailAsync,
-    setServiceMessage: setUserStoreServiceMessage,
+    updateServiceMessage: setUserStoreServiceMessage,
     updateUserIsLoggingIn,
     updateUserIsSigningUp,
     updateUser,

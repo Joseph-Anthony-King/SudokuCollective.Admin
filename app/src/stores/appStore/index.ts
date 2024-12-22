@@ -44,7 +44,7 @@ export const useAppStore = defineStore('appStore', () => {
         ? myApps.value.find((a) => a.id === id)
         : null;
   };
-  const setServiceMessage = (param: string | null = null): void => {
+  const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
   //#endregion
@@ -61,7 +61,7 @@ export const useAppStore = defineStore('appStore', () => {
     if (response.isSuccess) {
       updateApp(response.app);
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const getMyAppsAsync = async (): Promise<boolean> => {
@@ -69,7 +69,7 @@ export const useAppStore = defineStore('appStore', () => {
     if (response.isSuccess) {
       myApps.value = response.apps;
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const getMyRegisteredAppsAsync = async (): Promise<boolean> => {
@@ -77,7 +77,7 @@ export const useAppStore = defineStore('appStore', () => {
     if (response.isSuccess) {
       myRegisteredApps.value = response.apps;
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   //#endregion
@@ -92,7 +92,7 @@ export const useAppStore = defineStore('appStore', () => {
     getSelectedApp,
     updateApp,
     setSelectedApp,
-    setServiceMessage,
+    updateServiceMessage,
     initializeStore,
     putUpdateAppAsync,
     getMyAppsAsync,

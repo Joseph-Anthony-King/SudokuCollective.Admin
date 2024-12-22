@@ -436,14 +436,14 @@ describe('the appStore store', () => {
     expect(intialSelectedAppIsNotNull).toBe(true);
     expect(updatedSelectedAppIsNull).toBe(true);
   });
-  it('should set the serviceMessage using the setServiceMessage mutation', () => {
+  it('should set the serviceMessage using the updateServiceMessage mutation', () => {
     // Arrange
     const sut = useAppStore(pinia);
     const initialServiceMessageNull = sut.$state.serviceMessage === null ? true : false;
     const serviceMessage = 'Updated the service message!';
 
     // Act
-    sut.setServiceMessage(serviceMessage);
+    sut.updateServiceMessage(serviceMessage);
     const updatedServiceMessageIsNotNull = sut.$state.serviceMessage !== null ? true : false;
 
     // Assert

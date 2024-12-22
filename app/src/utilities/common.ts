@@ -35,7 +35,7 @@ export default function () {
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.SUCCESS,
       });
-      useUserStore().setServiceMessage();
+      useUserStore().updateServiceMessage();
     }
   };
   // Returns true if there was an error so form components can run validation

@@ -63,7 +63,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
   const updateRedirectUrl = (param: string | null = null): void => {
     redirectUrl.value = param;
   };
-  const setServiceMessage = (param: string | null = null): void => {
+  const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
   const updateProcessingStatus = (param: boolean): void => {
@@ -98,18 +98,19 @@ export const useGlobalStore = defineStore('globalStore', () => {
     stayLoggedIn.value = true;
     redirectToSignUp.value = false;
     cancelApiRequestDelegate.value = null;
+    cancelApiRequestDelayInMilliseconds.value = null;
   };
   const loginAsync = async (data: ILoginRequestData): Promise<void> => {
     const response: IServicePayload = await LoginService.postLoginAsync(data);
     if (response.isSuccess) {
       const { updateUser } = useUserStore();
       const { getMyAppsAsync, getMyRegisteredAppsAsync } = useAppStore();
-      const { initializeStore } = useDialogStore();
+      const dialogStore = useDialogStore();
       updateUser(response.user);
       updateToken(response.token);
       updateTokenExpirationDate(response.tokenExpirationDate);
       updateStayLoggedIn(data.stayLoggedIn);
-      initializeStore();
+      dialogStore.initializeStore();
 
       await getMyAppsAsync();
       await getMyRegisteredAppsAsync();
@@ -129,7 +130,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
     if (response.isSuccess) {
       const userStore = useUserStore();
       userStore.updateConfirmedUserName(response.confirmedUserName);
-      updateToken(response.token);
     }
   };
   const isTokenExpired = (): boolean => {
@@ -195,7 +195,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     updateToken,
     updateTokenExpirationDate,
     updateRedirectUrl,
-    setServiceMessage,
+    updateServiceMessage,
     updateNavDrawerStatus,
     updateProcessingStatus,
     updateStayLoggedIn,

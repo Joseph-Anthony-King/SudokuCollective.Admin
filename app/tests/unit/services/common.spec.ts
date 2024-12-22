@@ -17,7 +17,7 @@ describe('the common port file', () => {
     globalStore = useGlobalStore(testingPinia);
 
     serviceFailStore.updateIsSuccess = vi.fn();
-    serviceFailStore.setServiceMessage = vi.fn();
+    serviceFailStore.updateServiceMessage = vi.fn();
     serviceFailStore.updateStatusCode = vi.fn();
     globalStore.tokenHasExpired = vi.fn();
 
