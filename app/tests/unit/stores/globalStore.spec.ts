@@ -729,7 +729,7 @@ describe('the globalStore store', () => {
         data: {
           isSuccess: false,
           message: 'Status Code 401: The authorization token has expired, please sign in again.',
-          payload: {}
+          payload: []
         },
         request: {}
       } as AxiosResponse;
@@ -786,7 +786,7 @@ describe('the globalStore store', () => {
         data: {
           isSuccess: false,
           message: 'Status Code 403: Invalid request on this authorization token',
-          payload: {}
+          payload: []
         },
         request: {}
       } as AxiosResponse;
