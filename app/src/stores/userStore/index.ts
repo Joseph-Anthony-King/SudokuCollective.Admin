@@ -57,7 +57,7 @@ export const useUserStore = defineStore('userStore', () => {
   const updateConfirmedUserName = (param: string | null = null): void => {
     confirmedUserName.value = param;
   };
-  const setServiceMessage = (param: string | null = null): void => {
+  const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
   const updateUserIsLoggingOut = (param: boolean): void => {
@@ -94,7 +94,7 @@ export const useUserStore = defineStore('userStore', () => {
     const response: IServicePayload = await UsersService.getUserAsync(user.value.id!);
     if (response.isSuccess) {
       updateUser(response.user);
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
@@ -102,7 +102,7 @@ export const useUserStore = defineStore('userStore', () => {
     const response: IServicePayload = await UsersService.putUpdateUserAsync(data);
     if (response.isSuccess) {
       updateUser(response.user);
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
@@ -111,7 +111,7 @@ export const useUserStore = defineStore('userStore', () => {
     if (response.isSuccess) {
       const { clearStores } = commonUtitlities();
       clearStores();
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
@@ -119,14 +119,14 @@ export const useUserStore = defineStore('userStore', () => {
     const response: IServicePayload = await LoginService.postConfirmUserNameAsync(email);
     if (response.isSuccess) {
       updateUser(response.user);
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
   const confirmEmailAsync = async (token: string): Promise<boolean> => {
     const response: IServicePayload = await UsersService.getConfirmEmailAsync(token);
     if (response.isSuccess) {
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
       updateConfirmationType(response.data.confirmationType);
       updateUserName(response.data.userName);
       updateEmail(response.data.email);
@@ -138,7 +138,7 @@ export const useUserStore = defineStore('userStore', () => {
     const response: IServicePayload = await UsersService.putResendEmailConfirmationAsync(
       user.value.id!,
     );
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const cancelEmailConfirmationRequestAsync = async (): Promise<boolean> => {
@@ -146,13 +146,13 @@ export const useUserStore = defineStore('userStore', () => {
     if (response.isSuccess) {
       updateUser(response.user);
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const resetPasswordAsync = async (data: IResetPasswordRequestData): Promise<boolean> => {
     const response: IServicePayload = await UsersService.putResetPasswordAsync(data);
     if (response.isSuccess) {
-      setServiceMessage(response.message);
+      updateServiceMessage(response.message);
     }
     return response.isSuccess;
   };
@@ -161,14 +161,14 @@ export const useUserStore = defineStore('userStore', () => {
     if (response.isSuccess) {
       updateUser(response.user);
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const resendPasswordResetAsync = async (): Promise<boolean> => {
     const response: IServicePayload = await UsersService.putResendPasswordResetAsync(
       user.value.id!,
     );
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const cancelPasswordResetAsync = async (): Promise<boolean> => {
@@ -176,7 +176,7 @@ export const useUserStore = defineStore('userStore', () => {
     if (response.isSuccess) {
       updateUser(response.user);
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   const cancelAllEmailRequestsAsync = async (): Promise<boolean> => {
@@ -184,7 +184,7 @@ export const useUserStore = defineStore('userStore', () => {
     if (response.isSuccess) {
       updateUser(response.user);
     }
-    setServiceMessage(response.message);
+    updateServiceMessage(response.message);
     return response.isSuccess;
   };
   //#endregion
@@ -207,7 +207,7 @@ export const useUserStore = defineStore('userStore', () => {
     updateUserIsSigningUp,
     deleteUserAsync,
     updateConfirmedUserName,
-    setServiceMessage,
+    updateServiceMessage,
     updateUserIsLoggingOut,
     initializeStore,
     signupUserAsync,

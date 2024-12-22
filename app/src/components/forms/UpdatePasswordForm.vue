@@ -177,7 +177,7 @@
   //#region UserStore
   const userStore = useUserStore();
   const { getUserIsLoggedIn } = storeToRefs(userStore);
-  const { getUserAsync, setServiceMessage } = userStore;
+  const { getUserAsync, updateServiceMessage } = userStore;
   //#endregion
   //#endregion
 
@@ -215,7 +215,7 @@
           displaySuccessfulToast(StoreType.USERSTORE);
           if (getUserIsLoggedIn.value) {
             await getUserAsync();
-            setServiceMessage();
+            updateServiceMessage();
             router.push('/user-profile');
           } else {
             router.push('/');

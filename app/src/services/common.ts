@@ -7,7 +7,7 @@ export class StaticServiceMethods {
     const globalStore = useGlobalStore();
     const serviceFailStore = useServiceFailStore();
     serviceFailStore.updateIsSuccess(response.data.isSuccess);
-    serviceFailStore.setServiceMessage(response.data.message);
+    serviceFailStore.updateServiceMessage(response.data.message);
     serviceFailStore.updateStatusCode(response.status);
 
     if (

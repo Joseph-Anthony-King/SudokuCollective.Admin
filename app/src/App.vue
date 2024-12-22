@@ -179,7 +179,7 @@
         getStayedLoggedIn,
         getRedirectToSignUp,
       } = storeToRefs(globalStore);
-      const { logout, setServiceMessage, updateNavDrawerStatus, updateRedirectToSignUp } =
+      const { logout, updateServiceMessage, updateNavDrawerStatus, updateRedirectToSignUp } =
         globalStore;
       //#endregion
       //#region DialogStore
@@ -314,7 +314,7 @@
             });
             user.value.isLoggingIn = false;
             user.value.isObtainingAssistance = false;
-            setServiceMessage('');
+            updateServiceMessage('');
           }
         },
       );
