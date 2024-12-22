@@ -1,22 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { delay, http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { setActivePinia } from 'pinia';
-import { createTestingPinia, type TestingPinia } from '@pinia/testing';
+import { createPinia, type Pinia } from 'pinia';
 import axios, { AxiosError } from 'axios';
 import { abortSignal, manualAbortSignal } from '@/ports/common';
 import { useGlobalStore } from '@/stores/globalStore';
 
 describe('the common port file', () => {
-  let testingPinia: TestingPinia;
+  let pinia: Pinia;
   beforeEach(() => {
-    testingPinia = createTestingPinia({
-      createSpy: vi.fn(),
-    });
-    const globalStore = useGlobalStore(testingPinia);
+    pinia = createPinia();
+    const globalStore = useGlobalStore(pinia);
     globalStore.updateProcessingStatus = vi.fn();
     globalStore.$state.processingStatus = true;
-    setActivePinia(testingPinia);
   });
   it('should obtain an Axios abort signal with the abortSignal method', async () => {
     const delayTimeout = 10000 // 10 seconds

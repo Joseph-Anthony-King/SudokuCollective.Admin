@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
-import { setActivePinia } from 'pinia';
-import { createTestingPinia, type TestingPinia } from '@pinia/testing';
+import { createPinia, type Pinia } from 'pinia';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { GamesPort } from '@/ports/gamesPort/index';
 import { Endpoints } from '@/ports/gamesPort/endpoints';
@@ -10,15 +9,13 @@ import { useGlobalStore } from '@/stores/globalStore';
 import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
 
 describe('the gamesPort port', () => {
-  let testingPinia: TestingPinia;
+  let pinia: Pinia;
   let testServer: SetupServerApi | null;
   beforeEach(() => {
-    testingPinia = createTestingPinia({
-      createSpy: vi.fn(),
-    });
-    const globalStore = useGlobalStore(testingPinia);
+    pinia = createPinia();
+    const globalStore = useGlobalStore(pinia);
     globalStore.updateCancelApiRequestDelegate = vi.fn();
-    setActivePinia(testingPinia);
+    globalStore.$state.processingStatus = true;
   });
   afterEach(() => {
     vi.restoreAllMocks();
