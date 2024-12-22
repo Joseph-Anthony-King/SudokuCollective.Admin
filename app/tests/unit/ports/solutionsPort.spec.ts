@@ -1,21 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
-import { setActivePinia } from 'pinia';
-import { createTestingPinia, type TestingPinia } from '@pinia/testing';
+import { createPinia, type Pinia } from 'pinia';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { SolutionsPort } from '@/ports/solutionsPort/index';
 import { Endpoints } from '@/ports/solutionsPort/endpoints';
 import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
+import { useGlobalStore } from '@/stores/globalStore';
 
 describe('the solutionsPort port', () => {
-  let testingPinia: TestingPinia;
+  let pinia: Pinia;
   let testServer: SetupServerApi | null;
   beforeEach(() => {
-    testingPinia = createTestingPinia({
-      createSpy: vi.fn(),
-    });
-    setActivePinia(testingPinia);
+    pinia = createPinia();
+    const globalStore = useGlobalStore(pinia);
+    globalStore.updateCancelApiRequestDelegate = vi.fn();
+    globalStore.$state.processingStatus = true;
   });
   afterEach(() => {
     vi.restoreAllMocks();
