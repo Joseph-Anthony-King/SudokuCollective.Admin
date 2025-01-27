@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createPinia, type Pinia } from "pinia";
-import { useSignUpFormStore } from "@/stores/formStores/signUpFormStore";
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, type Pinia } from 'pinia';
+import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
 
 describe('the signUpFormStore store', () => {
   let pinia: Pinia;

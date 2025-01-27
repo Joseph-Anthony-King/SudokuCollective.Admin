@@ -99,10 +99,10 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     solution.value = param;
   };
   const updateGameState = (param: DropdownItem | null): void => {
-    gameState.value = param ? param : null;
+    gameState.value = param;
   };
   const updateSelectedDifficulty = (param: Difficulty | null): void => {
-    selectedDifficulty.value = param ? param : null;
+    selectedDifficulty.value = param;
   };
   //#endregion
 
@@ -130,29 +130,38 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
   };
   const createGameAsync = async (): Promise<void> => {
     processing.value = !processing.value;
-    if (selectedDifficulty.value !== null) {
-      const response: IServicePayload = await GamesService.createGameAsync(
-        selectedDifficulty.value.difficultyLevel,
-      );
-      const game: Array<Array<string>> = Array<Array<string>>(9);
-      for (let i = 0; i < 9; i++) {
-        game[i] = [];
-        for (let j = 0; j < 9; j++) {
-          game[i][j] = response.game[i][j];
+    try {
+      if (selectedDifficulty.value !== null && selectedDifficulty.value.difficultyLevel !== null) {
+        const response: IServicePayload = await GamesService.createGameAsync(
+          selectedDifficulty.value.difficultyLevel,
+        );
+        const game: Array<Array<string>> = Array<Array<string>>(9);
+        for (let i = 0; i < 9; i++) {
+          game[i] = [];
+          for (let j = 0; j < 9; j++) {
+            game[i][j] = response.game[i][j];
+          }
         }
-      }
-      const initialGame: Array<Array<string>> = Array<Array<string>>(9);
-      for (let i = 0; i < 9; i++) {
-        initialGame[i] = [];
-        for (let j = 0; j < 9; j++) {
-          initialGame[i][j] = response.game[i][j];
+        const initialGame: Array<Array<string>> = Array<Array<string>>(9);
+        for (let i = 0; i < 9; i++) {
+          initialGame[i] = [];
+          for (let j = 0; j < 9; j++) {
+            initialGame[i][j] = response.game[i][j];
+          }
         }
+        updateInitialGame(initialGame);
+        updateGame(game);
+        updateCancelApiRequestDelegate();
+        serviceResult.value = null;
+        serviceMessage.value = '';
+      } else {
+        throw new Error('Selected difficulty is invalid.');
       }
-      updateInitialGame(initialGame);
-      updateGame(game);
-      updateCancelApiRequestDelegate();
-      serviceResult.value = null;
-      serviceMessage.value = '';
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      throw error;
     }
     processing.value = !processing.value;
   };
@@ -160,32 +169,50 @@ export const useSudokuStore = defineStore('sudokuStore', () => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
-    if (game.value !== null) {
-      const response: IServicePayload = await GamesService.checkGameAsync(game.value);
-      if (response.isSuccess) {
-        const solvedGame = Array<Array<string>>(9);
-        for (let i = 0; i < 9; i++) {
-          solvedGame[i] = [];
-          for (let j = 0; j < 9; j++) {
-            solvedGame[i][j] = game.value[i][j];
+    try {
+      if (game.value !== null) {
+        const response: IServicePayload = await GamesService.checkGameAsync(game.value);
+        if (response.isSuccess) {
+          const solvedGame = Array<Array<string>>(9);
+          for (let i = 0; i < 9; i++) {
+            solvedGame[i] = [];
+            for (let j = 0; j < 9; j++) {
+              solvedGame[i][j] = game.value[i][j];
+            }
           }
+          updateInitialGame(solvedGame);
         }
-        updateInitialGame(solvedGame);
+        serviceResult.value = response.isSuccess;
+        serviceMessage.value = response.message;
+      } else {
+        throw new Error('Game is invalid.');
       }
-      serviceResult.value = response.isSuccess;
-      serviceMessage.value = response.message;
-      processing.value = !processing.value;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      throw error;
     }
+    processing.value = !processing.value;
   };
   const solvePuzzleAsync = async (): Promise<void> => {
     processing.value = !processing.value;
     serviceResult.value = null;
     serviceMessage.value = '';
-    if (puzzle.value !== null) {
-      const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
-      updatePuzzle(response.puzzle);
-      serviceResult.value = response.isSuccess;
-      serviceMessage.value = response.message;
+    try {
+      if (puzzle.value !== null) {
+        const response: IServicePayload = await GamesService.solvePuzzleAsync(puzzle.value);
+        updatePuzzle(response.puzzle);
+        serviceResult.value = response.isSuccess;
+        serviceMessage.value = response.message;
+      } else {
+        throw new Error('Puzzle is invalid.');
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      throw error;
     }
     processing.value = !processing.value;
   };
