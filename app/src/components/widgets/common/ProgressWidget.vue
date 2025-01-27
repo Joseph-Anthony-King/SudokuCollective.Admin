@@ -183,17 +183,19 @@
   }
 
   .progress-button {
-    @media (min-width: 1921px) {
-      padding-top: 575px;
-    }
-
-    @media (min-width: 961px) and (max-width: 1920px) {
-      padding-top: 525px;
-    }
-
     position: absolute;
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
+
+    & {
+      @media (min-width: 1921px) {
+        padding-top: 575px;
+      }
+
+      @media (min-width: 961px) and (max-width: 1920px) {
+        padding-top: 525px;
+      }
+    }
   }
 
   @keyframes ellipsis {

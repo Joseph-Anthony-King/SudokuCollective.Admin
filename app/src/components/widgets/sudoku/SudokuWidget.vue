@@ -388,12 +388,13 @@
 
 <style lang="scss" scoped>
   .v-card {
-    @media (max-width: 600px) {
-      padding: 0 0 0 0 !important;
-      margin: 0 0 0 0 !important;
-    }
-
     width: 100%;
+    & {
+      @media (max-width: 600px) {
+        padding: 0 0 0 0 !important;
+        margin: 0 0 0 0 !important;
+      }
+    }
   }
 
   .h1-margin {
