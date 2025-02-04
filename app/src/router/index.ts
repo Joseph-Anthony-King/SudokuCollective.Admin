@@ -72,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
     getUser,
     getUserIsLoggedIn,
     getUserAsync,
-    confirmEmailAsync,
+    confirmEmailConfirmationTokenAsync,
     updateServiceMessage: setUserStoreServiceMessage,
     updateUserIsLoggingIn,
     updateUserIsSigningUp,
@@ -115,7 +115,7 @@ router.beforeEach(async (to, from, next) => {
         let result = true;
 
         if (to.name === 'confirm-email') {
-          result = await confirmEmailAsync(to.params.token.toString());
+          result = await confirmEmailConfirmationTokenAsync(to.params.token.toString());
         } else {
           updatePasswordToken(to.params.token.toString());
         }

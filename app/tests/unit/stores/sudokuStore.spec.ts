@@ -20,20 +20,20 @@ describe('the sudokuStore store', () => {
     // Arrange and Act
     const sut = useSudokuStore(pinia);
     
-    sut.initialGame = Methods.InitializeMatix();
-    sut.game = Methods.InitializeMatix();
-    sut.puzzle = Methods.InitializeMatix();
-    sut.solution = Methods.InitializeMatix();
-    sut.gameState = new DropdownItem('Play Game', 1);
-    sut.selectedDifficulty = new Difficulty(
+    sut.$state.initialGame = Methods.InitializeMatix();
+    sut.$state.game = Methods.InitializeMatix();
+    sut.$state.puzzle = Methods.InitializeMatix();
+    sut.$state.solution = Methods.InitializeMatix();
+    sut.$state.gameState = new DropdownItem('Play Game', 1);
+    sut.$state.selectedDifficulty = new Difficulty(
       1,
       'Test Difficulty',
       'Easy',
       1
     );
-    sut.serviceResult = false;
-    sut.serviceMessage = 'Service message';
-    sut.isSolveDisabled = false;
+    sut.$state.serviceResult = false;
+    sut.$state.serviceMessage = 'Service message';
+    sut.$state.isSolveDisabled = false;
 
     // Assert
     expect(sut.initialGame).toBeTypeOf('object');
@@ -51,20 +51,20 @@ describe('the sudokuStore store', () => {
     // Arrange and Act
     const sut = useSudokuStore(pinia);
     
-    sut.initialGame = Methods.InitializeMatix();
-    sut.game = Methods.InitializeMatix();
-    sut.puzzle = Methods.InitializeMatix();
-    sut.solution = Methods.InitializeMatix();
-    sut.gameState = new DropdownItem('Play Game', 1);
-    sut.selectedDifficulty = new Difficulty(
+    sut.$state.initialGame = Methods.InitializeMatix();
+    sut.$state.game = Methods.InitializeMatix();
+    sut.$state.puzzle = Methods.InitializeMatix();
+    sut.$state.solution = Methods.InitializeMatix();
+    sut.$state.gameState = new DropdownItem('Play Game', 1);
+    sut.$state.selectedDifficulty = new Difficulty(
       1,
       'Test Difficulty',
       'Easy',
       1
     );
-    sut.serviceResult = false;
-    sut.serviceMessage = 'Service message';
-    sut.isSolveDisabled = false;
+    sut.$state.serviceResult = false;
+    sut.$state.serviceMessage = 'Service message';
+    sut.$state.isSolveDisabled = false;
 
     const initialGame = sut.getInitialGame;
     const game = sut.getGame;
@@ -127,8 +127,8 @@ describe('the sudokuStore store', () => {
   it('should return true with the getIsGameCurrent getter if any game cell is not an empty string', () => {
     // Arrange
     const sut = useSudokuStore(pinia);
-    sut.game = Methods.InitializeMatix();
-    sut.game[0][0] = '9';
+    sut.$state.game = Methods.InitializeMatix();
+    sut.$state.game[0][0] = '9';
 
     // Act
     const isGameCurrent = sut.getIsGameCurrent;
@@ -139,21 +139,21 @@ describe('the sudokuStore store', () => {
   it('should return true with the getPuzzleIsReady getter is at least 13 values in the puzzle are known', () => {
     // Arrange
     const sut = useSudokuStore(pinia);
-    sut.puzzle = Methods.InitializeMatix();
+    sut.$state.puzzle = Methods.InitializeMatix();
     const knowns = [ '9', '1', '3', '5', '8', '2', '4', '7', '6', '8', '4', '6', '9' ];
-    sut.puzzle[0][0] = knowns[0];
-    sut.puzzle[0][1] = knowns[1];
-    sut.puzzle[0][2] = knowns[2];
-    sut.puzzle[0][3] = knowns[3];
-    sut.puzzle[0][4] = knowns[4];
-    sut.puzzle[0][5] = knowns[5];
-    sut.puzzle[0][6] = knowns[6];
-    sut.puzzle[0][7] = knowns[7];
-    sut.puzzle[0][8] = knowns[8];
-    sut.puzzle[1][0] = knowns[9];
-    sut.puzzle[1][1] = knowns[10];
-    sut.puzzle[1][2] = knowns[11];
-    sut.puzzle[1][3] = knowns[12];
+    sut.$state.puzzle[0][0] = knowns[0];
+    sut.$state.puzzle[0][1] = knowns[1];
+    sut.$state.puzzle[0][2] = knowns[2];
+    sut.$state.puzzle[0][3] = knowns[3];
+    sut.$state.puzzle[0][4] = knowns[4];
+    sut.$state.puzzle[0][5] = knowns[5];
+    sut.$state.puzzle[0][6] = knowns[6];
+    sut.$state.puzzle[0][7] = knowns[7];
+    sut.$state.puzzle[0][8] = knowns[8];
+    sut.$state.puzzle[1][0] = knowns[9];
+    sut.$state.puzzle[1][1] = knowns[10];
+    sut.$state.puzzle[1][2] = knowns[11];
+    sut.$state.puzzle[1][3] = knowns[12];
 
     // Act
     const puzzleIsReady = sut.getPuzzleIsReady;
@@ -165,22 +165,22 @@ describe('the sudokuStore store', () => {
   it('should return false with the getPuzzleIsReady getter if more than 13 values in the puzzle are known', () => {
     // Arrange
     const sut = useSudokuStore(pinia);
-    sut.puzzle = Methods.InitializeMatix();
+    sut.$state.puzzle = Methods.InitializeMatix();
     const knowns = [ '9', '1', '3', '5', '8', '2', '4', '7', '6', '8', '4', '6', '9', '3' ];
-    sut.puzzle[0][0] = knowns[0];
-    sut.puzzle[0][1] = knowns[1];
-    sut.puzzle[0][2] = knowns[2];
-    sut.puzzle[0][3] = knowns[3];
-    sut.puzzle[0][4] = knowns[4];
-    sut.puzzle[0][5] = knowns[5];
-    sut.puzzle[0][6] = knowns[6];
-    sut.puzzle[0][7] = knowns[7];
-    sut.puzzle[0][8] = knowns[8];
-    sut.puzzle[1][0] = knowns[9];
-    sut.puzzle[1][1] = knowns[10];
-    sut.puzzle[1][2] = knowns[11];
-    sut.puzzle[1][3] = knowns[12];
-    sut.puzzle[1][4] = knowns[13];
+    sut.$state.puzzle[0][0] = knowns[0];
+    sut.$state.puzzle[0][1] = knowns[1];
+    sut.$state.puzzle[0][2] = knowns[2];
+    sut.$state.puzzle[0][3] = knowns[3];
+    sut.$state.puzzle[0][4] = knowns[4];
+    sut.$state.puzzle[0][5] = knowns[5];
+    sut.$state.puzzle[0][6] = knowns[6];
+    sut.$state.puzzle[0][7] = knowns[7];
+    sut.$state.puzzle[0][8] = knowns[8];
+    sut.$state.puzzle[1][0] = knowns[9];
+    sut.$state.puzzle[1][1] = knowns[10];
+    sut.$state.puzzle[1][2] = knowns[11];
+    sut.$state.puzzle[1][3] = knowns[12];
+    sut.$state.puzzle[1][4] = knowns[13];
 
     // Act
     const puzzleIsReady = sut.getPuzzleIsReady;
