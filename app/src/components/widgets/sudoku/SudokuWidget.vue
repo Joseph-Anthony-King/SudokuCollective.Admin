@@ -125,7 +125,7 @@
   import { storeToRefs } from 'pinia';
   import { useDialogStore } from '@/stores/dialogStore';
   import { useSudokuStore } from '@/stores/sudokuStore';
-  import { useValueStore } from '@/stores/valueStore';
+  import { useValueStore } from '@/stores/valuesStore';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import MatrixWidget from '@/components/widgets/sudoku/MatrixWidget.vue';
   import { DialogType } from '@/enums/dialogType';
@@ -165,8 +165,8 @@
     solvePuzzleAsync,
   } = sudokuStore;
   //#endregion
-  const valueStore = useValueStore();
-  const { getDifficulties, getGameStates } = storeToRefs(valueStore);
+  const valuesStore = useValueStore();
+  const { getDifficulties, getGameStates } = storeToRefs(valuesStore);
   //#endregion
 
   //#region Properties
