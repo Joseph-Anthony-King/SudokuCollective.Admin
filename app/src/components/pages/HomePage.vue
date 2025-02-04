@@ -16,13 +16,13 @@
   /* eslint-disable no-undef */
   /* eslint-disable @typescript-eslint/no-unused-vars */
   import { ref, watch } from 'vue';
-  import { useValueStore } from '@/stores/valueStore';
+  import { useValueStore } from '@/stores/valuesStore';
   import HeroWidget from '@/components/widgets/common/HeroWidget.vue';
   import { storeToRefs } from 'pinia';
 
   //#region Destructure Stores
-  const valueStore = useValueStore();
-  const { getMissionStatement } = storeToRefs(valueStore);
+  const valuesStore = useValueStore();
+  const { getMissionStatement } = storeToRefs(valuesStore);
   //#endregion
 
   const missionStatement = ref(getMissionStatement.value);
