@@ -124,7 +124,7 @@
   import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
   import { useSudokuStore } from '@/stores/sudokuStore';
   import { useUserStore } from '@/stores/userStore';
-  import { useValueStore } from '@/stores/valuesStore';
+  import { useValueStore } from '@/stores/valueStore';
   import AppBar from '@/components/navigation/AppBar.vue';
   import FooterNav from '@/components/navigation/FooterNav.vue';
   import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
@@ -207,7 +207,7 @@
       const { updateUser, updateUserIsLoggingIn, updateUserIsLoggingOut, updateUserIsSigningUp } =
         userStore;
       //#endregion
-      const valuesStore = useValueStore();
+      const valueStore = useValueStore();
       //#endregion
 
       //#region Navbar functionality
@@ -478,7 +478,7 @@
       onMounted(async () => {
         updateAppProcessingAsync(async () => {
           // Initialize the value, sudoku and serviceFailure stores
-          await valuesStore.initializeStoreAsync();
+          await valueStore.initializeStoreAsync();
           sudokuStore.initializeStore();
           serviceFailStore.initializeStore();
 

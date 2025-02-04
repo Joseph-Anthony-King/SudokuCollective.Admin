@@ -581,7 +581,7 @@
   import { storeToRefs } from 'pinia';
   import { useAppStore } from '@/stores/appStore';
   import { useDialogStore } from '@/stores/dialogStore';
-  import { useValueStore } from '@/stores/valuesStore';
+  import { useValueStore } from '@/stores/valueStore';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import { DropdownItem } from '@/models/infrastructure/dropdownItem';
   import { App } from '@/models/domain/app';
@@ -611,9 +611,9 @@
   const dialogStore = useDialogStore();
   const { updateDialog } = dialogStore;
   //#endregion
-  //#region valuesStore
-  const valuesStore = useValueStore();
-  const { getReleaseEnvironments, getTimeFrames } = storeToRefs(valuesStore);
+  //#region valueStore
+  const valueStore = useValueStore();
+  const { getReleaseEnvironments, getTimeFrames } = storeToRefs(valueStore);
   //#endregion
   //#endregion
 
