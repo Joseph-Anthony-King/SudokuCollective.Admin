@@ -7,7 +7,7 @@ import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { GameStates } from '@/utilities/dropdowns/gameStates';
 
-export const useValueStore = defineStore('valuesStore', () => {
+export const useValueStore = defineStore('valueStore', () => {
   //#region State
   const difficulties: Ref<Array<Difficulty> | null> = ref(null);
   const releaseEnvironments: Ref<Array<DropdownItem> | null> = ref(null);

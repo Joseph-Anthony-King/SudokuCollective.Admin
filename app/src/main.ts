@@ -30,7 +30,7 @@ createApp(App)
           'globalStore',
           'sudokuStore',
           'userStore',
-          'valuesStore',
+          'valueStore',
         ],
         storage: {
           getItem: (key) => encryptStorage.getItem(key),
