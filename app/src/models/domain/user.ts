@@ -8,20 +8,20 @@ export class User implements IUser {
   nickName: string | null;
   fullName: string | null;
   email: string | null;
-  isEmailConfirmed: boolean | null;
-  receivedRequestToUpdateEmail: boolean | null;
-  receivedRequestToUpdatePassword: boolean | null;
-  isActive: boolean | null;
-  isSuperUser: boolean | null;
-  isAdmin: boolean | null;
+  isEmailConfirmed: boolean;
+  receivedRequestToUpdateEmail: boolean;
+  receivedRequestToUpdatePassword: boolean;
+  isActive: boolean;
+  isSuperUser: boolean;
+  isAdmin: boolean;
   dateCreated: Date | null;
   dateUpdated: Date | null;
-  isLoggedIn: boolean | null;
-  isLoggingIn: boolean | null;
-  isObtainingAssistance: boolean | null;
-  isSignedUp: boolean | null;
-  isSigningUp: boolean | null;
-  isEditing: boolean | null;
+  isLoggedIn: boolean;
+  isLoggingIn: boolean;
+  isObtainingAssistance: boolean;
+  isSignedUp: boolean;
+  isSigningUp: boolean;
+  isEditing: boolean;
 
   constructor(
     id?: number,
@@ -42,7 +42,7 @@ export class User implements IUser {
     isLoggedIn?: boolean,
     isSignedUp?: boolean,
   ) {
-    id ? (this.id = id) : (this.id = null);
+    id !== null && id !== undefined ? (this.id = id) : (this.id = null);
     userName ? (this.userName = userName) : (this.userName = null);
     firstName ? (this.firstName = firstName) : (this.firstName = null);
     lastName ? (this.lastName = lastName) : (this.lastName = null);
@@ -51,20 +51,20 @@ export class User implements IUser {
     email ? (this.email = email) : (this.email = null);
     isEmailConfirmed !== undefined
       ? (this.isEmailConfirmed = isEmailConfirmed)
-      : (this.isEmailConfirmed = null);
+      : (this.isEmailConfirmed = false);
     receivedRequestToUpdateEmail !== undefined
       ? (this.receivedRequestToUpdateEmail = receivedRequestToUpdateEmail)
-      : (this.receivedRequestToUpdateEmail = null);
+      : (this.receivedRequestToUpdateEmail = false);
     receivedRequestToUpdatePassword !== undefined
       ? (this.receivedRequestToUpdatePassword = receivedRequestToUpdatePassword)
-      : (this.receivedRequestToUpdatePassword = null);
-    isActive !== undefined ? (this.isActive = isActive) : (this.isActive = null);
-    isSuperUser !== undefined ? (this.isSuperUser = isSuperUser) : (this.isSuperUser = null);
-    isAdmin !== undefined ? (this.isAdmin = isAdmin) : (this.isAdmin = null);
+      : (this.receivedRequestToUpdatePassword = false);
+    isActive !== undefined ? (this.isActive = isActive) : (this.isActive = false);
+    isSuperUser !== undefined ? (this.isSuperUser = isSuperUser) : (this.isSuperUser = false);
+    isAdmin !== undefined ? (this.isAdmin = isAdmin) : (this.isAdmin = false);
     dateCreated ? (this.dateCreated = dateCreated) : (this.dateCreated = null);
     dateUpdated ? (this.dateUpdated = dateUpdated) : (this.dateUpdated = null);
-    isLoggedIn !== undefined ? (this.isLoggedIn = isLoggedIn) : (this.isLoggedIn = null);
-    isSignedUp !== undefined ? (this.isSignedUp = isSignedUp) : (this.isSignedUp = null);
+    isLoggedIn !== undefined ? (this.isLoggedIn = isLoggedIn) : (this.isLoggedIn = false);
+    isSignedUp !== undefined ? (this.isSignedUp = isSignedUp) : (this.isSignedUp = false);
 
     this.isLoggingIn = false;
     this.isObtainingAssistance = false;
