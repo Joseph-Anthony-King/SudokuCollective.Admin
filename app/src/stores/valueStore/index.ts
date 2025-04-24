@@ -76,7 +76,11 @@ export const useValueStore = defineStore('valueStore', () => {
 
       gameStates.value = GameStates;
 
-      storeExpirationDate.value?.setDate(new Date().getDate() + 1);
+      const newExpirationDate = new Date();
+
+      newExpirationDate.setDate(newExpirationDate.getDate() + 1);
+
+      storeExpirationDate.value = newExpirationDate;
     }
   };
   //#endregion
