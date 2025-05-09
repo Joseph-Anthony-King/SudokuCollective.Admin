@@ -39,15 +39,7 @@ describe('the valueStore store', () => {
     // Arrange
     const sut = useValueStore(pinia);
 
-    await sut.initializeStoreAsync()
-
-    //sut.$state.difficulties = [];
-    //sut.$state.releaseEnvironments = [];
-    //sut.$state.sortValues = [];
-    //sut.$state.timeFrames = [];
-    //sut.$state.gameStates = [];
-    //sut.$state.gallery = [];
-    //sut.$state.missionStatement = 'missionStatement';
+    await sut.initializeStoreAsync();
 
     // Act
     const difficulties = sut.getDifficulties;
