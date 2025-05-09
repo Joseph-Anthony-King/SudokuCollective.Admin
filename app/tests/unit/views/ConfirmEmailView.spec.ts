@@ -1,6 +1,6 @@
+import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { h } from 'vue';
 import ConfirmEmailView from '@/views/ConfirmEmailView.vue';
 import ConfirmEmailPage from '@/components/pages/ConfirmEmailPage.vue';
 
@@ -15,7 +15,7 @@ vi.mock('@/components/pages/ConfirmEmailPage.vue', () => ({
   }
 }));
 
-describe('ConfirmEmailView', () => {
+describe('The ConfirmEmailView vue view', () => {
   it('should render properly', () => {
     // Arrange & Act
     const wrapper = mount(ConfirmEmailView, {

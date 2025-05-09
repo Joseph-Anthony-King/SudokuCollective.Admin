@@ -1,6 +1,6 @@
+import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { h } from 'vue';
 import DashboardView from '@/views/DashboardView.vue';
 import DashboardPage from '@/components/pages/DashboardPage.vue';
 
@@ -14,7 +14,7 @@ vi.mock('@/components/pages/DashboardPage.vue', () => ({
   }
 }));
 
-describe('DashboardView', () => {
+describe('The DashboardView vue view', () => {
   it('should render properly', () => {
     // Arrange & Act
     const wrapper = mount(DashboardView);

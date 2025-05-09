@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { NavDrawerLinks } from '@/utilities/links/navDrawerLinks';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-describe('NavDrawerLinks utility', () => {
+describe('The NavDrawerLinks utility', () => {
   it('should export an array of MenuItem objects', () => {
     // Assert
     expect(Array.isArray(NavDrawerLinks)).toBe(true);

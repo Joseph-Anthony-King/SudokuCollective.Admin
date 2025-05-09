@@ -1,6 +1,6 @@
+import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { h } from 'vue';
 import SudokuView from '@/views/SudokuView.vue';
 import SudokuPage from '@/components/pages/SudokuPage.vue';
 
@@ -14,7 +14,7 @@ vi.mock('@/components/pages/SudokuPage.vue', () => ({
   }
 }));
 
-describe('SudokuView', () => {
+describe('The SudokuView vue view', () => {
   it('should render properly', () => {
     // Arrange & Act
     const wrapper = mount(SudokuView);

@@ -1,6 +1,6 @@
+import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { h } from 'vue';
 import SiteAdminView from '@/views/SiteAdminView.vue';
 import SiteAdminPage from '@/components/pages/SiteAdminPage.vue';
 
@@ -14,7 +14,7 @@ vi.mock('@/components/pages/SiteAdminPage.vue', () => ({
   }
 }));
 
-describe('SiteAdminView', () => {
+describe('The SiteAdminView vue view', () => {
   it('should render properly', () => {
     // Arrange & Act
     const wrapper = mount(SiteAdminView);

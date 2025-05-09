@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h } from 'vue';
+import { describe, expect, it, vi } from 'vitest';
 import ResetPasswordView from '@/views/ResetPasswordView.vue';
 import ResetPasswordPage from '@/components/pages/ResetPasswordPage.vue';
 
@@ -15,7 +15,7 @@ vi.mock('@/components/pages/ResetPasswordPage.vue', () => ({
   }
 }));
 
-describe('ResetPasswordView', () => {
+describe('The ResetPasswordView vue view', () => {
   it('should render properly', () => {
     // Arrange & Act
     const wrapper = mount(ResetPasswordView, {

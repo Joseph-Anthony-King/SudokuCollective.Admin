@@ -22,7 +22,7 @@ vi.mock('@/stores/sudokuStore');
 vi.mock('@/stores/userStore');
 vi.mock('vue3-toastify');
 
-describe('common utility functions', () => {
+describe('The common utility functions', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -31,7 +31,7 @@ describe('common utility functions', () => {
     vi.restoreAllMocks();
   });
 
-  describe('isChrome', () => {
+  describe('the isChrome method', () => {
     it('should detect Chrome browser correctly', () => {
       // Arrange
       const originalUserAgent = navigator.userAgent;
@@ -77,7 +77,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('clearStores', () => {
+  describe('the clearStores method', () => {
     it('should initialize all stores', () => {
       // Arrange
       const appStoreMock = { initializeStore: vi.fn() };
@@ -108,7 +108,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('displaySuccessfulToast', () => {
+  describe('the displaySuccessfulToast method', () => {
     it('should display toast with message from user store', () => {
       // Arrange
       const userStoreMock = {
@@ -187,7 +187,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('displayFailedToastAsync', () => {
+  describe('the displayFailedToastAsync method', () => {
     it('should display error toast when service fails', async () => {
       // Arrange
       const serviceFailStoreMock = {
@@ -297,7 +297,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('isAsyncFunction', () => {
+  describe('the isAsyncFunction method', () => {
     it('should identify synchronous function correctly', () => {
       // Arrange
       const syncFn = () => {};
@@ -323,7 +323,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('repairAutoComplete', () => {
+  describe('the repairAutoComplete method', () => {
     it('should set autocomplete attribute to new-password', () => {
       // Arrange
       document.body.innerHTML = `
@@ -343,7 +343,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('resetViewPort', () => {
+  describe('the resetViewPort method', () => {
     it('should set isSmallViewPort to true when window width is <= 960', () => {
       // Arrange
       const originalInnerWidth = window.innerWidth;
@@ -379,7 +379,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('sleepAsync', () => {
+  describe('the sleepAsync method', () => {
     it('should return a promise that resolves after specified delay', async () => {
       // Arrange
       vi.useFakeTimers();
@@ -398,7 +398,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('updateAppProcessingAsync', () => {
+  describe('the updateAppProcessingAsync method', () => {
     it('should update processing status and execute synchronous method', async () => {
       // Arrange
       const globalStoreMock = {
@@ -455,7 +455,7 @@ describe('common utility functions', () => {
     });
   });
 
-  describe('updateUrlWithAction', () => {
+  describe('the updateUrlWithAction method', () => {
     it('should push to url when criteria is false', () => {
       // Arrange
       const routerMock = { push: vi.fn() };

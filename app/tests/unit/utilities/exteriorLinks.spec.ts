@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-describe('ExteriorLinks utility', () => {
+describe('The ExteriorLinks utility', () => {
   // Store original env values
   const originalEnv = { ...process.env };
   
