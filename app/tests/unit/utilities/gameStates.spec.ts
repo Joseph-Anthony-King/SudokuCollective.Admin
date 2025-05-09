@@ -3,7 +3,7 @@ import { GameStates } from '@/utilities/dropdowns/gameStates';
 import { GameState } from '@/enums/gameState';
 import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
-describe('GameStates dropdown utility', () => {
+describe('The GameStates dropdown utility', () => {
   it('should export an array of DropdownItem objects', () => {
     // Assert
     expect(Array.isArray(GameStates)).toBe(true);

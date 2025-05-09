@@ -22,7 +22,7 @@ vi.mock('vue', () => {
   };
 });
 
-describe('validation rules', () => {
+describe('The validation rules', () => {
   describe('emailRules', () => {
     it('should return validation functions for emails', () => {
       // Arrange

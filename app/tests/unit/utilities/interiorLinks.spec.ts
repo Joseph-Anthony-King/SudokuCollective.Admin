@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { InteriorLinks } from '@/utilities/links/interiorLinks';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
-describe('InteriorLinks utility', () => {
+describe('The InteriorLinks utility', () => {
   it('should export an array of MenuItem objects', () => {
     // Assert
     expect(Array.isArray(InteriorLinks)).toBe(true);

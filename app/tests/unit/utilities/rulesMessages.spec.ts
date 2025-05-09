@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
-describe('RulesMessages', () => {
+describe('The RulesMessages', () => {
   it('should have all required message properties defined', () => {
     // Check if all expected properties exist
     expect(RulesMessages).toHaveProperty('emailInvalidMessage');
