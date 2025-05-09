@@ -43,9 +43,10 @@ export default function () {
     method: ((message: string, options: any) => any) | undefined,
     options: any | undefined,
   ): Promise<any> => {
-    let failed = useServiceFailStore().getIsSuccess;
+    let result = undefined;
+    const isSuccess =
+      useServiceFailStore().getIsSuccess !== null ? useServiceFailStore().getIsSuccess : false;
     let methodResult: any | undefined = undefined;
-    failed = failed !== null ? failed : true;
     if (!useServiceFailStore().getIsSuccess) {
       const message = useServiceFailStore().getServiceMessage;
       if (message !== null && message !== '') {
@@ -60,10 +61,12 @@ export default function () {
           position: toast.POSITION.TOP_CENTER,
           type: toast.TYPE.ERROR,
         });
-        useServiceFailStore().initializeStore();
       }
+      result = methodResult != undefined ? { isSuccess, methodResult } : { isSuccess };
+    } else {
+      result = { isSuccess };
     }
-    const result = { failed: !failed, methodResult };
+    useServiceFailStore().initializeStore();
     return result;
   };
   const isAsyncFunction = (
