@@ -1,6 +1,6 @@
-import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h } from 'vue';
 import UserProfileView from '@/views/UserProfileView.vue';
 import UserProfilePage from '@/components/pages/UserProfilePage.vue';
 

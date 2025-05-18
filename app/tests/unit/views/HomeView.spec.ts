@@ -1,6 +1,6 @@
-import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h } from 'vue';
 import HomeView from '@/views/HomeView.vue';
 import HomePage from '@/components/pages/HomePage.vue';
 

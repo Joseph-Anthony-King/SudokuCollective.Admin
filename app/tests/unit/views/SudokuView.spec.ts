@@ -1,6 +1,6 @@
-import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h } from 'vue';
 import SudokuView from '@/views/SudokuView.vue';
 import SudokuPage from '@/components/pages/SudokuPage.vue';
 

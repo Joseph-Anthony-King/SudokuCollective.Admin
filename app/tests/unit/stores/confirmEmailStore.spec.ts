@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type Pinia, createPinia } from 'pinia';
+import { createPinia, type Pinia } from 'pinia';
 import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
 import { EmailConfirmationType } from '@/enums/emailConfirmationType';
 
