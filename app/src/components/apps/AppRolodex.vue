@@ -83,6 +83,11 @@
       deep: true,
     },
   );
+
+  defineExpose({
+    apps,
+    selectedApps,
+  });
 </script>
 
 <style scoped lang="scss">
