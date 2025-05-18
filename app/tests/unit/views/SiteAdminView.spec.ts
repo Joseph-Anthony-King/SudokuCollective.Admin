@@ -1,6 +1,6 @@
-import { h } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h } from 'vue';
 import SiteAdminView from '@/views/SiteAdminView.vue';
 import SiteAdminPage from '@/components/pages/SiteAdminPage.vue';
 
