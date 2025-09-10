@@ -123,7 +123,7 @@
     }
   });
   const isMobile: ComputedRef<boolean> = computed(() => {
-    if (windowWidth.value < 960) {
+    if (windowWidth.value < 1921) {
       return true;
     } else {
       return false;
