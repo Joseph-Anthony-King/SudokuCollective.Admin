@@ -283,8 +283,9 @@
     event?.preventDefault();
     await updateAppProcessingAsync(async () => {
       await checkGameAsync();
-      displaySuccessfulToast(StoreType.SUDOKUSTORE);
-      await displayFailedToastAsync(undefined, undefined);
+      if (!(await displayFailedToastAsync(undefined, undefined)).isSuccess) {
+        displaySuccessfulToast(StoreType.SUDOKUSTORE);
+      }
     });
   };
   const resetGameHandlerAsync = async (event: Event | null = null): Promise<void> => {

@@ -25,6 +25,13 @@ export default defineConfig(({ command, mode }) => {
       vue(),
       vuetify(),
     ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -46,6 +53,13 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     base: env.VITE_APP_BASE_URL,
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler' // or "modern"
+        }
+      }
+    },
     test: {
       environment: "jsdom",
       server: {

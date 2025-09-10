@@ -18,7 +18,7 @@
             label="Id"
             prepend-icon="mdi-application"
             :readonly="!selectedApp.isEditing"
-            :disabled="selectedApp.isEditing"></v-text-field>
+            :disabled="selectedApp.isEditing!!"></v-text-field>
           <v-text-field
             v-model="selectedApp.license"
             label="License"
@@ -26,7 +26,7 @@
             append-icon="mdi-content-copy"
             @click:append="copyLicenseToClipboardHandler"
             :readonly="!selectedApp.isEditing"
-            :disabled="selectedApp.isEditing"></v-text-field>
+            :disabled="selectedApp.isEditing!!"></v-text-field>
           <v-tooltip
             open-delay="2000"
             location="bottom"
@@ -441,7 +441,7 @@
             persistent-hint
             prepend-icon="mdi-calendar"
             :readonly="!selectedApp.isEditing"
-            :disabled="selectedApp.isEditing"></v-text-field>
+            :disabled="selectedApp.isEditing!!"></v-text-field>
           <v-text-field
             v-model="formattedDateUpdated"
             label="Date Updated"
@@ -449,7 +449,7 @@
             persistent-hint
             prepend-icon="mdi-calendar"
             :readonly="!selectedApp.isEditing"
-            :disabled="selectedApp.isEditing"></v-text-field>
+            :disabled="selectedApp.isEditing!!"></v-text-field>
         </v-col>
       </v-row>
       <AvailableActions>
@@ -498,7 +498,7 @@
                   color="blue darken-1"
                   variant="text"
                   v-bind="props"
-                  :disabled="selectedApp.isEditing"
+                  :disabled="selectedApp.isEditing!!"
                   @click="confirmRefreshHandler">
                   Refresh
                 </v-btn>
@@ -575,7 +575,7 @@
     onUpdated,
     onUnmounted,
   } from 'vue';
-  import { VForm } from 'vuetify/components';
+  import { VForm } from 'vuetify/components/VForm';
   import { toast } from 'vue3-toastify';
   import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
@@ -637,7 +637,7 @@
   );
   const releaseEnvironments: Ref<DropdownItem[]> = ref(getReleaseEnvironments.value);
   const selectedReleaseEnvironment: Ref<ReleaseEnvironment> = ref(
-    getSelectedApp.value ? getSelectedApp.value.environment : ReleaseEnvironment.LOCAL,
+    getSelectedApp.value ? getSelectedApp.value.environment!! : ReleaseEnvironment.LOCAL,
   );
   const confirmEmailAction: Ref<string | null> = ref(
     getSelectedApp.value ? getSelectedApp.value.customEmailConfirmationAction : null,
@@ -670,17 +670,17 @@
   });
   const timeFrames: Ref<DropdownItem[]> = ref(getTimeFrames.value);
   const selectedTimeFrame: Ref<TimeFrame> = ref(
-    getSelectedApp.value ? getSelectedApp.value.timeFrame : TimeFrame.MINUTES,
+    getSelectedApp.value ? getSelectedApp.value.timeFrame!! : TimeFrame.MINUTES,
   );
   const accessDurationMagnitude: Ref<number> = ref(
-    getSelectedApp.value ? getSelectedApp.value.accessDuration : 0,
+    getSelectedApp.value ? getSelectedApp.value.accessDuration!! : 0,
   );
   const formattedDateCreated: ComputedRef<string | null> = computed(() => {
     if (selectedApp.value.dateCreated === undefined) {
       return null;
     } else {
-      return `${new Date(selectedApp.value.dateCreated).toLocaleDateString()} ${new Date(
-        selectedApp.value.dateCreated,
+      return `${new Date(selectedApp.value.dateCreated!!).toLocaleDateString()} ${new Date(
+        selectedApp.value.dateCreated!!,
       ).toLocaleTimeString()}`;
     }
   });
@@ -689,14 +689,14 @@
       return null;
     } else {
       if (
-        `${new Date(selectedApp.value.dateUpdated).toLocaleDateString()} ${new Date(
-          selectedApp.value.dateUpdated,
+        `${new Date(selectedApp.value.dateUpdated!!).toLocaleDateString()} ${new Date(
+          selectedApp.value.dateUpdated!!,
         ).toLocaleTimeString()}` === '1/1/1 12:00:00 AM'
       ) {
         return null;
       } else {
-        return `${new Date(selectedApp.value.dateUpdated).toLocaleDateString()} ${new Date(
-          selectedApp.value.dateUpdated,
+        return `${new Date(selectedApp.value.dateUpdated!!).toLocaleDateString()} ${new Date(
+          selectedApp.value.dateUpdated!!,
         ).toLocaleTimeString()}`;
       }
     }
@@ -719,7 +719,7 @@
     selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.smtpServer : null,
   );
   const SMTPServerPort: ComputedRef<number> = computed(() =>
-    selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.port : 0,
+    selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.port!! : 0,
   );
   const SMTPServerUserName: ComputedRef<string | null> = computed(() =>
     selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.userName : null,
@@ -741,7 +741,9 @@
       stagingUrl.value = newValue ? newValue.stagingUrl : null;
       prodUrl.value = newValue ? newValue.prodUrl : null;
       sourceCodeUrl.value = newValue ? newValue.sourceCodeUrl : null;
-      selectedReleaseEnvironment.value = newValue ? newValue.environment : ReleaseEnvironment.LOCAL;
+      selectedReleaseEnvironment.value = newValue
+        ? newValue.environment!!
+        : ReleaseEnvironment.LOCAL;
       confirmEmailAction.value = newValue ? newValue.customEmailConfirmationAction : null;
       resetPasswordAction.value = newValue ? newValue.customPasswordResetAction : null;
     },
@@ -774,7 +776,7 @@
       prodUrl.value = getSelectedApp.value ? getSelectedApp.value.prodUrl : null;
       sourceCodeUrl.value = getSelectedApp.value ? getSelectedApp.value.sourceCodeUrl : null;
       selectedReleaseEnvironment.value = getSelectedApp.value
-        ? getSelectedApp.value.environment
+        ? getSelectedApp.value.environment!!
         : ReleaseEnvironment.LOCAL;
       confirmEmailAction.value = getSelectedApp.value
         ? getSelectedApp.value.customEmailConfirmationAction
