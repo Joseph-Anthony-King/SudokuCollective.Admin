@@ -53,6 +53,25 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     base: env.VITE_APP_BASE_URL,
+    server: {
+      watch: {
+        ignored: [
+          '**/node_modules/**',
+          '**/coverage/**',
+          '**/dist/**',
+          '**/build/**',
+          '**/.git/**',
+          '**/cypress/**',
+          '**/tests/**',
+          '**/.vscode/**',
+          '**/.idea/**',
+          '**/tmp/**',
+          '**/temp/**'
+        ],
+        usePolling: true,
+        interval: 1000
+      }
+    },
     test: {
       environment: "jsdom",
       server: {
