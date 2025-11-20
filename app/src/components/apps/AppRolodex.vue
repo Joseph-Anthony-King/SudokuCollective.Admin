@@ -33,7 +33,7 @@
 <script setup lang="ts">
   /* eslint-disable no-unused-vars */
   /* eslint-disable @typescript-eslint/no-unused-vars*/
-  import { type Ref, ref, watch } from 'vue';
+  import { defineExpose, type Ref, ref, watch } from 'vue';
   import { storeToRefs } from 'pinia';
   import AppButton from '@/components/buttons/AppButton.vue';
   import { useAppStore } from '@/stores/appStore';

@@ -9,16 +9,17 @@
       <v-text-field
         v-for="(cell, cellIndex) in row"
         :key="cellIndex"
+        class="sudoku-cell ma-0 pa-0"
+        :class="applyTextColorStyling(rowIndex, cellIndex)"
+        :bg-color="applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'"
         variant="outlined"
-        v-model="row[cellIndex]"
-        @blur="validateEntry(rowIndex, cellIndex)"
         type="number"
         min="1"
         max="9"
-        :bg-color="applyOddRegionStyling(rowIndex, cellIndex) ? 'primary' : 'white'"
-        :class="applyTextColorStyling(rowIndex, cellIndex)"
-        class="sudoku-cell ma-0 pa-0"
-        :readonly="isReadOnly(rowIndex, cellIndex)"></v-text-field>
+        :readonly="isReadOnly(rowIndex, cellIndex)"
+        :tabindex="isReadOnly(rowIndex, cellIndex) ? -1 : 0"
+        v-model="row[cellIndex]"
+        @blur="validateEntry(rowIndex, cellIndex)"></v-text-field>
     </v-row>
   </div>
 </template>

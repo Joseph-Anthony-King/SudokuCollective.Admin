@@ -3,7 +3,9 @@
     <v-row
       class="d-flex justify-center"
       cols="12">
-      <div v-if="!isMobile" class="desktop-progress-container">
+      <div
+        v-if="!isMobile"
+        class="desktop-progress-container">
         <v-progress-circular
           indeterminate
           color="primary"
@@ -35,7 +37,7 @@
         <div
           v-if="getCancelApiRequestDelegateIsNotNull && !showCancelButton"
           class="justify-center text-center progress-button"
-          style="visibility: hidden;">
+          style="visibility: hidden">
           <!-- hidden placeholder for the cancel button -->
           <v-btn
             color="blue darken-1"
@@ -77,7 +79,7 @@
         <div
           v-if="getCancelApiRequestDelegateIsNotNull && !showCancelButton"
           class="justify-center text-center mobile-cancel-button"
-          style="visibility: hidden;">
+          style="visibility: hidden">
           <!-- hidden placeholder for the cancel button -->
           <v-btn
             color="blue darken-1"
@@ -204,28 +206,28 @@
     max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
-    
+
     // Responsive font sizing and width
     @media (max-width: 600px) {
       font-size: 0.9rem;
       max-width: 280px;
     }
-    
+
     @media (max-width: 480px) {
       font-size: 0.85rem;
       max-width: 250px;
     }
-    
+
     @media (max-width: 360px) {
       font-size: 0.8rem;
       max-width: 220px;
     }
-    
+
     @media (min-width: 961px) {
       font-size: 1.2rem;
       max-width: 400px;
     }
-    
+
     @media (min-width: 1921px) {
       font-size: 1.3rem;
       max-width: 500px;
