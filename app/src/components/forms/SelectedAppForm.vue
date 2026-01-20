@@ -289,6 +289,7 @@
                 :label="
                   selectedApp.isActive ? 'App is currently active' : 'App is currently deactivated'
                 "
+                prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -307,6 +308,7 @@
                     ? 'Custom Email Confirmation and Password Reset endpoints are active'
                     : 'Custom Email Confirmation and Password Reset endpoints are not active'
                 "
+                prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -357,6 +359,7 @@
                     ? 'Any sudoku collective user can login'
                     : 'A user must subscribe to your app to login'
                 "
+                prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -375,6 +378,7 @@
                     ? 'Super users have default access to your app'
                     : 'Super users do not have default access to your app'
                 "
+                prepend-icon="mdi-application"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>

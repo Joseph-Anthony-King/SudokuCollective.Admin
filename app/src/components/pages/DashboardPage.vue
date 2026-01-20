@@ -10,7 +10,29 @@
           </v-card-title>
         </v-container>
         <AppRolodex />
-        <SelectedAppForm v-if="selectedApp !== null" />
+        <div id="app-details" v-if="selectedApp !== null">
+          <v-container class="d-flex justify-center pa-0">
+            <v-tabs v-model="activeTab" color="primary" style="width: fit-content;">
+              <v-tab value="app-details">
+                <v-icon start>mdi-application-settings</v-icon>
+                App Details
+              </v-tab>
+              <v-tab value="app-users">
+                <v-icon start>mdi-account-group</v-icon>
+                App Users
+              </v-tab>
+            </v-tabs>
+          </v-container>
+          
+          <v-window v-model="activeTab">
+            <v-window-item value="app-details">
+              <SelectedAppForm />
+            </v-window-item>
+            <v-window-item value="app-users">
+              <SelectedAppUsersForm />
+            </v-window-item>
+          </v-window>
+        </div>
       </v-card-text>
     </v-card>
   </v-container>
@@ -23,6 +45,7 @@
   import { storeToRefs } from 'pinia';
   import AppRolodex from '@/components/apps/AppRolodex.vue';
   import SelectedAppForm from '@/components/forms/SelectedAppForm.vue';
+  import SelectedAppUsersForm from '@/components/forms/SelectedAppUsersForm.vue';
   import { useAppStore } from '@/stores/appStore';
   import { useUserStore } from '@/stores/userStore';
   import { User } from '@/models/domain/user';
@@ -49,6 +72,7 @@
 
   //#region Properties
   const selectedApp: Ref<App | null | undefined> = ref(getSelectedApp.value);
+  const activeTab: Ref<string> = ref('app-details');
 
   watch(
     () => getSelectedApp.value,
