@@ -39,6 +39,7 @@ export const useUserStore = defineStore('userStore', () => {
   const getConfirmedUserName: ComputedRef<string> = computed(() =>
     confirmedUserName.value ? toRaw(confirmedUserName.value) : '',
   );
+  const getUserIsSuperUser: ComputedRef<boolean> = computed(() => toRaw(user.value.isSuperUser!));
   const getServiceMessage: ComputedRef<string> = computed(() =>
     serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
@@ -370,6 +371,7 @@ export const useUserStore = defineStore('userStore', () => {
     getUserIsSignedUp,
     getUserIsSigningUp,
     getConfirmedUserName,
+    getUserIsSuperUser,
     getServiceMessage,
     getUserIsLoggingOut,
     updateUser,
