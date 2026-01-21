@@ -475,11 +475,11 @@
 
   //#region Properties
   const user: Ref<User> = ref(getUser.value);
-  const userName: Ref<string | undefined> = ref(user.value.userName);
-  const firstName: Ref<string | undefined> = ref(user.value.firstName);
-  const lastName: Ref<string | undefined> = ref(user.value.lastName);
-  const nickName: Ref<string | undefined> = ref(user.value.nickName);
-  const email: Ref<string | undefined> = ref(user.value.email);
+  const userName: Ref<string | null> = ref(user.value.userName);
+  const firstName: Ref<string | null> = ref(user.value.firstName);
+  const lastName: Ref<string | null> = ref(user.value.lastName);
+  const nickName: Ref<string | null> = ref(user.value.nickName);
+  const email: Ref<string | null> = ref(user.value.email);
   const invalidUserNames: Ref<string[]> = ref([]);
   const invalidEmails: Ref<string[]> = ref([]);
   const firstNameTooltip: ComputedRef<string> = computed(() =>
@@ -501,7 +501,7 @@
     return !props.formStatus;
   });
   const formattedDateCreated: ComputedRef<string | null> = computed(() => {
-    if (user.value.dateCreated === undefined) {
+    if (user.value.dateCreated === undefined || user.value.dateCreated === null) {
       return null;
     } else {
       return `${new Date(user.value.dateCreated).toLocaleDateString()} ${new Date(
@@ -510,7 +510,7 @@
     }
   });
   const formattedDateUpdated: ComputedRef<string | null> = computed(() => {
-    if (user.value.dateUpdated === undefined) {
+    if (user.value.dateUpdated === undefined || user.value.dateUpdated === null) {
       return null;
     } else {
       if (
@@ -703,11 +703,11 @@
       let result = false;
       if (getFormStatus.value) {
         const data = new UpdateUserRequestData(
-          userName.value,
-          firstName.value,
-          lastName.value,
+          userName.value ?? '',
+          firstName.value ?? '',
+          lastName.value ?? '',
           nickName.value,
-          email.value,
+          email.value ?? '',
         );
         result = await updateUserAsync(data);
       }
@@ -821,7 +821,7 @@
     event?.preventDefault();
     return (await updateAppProcessingAsync(async () => {
       let result = false;
-      if (getFormStatus.value && email.value !== undefined) {
+      if (getFormStatus.value && email.value !== undefined && email.value !== null) {
         result = await requestPasswordResetAsync(toRaw(email.value));
         if (result) {
           displaySuccessfulToast(StoreType.USERSTORE);
