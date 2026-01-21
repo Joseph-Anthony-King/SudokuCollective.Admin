@@ -26,7 +26,7 @@ vi.mock('@/components/buttons/AvailableActions.vue', () => ({
 
 // Mock vue3-toastify
 vi.mock('vue3-toastify', () => {
-  const mockToast = vi.fn();
+  const mockToast: any = vi.fn();
   mockToast.POSITION = {
     TOP_CENTER: 'top-center',
   };
@@ -153,8 +153,8 @@ describe('LoginForm.vue', () => {
     global.document.removeEventListener = vi.fn();
     global.window.addEventListener = vi.fn();
     global.window.removeEventListener = vi.fn();
-    global.clearTimeout = vi.fn();
-    global.setTimeout = vi.fn();
+    global.clearTimeout = vi.fn() as any;
+    global.setTimeout = vi.fn() as any;
   });
 
   afterEach(() => {
@@ -516,6 +516,21 @@ describe('LoginForm.vue', () => {
         expect(serviceFailStore.initializeStore).toHaveBeenCalled();
         expect(loginFormStore.initializeStore).toHaveBeenCalled();
       });
+
+      it('should call preventDefault when resetHandlerAsync is called with an Event', async () => {
+        wrapper.vm.$refs.form = { reset: vi.fn() };
+        
+        // Create a real Event object with preventDefault
+        const mockEvent = new Event('click');
+        const preventDefaultSpy = vi.spyOn(mockEvent, 'preventDefault');
+
+        await wrapper.vm.resetHandlerAsync(mockEvent);
+        await flushPromises();
+
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(serviceFailStore.initializeStore).toHaveBeenCalled();
+        expect(loginFormStore.initializeStore).toHaveBeenCalled();
+      });
     });
 
     describe('Cancel Handler', () => {
@@ -576,6 +591,22 @@ describe('LoginForm.vue', () => {
         await wrapper.vm.redirectToSignUpAsync();
         await flushPromises();
 
+        expect(loginFormStore.initializeStore).toHaveBeenCalled();
+        expect(signUpFormStore.updateUserName).toHaveBeenCalledWith(mockUserName);
+        expect(globalStore.updateRedirectToSignUp).toHaveBeenCalledWith(true);
+      });
+
+      it('should call preventDefault when redirectToSignUpAsync is called with an Event', async () => {
+        wrapper.vm.userName = mockUserName;
+        
+        // Create a real Event object with preventDefault
+        const mockEvent = new Event('click');
+        const preventDefaultSpy = vi.spyOn(mockEvent, 'preventDefault');
+
+        await wrapper.vm.redirectToSignUpAsync(mockEvent);
+        await flushPromises();
+
+        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(loginFormStore.initializeStore).toHaveBeenCalled();
         expect(signUpFormStore.updateUserName).toHaveBeenCalledWith(mockUserName);
         expect(globalStore.updateRedirectToSignUp).toHaveBeenCalledWith(true);
@@ -813,6 +844,45 @@ describe('LoginForm.vue', () => {
         
         documentSpy.mockRestore();
       });
+
+      it('should execute resetViewPort inside the window resize removeEventListener callback', async () => {
+        // This test covers the uncovered statement inside the resize removeEventListener callback
+        let resizeListenerCallback: Function | null = null;
+        
+        // Capture the resize listener callback when it's added
+        const windowAddEventListenerSpy = vi.spyOn(global.window, 'addEventListener')
+          .mockImplementation((event: string, listener: any, options?: any) => {
+            if (event === 'resize') {
+              resizeListenerCallback = listener;
+            }
+          });
+        
+        // Capture the resize listener when it's removed and execute it
+        const windowRemoveEventListenerSpy = vi.spyOn(global.window, 'removeEventListener')
+          .mockImplementation((event: string, listener: any) => {
+            if (event === 'resize' && typeof listener === 'function') {
+              // Execute the callback to cover the resetViewPort call inside it
+              listener();
+            }
+          });
+        
+        wrapper = createWrapper({ formStatus: true });
+        await nextTick();
+        
+        // Clear previous calls
+        mockCommonUtilities.resetViewPort.mockClear();
+        
+        // Trigger unmount which should call removeEventListener with the callback
+        wrapper.unmount();
+        await nextTick();
+        
+        // Verify resetViewPort was called from inside the removeEventListener callback
+        expect(windowRemoveEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
+        expect(mockCommonUtilities.resetViewPort).toHaveBeenCalled();
+        
+        windowAddEventListenerSpy.mockRestore();
+        windowRemoveEventListenerSpy.mockRestore();
+      });
     });
   });
 
@@ -887,7 +957,7 @@ describe('LoginForm.vue', () => {
 
       // Get the keyup callback that was registered
       const keyupCallback = (global.document.addEventListener as any).mock.calls
-        .find(call => call[0] === 'keyup')[1];
+        .find((call: any) => call[0] === 'keyup')[1];
 
       // Create mock event with Enter key
       const mockEvent = { key: 'Enter' };
@@ -935,12 +1005,12 @@ describe('LoginForm.vue', () => {
     });
 
     it('should execute resize callback with clearTimeout and setTimeout', async () => {
-      const mockClearTimeout = vi.fn();
+      const mockClearTimeout = vi.fn() as any;
       const mockSetTimeout = vi.fn((callback, delay, message) => {
         // Execute callback immediately for testing
         callback();
         return 123;
-      });
+      }) as any;
       
       global.clearTimeout = mockClearTimeout;
       global.setTimeout = mockSetTimeout;
@@ -950,7 +1020,7 @@ describe('LoginForm.vue', () => {
 
       // Get the resize callback that was registered
       const resizeCallback = (global.window.addEventListener as any).mock.calls
-        .find(call => call[0] === 'resize')[1];
+        .find((call: any) => call[0] === 'resize')[1];
 
       // Execute the resize callback
       resizeCallback();

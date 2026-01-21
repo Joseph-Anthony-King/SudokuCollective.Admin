@@ -3,20 +3,18 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "src/**/*.vue"
   ],
   "exclude": [
-    "node_modules",
-    "tests"
+    "node_modules"
   ],
   "compilerOptions": {
     "target": "esnext",
-    "module": "node16",
+    "module": "ESNext",
     "strict": true,
     "jsx": "preserve",
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -24,7 +22,7 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "types": [
       "vuetify",
       "node"

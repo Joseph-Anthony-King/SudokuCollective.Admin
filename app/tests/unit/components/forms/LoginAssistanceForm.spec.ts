@@ -469,7 +469,7 @@ describe('LoginAssistanceForm.vue', () => {
 
       const result = wrapper.vm.updateInvalidValues(message, options);
 
-      expect(result.invalidEmails.filter(email => email === mockEmail)).toHaveLength(1);
+      expect(result.invalidEmails.filter((email: any) => email === mockEmail)).toHaveLength(1);
     });
 
     it('should not add email to invalid list for other error messages', () => {
@@ -572,8 +572,8 @@ describe('LoginAssistanceForm.vue', () => {
         // Immediately execute the function for testing
         fn();
         return 123; // Mock timeout ID
-      });
-      const mockClearTimeout = vi.fn();
+      }) as any;
+      const mockClearTimeout = vi.fn() as any;
       
       global.setTimeout = mockSetTimeout;
       global.clearTimeout = mockClearTimeout;
@@ -583,7 +583,7 @@ describe('LoginAssistanceForm.vue', () => {
 
       // Get the resize event handler that was registered by our component
       const addEventListenerCalls = (global.window.addEventListener as any).mock.calls;
-      const resizeCall = addEventListenerCalls.find(call => call[0] === 'resize');
+      const resizeCall = addEventListenerCalls.find((call: any) => call[0] === 'resize');
       expect(resizeCall).toBeDefined();
       
       const resizeHandler = resizeCall[1];
@@ -674,12 +674,12 @@ describe('LoginAssistanceForm.vue', () => {
     });
 
     it('should handle resize timeout scenario properly', async () => {
-      let timeoutCallback: Function | null = null;
+      let timeoutCallback: (() => void) | null = null;
       const mockSetTimeout = vi.fn().mockImplementation((fn, delay, ...args) => {
         timeoutCallback = fn;
         return 123;
-      });
-      const mockClearTimeout = vi.fn();
+      }) as any;
+      const mockClearTimeout = vi.fn() as any;
       
       global.setTimeout = mockSetTimeout;
       global.clearTimeout = mockClearTimeout;
@@ -689,7 +689,7 @@ describe('LoginAssistanceForm.vue', () => {
       
       // Trigger resize event
       const addEventListenerCalls = (global.window.addEventListener as any).mock.calls;
-      const resizeCall = addEventListenerCalls.find(call => call[0] === 'resize');
+      const resizeCall = addEventListenerCalls.find((call: any) => call[0] === 'resize');
       const resizeHandler = resizeCall[1];
       
       // Trigger resize
@@ -704,7 +704,7 @@ describe('LoginAssistanceForm.vue', () => {
       
       // Execute the timeout callback if it was captured
       if (timeoutCallback) {
-        timeoutCallback();
+        (timeoutCallback as () => void)();
         expect(mockCommonUtilities.resetViewPort).toHaveBeenCalled();
       }
     });
