@@ -137,7 +137,7 @@ export class AppsPort {
     }
   }
 
-  static async getAppUsersAsync(
+  static async postAppUsersAsync(
     appId: number,
     retrieveRegisteredUsers: boolean,
     testErrorHandling: boolean | null = null,

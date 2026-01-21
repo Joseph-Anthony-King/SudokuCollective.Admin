@@ -535,7 +535,7 @@ describe('the appsPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should get app users by running the getAppUsersAsync method', async () => {
+  it('should get app users by running the postAppUsersAsync method', async () => {
     //Arrange
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/apps/1/GetAppUsers/true', () => {
@@ -594,7 +594,7 @@ describe('the appsPort port', () => {
     const sut = AppsPort;
 
     // Act
-    const result = await sut.getAppUsersAsync(1, true) as AxiosResponse;
+    const result = await sut.postAppUsersAsync(1, true) as AxiosResponse;
 
     // Assert
     expect(result.data.isSuccess).toBe(true);
@@ -602,7 +602,7 @@ describe('the appsPort port', () => {
     expect(result.data.message).equals('Status Code 200: Users were found.');
     expect(result.data.payload).toHaveLength(2);
   });
-  it('should catch AxiosErrors thrown when running the getAppUsersAsync method', async () => {
+  it('should catch AxiosErrors thrown when running the postAppUsersAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -629,7 +629,7 @@ describe('the appsPort port', () => {
       const sut = AppsPort;
   
       // Act
-      await sut.getAppUsersAsync(1, false) as AxiosResponse;
+      await sut.postAppUsersAsync(1, false) as AxiosResponse;
   
     } catch (error) {
       // Assert
@@ -641,7 +641,7 @@ describe('the appsPort port', () => {
       expect(result.payload).toHaveLength(0);
     }
   });
-  it('should catch any errors thrown when running the getAppUsersAsync method', async () => {
+  it('should catch any errors thrown when running the postAppUsersAsync method', async () => {
     try {
       //Arrange
       testServer = setupServer(
@@ -668,7 +668,7 @@ describe('the appsPort port', () => {
       const sut = AppsPort;
   
       // Act
-      await sut.getAppUsersAsync(1, false, true) as AxiosResponse;
+      await sut.postAppUsersAsync(1, false, true) as AxiosResponse;
   
     } catch (error) {
       // Assert

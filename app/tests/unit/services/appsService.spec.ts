@@ -212,6 +212,8 @@ describe('the appsService service', () => {
       } as AxiosResponse;
     });
 
+    vi.stubEnv('NODE_ENV', 'development');
+
     const sut = AppsService;
 
     const data = new UpdateAppRequestData(
@@ -473,6 +475,8 @@ describe('the appsService service', () => {
       } as AxiosResponse;
     });
 
+    vi.stubEnv('NODE_ENV', 'development');
+
     const sut = AppsService;
 
     // Act
@@ -650,6 +654,8 @@ describe('the appsService service', () => {
       } as AxiosResponse;
     });
 
+    vi.stubEnv('NODE_ENV', 'development');
+
     const sut = AppsService;
 
     // Act
@@ -658,5 +664,212 @@ describe('the appsService service', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
+  });
+  it('should get app users by running the postAppUsersAsync method', async () => {
+    // Arrange
+    AppsPort.postAppUsersAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Users were found.',
+          payload: [
+            {
+              id: 1,
+              userName: 'userName',
+              firstName: 'firstName',
+              lastName: 'lastName',
+              nickName: 'nickName',
+              fullName: 'firstName lastName',
+              email: 'email@example.com',
+              isEmailConfirmed: true,
+              receivedRequestToUpdateEmail: false,
+              receivedRequestToUpdatePassword: false,
+              isActive: true,
+              isSuperUser: false,
+              isAdmin: true,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+              dateUpdated: new Date().toISOString()
+            },
+            {
+              id: 2,
+              userName: 'userName2',
+              firstName: 'firstName2',
+              lastName: 'lastName2',
+              nickName: 'nickName2',
+              fullName: 'firstName2 lastName2',
+              email: 'email2@example.com',
+              isEmailConfirmed: true,
+              receivedRequestToUpdateEmail: false,
+              receivedRequestToUpdatePassword: false,
+              isActive: true,
+              isSuperUser: false,
+              isAdmin: false,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+              dateUpdated: undefined
+            }
+          ]
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/GetAppUsers/true',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.postAppUsersAsync(1, true);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: Users were found.');
+    expect(result.users).toHaveLength(2);
+  });
+  it('should catch AxiosErrors thrown when running the postAppUsersAsync method', async () => {
+    // Arrange
+    AppsPort.postAppUsersAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1/GetAppUsers/false',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: Users were not found.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.postAppUsersAsync(1, false);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: Users were not found.');
+  });
+  it('should catch any errors thrown when running the postAppUsersAsync method', async () => {
+    // Arrange
+    AppsPort.postAppUsersAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.postAppUsersAsync(1, false);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the postAppUsersAsync method', async () => {
+    // Arrange
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    AppsPort.postAppUsersAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 200: Erroneous result returned.',
+          payload: []
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/GetAppUsers/true',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.postAppUsersAsync(1, true);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 200: Erroneous result returned.');
+    expect(consoleErrorSpy).toHaveBeenCalledWith('error: ', expect.any(Error));
+    
+    consoleErrorSpy.mockRestore();
+  });
+  it('should set result properties after successful response when running the postAppUsersAsync method', async () => {
+    // Arrange
+    AppsPort.postAppUsersAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Users were found.',
+          payload: [
+            {
+              id: 3,
+              userName: 'userName3',
+              firstName: 'firstName3',
+              lastName: 'lastName3',
+              nickName: 'nickName3',
+              fullName: 'firstName3 lastName3',
+              email: 'email3@example.com',
+              isEmailConfirmed: true,
+              receivedRequestToUpdateEmail: false,
+              receivedRequestToUpdatePassword: false,
+              isActive: true,
+              isSuperUser: false,
+              isAdmin: false,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 10)).toISOString(),
+              dateUpdated: undefined
+            }
+          ]
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/2/GetAppUsers/false',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.postAppUsersAsync(2, false);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: Users were found.');
+    expect(result.users).toHaveLength(1);
+    expect(result.users[0].userName).equals('userName3');
   });
 });
