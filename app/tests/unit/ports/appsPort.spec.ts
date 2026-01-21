@@ -55,6 +55,7 @@ describe('the appsPort port', () => {
     expect(Endpoints.appsEndpoint).equals('https://localhost:5001/api/v1/apps');
     expect(Endpoints.getMyAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyapps');
     expect(Endpoints.getMyRegisteredAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyregisteredapps');
+    expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/GetAppUsers/');
   });
   it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
@@ -528,6 +529,146 @@ describe('the appsPort port', () => {
   
       // Act
       await sut.getMyRegisteredAppsAsync(true) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      expect(error).not.toBeNull;
+    }
+  });
+  it('should get app users by running the postAppUsersAsync method', async () => {
+    //Arrange
+    testServer = setupServer(
+      http.post('https://localhost:5001/api/v1/apps/1/GetAppUsers/true', () => {
+        return HttpResponse.json({
+          isSuccess: true, 
+          isFromCache: false, 
+          message: 'Status Code 200: Users were found.', 
+          payload: [
+            {
+              id: 1,
+              userName: 'userName',
+              firstName: 'firstName',
+              lastName: 'lastName',
+              nickName: 'nickName',
+              fullName: 'firstName lastName',
+              email: 'email@example.com',
+              isEmailConfirmed: true,
+              receivedRequestToUpdateEmail: false,
+              receivedRequestToUpdatePassword: false,
+              isActive: true,
+              isSuperUser: false,
+              isAdmin: true,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+              dateUpdated: new Date().toISOString()
+            },
+            {
+              id: 2,
+              userName: 'userName2',
+              firstName: 'firstName2',
+              lastName: 'lastName2',
+              nickName: 'nickName2',
+              fullName: 'firstName2 lastName2',
+              email: 'email2@example.com',
+              isEmailConfirmed: true,
+              receivedRequestToUpdateEmail: false,
+              receivedRequestToUpdatePassword: false,
+              isActive: true,
+              isSuperUser: false,
+              isAdmin: false,
+              dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+              dateUpdated: undefined
+            }
+          ] 
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+      })
+    );
+
+    testServer.listen();
+
+    const sut = AppsPort;
+
+    // Act
+    const result = await sut.postAppUsersAsync(1, true) as AxiosResponse;
+
+    // Assert
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.isFromCache).toBe(false);
+    expect(result.data.message).equals('Status Code 200: Users were found.');
+    expect(result.data.payload).toHaveLength(2);
+  });
+  it('should catch AxiosErrors thrown when running the postAppUsersAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.post('https://localhost:5001/api/v1/apps/1/GetAppUsers/false', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Users were not found.', 
+            payload: []
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.postAppUsersAsync(1, false) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      const result = (error as AxiosError).response?.data as any
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.isFromCache).toBe(false);
+      expect(result.message).equals('Status Code 404: Users were not found.');
+      expect(result.payload).toHaveLength(0);
+    }
+  });
+  it('should catch any errors thrown when running the postAppUsersAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.post('https://localhost:5001/api/v1/apps/1/GetAppUsers/false', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Users were not found.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.postAppUsersAsync(1, false, true) as AxiosResponse;
   
     } catch (error) {
       // Assert

@@ -64,9 +64,6 @@ describe('The AppRolodex.vue component', () => {
           }),
           vuetify,
         ],
-        stubs: {
-          AppButton: true,
-        },
       },
     });
 
@@ -90,9 +87,6 @@ describe('The AppRolodex.vue component', () => {
           }),
           vuetify,
         ],
-        stubs: {
-          AppButton: true,
-        },
       },
     });
 
@@ -117,14 +111,12 @@ describe('The AppRolodex.vue component', () => {
           }),
           vuetify,
         ],
-        stubs: {
-          AppButton: true,
-        },
       },
     });
 
     wrapper.vm.selectedApps = 'Your Registered Apps';
     await nextTick();
+    await flushPromises();
     
     expect(wrapper.vm.apps.length).toBe(1);
     expect(wrapper.findAllComponents(AppButton).length).toBe(1);
@@ -146,9 +138,6 @@ describe('The AppRolodex.vue component', () => {
           }),
           vuetify,
         ],
-        stubs: {
-          AppButton: true,
-        },
       },
     });
 
@@ -157,6 +146,7 @@ describe('The AppRolodex.vue component', () => {
     
     wrapper.vm.selectedApps = 'Your Registered Apps';
     await nextTick();
+    await flushPromises();
     
     expect(wrapper.find('.no-apps-message').exists()).toBe(false);
   });
@@ -178,7 +168,7 @@ describe('The AppRolodex.vue component', () => {
     
     const testAppStore = useAppStore(testingPinia);
     
-    vi.spyOn(testAppStore, 'setSelectedApp').mockImplementation(mockSetSelectedApp);
+    vi.spyOn(testAppStore, 'setSelectedAppAsync').mockImplementation(mockSetSelectedApp);
     
     const wrapper = mount(AppRolodex, {
       global: {
@@ -213,7 +203,7 @@ describe('The AppRolodex.vue component', () => {
     
     const testAppStore = useAppStore(testingPinia);
     
-    vi.spyOn(testAppStore, 'setSelectedApp').mockImplementation(mockSetSelectedApp);
+    vi.spyOn(testAppStore, 'setSelectedAppAsync').mockImplementation(mockSetSelectedApp);
     
     const wrapper = mount(AppRolodex, {
       global: {

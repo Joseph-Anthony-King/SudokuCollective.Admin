@@ -180,7 +180,8 @@
             :disabled="!selectedApp.isEditing || isSmallViewPort">
             <template v-slot:activator="{ props }">
               <v-checkbox
-                v-model="selectedApp.useCustomSMTPServer"
+                v-model="selectedApp.useCustomSMTPServer"                
+                prepend-icon="mdi-application"
                 :label="
                   selectedApp.useCustomSMTPServer
                     ? 'Custom SMTP Server in use'

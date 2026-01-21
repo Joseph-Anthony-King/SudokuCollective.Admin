@@ -7,6 +7,7 @@ import { UpdateAppRequestData } from '@/models/requests/updateAppRequestData';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
+import { User } from '@/models/domain/user';
 
 describe('the appStore store', () => {
   let pinia: Pinia;
@@ -32,6 +33,8 @@ describe('the appStore store', () => {
     expect(sut.selectedApp).toBeTypeOf('object');
     expect(sut.selectedApp.localUrl).toBeTypeOf('string');
     expect(sut.serviceMessage).toBeTypeOf('string');
+    expect(sut.nonRegisteredAppUsers).toBeTypeOf('object');
+    expect(sut.nonRegisteredAppUsers.length).equals(0);
   });
   it('should return the users apps with the getMyApps getter', () => {
     // Arrange
@@ -206,6 +209,55 @@ describe('the appStore store', () => {
     // Assert
     expect(selectedApp!.license).equals(licenseOne);
   });
+  it('should return the non-registered app users with the getNonRegisteredAppUsers getter', () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    const year = (new Date()).getFullYear();
+    sut.$state.nonRegisteredAppUsers = [
+      new User(
+        1,
+        'userName',
+        'firstName',
+        'lastName',
+        'nickName',
+        'firstName lastName',
+        'email@example.com',
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        new Date(`01/01/${year}`),
+        new Date(`01/02/${year}`)
+      ),
+      new User(
+        2,
+        'userName2',
+        'firstName2',
+        'lastName2',
+        'nickName2',
+        'firstName2 lastName2',
+        'email2@example.com',
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        new Date(`01/03/${year}`),
+        undefined
+      )
+    ];
+
+    // Act
+    const nonRegisteredAppUsers = sut.getNonRegisteredAppUsers;
+
+    // Assert
+    expect(nonRegisteredAppUsers.length).equals(2);
+    expect(nonRegisteredAppUsers[0].userName).equals('userName');
+    expect(nonRegisteredAppUsers[1].userName).equals('userName2');
+  });
   it('should update an app contained in myApps and the selected app if applicable using the updateApp mutation', () => {
     // Arrange
     const sut = useAppStore(pinia);
@@ -301,8 +353,13 @@ describe('the appStore store', () => {
     expect(sut.getMyApps[1].name).equals('Test App 2, UPDATED!');
     expect(sut.getSelectedApp?.name).equals('Test App 2, UPDATED!');
   });
-  it('should set the selectedApp using the setSelectedApp mutation', () => {
+  it('should set the selectedApp using the setSelectedAppAsync mutation', async () => {
     // Arrange
+    AppsService.postAppUsersAsync = vi.fn().mockResolvedValue({
+      isSuccess: true,
+      users: []
+    } as IServicePayload);
+
     const sut = useAppStore(pinia);
     sut.$state.myApps = [
       new App(
@@ -361,15 +418,20 @@ describe('the appStore store', () => {
     const intialSelectedAppIsNull = sut.$state.selectedApp === null ? true : false;
 
     // Act
-    sut.setSelectedApp(sut.$state.myApps[0].id!);
+    await sut.setSelectedAppAsync(sut.$state.myApps[0].id!);
     const updatedSelectedAppIsNotNull = sut.$state.selectedApp !== null ? true : false;
 
     // Assert
     expect(intialSelectedAppIsNull).toBe(true);
     expect(updatedSelectedAppIsNotNull).toBe(true);
   });
-  it('should default the setSelectedApp id property to 0 which sets the selectedApp to null', () => {
+  it('should default the setSelectedAppAsync id property to 0 which sets the selectedApp to null', async () => {
     // Arrange
+    AppsService.postAppUsersAsync = vi.fn().mockResolvedValue({
+      isSuccess: true,
+      users: []
+    } as IServicePayload);
+
     const sut = useAppStore(pinia);
     sut.$state.myApps = [
       new App(
@@ -429,7 +491,7 @@ describe('the appStore store', () => {
     const intialSelectedAppIsNotNull = sut.$state.selectedApp !== null ? true : false;
 
     // Act
-    sut.setSelectedApp();
+    await sut.setSelectedAppAsync();
     const updatedSelectedAppIsNull = sut.$state.selectedApp === null ? true : false;
 
     // Assert
@@ -963,5 +1025,186 @@ describe('the appStore store', () => {
     expect(updatedMyRegisteredAppsLengthIsZero).toBe(true);
     expect(updatedFirstRegisteredAppIsUndefined).toBe(true);
     expect(sut.$state.serviceMessage).equals('Status Code 404: Apps were not found.');
+  });
+  it('should populate nonRegisteredAppUsers using the results of the AppsService postAppUsersAsync method', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    const year = (new Date()).getFullYear();
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      undefined
+    );
+    const initialNonRegisteredAppUsersLengthIsZero = sut.$state.nonRegisteredAppUsers.length === 0 ? true : false;
+
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    postAppUsersAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        users: [
+          new User(
+            1,
+            'userName',
+            'firstName',
+            'lastName',
+            'nickName',
+            'firstName lastName',
+            'email@example.com',
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            new Date(`01/01/${year}`),
+            new Date(`01/02/${year}`)
+          ),
+          new User(
+            2,
+            'userName2',
+            'firstName2',
+            'lastName2',
+            'nickName2',
+            'firstName2 lastName2',
+            'email2@example.com',
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            new Date(`01/03/${year}`),
+            undefined
+          )
+        ],
+        message: 'Status Code 200: Users were found.'
+      }
+    });
+
+    // Act
+    await sut.updateNonRegisteredAppUsersAsync();
+
+    const updatedNonRegisteredAppUsersLengthIsTwo = sut.$state.nonRegisteredAppUsers.length === 2 ? true : false;
+
+    // Assert
+    expect(initialNonRegisteredAppUsersLengthIsZero).toBe(true);
+    expect(updatedNonRegisteredAppUsersLengthIsTwo).toBe(true);
+    expect(sut.$state.nonRegisteredAppUsers[0].userName).equals('userName');
+    expect(sut.$state.nonRegisteredAppUsers[1].userName).equals('userName2');
+  });
+  it('should not populate nonRegisteredAppUsers if the results of the AppsService postAppUsersAsync method is not successful', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      undefined
+    );
+    const initialNonRegisteredAppUsersLengthIsZero = sut.$state.nonRegisteredAppUsers.length === 0 ? true : false;
+
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    postAppUsersAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: false,
+        message: 'Status Code 404: Users were not found.'
+      }
+    });
+
+    // Act
+    await sut.updateNonRegisteredAppUsersAsync();
+
+    const updatedNonRegisteredAppUsersLengthIsZero = sut.$state.nonRegisteredAppUsers.length === 0 ? true : false;
+
+    // Assert
+    expect(initialNonRegisteredAppUsersLengthIsZero).toBe(true);
+    expect(updatedNonRegisteredAppUsersLengthIsZero).toBe(true);
+  });
+  it('should handle errors when running updateNonRegisteredAppUsersAsync method', async () => {
+    // Arrange
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      undefined
+    );
+
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+    postAppUsersAsyncSpy.mockRejectedValue(new Error('Network error'));
+
+    // Act
+    await sut.updateNonRegisteredAppUsersAsync();
+
+    // Assert
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    
+    consoleErrorSpy.mockRestore();
   });
 });
