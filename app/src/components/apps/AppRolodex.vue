@@ -33,7 +33,7 @@
 <script setup lang="ts">
   /* eslint-disable no-unused-vars */
   /* eslint-disable @typescript-eslint/no-unused-vars*/
-  import { defineExpose, type Ref, ref, watch } from 'vue';
+  import { type Ref, ref, watch } from 'vue';
   import { storeToRefs } from 'pinia';
   import AppButton from '@/components/buttons/AppButton.vue';
   import { useAppStore } from '@/stores/appStore';
@@ -44,15 +44,17 @@
 
   const appStore = useAppStore();
   const { getSelectedApp, getMyApps, getMyRegisteredApps } = storeToRefs(appStore);
-  const { setSelectedApp } = appStore;
+  const { setSelectedAppAsync } = appStore;
 
   const apps: Ref<App[]> = ref(getMyApps.value);
   const selectedApps: Ref<string> = ref('Your Apps');
 
   watch(
     () => selectedApps.value,
-    (newValue, oldValue) => {
-      setSelectedApp();
+    async (newValue, oldValue) => {
+      if (oldValue !== undefined) {
+        await setSelectedAppAsync();
+      }
       if (newValue === 'Your Apps') {
         apps.value = getMyApps.value;
       } else {
@@ -65,12 +67,12 @@
     },
   );
 
-  const appSelected = (id: number) => {
-    updateAppProcessingAsync(() => {
+  const appSelected = async (id: number) => {
+    await updateAppProcessingAsync(async () => {
       if (id !== getSelectedApp.value?.id) {
-        setSelectedApp(id);
+        await setSelectedAppAsync(id);
       } else {
-        setSelectedApp();
+        await setSelectedAppAsync();
       }
     });
   };

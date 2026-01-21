@@ -1644,8 +1644,8 @@ describe('SelectedAppForm.vue', () => {
       
       // Trigger the watcher by updating the store
       const appStore = wrapper.vm.$appStore || wrapper.vm.appStore;
-      if (appStore && appStore.setSelectedApp) {
-        appStore.setSelectedApp(newApp.id);
+      if (appStore && appStore.setSelectedAppAsync) {
+        appStore.setSelectedAppAsync(newApp.id);
       }
       
       await nextTick();
@@ -1862,12 +1862,12 @@ describe('SelectedAppForm.vue', () => {
       
       // Test watcher with null value by updating the component's internal state
       const appStore = wrapper.vm.$appStore || wrapper.vm.appStore;
-      if (appStore && appStore.setSelectedApp) {
-        appStore.setSelectedApp(0); // Set to null
+      if (appStore && appStore.setSelectedAppAsync) {
+        appStore.setSelectedAppAsync(0); // Set to null
         await nextTick();
         
         // Test watcher with new app value
-        appStore.setSelectedApp(mockApp.id);
+        appStore.setSelectedAppAsync(mockApp.id);
         await nextTick();
       }
       
@@ -2034,7 +2034,7 @@ describe('SelectedAppForm.vue', () => {
       
       // This should trigger the watcher callback function
       const appStore = wrapper.vm.$appStore || wrapper.vm.appStore;
-      if (appStore && appStore.setSelectedApp) {
+      if (appStore && appStore.setSelectedAppAsync) {
         appStore.selectedApp = newApp;
       }
       
