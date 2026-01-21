@@ -21,6 +21,10 @@
                 <v-icon start>mdi-account-group</v-icon>
                 App Users
               </v-tab>
+              <v-tab value="app-non-registered-users">
+                <v-icon start>mdi-account-group-outline</v-icon>
+                Non-Registered Users
+              </v-tab>
             </v-tabs>
           </v-container>
           
@@ -29,8 +33,14 @@
               <SelectedAppForm />
             </v-window-item>
             <v-window-item value="app-users">
-              <SelectedAppUsersForm />
+              <SelectedAppUsersForm :displayRegistered="true" />
             </v-window-item>
+            <v-window-item value="app-users">
+              <SelectedAppUsersForm :displayRegistered="true" />
+            </v-window-item>
+            <v-window-item value="app-non-registered-users">
+              <SelectedAppUsersForm :displayRegistered="false" />
+            </v-window-item>  
           </v-window>
         </div>
       </v-card-text>

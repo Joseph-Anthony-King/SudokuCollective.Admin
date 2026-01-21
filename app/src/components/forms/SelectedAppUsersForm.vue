@@ -69,9 +69,19 @@
   import { useAppStore } from '@/stores/appStore';
   import { useUserStore } from '@/stores/userStore';
 
+  const props = defineProps({
+    displayRegistered: {
+      type: Boolean,
+      default: true,
+    },
+  });
+
   // Get selected app from app store
   const appStore = useAppStore();
-  const { getSelectedApp } = storeToRefs(appStore);
+  const { 
+    getSelectedApp, 
+    getRegisteredAppUsers, 
+    getNonRegisteredAppUsers } = storeToRefs(appStore);
 
   // Get user info from user store
   const userStore = useUserStore();
@@ -79,12 +89,17 @@
 
   // Computed property to get users from selected app
   const users = computed(() => {
-    return getSelectedApp.value?.users || [];
+    if (props.displayRegistered) {
+      return getRegisteredAppUsers.value || [];
+    } else {
+      return getNonRegisteredAppUsers.value || [];
+    }
   });
 
   const formTitle = computed(() => {
     const appName = getSelectedApp.value?.name;
-    return appName ? `Manage Users for ${appName}` : 'Manage App Users';
+    const userType = props.displayRegistered ? 'Registered Users' : 'Non-Registered Users';
+    return appName ? `${userType} for ${appName}` : `Manage App Users`;
   });
 
   const headers = computed(() => {

@@ -89,8 +89,9 @@ describe('SelectedAppUsersForm.vue', () => {
     }
   });
 
-  const createWrapper = () => {
+  const createWrapper = (props = {}) => {
     return mount(SelectedAppUsersForm, {
+      props,
       global: {
         plugins: [testingPinia, vuetify],
       },
@@ -107,6 +108,17 @@ describe('SelectedAppUsersForm.vue', () => {
 
       expect(wrapper.find('.headline').exists()).toBe(true);
       expect(wrapper.find('.v-data-table').exists()).toBe(true);
+    });
+
+    it('should default displayRegistered prop to true', async () => {
+      const mockApp = createMockApp([createMockUser()]);
+      appStore.selectedApp = mockApp;
+
+      wrapper = createWrapper();
+      await nextTick();
+
+      const vm = wrapper.vm as any;
+      expect(vm.$props.displayRegistered).toBe(true);
     });
 
     it('should render data table with correct headers', async () => {
@@ -221,7 +233,7 @@ describe('SelectedAppUsersForm.vue', () => {
 
   describe('Computed Properties', () => {
     describe('users', () => {
-      it('should return users from selected app', async () => {
+      it('should return registered users from selected app when displayRegistered is true', async () => {
         const users = [
           createMockUser({ id: 1 }),
           createMockUser({ id: 2 }),
@@ -230,7 +242,7 @@ describe('SelectedAppUsersForm.vue', () => {
         const mockApp = createMockApp(users);
         appStore.selectedApp = mockApp;
 
-        wrapper = createWrapper();
+        wrapper = createWrapper({ displayRegistered: true });
         await nextTick();
 
         const vm = wrapper.vm as any;
@@ -238,10 +250,38 @@ describe('SelectedAppUsersForm.vue', () => {
         expect(vm.users).toEqual(users);
       });
 
-      it('should return empty array when selected app is null', async () => {
+      it('should return non-registered users when displayRegistered is false', async () => {
+        const nonRegisteredUsers = [
+          createMockUser({ id: 4 }),
+          createMockUser({ id: 5 }),
+        ];
+        appStore.nonRegisteredAppUsers = nonRegisteredUsers;
+        const mockApp = createMockApp([]);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: false });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users).toHaveLength(2);
+        expect(vm.users).toEqual(nonRegisteredUsers);
+      });
+
+      it('should return empty array when selected app is null and displayRegistered is true', async () => {
         appStore.selectedApp = null;
 
-        wrapper = createWrapper();
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users).toEqual([]);
+      });
+
+      it('should return empty array when displayRegistered is false and nonRegisteredAppUsers is empty', async () => {
+        appStore.nonRegisteredAppUsers = [];
+        appStore.selectedApp = createMockApp([]);
+
+        wrapper = createWrapper({ displayRegistered: false });
         await nextTick();
 
         const vm = wrapper.vm as any;
@@ -251,7 +291,7 @@ describe('SelectedAppUsersForm.vue', () => {
       it('should return empty array when selected app is undefined', async () => {
         appStore.selectedApp = undefined;
 
-        wrapper = createWrapper();
+        wrapper = createWrapper({ displayRegistered: true });
         await nextTick();
 
         const vm = wrapper.vm as any;
@@ -262,7 +302,7 @@ describe('SelectedAppUsersForm.vue', () => {
         const mockApp = createMockApp([]);
         appStore.selectedApp = mockApp;
 
-        wrapper = createWrapper();
+        wrapper = createWrapper({ displayRegistered: true });
         await nextTick();
 
         const vm = wrapper.vm as any;
@@ -271,16 +311,28 @@ describe('SelectedAppUsersForm.vue', () => {
     });
 
     describe('formTitle', () => {
-      it('should return title with app name when app exists', async () => {
+      it('should return title with app name when app exists and displaying registered users', async () => {
         const mockApp = createMockApp();
         mockApp.name = 'My Awesome App';
         appStore.selectedApp = mockApp;
 
-        wrapper = createWrapper();
+        wrapper = createWrapper({ displayRegistered: true });
         await nextTick();
 
         const vm = wrapper.vm as any;
-        expect(vm.formTitle).toBe('Manage Users for My Awesome App');
+        expect(vm.formTitle).toBe('Registered Users for My Awesome App');
+      });
+
+      it('should return title with app name when app exists and displaying non-registered users', async () => {
+        const mockApp = createMockApp();
+        mockApp.name = 'My Awesome App';
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: false });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.formTitle).toBe('Non-Registered Users for My Awesome App');
       });
 
       it('should return default title when app name is null', async () => {
