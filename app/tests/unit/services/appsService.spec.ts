@@ -1056,4 +1056,270 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
   });
+  it('should activate admin privileges for a user by running the putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putActivateAdminPrivilegesAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Admin privileges were activated.',
+          payload: [{
+            id: 2,
+            userName: 'userName2',
+            firstName: 'firstName2',
+            lastName: 'lastName2',
+            nickName: 'nickName2',
+            fullName: 'firstName2 lastName2',
+            email: 'email2@example.com',
+            isEmailConfirmed: true,
+            receivedRequestToUpdateEmail: false,
+            receivedRequestToUpdatePassword: false,
+            isActive: true,
+            isSuperUser: false,
+            isAdmin: true,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+            dateUpdated: new Date().toISOString()
+          }]
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/activateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: Admin privileges were activated.');
+    expect(result.user.userName).equals('userName2');
+    expect(result.user.isAdmin).toBe(true);
+  });
+  it('should catch AxiosErrors thrown when running the putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putActivateAdminPrivilegesAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1/activateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: Admin privileges were not activated.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: Admin privileges were not activated.');
+  });
+  it('should catch any errors thrown when running the putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putActivateAdminPrivilegesAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putActivateAdminPrivilegesAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 200: Erroneous result returned.',
+          payload: []
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/activateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 200: Erroneous result returned.');
+  });
+  it('should deactivate admin privileges for a user by running the putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putDeactivateAdminPrivilegesAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Admin privileges were deactivated.',
+          payload: [{
+            id: 2,
+            userName: 'userName2',
+            firstName: 'firstName2',
+            lastName: 'lastName2',
+            nickName: 'nickName2',
+            fullName: 'firstName2 lastName2',
+            email: 'email2@example.com',
+            isEmailConfirmed: true,
+            receivedRequestToUpdateEmail: false,
+            receivedRequestToUpdatePassword: false,
+            isActive: true,
+            isSuperUser: false,
+            isAdmin: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+            dateUpdated: new Date().toISOString()
+          }]
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/deactivateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: Admin privileges were deactivated.');
+    expect(result.user.userName).equals('userName2');
+    expect(result.user.isAdmin).toBe(false);
+  });
+  it('should catch AxiosErrors thrown when running the putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putDeactivateAdminPrivilegesAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1/deactivateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: Admin privileges were not deactivated.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: Admin privileges were not deactivated.');
+  });
+  it('should catch any errors thrown when running the putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putDeactivateAdminPrivilegesAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    AppsPort.putDeactivateAdminPrivilegesAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 200: Erroneous result returned.',
+          payload: []
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1/deactivateadminprivileges?userId=2',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 200: Erroneous result returned.');
+  });
 });

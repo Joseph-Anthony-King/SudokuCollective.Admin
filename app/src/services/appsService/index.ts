@@ -318,4 +318,66 @@ export class AppsService {
 
     return result;
   };
+
+  static putActivateAdminPrivilegesAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+    
+    try {
+
+      const response = (await AppsPort.putActivateAdminPrivilegesAsync(appId, userId)) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+      
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+      result.user = response.data.payload[0];      
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  };
+
+  static putDeactivateAdminPrivilegesAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+    
+    try {
+
+      const response = (await AppsPort.putDeactivateAdminPrivilegesAsync(appId, userId)) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+      
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+      result.user = response.data.payload[0];      
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  };
 }

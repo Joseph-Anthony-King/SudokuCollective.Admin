@@ -5,4 +5,6 @@ export class Endpoints {
   static getAppUsersEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/getappusers/`;
   static putAddUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/adduser`;
   static putRemoveUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/removeuser`;
+  static putActivateAdminPrivilegesEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/activateadminprivileges`;
+  static putDeactivateAdminPrivilegesEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/deactivateadminprivileges`;
 }
