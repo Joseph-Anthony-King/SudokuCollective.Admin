@@ -17,18 +17,18 @@ export const useAppStore = defineStore('appStore', () => {
   //#endregion
 
   //#region Getters
-  const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
+  const getMyApps: ComputedRef<Array<IApp>> = computed(() => myApps.value);
   const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() =>
-    toRaw(myRegisteredApps.value),
+    myRegisteredApps.value,
   );
   const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() =>
-    toRaw(selectedApp.value),
+    selectedApp.value,
   );
   const getRegisteredAppUsers: ComputedRef<Array<User> | null | undefined> = computed(() => 
-    toRaw(selectedApp.value?.users),
+    selectedApp.value?.users,
   );
   const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(() =>
-    toRaw(nonRegisteredAppUsers.value),
+    nonRegisteredAppUsers.value,
   );
   //#endregion
 
@@ -70,7 +70,7 @@ export const useAppStore = defineStore('appStore', () => {
       );
 
       if (response.isSuccess) {
-        selectedApp.value!.users = response.users!;
+        selectedApp.value = { ...selectedApp.value!, users: response.users! };
       }
       
     } catch (error) {
@@ -187,6 +187,54 @@ export const useAppStore = defineStore('appStore', () => {
       return false;
     }
   };
+  const putActivateAdminPrivilegesAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putActivateAdminPrivilegesAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateAdminPrivilegesAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putDeactivateAdminPrivilegesAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -211,5 +259,7 @@ export const useAppStore = defineStore('appStore', () => {
     getMyRegisteredAppsAsync,
     putAddUserAsync,
     putRemoveUserAsync,
+    putActivateAdminPrivilegesAsync,
+    putDeactivateAdminPrivilegesAsync,
   };
 });

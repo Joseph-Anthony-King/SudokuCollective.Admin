@@ -105,7 +105,7 @@
 
   // Get user info from user store
   const userStore = useUserStore();
-  const { getUserIsSuperUser } = storeToRefs(userStore);
+  const { getUser, getUserIsSuperUser } = storeToRefs(userStore);
 
   // Computed property to get users from selected app
   const users = computed(() => {

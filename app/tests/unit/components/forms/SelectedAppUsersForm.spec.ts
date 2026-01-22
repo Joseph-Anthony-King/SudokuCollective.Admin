@@ -614,5 +614,269 @@ describe('SelectedAppUsersForm.vue', () => {
       expect(vm.headers).toHaveLength(6);
     });
   });
+
+  describe('Admin Privilege Methods', () => {
+    describe('activateAdminPrivileges', () => {
+      it('should call appStore.putActivateAdminPrivilegesAsync with user id', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 5 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putActivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(true);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        await vm.activateAdminPrivileges(5);
+
+        expect(appStore.putActivateAdminPrivilegesAsync).toHaveBeenCalledWith(5);
+        expect(appStore.putActivateAdminPrivilegesAsync).toHaveBeenCalledTimes(1);
+      });
+
+      it('should handle activation when store method returns true', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 3 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putActivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(true);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        const result = await vm.activateAdminPrivileges(3);
+
+        expect(result).toBeUndefined();
+      });
+
+      it('should handle activation when store method returns false', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 7 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putActivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(false);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        const result = await vm.activateAdminPrivileges(7);
+
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe('deactivateAdminPrivileges', () => {
+      it('should call appStore.putDeactivateAdminPrivilegesAsync with user id', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 8 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putDeactivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(true);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        await vm.deactivateAdminPrivileges(8);
+
+        expect(appStore.putDeactivateAdminPrivilegesAsync).toHaveBeenCalledWith(8);
+        expect(appStore.putDeactivateAdminPrivilegesAsync).toHaveBeenCalledTimes(1);
+      });
+
+      it('should handle deactivation when store method returns true', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 9 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putDeactivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(true);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        const result = await vm.deactivateAdminPrivileges(9);
+
+        expect(result).toBeUndefined();
+      });
+
+      it('should handle deactivation when store method returns false', async () => {
+        const mockApp = createMockApp([createMockUser({ id: 10 })]);
+        appStore.selectedApp = mockApp;
+        appStore.putDeactivateAdminPrivilegesAsync = vi.fn().mockResolvedValue(false);
+
+        wrapper = createWrapper();
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        const result = await vm.deactivateAdminPrivileges(10);
+
+        expect(result).toBeUndefined();
+      });
+    });
+  });
+
+  describe('Admin Privilege Button Visibility', () => {
+    describe('Activate Admin Button', () => {
+      it('should show activate button when all conditions are met', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 1, isActive: true, isAdmin: false })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.displayRegistered).toBe(true);
+        expect(vm.getUserIsSuperUser).toBe(true);
+        expect(vm.users[0].isActive).toBe(true);
+        expect(vm.users[0].isAdmin).toBe(false);
+        expect(vm.users[0].id).not.toBe(vm.getUser.id);
+      });
+
+      it('should not show activate button when displayRegistered is false', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 1, isActive: true, isAdmin: false })];
+        appStore.nonRegisteredAppUsers = users;
+        const mockApp = createMockApp([]);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: false });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.displayRegistered).toBe(false);
+      });
+
+      it('should not show activate button when user is not super user', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: false });
+        const users = [createMockUser({ id: 1, isActive: true, isAdmin: false })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.getUserIsSuperUser).toBe(false);
+      });
+
+      it('should not show activate button when user is inactive', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 1, isActive: false, isAdmin: false })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].isActive).toBe(false);
+      });
+
+      it('should not show activate button when user is already admin', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 1, isActive: true, isAdmin: true })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].isAdmin).toBe(true);
+      });
+
+      it('should not show activate button when user id matches current user', async () => {
+        userStore.user = createMockUser({ id: 1, isSuperUser: true });
+        const users = [createMockUser({ id: 1, isActive: true, isAdmin: false })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].id).toBe(vm.getUser.id);
+      });
+    });
+
+    describe('Deactivate Admin Button', () => {
+      it('should show deactivate button when all conditions are met', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 2, isActive: true, isAdmin: true })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.displayRegistered).toBe(true);
+        expect(vm.getUserIsSuperUser).toBe(true);
+        expect(vm.users[0].isActive).toBe(true);
+        expect(vm.users[0].isAdmin).toBe(true);
+        expect(vm.users[0].id).not.toBe(vm.getUser.id);
+      });
+
+      it('should not show deactivate button when displayRegistered is false', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 2, isActive: true, isAdmin: true })];
+        appStore.nonRegisteredAppUsers = users;
+        const mockApp = createMockApp([]);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: false });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.displayRegistered).toBe(false);
+      });
+
+      it('should not show deactivate button when user is not super user', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: false });
+        const users = [createMockUser({ id: 2, isActive: true, isAdmin: true })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.getUserIsSuperUser).toBe(false);
+      });
+
+      it('should not show deactivate button when user is inactive', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 2, isActive: false, isAdmin: true })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].isActive).toBe(false);
+      });
+
+      it('should not show deactivate button when user is not admin', async () => {
+        userStore.user = createMockUser({ id: 999, isSuperUser: true });
+        const users = [createMockUser({ id: 2, isActive: true, isAdmin: false })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].isAdmin).toBe(false);
+      });
+
+      it('should not show deactivate button when user id matches current user', async () => {
+        userStore.user = createMockUser({ id: 2, isSuperUser: true });
+        const users = [createMockUser({ id: 2, isActive: true, isAdmin: true })];
+        const mockApp = createMockApp(users);
+        appStore.selectedApp = mockApp;
+
+        wrapper = createWrapper({ displayRegistered: true });
+        await nextTick();
+
+        const vm = wrapper.vm as any;
+        expect(vm.users[0].id).toBe(vm.getUser.id);
+      });
+    });
+  });
 });
 
