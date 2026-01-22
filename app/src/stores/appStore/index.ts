@@ -187,6 +187,56 @@ export const useAppStore = defineStore('appStore', () => {
       return false;
     }
   };
+  const putActivateAdminPrivilegesAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putActivateAdminPrivilegesAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+        await updateNonRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateAdminPrivilegesAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putDeactivateAdminPrivilegesAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+        await updateNonRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -211,5 +261,7 @@ export const useAppStore = defineStore('appStore', () => {
     getMyRegisteredAppsAsync,
     putAddUserAsync,
     putRemoveUserAsync,
+    putActivateAdminPrivilegesAsync,
+    putDeactivateAdminPrivilegesAsync,
   };
 });

@@ -1804,4 +1804,284 @@ describe('the appStore store', () => {
     
     consoleErrorSpy.mockRestore();
   });
+  it('should activate admin privileges for a user using putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    const year = (new Date()).getFullYear();
+    
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      []
+    );
+
+    const putActivateAdminPrivilegesAsyncSpy = vi.spyOn(AppsService, 'putActivateAdminPrivilegesAsync');
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    putActivateAdminPrivilegesAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        message: 'Status Code 200: Admin privileges were activated.'
+      }
+    });
+
+    postAppUsersAsyncSpy.mockImplementation(async (appId, retrieveRegisteredUsers) => {
+      if (retrieveRegisteredUsers) {
+        return <IServicePayload>{
+          isSuccess: true,
+          users: [
+            new User(
+              1,
+              'userName',
+              'firstName',
+              'lastName',
+              'nickName',
+              'firstName lastName',
+              'email@example.com',
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              new Date(`01/01/${year}`),
+              new Date(`01/02/${year}`)
+            )
+          ]
+        }
+      } else {
+        return <IServicePayload>{
+          isSuccess: true,
+          users: []
+        }
+      }
+    });
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(putActivateAdminPrivilegesAsyncSpy).toHaveBeenCalledWith(1, 1);
+    expect(sut.$state.selectedApp.users).toHaveLength(1);
+    expect(sut.$state.selectedApp.users![0].isAdmin).toBe(true);
+    expect(sut.$state.nonRegisteredAppUsers).toHaveLength(0);
+  });
+  it('should return false when selectedApp is null in putActivateAdminPrivilegesAsync', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = null;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(result).toBe(false);
+    expect(sut.$state.nonRegisteredAppUsers).toHaveLength(0);
+  });
+  it('should handle errors when running putActivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      []
+    );
+
+    const putActivateAdminPrivilegesAsyncSpy = vi.spyOn(AppsService, 'putActivateAdminPrivilegesAsync');
+    putActivateAdminPrivilegesAsyncSpy.mockRejectedValue(new Error('Network error'));
+
+    // Act
+    await sut.putActivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    
+    consoleErrorSpy.mockRestore();
+  });
+  it('should deactivate admin privileges for a user using putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    const year = (new Date()).getFullYear();
+    
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      []
+    );
+
+    const putDeactivateAdminPrivilegesAsyncSpy = vi.spyOn(AppsService, 'putDeactivateAdminPrivilegesAsync');
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    putDeactivateAdminPrivilegesAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        message: 'Status Code 200: Admin privileges were deactivated.'
+      }
+    });
+
+    postAppUsersAsyncSpy.mockImplementation(async (appId, retrieveRegisteredUsers) => {
+      if (retrieveRegisteredUsers) {
+        return <IServicePayload>{
+          isSuccess: true,
+          users: [
+            new User(
+              1,
+              'userName',
+              'firstName',
+              'lastName',
+              'nickName',
+              'firstName lastName',
+              'email@example.com',
+              true,
+              false,
+              false,
+              true,
+              false,
+              false,
+              new Date(`01/01/${year}`),
+              new Date(`01/02/${year}`)
+            )
+          ]
+        }
+      } else {
+        return <IServicePayload>{
+          isSuccess: true,
+          users: []
+        }
+      }
+    });
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(putDeactivateAdminPrivilegesAsyncSpy).toHaveBeenCalledWith(1, 1);
+    expect(sut.$state.selectedApp.users).toHaveLength(1);
+    expect(sut.$state.selectedApp.users![0].isAdmin).toBe(false);
+    expect(sut.$state.nonRegisteredAppUsers).toHaveLength(0);
+  });
+  it('should return false when selectedApp is null in putDeactivateAdminPrivilegesAsync', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = null;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(result).toBe(false);
+    expect(sut.$state.nonRegisteredAppUsers).toHaveLength(0);
+  });
+  it('should handle errors when running putDeactivateAdminPrivilegesAsync method', async () => {
+    // Arrange
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    const sut = useAppStore(pinia);
+    sut.$state.selectedApp = new App(
+      1,
+      'Test App 1',
+      '376ba25e-2b41-4d45-86f9-d6d781674b68',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      []
+    );
+
+    const putDeactivateAdminPrivilegesAsyncSpy = vi.spyOn(AppsService, 'putDeactivateAdminPrivilegesAsync');
+    putDeactivateAdminPrivilegesAsyncSpy.mockRejectedValue(new Error('Network error'));
+
+    // Act
+    await sut.putDeactivateAdminPrivilegesAsync(1);
+
+    // Assert
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    
+    consoleErrorSpy.mockRestore();
+  });
 });
