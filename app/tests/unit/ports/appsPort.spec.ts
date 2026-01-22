@@ -58,6 +58,8 @@ describe('the appsPort port', () => {
     expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/getappusers/');
     expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/adduser');
     expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/removeuser');
+    expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activateadminprivileges');
+    expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivateadminprivileges');
   });
   it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
@@ -947,6 +949,298 @@ describe('the appsPort port', () => {
   
       // Act
       await sut.putRemoveUserAsync(1, 2, true) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      expect(error).not.toBeNull;
+    }
+  });
+  it('should activate admin privileges for a user by running the putActivateAdminPrivilegesAsync method', async () => {
+    //Arrange
+    testServer = setupServer(
+      http.put('https://localhost:5001/api/v1/apps/1/activateadminprivileges', () => {
+        return HttpResponse.json({
+          isSuccess: true, 
+          isFromCache: false, 
+          message: 'Status Code 200: Admin privileges were activated.', 
+          payload: [{
+            id: 1,
+            name: 'test-app',
+            license: '7700a640-6816-477c-9085-95d2df94284b',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-repo',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+            dateUpdated: new Date().toISOString(),
+            users: [
+              {
+                id: 2,
+                userName: 'userName2',
+                firstName: 'firstName2',
+                lastName: 'lastName2',
+                nickName: 'nickName2',
+                fullName: 'firstName2 lastName2',
+                email: 'email2@example.com',
+                isEmailConfirmed: true,
+                receivedRequestToUpdateEmail: false,
+                receivedRequestToUpdatePassword: false,
+                isActive: true,
+                isSuperUser: false,
+                isAdmin: true,
+                dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+                dateUpdated: new Date().toISOString()
+              }
+            ]
+          }] 
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+      })
+    );
+
+    testServer.listen();
+
+    const sut = AppsPort;
+
+    // Act
+    const result = await sut.putActivateAdminPrivilegesAsync(1, 2) as AxiosResponse;
+
+    // Assert
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.isFromCache).toBe(false);
+    expect(result.data.message).equals('Status Code 200: Admin privileges were activated.');
+  });
+  it('should catch AxiosErrors thrown when running the putActivateAdminPrivilegesAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/activateadminprivileges', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Admin privileges were not activated.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putActivateAdminPrivilegesAsync(1, 2) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      const result = (error as AxiosError).response?.data as any
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.isFromCache).toBe(false);
+      expect(result.message).equals('Status Code 404: Admin privileges were not activated.');
+    }
+  });
+  it('should catch any errors thrown when running the putActivateAdminPrivilegesAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/activateadminprivileges', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Admin privileges were not activated.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putActivateAdminPrivilegesAsync(1, 2, true) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      expect(error).not.toBeNull;
+    }
+  });
+  it('should deactivate admin privileges for a user by running the putDeactivateAdminPrivilegesAsync method', async () => {
+    //Arrange
+    testServer = setupServer(
+      http.put('https://localhost:5001/api/v1/apps/1/deactivateadminprivileges', () => {
+        return HttpResponse.json({
+          isSuccess: true, 
+          isFromCache: false, 
+          message: 'Status Code 200: Admin privileges were deactivated.', 
+          payload: [{
+            id: 1,
+            name: 'test-app',
+            license: '7700a640-6816-477c-9085-95d2df94284b',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-repo',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+            dateUpdated: new Date().toISOString(),
+            users: [
+              {
+                id: 2,
+                userName: 'userName2',
+                firstName: 'firstName2',
+                lastName: 'lastName2',
+                nickName: 'nickName2',
+                fullName: 'firstName2 lastName2',
+                email: 'email2@example.com',
+                isEmailConfirmed: true,
+                receivedRequestToUpdateEmail: false,
+                receivedRequestToUpdatePassword: false,
+                isActive: true,
+                isSuperUser: false,
+                isAdmin: false,
+                dateCreated: new Date(new Date().setDate(new Date().getDate() - 20)).toISOString(),
+                dateUpdated: new Date().toISOString()
+              }
+            ]
+          }] 
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+      })
+    );
+
+    testServer.listen();
+
+    const sut = AppsPort;
+
+    // Act
+    const result = await sut.putDeactivateAdminPrivilegesAsync(1, 2) as AxiosResponse;
+
+    // Assert
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.isFromCache).toBe(false);
+    expect(result.data.message).equals('Status Code 200: Admin privileges were deactivated.');
+  });
+  it('should catch AxiosErrors thrown when running the putDeactivateAdminPrivilegesAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/deactivateadminprivileges', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Admin privileges were not deactivated.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putDeactivateAdminPrivilegesAsync(1, 2) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      const result = (error as AxiosError).response?.data as any
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.isFromCache).toBe(false);
+      expect(result.message).equals('Status Code 404: Admin privileges were not deactivated.');
+    }
+  });
+  it('should catch any errors thrown when running the putDeactivateAdminPrivilegesAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/deactivateadminprivileges', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: Admin privileges were not deactivated.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putDeactivateAdminPrivilegesAsync(1, 2, true) as AxiosResponse;
   
     } catch (error) {
       // Assert
