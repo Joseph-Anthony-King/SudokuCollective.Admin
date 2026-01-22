@@ -3,6 +3,6 @@ export class Endpoints {
   static getMyAppsEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/getmyapps`;
   static getMyRegisteredAppsEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/getmyregisteredapps`;
   static getAppUsersEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/getappusers/`;
-  static putAddUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{userId}/adduser`;
-  static putRemoveUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{userId}/removeuser`;
+  static putAddUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/adduser`;
+  static putRemoveUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/removeuser`;
 }

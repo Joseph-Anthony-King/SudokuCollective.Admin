@@ -56,8 +56,8 @@ describe('the appsPort port', () => {
     expect(Endpoints.getMyAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyapps');
     expect(Endpoints.getMyRegisteredAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyregisteredapps');
     expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/getappusers/');
-    expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{userId}/adduser');
-    expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{userId}/removeuser');
+    expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/adduser');
+    expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/removeuser');
   });
   it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
@@ -744,7 +744,7 @@ describe('the appsPort port', () => {
     const sut = AppsPort;
 
     // Act
-    const result = await sut.putAddUserAsync(1) as AxiosResponse;
+    const result = await sut.putAddUserAsync(1, 2) as AxiosResponse;
 
     // Assert
     expect(result.data.isSuccess).toBe(true);
@@ -778,7 +778,7 @@ describe('the appsPort port', () => {
       const sut = AppsPort;
   
       // Act
-      await sut.putAddUserAsync(1) as AxiosResponse;
+      await sut.putAddUserAsync(1, 2) as AxiosResponse;
   
     } catch (error) {
       // Assert
@@ -817,7 +817,7 @@ describe('the appsPort port', () => {
       const sut = AppsPort;
   
       // Act
-      await sut.putAddUserAsync(1, true) as AxiosResponse;
+      await sut.putAddUserAsync(1, 2, true) as AxiosResponse;
   
     } catch (error) {
       // Assert

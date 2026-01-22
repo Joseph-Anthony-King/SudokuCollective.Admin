@@ -180,6 +180,7 @@ export class AppsPort {
   }
 
   static async putAddUserAsync(
+    appId: number,
     userId: number, 
     testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
       try {
@@ -191,11 +192,11 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putAddUserEndpoint.replace('{userId}', userId.toString());
+      const url = Endpoints.putAddUserEndpoint.replace('{id}', appId.toString());
 
       const config = {
         method: 'put',
-        url: `${url}`,
+        url: `${url}?userId=${userId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
