@@ -973,4 +973,87 @@ describe('the appsService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
   });
+  it('should remove users from apps by running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: User was removed from app.',
+          payload: []
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: User was removed from app.');
+    expect(result.users).toHaveLength(0);
+  });
+  it('should catch AxiosErrors thrown when running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: User was not removed from app.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: User was not removed from app.');
+  });
+  it('should catch any errors thrown when running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
 });
