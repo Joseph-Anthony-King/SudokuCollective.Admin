@@ -42,17 +42,15 @@
                 :disabled="isSmallViewPort">
                 <template v-slot:activator="{ props }">
                   <v-list-item v-bind="props">
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        <a
-                          :href="link.url"
-                          :target="link.target"
-                          class="menu-item">
-                          <v-icon>{{ link.mdiIcon }}</v-icon>
-                          <span class="mr-2">{{ link.title }}</span>
-                        </a>
-                      </v-list-item-title>
-                    </v-list-item-content>
+                    <v-list-item-title>
+                      <a
+                        :href="link.url"
+                        :target="link.target"
+                        class="menu-item">
+                        <v-icon>{{ link.mdiIcon }}</v-icon>
+                        <span class="mr-2">{{ link.title }}</span>
+                      </a>
+                    </v-list-item-title>
                   </v-list-item>
                 </template>
                 <span>{{ link.tooltip }}</span>
@@ -65,16 +63,14 @@
               :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <div
-                        class="menu-item"
-                        @click="loginHandler($event)">
-                        <v-icon>mdi-login-variant</v-icon>
-                        <span class="mr-2">Login</span>
-                      </div>
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title>
+                    <div
+                      class="menu-item"
+                      @click="loginHandler($event)">
+                      <v-icon>mdi-login-variant</v-icon>
+                      <span class="mr-2">Login</span>
+                    </div>
+                  </v-list-item-title>
                 </v-list-item>
               </template>
               <span>Login to SudokuCollective.com</span>
@@ -86,16 +82,14 @@
               :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <div
-                        class="menu-item"
-                        @click="signUpHandler($event)">
-                        <v-icon>mdi-account-plus</v-icon>
-                        <span class="mr-2">Sign Up</span>
-                      </div>
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title>
+                    <div
+                      class="menu-item"
+                      @click="signUpHandler($event)">
+                      <v-icon>mdi-account-plus</v-icon>
+                      <span class="mr-2">Sign Up</span>
+                    </div>
+                  </v-list-item-title>
                 </v-list-item>
               </template>
               <span>Sign up with SudokuCollective.com</span>
@@ -107,16 +101,14 @@
               :disabled="isSmallViewPort">
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <div
-                        class="menu-item"
-                        @click="confirmLogoutHandler">
-                        <v-icon>mdi-logout-variant</v-icon>
-                        <span class="mr-2">Log Out</span>
-                      </div>
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title>
+                    <div
+                      class="menu-item"
+                      @click="confirmLogoutHandler">
+                      <v-icon>mdi-logout-variant</v-icon>
+                      <span class="mr-2">Log Out</span>
+                    </div>
+                  </v-list-item-title>
                 </v-list-item>
               </template>
               <span>Log out of SudokuCollective.com</span>
@@ -154,17 +146,15 @@
                           :disabled="isSmallViewPort">
                           <template v-slot:activator="{ props }">
                             <v-list-item v-bind="props">
-                              <v-list-item-content>
-                                <v-list-item-title>
-                                  <a
-                                    :href="link.url"
-                                    :target="link.target"
-                                    class="menu-item">
-                                    <v-icon>{{ link.mdiIcon }}</v-icon>
-                                    <span class="mr-2">{{ link.title }}</span>
-                                  </a>
-                                </v-list-item-title>
-                              </v-list-item-content>
+                              <v-list-item-title>
+                                <a
+                                  :href="link.url"
+                                  :target="link.target"
+                                  class="menu-item">
+                                  <v-icon>{{ link.mdiIcon }}</v-icon>
+                                  <span class="mr-2">{{ link.title }}</span>
+                                </a>
+                              </v-list-item-title>
                             </v-list-item>
                           </template>
                           <span>{{ link.tooltip }}</span>

@@ -196,7 +196,7 @@ export class AppsPort {
 
       const config = {
         method: 'put',
-        url: `${url}/?userId=${userId}`,
+        url: `${url}?userId=${userId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ export class AppsPort {
 
       const config = {
         method: 'put',
-        url: `${url}/?userId=${userId}`,
+        url: `${url}?userId=${userId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
@@ -280,7 +280,7 @@ export class AppsPort {
 
       const config = {
         method: 'put',
-        url: `${url}/?userId=${userId}`,
+        url: `${url}?userId=${userId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
@@ -322,7 +322,7 @@ export class AppsPort {
 
       const config = {
         method: 'put',
-        url: `${url}/?userId=${userId}`,
+        url: `${url}?userId=${userId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',

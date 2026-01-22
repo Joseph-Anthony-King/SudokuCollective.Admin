@@ -4,12 +4,11 @@
       :navDrawerStatus="navDrawerStatus"
       :userLoggedIn="user.isLoggedIn!"
       @update:modelValue="(modelValue: boolean) => closeNavDrawerHandler(modelValue)" />
-    <v-content>
-      <AppBar
-        v-on:user-logging-in="user.isLoggingIn = true"
-        v-on:user-signing-up="user.isSigningUp = true"
-        v-on:update-nav-drawer="updateNavDrawerHandler" />
-      <v-main>
+    <AppBar
+      v-on:user-logging-in="user.isLoggingIn = true"
+      v-on:user-signing-up="user.isSigningUp = true"
+      v-on:update-nav-drawer="updateNavDrawerHandler" />
+    <v-main>
         <progress-widget v-if="processingStatus" />
         <router-view v-else />
         <v-dialog
@@ -94,7 +93,6 @@
           <ConfirmDialog />
         </v-dialog>
       </v-main>
-    </v-content>
     <FooterNav />
   </v-app>
 </template>

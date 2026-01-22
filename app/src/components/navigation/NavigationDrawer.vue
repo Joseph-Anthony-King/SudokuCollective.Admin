@@ -21,16 +21,14 @@
         v-for="(navItem, index) in navDrawerItems"
         :key="index">
         <v-list-item v-if="navItem.condition">
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-icon class="white--text">{{ navItem.mdiIcon }}</v-icon>
-              <router-link
-                :to="navItem.url"
-                class="nav-drawer-item">
-                {{ navItem.title }}
-              </router-link>
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            <v-icon class="white--text">{{ navItem.mdiIcon }}</v-icon>
+            <router-link
+              :to="navItem.url"
+              class="nav-drawer-item">
+              {{ navItem.title }}
+            </router-link>
+          </v-list-item-title>
         </v-list-item>
       </div>
     </v-list>
