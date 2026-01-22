@@ -87,6 +87,8 @@ export const useAppStore = defineStore('appStore', () => {
     }
     
     try {
+      nonRegisteredAppUsers.value = [];
+
       const response: IServicePayload = await AppsService.postAppUsersAsync(
         selectedApp.value!.id!,
         false,
@@ -141,10 +143,8 @@ export const useAppStore = defineStore('appStore', () => {
       return false;
     }
 
-    let response: IServicePayload;
-
     try {
-      response = await AppsService.putAddUserAsync(
+      const response = await AppsService.putAddUserAsync(
         selectedApp.value!.id!,
         userId,
       );
@@ -153,13 +153,14 @@ export const useAppStore = defineStore('appStore', () => {
         await updateRegisteredAppUsersAsync();
         await updateNonRegisteredAppUsersAsync();
       }
+      
+      return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
+      return false;
     }
-    
-    return response!.isSuccess;
   };
   const putRemoveUserAsync = async (userId: number): Promise<boolean> => {
     if (selectedApp.value === null) {
@@ -167,10 +168,8 @@ export const useAppStore = defineStore('appStore', () => {
       return false;
     }
 
-    let response: IServicePayload;
-
     try {
-      response = await AppsService.putRemoveUserAsync(
+      const response = await AppsService.putRemoveUserAsync(
         selectedApp.value!.id!,
         userId,
       );
@@ -179,13 +178,14 @@ export const useAppStore = defineStore('appStore', () => {
         await updateRegisteredAppUsersAsync();
         await updateNonRegisteredAppUsersAsync();
       }
+      
+      return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
+      return false;
     }
-    
-    return response!.isSuccess;
   };
   //#endregion
 
@@ -203,6 +203,7 @@ export const useAppStore = defineStore('appStore', () => {
     updateApp,
     setSelectedAppAsync,
     updateServiceMessage,
+    updateRegisteredAppUsersAsync,
     updateNonRegisteredAppUsersAsync,
     initializeStore,
     putUpdateAppAsync,

@@ -376,11 +376,12 @@ describe('SelectedAppUsersForm.vue', () => {
         await nextTick();
 
         const vm = wrapper.vm as any;
-        expect(vm.headers).toHaveLength(4);
-        expect(vm.headers[0]).toEqual({ title: 'Full Name', key: 'fullName' });
-        expect(vm.headers[1]).toEqual({ title: 'Email', key: 'email' });
-        expect(vm.headers[2]).toEqual({ title: 'Active', key: 'isActive' });
-        expect(vm.headers[3]).toEqual({ title: 'Admin', key: 'isAdmin' });
+        expect(vm.headers).toHaveLength(5);
+        expect(vm.headers[0]).toEqual({ title: 'Full Name', key: 'fullName', sortable: true });
+        expect(vm.headers[1]).toEqual({ title: 'Email', key: 'email', sortable: true });
+        expect(vm.headers[2]).toEqual({ title: 'Active', key: 'isActive', sortable: false });
+        expect(vm.headers[3]).toEqual({ title: 'Admin', key: 'isAdmin', sortable: false });
+        expect(vm.headers[4]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
       });
 
       it('should include super user header when user is super user', async () => {
@@ -390,8 +391,9 @@ describe('SelectedAppUsersForm.vue', () => {
         await nextTick();
 
         const vm = wrapper.vm as any;
-        expect(vm.headers).toHaveLength(5);
-        expect(vm.headers[4]).toEqual({ title: 'Super User', key: 'isSuperUser' });
+        expect(vm.headers).toHaveLength(6);
+        expect(vm.headers[4]).toEqual({ title: 'Super User', key: 'isSuperUser', sortable: false });
+        expect(vm.headers[5]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
       });
 
       it('should update headers reactively when super user status changes', async () => {
@@ -401,13 +403,13 @@ describe('SelectedAppUsersForm.vue', () => {
         await nextTick();
 
         let vm = wrapper.vm as any;
-        expect(vm.headers).toHaveLength(4);
+        expect(vm.headers).toHaveLength(5);
 
         userStore.user.isSuperUser = true;
         await nextTick();
 
         vm = wrapper.vm as any;
-        expect(vm.headers).toHaveLength(5);
+        expect(vm.headers).toHaveLength(6);
       });
     });
   });
@@ -609,7 +611,7 @@ describe('SelectedAppUsersForm.vue', () => {
 
       const vm = wrapper.vm as any;
       expect(vm.users).toHaveLength(2);
-      expect(vm.headers).toHaveLength(5);
+      expect(vm.headers).toHaveLength(6);
     });
   });
 });
