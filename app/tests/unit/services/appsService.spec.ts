@@ -872,4 +872,188 @@ describe('the appsService service', () => {
     expect(result.users).toHaveLength(1);
     expect(result.users[0].userName).equals('userName3');
   });
+  it('should add users to apps by running the putAddUserAsync method', async () => {
+    // Arrange
+    AppsPort.putAddUserAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: User was added to app.',
+          payload: [{
+            id: 1,
+            userName: 'userName1',
+            firstName: 'firstName1',
+            lastName: 'lastName1',
+            nickName: 'nickName1',
+            fullName: 'firstName1 lastName1',
+            email: 'email@example.com',
+            isEmailConfirmed: true,
+            receivedRequestToUpdateEmail: false,
+            receivedRequestToUpdatePassword: false,
+            isActive: true,
+            isSuperUser: false,
+            isAdmin: false,
+            dateCreated: '2024-05-24T18:11:39.996131Z',
+            dateUpdated: '0001-01-01T00:00:00',
+            games: []
+          }]
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putAddUserAsync(1, 1);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: User was added to app.');
+    expect(result.users).toHaveLength(1);
+    expect(result.users[0].userName).equals('userName1');
+  });
+  it('should catch AxiosErrors thrown when running the putAddUserAsync method', async () => {
+    // Arrange
+    AppsPort.putAddUserAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: User was not added to app.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putAddUserAsync(1, 1);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: User was not added to app.');
+  });
+  it('should catch any errors thrown when running the putAddUserAsync method', async () => {
+    // Arrange
+    AppsPort.putAddUserAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putAddUserAsync(1, 1);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
+  it('should remove users from apps by running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: User was removed from app.',
+          payload: []
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {}
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: User was removed from app.');
+    expect(result.users).toHaveLength(0);
+  });
+  it('should catch AxiosErrors thrown when running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'apps/1',
+          method: 'put',
+          baseURL: 'https://localhost:5001/api/v1/'
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: User was not removed from app.',
+            payload: []
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        }
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 404: User was not removed from app.');
+  });
+  it('should catch any errors thrown when running the putRemoveUserAsync method', async () => {
+    // Arrange
+    AppsPort.putRemoveUserAsync = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    // Act
+    const result = await sut.putRemoveUserAsync(1, 2);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
 });

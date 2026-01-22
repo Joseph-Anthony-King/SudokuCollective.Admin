@@ -57,6 +57,29 @@ export const useAppStore = defineStore('appStore', () => {
     serviceMessage.value = param;
   };
 
+  const updateRegisteredAppUsersAsync = async (): Promise<void> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return;
+    }
+    
+    try {
+      const response: IServicePayload = await AppsService.postAppUsersAsync(
+        selectedApp.value!.id!,
+        true,
+      );
+
+      if (response.isSuccess) {
+        selectedApp.value!.users = response.users!;
+      }
+      
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+    }
+  }
+
   const updateNonRegisteredAppUsersAsync = async (): Promise<void> => {
     if (selectedApp.value === null) {
       nonRegisteredAppUsers.value = [];
@@ -64,6 +87,8 @@ export const useAppStore = defineStore('appStore', () => {
     }
     
     try {
+      nonRegisteredAppUsers.value = [];
+
       const response: IServicePayload = await AppsService.postAppUsersAsync(
         selectedApp.value!.id!,
         false,
@@ -112,6 +137,56 @@ export const useAppStore = defineStore('appStore', () => {
     updateServiceMessage(response.message);
     return response.isSuccess;
   };
+  const putAddUserAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putAddUserAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+        await updateNonRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putRemoveUserAsync = async (userId: number): Promise<boolean> => {
+    if (selectedApp.value === null) {
+      nonRegisteredAppUsers.value = [];
+      return false;
+    }
+
+    try {
+      const response = await AppsService.putRemoveUserAsync(
+        selectedApp.value!.id!,
+        userId,
+      );
+
+      if (response.isSuccess) {
+        await updateRegisteredAppUsersAsync();
+        await updateNonRegisteredAppUsersAsync();
+      }
+      
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -128,10 +203,13 @@ export const useAppStore = defineStore('appStore', () => {
     updateApp,
     setSelectedAppAsync,
     updateServiceMessage,
+    updateRegisteredAppUsersAsync,
     updateNonRegisteredAppUsersAsync,
     initializeStore,
     putUpdateAppAsync,
     getMyAppsAsync,
     getMyRegisteredAppsAsync,
+    putAddUserAsync,
+    putRemoveUserAsync,
   };
 });
