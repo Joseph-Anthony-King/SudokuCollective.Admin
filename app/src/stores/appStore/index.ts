@@ -17,18 +17,18 @@ export const useAppStore = defineStore('appStore', () => {
   //#endregion
 
   //#region Getters
-  const getMyApps: ComputedRef<Array<IApp>> = computed(() => toRaw(myApps.value));
+  const getMyApps: ComputedRef<Array<IApp>> = computed(() => myApps.value);
   const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() =>
-    toRaw(myRegisteredApps.value),
+    myRegisteredApps.value,
   );
   const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() =>
-    toRaw(selectedApp.value),
+    selectedApp.value,
   );
   const getRegisteredAppUsers: ComputedRef<Array<User> | null | undefined> = computed(() => 
-    toRaw(selectedApp.value?.users),
+    selectedApp.value?.users,
   );
   const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(() =>
-    toRaw(nonRegisteredAppUsers.value),
+    nonRegisteredAppUsers.value,
   );
   //#endregion
 
@@ -70,7 +70,7 @@ export const useAppStore = defineStore('appStore', () => {
       );
 
       if (response.isSuccess) {
-        selectedApp.value!.users = response.users!;
+        selectedApp.value = { ...selectedApp.value!, users: response.users! };
       }
       
     } catch (error) {
@@ -201,7 +201,6 @@ export const useAppStore = defineStore('appStore', () => {
 
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
-        await updateNonRegisteredAppUsersAsync();
       }
       
       return response.isSuccess;
@@ -226,7 +225,6 @@ export const useAppStore = defineStore('appStore', () => {
 
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
-        await updateNonRegisteredAppUsersAsync();
       }
       
       return response.isSuccess;

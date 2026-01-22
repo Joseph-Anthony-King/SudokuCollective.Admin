@@ -30,24 +30,6 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <v-btn
-          v-if="displayRegistered && getUserIsSuperUser && item.isActive && !item.isAdmin && item.id !== getUser.id"
-          icon
-          small
-          color="primary"
-          @click="activateAdminPrivileges(item.id!)"
-          title="Activate admin privileges">
-          <v-icon>mdi-shield-plus</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="displayRegistered && getUserIsSuperUser && item.isActive && item.isAdmin && item.id !== getUser.id"
-          icon
-          small
-          color="warning"
-          @click="deactivateAdminPrivileges(item.id!)"
-          title="Deactivate admin privileges">
-          <v-icon>mdi-shield-minus</v-icon>
-        </v-btn>
-        <v-btn
           v-if="displayRegistered"
           icon
           small
@@ -163,13 +145,5 @@
 
   const removeUser = async (userId: number) => {
     await appStore.putRemoveUserAsync(userId);
-  };
-
-  const activateAdminPrivileges = async (userId: number) => {
-    await appStore.putActivateAdminPrivilegesAsync(userId);
-  };
-
-  const deactivateAdminPrivileges = async (userId: number) => {
-    await appStore.putDeactivateAdminPrivilegesAsync(userId);
   };
 </script>
