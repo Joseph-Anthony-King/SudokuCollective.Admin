@@ -55,7 +55,9 @@ describe('the appsPort port', () => {
     expect(Endpoints.appsEndpoint).equals('https://localhost:5001/api/v1/apps');
     expect(Endpoints.getMyAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyapps');
     expect(Endpoints.getMyRegisteredAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyregisteredapps');
-    expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/GetAppUsers/');
+    expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/getappusers/');
+    expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{userId}/adduser');
+    expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{userId}/removeuser');
   });
   it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
@@ -669,6 +671,153 @@ describe('the appsPort port', () => {
   
       // Act
       await sut.postAppUsersAsync(1, false, true) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      expect(error).not.toBeNull;
+    }
+  });
+  it('should add a user to an app by running the putAddUserAsync method', async () => {
+    //Arrange
+    testServer = setupServer(
+      http.put('https://localhost:5001/api/v1/apps/1/adduser', () => {
+        return HttpResponse.json({
+          isSuccess: true, 
+          isFromCache: false, 
+          message: 'Status Code 200: User was added to app.', 
+          payload: [{
+            id: 1,
+            name: 'test-app',
+            license: '7700a640-6816-477c-9085-95d2df94284b',
+            ownerId: 1,
+            localUrl: 'https://localhost:8080',
+            testUrl: undefined,
+            stagingUrl: undefined,
+            prodUrl: undefined,
+            sourceCodeUrl: 'https://github.com/test-user/test-repo',
+            isActive: true,
+            environment: ReleaseEnvironment.LOCAL,
+            permitSuperUserAccess: true,
+            permitCollectiveLogins: false,
+            disableCustomUrls: true,
+            customEmailConfirmationAction: undefined,
+            customPasswordResetAction: undefined,
+            useCustomSMTPServer: false,
+            smtpServerSettings: undefined,
+            timeFrame: TimeFrame.DAYS,
+            accessDuration: 1,
+            displayInGallery: false,
+            dateCreated: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+            dateUpdated: new Date().toISOString(),
+            users: [
+              {
+                id: 1,
+                userName: 'userName',
+                firstName: 'firstName',
+                lastName: 'lastName',
+                nickName: 'nickName',
+                fullName: 'firstName lastName',
+                email: 'email@example.com',
+                isEmailConfirmed: true,
+                receivedRequestToUpdateEmail: false,
+                receivedRequestToUpdatePassword: false,
+                isActive: true,
+                isSuperUser: false,
+                isAdmin: true,
+                dateCreated: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+                dateUpdated: new Date().toISOString()
+              }
+            ]
+          }] 
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+      })
+    );
+
+    testServer.listen();
+
+    const sut = AppsPort;
+
+    // Act
+    const result = await sut.putAddUserAsync(1) as AxiosResponse;
+
+    // Assert
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.isFromCache).toBe(false);
+    expect(result.data.message).equals('Status Code 200: User was added to app.');
+  });
+  it('should catch AxiosErrors thrown when running the putAddUserAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/adduser', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: User was not added to app.', 
+            payload: []
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putAddUserAsync(1) as AxiosResponse;
+  
+    } catch (error) {
+      // Assert
+      const result = (error as AxiosError).response?.data as any
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.isFromCache).toBe(false);
+      expect(result.message).equals('Status Code 404: User was not added to app.');
+      expect(result.payload).toHaveLength(0);
+    }
+  });
+  it('should catch any errors thrown when running the putAddUserAsync method', async () => {
+    try {
+      //Arrange
+      testServer = setupServer(
+        http.put('https://localhost:5001/api/v1/apps/1/adduser', () => {
+          return HttpResponse.json({
+            isSuccess: false, 
+            isFromCache: false, 
+            message: 'Status Code 404: User was not added to app.', 
+            payload: [] 
+          }, {
+            status: 404,
+            statusText: 'NOT FOUND',
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+        })
+      );
+  
+      testServer.listen();
+
+      vi.stubEnv('NODE_ENV', 'development');
+  
+      const sut = AppsPort;
+  
+      // Act
+      await sut.putAddUserAsync(1, true) as AxiosResponse;
   
     } catch (error) {
       // Assert
