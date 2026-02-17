@@ -26,7 +26,7 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^1.6.8",
-    "encrypt-storage": "^2.2.8",
+    "encrypt-storage": "^2.14.7",
     "pinia": "^2.0.33",
     "pinia-persistedstate": "^0.1.2",
     "roboto-fontface": "*",
