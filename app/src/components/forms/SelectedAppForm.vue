@@ -16,13 +16,13 @@
             v-model="selectedApp.id"
             type="number"
             label="Id"
-            prepend-icon="mdi-application"
+            prepend-icon="mdi-identifier"
             :readonly="!selectedApp.isEditing"
             :disabled="selectedApp.isEditing!!"></v-text-field>
           <v-text-field
             v-model="selectedApp.license"
             label="License"
-            prepend-icon="mdi-application"
+            prepend-icon="mdi-key"
             append-icon="mdi-content-copy"
             @click:append="copyLicenseToClipboardHandler"
             :readonly="!selectedApp.isEditing"
@@ -35,7 +35,7 @@
               <v-text-field
                 v-model="name"
                 label="Name"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :rules="requiredRules('Name')"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
@@ -51,7 +51,7 @@
               <v-select
                 v-model="selectedReleaseEnvironment"
                 label="Please make a selection"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-clipboard-list"
                 :rules="requiredRules('Release Environment')"
                 :readonly="!selectedApp.isEditing"
                 :items="releaseEnvironments"
@@ -70,7 +70,7 @@
               <v-text-field
                 v-model="localUrl"
                 label="Local URL"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-lan"
                 :append-icon="
                   selectedApp.isActive &&
                   selectedReleaseEnvironment === ReleaseEnvironment.LOCAL &&
@@ -94,7 +94,7 @@
               <v-text-field
                 v-model="testUrl"
                 label="Test URL"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-flask"
                 :readonly="!selectedApp.isEditing"
                 :append-icon="
                   selectedApp.isActive &&
@@ -118,7 +118,7 @@
               <v-text-field
                 v-model="stagingUrl"
                 label="Staging URL"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-server"
                 :append-icon="
                   selectedApp.isActive &&
                   selectedReleaseEnvironment === ReleaseEnvironment.STAGING &&
@@ -142,7 +142,7 @@
               <v-text-field
                 v-model="prodUrl"
                 label="Production URL"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-earth"
                 :append-icon="
                   selectedApp.isActive &&
                   selectedReleaseEnvironment === ReleaseEnvironment.PROD &&
@@ -166,7 +166,7 @@
               <v-text-field
                 v-model="sourceCodeUrl"
                 label="Source Code URL"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-github"
                 :readonly="!selectedApp.isEditing"
                 :rules="urlRules"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
@@ -180,8 +180,8 @@
             :disabled="!selectedApp.isEditing || isSmallViewPort">
             <template v-slot:activator="{ props }">
               <v-checkbox
-                v-model="selectedApp.useCustomSMTPServer"                
-                prepend-icon="mdi-application"
+                v-model="selectedApp.useCustomSMTPServer"
+                prepend-icon="mdi-email"
                 :label="
                   selectedApp.useCustomSMTPServer
                     ? 'Custom SMTP Server in use'
@@ -202,7 +202,7 @@
               <v-text-field
                 v-model="SMTPServerName"
                 label="SMTP Server Name"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :rules="selectedApp.useCustomSMTPServer ? urlRules : []"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
@@ -220,7 +220,7 @@
                 type="number"
                 v-model="SMTPServerPort"
                 label="SMTP Server Port"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -236,7 +236,7 @@
               <v-text-field
                 v-model="SMTPServerUserName"
                 label="SMTP Server User Name"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -252,7 +252,7 @@
               <v-text-field
                 v-model="SMTPServerPassword"
                 label="SMTP Server Password"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -268,7 +268,7 @@
               <v-text-field
                 v-model="SMTPServerEmail"
                 label="SMTP Server From Email"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -290,7 +290,7 @@
                 :label="
                   selectedApp.isActive ? 'App is currently active' : 'App is currently deactivated'
                 "
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-label"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -309,7 +309,7 @@
                     ? 'Custom Email Confirmation and Password Reset endpoints are active'
                     : 'Custom Email Confirmation and Password Reset endpoints are not active'
                 "
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-label"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -326,7 +326,7 @@
               <v-text-field
                 v-model="confirmEmailAction"
                 label="Confirm Email Action"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -341,7 +341,7 @@
               <v-text-field
                 v-model="resetPasswordAction"
                 label="Reset Password Action"
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-rename-box"
                 :readonly="!selectedApp.isEditing"
                 :color="!selectedApp.isEditing ? '' : 'primary'"
                 v-bind="props"></v-text-field>
@@ -360,7 +360,7 @@
                     ? 'Any sudoku collective user can login'
                     : 'A user must subscribe to your app to login'
                 "
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-label"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -379,7 +379,7 @@
                     ? 'Super users have default access to your app'
                     : 'Super users do not have default access to your app'
                 "
-                prepend-icon="mdi-application"
+                prepend-icon="mdi-label"
                 :readonly="!selectedApp.isEditing"
                 color="primary"
                 v-bind="props"></v-checkbox>
@@ -582,7 +582,6 @@
   } from 'vue';
   import { VForm } from 'vuetify/components/VForm';
   import { toast } from 'vue3-toastify';
-  import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
   import { useAppStore } from '@/stores/appStore';
   import { useDialogStore } from '@/stores/dialogStore';

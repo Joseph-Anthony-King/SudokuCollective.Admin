@@ -25,7 +25,7 @@ export class LoginPort {
           password: data.password,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -55,7 +55,7 @@ export class LoginPort {
           email: email,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

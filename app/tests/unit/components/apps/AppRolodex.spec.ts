@@ -71,7 +71,8 @@ describe('The AppRolodex.vue component', () => {
     expect(wrapper.find('.v-select').exists()).toBe(true);
   });
 
-  it('should show "Your Apps" by default and displays correct apps', async () => {
+
+  it('shows "Your Apps" by default and displays correct apps and CreateAppButton', async () => {
     const wrapper = mount(AppRolodex, {
       global: {
         plugins: [
@@ -89,13 +90,14 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
-
     expect(wrapper.vm.selectedApps).toBe('Your Apps');
-    expect(wrapper.vm.apps.length).toBe(2);
+    // Should show all apps from getMyApps
     expect(wrapper.findAllComponents(AppButton).length).toBe(2);
+    // Should show CreateAppButton
+    expect(wrapper.findComponent({ name: 'CreateAppButton' }).exists()).toBe(true);
   });
 
-  it('should change apps when switching to "Your Registered Apps"', async () => {
+  it('switches to "Your Registered Apps" and displays correct apps, hides CreateAppButton', async () => {
     const wrapper = mount(AppRolodex, {
       global: {
         plugins: [
@@ -113,16 +115,16 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
-
     wrapper.vm.selectedApps = 'Your Registered Apps';
     await nextTick();
     await flushPromises();
-    
-    expect(wrapper.vm.apps.length).toBe(1);
+    // Should show only registered apps
     expect(wrapper.findAllComponents(AppButton).length).toBe(1);
+    // Should not show CreateAppButton
+    expect(wrapper.findComponent({ name: 'CreateAppButton' }).exists()).toBe(false);
   });
 
-  it('should show "Time to Get Coding!" when there are no apps', async () => {
+  it('shows "Time to Get Coding!" when there are no apps for selected type', async () => {
     const wrapper = mount(AppRolodex, {
       global: {
         plugins: [
@@ -132,6 +134,33 @@ describe('The AppRolodex.vue component', () => {
               appStore: {
                 selectedApp: null,
                 myApps: [],
+                myRegisteredApps: [],
+              },
+            },
+          }),
+          vuetify,
+        ],
+      },
+    });
+    // For "Your Apps"
+    expect(wrapper.find('.no-apps-message').exists()).toBe(true);
+    expect(wrapper.find('.no-apps-message').text()).toBe('Time to Get Coding!');
+    // For "Your Registered Apps"
+    wrapper.vm.selectedApps = 'Your Registered Apps';
+    await nextTick();
+    await flushPromises();
+    expect(wrapper.find('.no-apps-message').exists()).toBe(true);
+  });
+  it('emits show-create-app when CreateAppButton is clicked', async () => {
+    const wrapper = mount(AppRolodex, {
+      global: {
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+            initialState: {
+              appStore: {
+                selectedApp: null,
+                myApps: testApps,
                 myRegisteredApps: testRegisteredApps,
               },
             },
@@ -140,18 +169,12 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
-
-    expect(wrapper.find('.no-apps-message').exists()).toBe(true);
-    expect(wrapper.find('.no-apps-message').text()).toBe('Time to Get Coding!');
-    
-    wrapper.vm.selectedApps = 'Your Registered Apps';
-    await nextTick();
-    await flushPromises();
-    
-    expect(wrapper.find('.no-apps-message').exists()).toBe(false);
+    const createBtn = wrapper.findComponent({ name: 'CreateAppButton' });
+    await createBtn.trigger('click');
+    expect(wrapper.emitted('show-create-app')).toBeTruthy();
   });
 
-  it('should call appSelected method with correct id when AppButton emits app-selected event', async () => {
+  it('calls appSelected with correct id when AppButton emits app-selected event', async () => {
     const mockSetSelectedApp = vi.fn();
     
     const testingPinia = createTestingPinia({
@@ -186,7 +209,7 @@ describe('The AppRolodex.vue component', () => {
     expect(mockSetSelectedApp).toHaveBeenCalledWith(1);
   });
 
-  it('should deselect app when the same app is selected twice', async () => {
+  it('deselects app when the same app is selected twice', async () => {
     const mockSetSelectedApp = vi.fn();
     
     const testingPinia = createTestingPinia({

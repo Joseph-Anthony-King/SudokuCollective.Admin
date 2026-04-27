@@ -8,6 +8,7 @@ import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayloa
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
 import { User } from '@/models/domain/user';
+import type { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
 
 describe('the appStore store', () => {
   let pinia: Pinia;
@@ -257,6 +258,88 @@ describe('the appStore store', () => {
     expect(nonRegisteredAppUsers.length).equals(2);
     expect(nonRegisteredAppUsers[0].userName).equals('userName');
     expect(nonRegisteredAppUsers[1].userName).equals('userName2');
+  });
+  it('should add a new app to myApps using the addApp mutation', () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+    const initialMyAppsLength = sut.$state.myApps.length;
+
+    const newApp = new App(
+      1,
+      'New Test App',
+      'new-license-guid',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      undefined
+    );
+
+    // Act
+    sut.addApp(newApp);
+
+    // Assert
+    expect(initialMyAppsLength).equals(0);
+    expect(sut.$state.myApps.length).equals(1);
+    expect(sut.$state.myApps[0].id).equals(1);
+    expect(sut.$state.myApps[0].name).equals('New Test App');
+  });
+  it('should not add a duplicate app to myApps using the addApp mutation', () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const app = new App(
+      1,
+      'Test App',
+      'test-license-guid',
+      1,
+      'http://localhost:8001',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      true,
+      true,
+      undefined,
+      undefined,
+      false,
+      undefined,
+      TimeFrame.MONTHS,
+      1,
+      true,
+      new Date(),
+      undefined,
+      undefined
+    );
+
+    sut.addApp(app);
+    const myAppsLengthAfterFirstAdd = sut.$state.myApps.length;
+
+    // Act
+    sut.addApp(app);
+
+    // Assert
+    expect(myAppsLengthAfterFirstAdd).equals(1);
+    expect(sut.$state.myApps.length).equals(1);
   });
   it('should update an app contained in myApps and the selected app if applicable using the updateApp mutation', () => {
     // Arrange
@@ -527,6 +610,288 @@ describe('the appStore store', () => {
     expect(sut.$state.myRegisteredApps.length).equals(0);
     expect(sut.$state.selectedApp).toBeNull();
     expect(sut.$state.serviceMessage).toBeNull();
+  });
+  it('should create a new app license using postCreateAppLicenseAsync action', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        app: new App(
+          1,
+          'New App',
+          'new-app-license-guid',
+          1,
+          'http://localhost:9000',
+          'https://test.example.com',
+          'https://staging.example.com',
+          'https://example.com',
+          'https://github.com/user/new-app',
+          true,
+          ReleaseEnvironment.LOCAL,
+          true,
+          false,
+          false,
+          undefined,
+          undefined,
+          false,
+          undefined,
+          TimeFrame.DAYS,
+          7,
+          true,
+          new Date(),
+          undefined,
+          undefined
+        ),
+        message: 'Status Code 201: License was created.'
+      };
+    });
+
+    postAppUsersAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        users: []
+      };
+    });
+
+    const initialMyAppsLength = sut.$state.myApps.length;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'New App',
+      ownerId: 1,
+      localUrl: 'http://localhost:9000',
+      testUrl: 'https://test.example.com',
+      stagingUrl: 'https://staging.example.com',
+      prodUrl: 'https://example.com',
+      sourceCodeUrl: 'https://github.com/user/new-app'
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(initialMyAppsLength).equals(0);
+    expect(sut.$state.myApps.length).equals(1);
+    expect(sut.$state.myApps[0].name).equals('New App');
+    expect(sut.$state.selectedApp).not.toBeNull();
+    expect(sut.$state.selectedApp?.id).equals(1);
+    expect(sut.$state.serviceMessage).equals('Status Code 201: License was created.');
+  });
+  it('should handle postCreateAppLicenseAsync with app in payload array', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        payload: [
+          new App(
+            2,
+            'Payload App',
+            'payload-app-license-guid',
+            1,
+            'http://localhost:8080',
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            true,
+            ReleaseEnvironment.LOCAL,
+            true,
+            false,
+            false,
+            undefined,
+            undefined,
+            false,
+            undefined,
+            TimeFrame.DAYS,
+            1,
+            false,
+            new Date(),
+            undefined,
+            undefined
+          )
+        ],
+        message: 'Status Code 201: License was created.'
+      };
+    });
+
+    postAppUsersAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        users: []
+      };
+    });
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'Payload App',
+      ownerId: 1
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(sut.$state.myApps.length).equals(1);
+    expect(sut.$state.myApps[0].name).equals('Payload App');
+    expect(sut.$state.selectedApp?.id).equals(2);
+  });
+  it('should not add app when postCreateAppLicenseAsync fails', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: false,
+        message: 'Status Code 400: License was not created.'
+      };
+    });
+
+    const initialMyAppsLength = sut.$state.myApps.length;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'Failed App',
+      ownerId: 1
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(false);
+    expect(sut.$state.myApps.length).equals(initialMyAppsLength);
+    expect(sut.$state.serviceMessage).equals('Status Code 400: License was not created.');
+  });
+  it('should handle postCreateAppLicenseAsync with minimal required fields', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+    const postAppUsersAsyncSpy = vi.spyOn(AppsService, 'postAppUsersAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        app: new App(
+          3,
+          'Minimal App',
+          'minimal-app-license-guid',
+          2,
+          '',
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          true,
+          ReleaseEnvironment.LOCAL,
+          false,
+          false,
+          true,
+          undefined,
+          undefined,
+          false,
+          undefined,
+          TimeFrame.DAYS,
+          1,
+          false,
+          new Date(),
+          undefined,
+          undefined
+        ),
+        message: 'Status Code 201: License was created.'
+      };
+    });
+
+    postAppUsersAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        users: []
+      };
+    });
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'Minimal App',
+      ownerId: 2
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(sut.$state.myApps.length).equals(1);
+    expect(sut.$state.myApps[0].name).equals('Minimal App');
+    expect(sut.$state.myApps[0].ownerId).equals(2);
+  });
+  it('should handle postCreateAppLicenseAsync when no app is returned', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        app: undefined,
+        payload: undefined,
+        message: 'Status Code 201: License was created but no app data returned.'
+      };
+    });
+
+    const initialMyAppsLength = sut.$state.myApps.length;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'No Return App',
+      ownerId: 1
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(sut.$state.myApps.length).equals(initialMyAppsLength);
+    expect(sut.$state.serviceMessage).equals('Status Code 201: License was created but no app data returned.');
+  });
+  it('should handle postCreateAppLicenseAsync when payload is empty array', async () => {
+    // Arrange
+    const sut = useAppStore(pinia);
+
+    const postCreateAppLicenseAsyncSpy = vi.spyOn(AppsService, 'postCreateAppLicenseAsync');
+
+    postCreateAppLicenseAsyncSpy.mockImplementation(async () => {
+      return <IServicePayload>{
+        isSuccess: true,
+        app: undefined,
+        payload: [],
+        message: 'Status Code 201: License was created but payload empty.'
+      };
+    });
+
+    const initialMyAppsLength = sut.$state.myApps.length;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'Empty Payload App',
+      ownerId: 1
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result).toBe(true);
+    expect(sut.$state.myApps.length).equals(initialMyAppsLength);
   });
   it('should submit updated apps to the AppsService putUpdateAppAsync method and use the result to update the state', async () => {
     // Arrange

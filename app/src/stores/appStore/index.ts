@@ -6,6 +6,7 @@ import type { IApp } from '@/interfaces/domain/iApp';
 import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
 import type { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
+import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
 
 export const useAppStore = defineStore('appStore', () => {
   //#region State
@@ -18,21 +19,23 @@ export const useAppStore = defineStore('appStore', () => {
 
   //#region Getters
   const getMyApps: ComputedRef<Array<IApp>> = computed(() => myApps.value);
-  const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() =>
-    myRegisteredApps.value,
+  const getMyRegisteredApps: ComputedRef<Array<IApp>> = computed(() => myRegisteredApps.value);
+  const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() => selectedApp.value);
+  const getRegisteredAppUsers: ComputedRef<Array<User> | null | undefined> = computed(
+    () => selectedApp.value?.users,
   );
-  const getSelectedApp: ComputedRef<IApp | null | undefined> = computed(() =>
-    selectedApp.value,
-  );
-  const getRegisteredAppUsers: ComputedRef<Array<User> | null | undefined> = computed(() => 
-    selectedApp.value?.users,
-  );
-  const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(() =>
-    nonRegisteredAppUsers.value,
+  const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(
+    () => nonRegisteredAppUsers.value,
   );
   //#endregion
 
   //#region Mutations
+  const addApp = (app: IApp): void => {
+    const index = myApps.value.findIndex((a) => a.id === app.id);
+    if (index === -1) {
+      myApps.value.push(app);
+    }
+  };
   const updateApp = (app: App): void => {
     const index = myApps.value.findIndex((a) => a.id === app.id);
     if (index !== -1) {
@@ -56,13 +59,12 @@ export const useAppStore = defineStore('appStore', () => {
   const updateServiceMessage = (param: string | null = null): void => {
     serviceMessage.value = param;
   };
-
   const updateRegisteredAppUsersAsync = async (): Promise<void> => {
     if (selectedApp.value === null) {
       nonRegisteredAppUsers.value = [];
       return;
     }
-    
+
     try {
       const response: IServicePayload = await AppsService.postAppUsersAsync(
         selectedApp.value!.id!,
@@ -72,20 +74,18 @@ export const useAppStore = defineStore('appStore', () => {
       if (response.isSuccess) {
         selectedApp.value = { ...selectedApp.value!, users: response.users! };
       }
-      
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
     }
-  }
-
+  };
   const updateNonRegisteredAppUsersAsync = async (): Promise<void> => {
     if (selectedApp.value === null) {
       nonRegisteredAppUsers.value = [];
       return;
     }
-    
+
     try {
       nonRegisteredAppUsers.value = [];
 
@@ -97,13 +97,12 @@ export const useAppStore = defineStore('appStore', () => {
       if (response.isSuccess) {
         nonRegisteredAppUsers.value = response.users!;
       }
-      
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
     }
-  }
+  };
   //#endregion
 
   //#region Actions
@@ -112,6 +111,21 @@ export const useAppStore = defineStore('appStore', () => {
     myRegisteredApps.value = [];
     selectedApp.value = null;
     serviceMessage.value = null;
+  };
+  const postCreateAppLicenseAsync = async (
+    data: ICreateAppLicenseRequestData,
+  ): Promise<boolean> => {
+    const response = await AppsService.postCreateAppLicenseAsync(data);
+    if (response.isSuccess) {
+      // The backend returns the new app as the first item in the payload array
+      const createdApp = response.app ?? (response.payload && response.payload[0]);
+      if (createdApp) {
+        addApp(createdApp);
+        setSelectedAppAsync(createdApp.id!);
+      }
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
   };
   const putUpdateAppAsync = async (data: IUpdateAppRequestData): Promise<boolean> => {
     const response: IServicePayload = await AppsService.putUpdateAppAsync(data);
@@ -144,16 +158,13 @@ export const useAppStore = defineStore('appStore', () => {
     }
 
     try {
-      const response = await AppsService.putAddUserAsync(
-        selectedApp.value!.id!,
-        userId,
-      );
+      const response = await AppsService.putAddUserAsync(selectedApp.value!.id!, userId);
 
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
         await updateNonRegisteredAppUsersAsync();
       }
-      
+
       return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -169,16 +180,13 @@ export const useAppStore = defineStore('appStore', () => {
     }
 
     try {
-      const response = await AppsService.putRemoveUserAsync(
-        selectedApp.value!.id!,
-        userId,
-      );
+      const response = await AppsService.putRemoveUserAsync(selectedApp.value!.id!, userId);
 
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
         await updateNonRegisteredAppUsersAsync();
       }
-      
+
       return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -202,7 +210,7 @@ export const useAppStore = defineStore('appStore', () => {
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
       }
-      
+
       return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -226,7 +234,7 @@ export const useAppStore = defineStore('appStore', () => {
       if (response.isSuccess) {
         await updateRegisteredAppUsersAsync();
       }
-      
+
       return response.isSuccess;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -248,12 +256,14 @@ export const useAppStore = defineStore('appStore', () => {
     getSelectedApp,
     getRegisteredAppUsers,
     getNonRegisteredAppUsers,
+    addApp,
     updateApp,
     setSelectedAppAsync,
     updateServiceMessage,
     updateRegisteredAppUsersAsync,
     updateNonRegisteredAppUsersAsync,
     initializeStore,
+    postCreateAppLicenseAsync,
     putUpdateAppAsync,
     getMyAppsAsync,
     getMyRegisteredAppsAsync,

@@ -54,14 +54,14 @@ export class AppsPort {
           },
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async getMyAppsAsync(
     testErrorHandling: boolean | null = null,
@@ -91,14 +91,14 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async getMyRegisteredAppsAsync(
     testErrorHandling: boolean | null = null,
@@ -128,14 +128,14 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async postAppUsersAsync(
     appId: number,
@@ -143,7 +143,6 @@ export class AppsPort {
     testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
     try {
-
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
       }
@@ -170,24 +169,24 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async putAddUserAsync(
     appId: number,
-    userId: number, 
-    testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
-      try {
-
-        if (testErrorHandling) {
-          throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
-        }
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
 
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
@@ -211,25 +210,24 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
-        
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async putRemoveUserAsync(
     appId: number,
-    userId: number, 
-    testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
-      try {
-
-        if (testErrorHandling) {
-          throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
-        }
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
 
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
@@ -253,25 +251,24 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
-        
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 
   static async putActivateAdminPrivilegesAsync(
     appId: number,
-    userId: number, 
-    testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
-      try {
-
-        if (testErrorHandling) {
-          throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
-        }
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
 
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
@@ -295,25 +292,24 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
-        
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
-  
+  }
+
   static async putDeactivateAdminPrivilegesAsync(
     appId: number,
-    userId: number, 
-    testErrorHandling: boolean | null = null): Promise<AxiosResponse | AxiosError> {
-      try {
-
-        if (testErrorHandling) {
-          throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
-        }
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
 
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
@@ -337,13 +333,12 @@ export class AppsPort {
           payload: {},
         },
       };
-      return axios(config);
-        
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
       }
       return error as AxiosError;
     }
-  };
+  }
 }
