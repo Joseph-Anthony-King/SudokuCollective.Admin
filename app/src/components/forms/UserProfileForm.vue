@@ -5,7 +5,7 @@
   <v-form
     v-model="formValid"
     ref="form"
-    onsubmit="event.preventDefault();">
+    onsubmit="event.preventDefault()">
     <v-row>
       <v-col
         cols="12"
