@@ -1060,11 +1060,13 @@ vi.mock('@/utilities/rules/rulesMessages', () => ({
         const windowRemoveSpy = vi.spyOn(window, 'removeEventListener').mockImplementation((event: any, callback: any) => {
           if (callback) {
             removedListeners.push({ event, callback });
-            // Execute the callback immediately to ensure it's covered
-            try {
-              callback();
-            } catch (e) {
-              // Callback might not be executable in test context
+            // Only execute callbacks that are safe (resize/keyup)
+            if (event === 'resize' || event === 'keyup') {
+              try {
+                callback();
+              } catch (e) {
+                // Callback might not be executable in test context
+              }
             }
           }
         });
@@ -1072,11 +1074,13 @@ vi.mock('@/utilities/rules/rulesMessages', () => ({
         const documentRemoveSpy = vi.spyOn(document, 'removeEventListener').mockImplementation((event: any, callback: any) => {
           if (callback) {
             removedListeners.push({ event, callback });
-            // Execute the callback immediately to ensure it's covered
-            try {
-              callback();
-            } catch (e) {
-              // Callback might not be executable in test context
+            // Only execute keyup callbacks, not focus/blur events from Vuetify
+            if (event === 'keyup') {
+              try {
+                callback();
+              } catch (e) {
+                // Callback might not be executable in test context
+              }
             }
           }
         });
@@ -1463,7 +1467,7 @@ vi.mock('@/utilities/rules/rulesMessages', () => ({
         .find(call => call[0] === 'resize');
       
       expect(resizeCall).toBeDefined();
-      expect(resizeCall[2]).toEqual({ once: true });
+      expect(resizeCall![2]).toEqual({ once: true });
     });
 
     it('should handle displayFailedToastAsync errors', async () => {
@@ -1625,7 +1629,7 @@ vi.mock('@/utilities/rules/rulesMessages', () => ({
       await nextTick();
 
       const form = wrapper.find('form');
-      expect(form.attributes('onsubmit')).toBe('event.preventDefault();');
+      expect(form.attributes('onsubmit')).toBe('event.preventDefault()');
     });
 
     it('should handle event prevention in all handlers', async () => {

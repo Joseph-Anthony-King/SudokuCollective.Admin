@@ -12,8 +12,8 @@ import { App } from '@/models/domain/app';
 
 vi.mock('@/utilities/common', () => ({
   default: () => ({
-    updateAppProcessingAsync: (callback: () => void) => {
-      callback();
+    updateAppProcessingAsync: async (callback: () => Promise<void>) => {
+      await callback();
     },
   }),
 }));
