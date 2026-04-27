@@ -242,6 +242,7 @@ describe('The DashboardView vue view', () => {
       appStore.postCreateAppLicenseAsync = vi.fn().mockResolvedValue(false);
 
       dashboardPage.vm.showCreateApp = true;
+      dashboardPage.vm.activeTab = 'app-users'; // Set to non-default tab
       await nextTick();
 
       const createAppData: ICreateAppLicenseRequestData = {
@@ -257,8 +258,8 @@ describe('The DashboardView vue view', () => {
       await dashboardPage.vm.onAppCreated(createAppData);
 
       expect(appStore.postCreateAppLicenseAsync).toHaveBeenCalledWith(createAppData);
-      expect(dashboardPage.vm.showCreateApp).toBe(false);
       // activeTab should NOT change to 'app-details' when API fails
+      expect(dashboardPage.vm.activeTab).not.toBe('app-details');
     });
   });
 

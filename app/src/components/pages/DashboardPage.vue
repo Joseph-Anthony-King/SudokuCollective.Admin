@@ -81,7 +81,11 @@
     },
   });
 
-  const { displaySuccessfulToast, displayFailedToastAsync } = commonUtilities();
+  const { 
+    displaySuccessfulToast, 
+    displayFailedToastAsync, 
+    updateAppProcessingAsync 
+  } = commonUtilities();
 
   //#region Destructure Stores
   //#region UserStore
@@ -108,14 +112,16 @@
     showCreateApp.value = false;
   };
   const onAppCreated = async (data: ICreateAppLicenseRequestData) => {
-    const result = await appStore.postCreateAppLicenseAsync(data);
-    if (result) {
-      activeTab.value = 'app-details';
-      displaySuccessfulToast(StoreType.APPSTORE);
-    } else {
-      await displayFailedToastAsync(undefined, undefined);
-    }
-    showCreateApp.value = false;
+    updateAppProcessingAsync(async () => {
+      const result = await appStore.postCreateAppLicenseAsync(data);
+      if (result) {
+        activeTab.value = 'app-details';
+        displaySuccessfulToast(StoreType.APPSTORE);
+      } else {
+        await displayFailedToastAsync(undefined, undefined);
+      }
+      showCreateApp.value = false;
+    });
   };
 
   watch(

@@ -44,7 +44,6 @@
   import AppButton from '@/components/buttons/AppButton.vue';
   import CreateAppButton from '@/components/buttons/CreateAppButton.vue';
   import { useAppStore } from '@/stores/appStore';
-  import { App } from '@/models/domain/app';
   import commonUtilities from '@/utilities/common';
 
   // Handler for create app button click
