@@ -4,9 +4,9 @@
     <v-card-title class="justify-center text-center">
       <span class="headline">{{ formTitle }}</span>
     </v-card-title>
-    <v-data-table 
-      :items="users" 
-      :headers="headers" 
+    <v-data-table
+      :items="users"
+      :headers="headers"
       class="elevation-1"
       :items-per-page="10"
       show-expand>
@@ -54,23 +54,36 @@
             <v-card flat>
               <v-card-text>
                 <v-row>
-                  <v-col cols="12" md="6">
+                  <v-col
+                    cols="12"
+                    md="6">
                     <strong>Username:</strong> {{ item.userName || 'N/A' }}
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col
+                    cols="12"
+                    md="6">
                     <strong>First Name:</strong> {{ item.firstName || 'N/A' }}
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col
+                    cols="12"
+                    md="6">
                     <strong>Last Name:</strong> {{ item.lastName || 'N/A' }}
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col
+                    cols="12"
+                    md="6">
                     <strong>Nickname:</strong> {{ item.nickName || 'N/A' }}
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col
+                    cols="12"
+                    md="6">
                     <strong>Email Confirmed:</strong> {{ item.isEmailConfirmed ? 'Yes' : 'No' }}
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <strong>Date Created:</strong> {{ item.dateCreated ? new Date(item.dateCreated).toLocaleDateString() : 'N/A' }}
+                  <v-col
+                    cols="12"
+                    md="6">
+                    <strong>Date Created:</strong>
+                    {{ item.dateCreated ? new Date(item.dateCreated).toLocaleDateString() : 'N/A' }}
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -79,7 +92,6 @@
         </tr>
       </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -98,14 +110,11 @@
 
   // Get selected app from app store
   const appStore = useAppStore();
-  const { 
-    getSelectedApp, 
-    getRegisteredAppUsers, 
-    getNonRegisteredAppUsers } = storeToRefs(appStore);
+  const { getSelectedApp, getRegisteredAppUsers, getNonRegisteredAppUsers } = storeToRefs(appStore);
 
   // Get user info from user store
   const userStore = useUserStore();
-  const { getUser, getUserIsSuperUser } = storeToRefs(userStore);
+  const { getUserIsSuperUser } = storeToRefs(userStore);
 
   // Computed property to get users from selected app
   const users = computed(() => {

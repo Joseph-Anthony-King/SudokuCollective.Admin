@@ -25,7 +25,7 @@ export class ValuesPort {
           includeCompletedGames: true,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

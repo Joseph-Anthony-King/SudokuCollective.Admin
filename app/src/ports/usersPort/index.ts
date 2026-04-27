@@ -35,7 +35,7 @@ export class UsersPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -79,7 +79,7 @@ export class UsersPort {
           },
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -117,7 +117,7 @@ export class UsersPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -144,7 +144,7 @@ export class UsersPort {
           'Access-Control-Allow-Origin': '*',
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -181,7 +181,7 @@ export class UsersPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -212,7 +212,7 @@ export class UsersPort {
           email: email,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -242,7 +242,7 @@ export class UsersPort {
           newPassword: data.newPassword,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -273,7 +273,7 @@ export class UsersPort {
           appId: process.env.VITE_APP_ID as unknown as number,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -310,7 +310,7 @@ export class UsersPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -347,7 +347,7 @@ export class UsersPort {
           payload: {},
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

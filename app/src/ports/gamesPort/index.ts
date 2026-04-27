@@ -25,7 +25,7 @@ export class GamesPort {
       };
       const { updateCancelApiRequestDelegate } = useGlobalStore();
       updateCancelApiRequestDelegate(manualAbortSignal, 10000);
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -63,7 +63,7 @@ export class GamesPort {
         },
         signal: abortSignal(),
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

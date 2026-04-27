@@ -20,7 +20,7 @@ export class JobsPort {
           'Access-Control-Allow-Origin': '*',
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -46,7 +46,7 @@ export class JobsPort {
           'Access-Control-Allow-Origin': '*',
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

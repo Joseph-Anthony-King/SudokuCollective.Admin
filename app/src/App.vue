@@ -9,90 +9,90 @@
       v-on:user-signing-up="user.isSigningUp = true"
       v-on:update-nav-drawer="updateNavDrawerHandler" />
     <v-main>
-        <progress-widget v-if="processingStatus" />
-        <router-view v-else />
-        <v-dialog
-          v-model="userIsLoggingIn"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxFormWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <LoginForm
-            :formStatus="userIsLoggingIn!"
-            v-on:cancel-login="user.isLoggingIn = false"
-            v-on:obtain-login-assistance="openLoginAssistanceHandler"
-            v-on:redirect-to-signup="redirectToSignUpHandler" />
-        </v-dialog>
-        <v-dialog
-          v-model="userResettingPassword"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxFormWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <UpdatePasswordForm
-            :formStatus="userResettingPassword"
-            v-on:close-update-password="closeUpdatePasswordForm" />
-        </v-dialog>
-        <v-dialog
-          v-model="userObtainingLoginAssistance"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxFormWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <LoginAssistanceForm
-            :formStatus="userObtainingLoginAssistance!"
-            v-on:return-to-login="closeLoginAssistanceHandler" />
-        </v-dialog>
-        <v-dialog
-          v-model="userIsSigningUp"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxFormWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <SignUpForm
-            :formStatus="userIsSigningUp"
-            :isRedirect="isRedirect"
-            v-on:cancel-signup="
-              () => {
-                user.isSigningUp = false;
-                isRedirect = false;
-              }
-            "
-            v-on:reset-redirect="isRedirect = false" />
-        </v-dialog>
-        <v-dialog
-          v-model="emailConfirmed"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxFormWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <ConfirmEmailResultWidget
-            v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
-        </v-dialog>
-        <v-dialog
-          v-model="okDialogIsActive"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxDialogWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <OkDialog />
-        </v-dialog>
-        <v-dialog
-          v-model="confirmDialogIsActive"
-          persistent
-          :fullscreen="isSmallViewPort"
-          :max-width="maxDialogWidth"
-          hide-overlay
-          transition="dialog-top-transition">
-          <ConfirmDialog />
-        </v-dialog>
-      </v-main>
+      <progress-widget v-if="processingStatus" />
+      <router-view v-else />
+      <v-dialog
+        v-model="userIsLoggingIn"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxFormWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <LoginForm
+          :formStatus="userIsLoggingIn!"
+          v-on:cancel-login="user.isLoggingIn = false"
+          v-on:obtain-login-assistance="openLoginAssistanceHandler"
+          v-on:redirect-to-signup="redirectToSignUpHandler" />
+      </v-dialog>
+      <v-dialog
+        v-model="userResettingPassword"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxFormWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <UpdatePasswordForm
+          :formStatus="userResettingPassword"
+          v-on:close-update-password="closeUpdatePasswordForm" />
+      </v-dialog>
+      <v-dialog
+        v-model="userObtainingLoginAssistance"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxFormWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <LoginAssistanceForm
+          :formStatus="userObtainingLoginAssistance!"
+          v-on:return-to-login="closeLoginAssistanceHandler" />
+      </v-dialog>
+      <v-dialog
+        v-model="userIsSigningUp"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxFormWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <SignUpForm
+          :formStatus="userIsSigningUp"
+          :isRedirect="isRedirect"
+          v-on:cancel-signup="
+            () => {
+              user.isSigningUp = false;
+              isRedirect = false;
+            }
+          "
+          v-on:reset-redirect="isRedirect = false" />
+      </v-dialog>
+      <v-dialog
+        v-model="emailConfirmed"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxFormWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <ConfirmEmailResultWidget
+          v-on:close-email-confirmed-widget="closeConfirmEmailResultWidget" />
+      </v-dialog>
+      <v-dialog
+        v-model="okDialogIsActive"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxDialogWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <OkDialog />
+      </v-dialog>
+      <v-dialog
+        v-model="confirmDialogIsActive"
+        persistent
+        :fullscreen="isSmallViewPort"
+        :max-width="maxDialogWidth"
+        hide-overlay
+        transition="dialog-top-transition">
+        <ConfirmDialog />
+      </v-dialog>
+    </v-main>
     <FooterNav />
   </v-app>
 </template>

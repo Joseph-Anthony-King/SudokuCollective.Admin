@@ -83,12 +83,6 @@
     color: white;
   }
   @media only screen and (max-width: 481px) {
-    .select-app-text {
-      white-space: pre-wrap;
-      text-decoration: none !important;
-      color: white;
-      padding: 0.5rem 1rem;
-    }
     .app-button {
       min-height: 170px;
       max-height: 170px;
@@ -100,11 +94,6 @@
     }
   }
   @media only screen and (min-width: 482px) {
-    .select-app-text {
-      white-space: pre-wrap;
-      text-decoration: none !important;
-      color: white;
-    }
     .app-button {
       min-height: 200px;
       max-height: 200px;

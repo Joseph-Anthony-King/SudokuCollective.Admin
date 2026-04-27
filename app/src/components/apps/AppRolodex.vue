@@ -15,15 +15,20 @@
         <div class="app-buttons-scroll">
           <span
             class="no-apps-message"
-            v-if="apps.length === 0"
+            v-if="
+              (selectedApps === 'Your Apps' ? getMyApps.length : getMyRegisteredApps.length) === 0
+            "
             >Time to Get Coding!</span
           >
           <AppButton
-            v-for="(app, index) in apps"
+            v-for="(app, index) in selectedApps === 'Your Apps' ? getMyApps : getMyRegisteredApps"
             :app="app"
             :key="index"
             :index="index"
             v-on:app-selected="appSelected" />
+          <CreateAppButton
+            v-if="selectedApps === 'Your Apps'"
+            @create-app-clicked="onCreateAppClicked" />
         </div>
       </v-container>
     </v-card-text>
@@ -33,12 +38,20 @@
 <script setup lang="ts">
   /* eslint-disable no-unused-vars */
   /* eslint-disable @typescript-eslint/no-unused-vars*/
+
   import { type Ref, ref, watch } from 'vue';
   import { storeToRefs } from 'pinia';
   import AppButton from '@/components/buttons/AppButton.vue';
+  import CreateAppButton from '@/components/buttons/CreateAppButton.vue';
   import { useAppStore } from '@/stores/appStore';
   import { App } from '@/models/domain/app';
   import commonUtilities from '@/utilities/common';
+
+  // Handler for create app button click
+  const emit = defineEmits(['show-create-app']);
+  const onCreateAppClicked = () => {
+    emit('show-create-app');
+  };
 
   const { updateAppProcessingAsync } = commonUtilities();
 
@@ -46,26 +59,8 @@
   const { getSelectedApp, getMyApps, getMyRegisteredApps } = storeToRefs(appStore);
   const { setSelectedAppAsync } = appStore;
 
-  const apps: Ref<App[]> = ref(getMyApps.value);
   const selectedApps: Ref<string> = ref('Your Apps');
-
-  watch(
-    () => selectedApps.value,
-    async (newValue, oldValue) => {
-      if (oldValue !== undefined) {
-        await setSelectedAppAsync();
-      }
-      if (newValue === 'Your Apps') {
-        apps.value = getMyApps.value;
-      } else {
-        apps.value = getMyRegisteredApps.value;
-      }
-    },
-    {
-      immediate: true,
-      deep: true,
-    },
-  );
+  // No local apps ref needed; use Pinia getters directly for reactivity
 
   const appSelected = async (id: number) => {
     await updateAppProcessingAsync(async () => {
@@ -77,17 +72,9 @@
     });
   };
 
-  watch(
-    () => getMyApps.value,
-    (newValue, oldValue) => (apps.value = newValue),
-    {
-      immediate: true,
-      deep: true,
-    },
-  );
+  // No local apps ref needed; use Pinia getters directly for reactivity
 
   defineExpose({
-    apps,
     selectedApps,
   });
 </script>

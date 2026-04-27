@@ -9,10 +9,22 @@
             <span class="headline">Dashboard</span>
           </v-card-title>
         </v-container>
-        <AppRolodex />
-        <div id="app-details" v-if="selectedApp !== null">
+        <AppRolodex @show-create-app="showCreateAppForm" />
+        <div
+          id="app-create"
+          v-if="showCreateApp">
+          <CreateAppForm
+            @created="onAppCreated"
+            @cancel="hideCreateAppForm" />
+        </div>
+        <div
+          id="app-details"
+          v-if="!showCreateApp && selectedApp !== null">
           <v-container class="d-flex justify-center pa-0">
-            <v-tabs v-model="activeTab" color="primary" style="width: fit-content;">
+            <v-tabs
+              v-model="activeTab"
+              color="primary"
+              style="width: fit-content">
               <v-tab value="app-details">
                 <v-icon start>mdi-application-settings</v-icon>
                 App Details
@@ -27,7 +39,7 @@
               </v-tab>
             </v-tabs>
           </v-container>
-          
+
           <v-window v-model="activeTab">
             <v-window-item value="app-details">
               <SelectedAppForm />
@@ -40,7 +52,7 @@
             </v-window-item>
             <v-window-item value="app-non-registered-users">
               <SelectedAppUsersForm :displayRegistered="false" />
-            </v-window-item>  
+            </v-window-item>
           </v-window>
         </div>
       </v-card-text>
@@ -54,12 +66,14 @@
   import { type Ref, ref, onBeforeMount, watch } from 'vue';
   import { storeToRefs } from 'pinia';
   import AppRolodex from '@/components/apps/AppRolodex.vue';
+  import CreateAppForm from '@/components/forms/CreateAppForm.vue';
   import SelectedAppForm from '@/components/forms/SelectedAppForm.vue';
   import SelectedAppUsersForm from '@/components/forms/SelectedAppUsersForm.vue';
   import { useAppStore } from '@/stores/appStore';
   import { useUserStore } from '@/stores/userStore';
   import { User } from '@/models/domain/user';
   import { App } from '@/models/domain/app';
+  import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
 
   const props = defineProps({
     action: {
@@ -83,6 +97,21 @@
   //#region Properties
   const selectedApp: Ref<App | null | undefined> = ref(getSelectedApp.value);
   const activeTab: Ref<string> = ref('app-details');
+  const showCreateApp = ref(false);
+
+  const showCreateAppForm = () => {
+    showCreateApp.value = true;
+  };
+  const hideCreateAppForm = () => {
+    showCreateApp.value = false;
+  };
+  const onAppCreated = async (data: ICreateAppLicenseRequestData) => {
+    const result = await appStore.postCreateAppLicenseAsync(data);
+    if (result) {
+      activeTab.value = 'app-details';
+    }
+    showCreateApp.value = false;
+  };
 
   watch(
     () => getSelectedApp.value,
