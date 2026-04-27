@@ -81,6 +81,7 @@
               location="bottom">
               <template v-slot:activator="{ props }">
                 <v-btn
+                  color="primary"
                   text
                   @click="cancelHandler"
                   v-bind="props"
