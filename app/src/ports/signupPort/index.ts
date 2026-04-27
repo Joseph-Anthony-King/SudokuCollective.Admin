@@ -29,7 +29,7 @@ export class SignupPort {
           password: data.password,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -60,7 +60,7 @@ export class SignupPort {
           appId: process.env.VITE_APP_ID as unknown as number,
         },
       };
-      return axios(config);
+      return await axios(config);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

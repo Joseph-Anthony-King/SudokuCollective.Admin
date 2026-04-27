@@ -2,10 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { AppsService } from '@/services/appsService';
 import { AppsPort } from '@/ports/appsPort/index';
+import { LicensePort } from '@/ports/licensesPort/index';
 import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 import { TimeFrame } from '@/enums/timeFrame';
 import { UpdateAppRequestData } from '@/models/requests/updateAppRequestData';
 import { StaticServiceMethods } from '@/services/common';
+import type { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
 
 describe('the appsService service', () => {
   beforeEach(() => {
@@ -13,6 +15,322 @@ describe('the appsService service', () => {
   });
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+  it('should create app license by running the postCreateAppLicenseAsync method', async () => {
+    // Arrange
+    LicensePort.createLicense = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 201: License was created.',
+          payload: [
+            {
+              id: 5,
+              name: 'new-test-app',
+              license: 'abc123-def456-ghi789',
+              ownerId: 1,
+              localUrl: 'https://localhost:9000',
+              testUrl: 'https://test.example.com',
+              stagingUrl: 'https://staging.example.com',
+              prodUrl: 'https://example.com',
+              sourceCodeUrl: 'https://github.com/user/new-repo',
+              isActive: true,
+              environment: ReleaseEnvironment.LOCAL,
+              permitSuperUserAccess: true,
+              permitCollectiveLogins: false,
+              disableCustomUrls: false,
+              customEmailConfirmationAction: null,
+              customPasswordResetAction: null,
+              useCustomSMTPServer: false,
+              smtpServerSettings: null,
+              timeFrame: TimeFrame.DAYS,
+              accessDuration: 7,
+              displayInGallery: true,
+              dateCreated: new Date().toISOString(),
+              dateUpdated: new Date().toISOString(),
+            },
+          ],
+        },
+        status: 201,
+        statusText: 'CREATED',
+        headers: {},
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'new-test-app',
+      ownerId: 1,
+      localUrl: 'https://localhost:9000',
+      testUrl: 'https://test.example.com',
+      stagingUrl: 'https://staging.example.com',
+      prodUrl: 'https://example.com',
+      sourceCodeUrl: 'https://github.com/user/new-repo',
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 201: License was created.');
+    expect(result.app).toBeDefined();
+    expect(result.app?.name).equals('new-test-app');
+    expect(result.app?.ownerId).equals(1);
+  });
+  it('should catch AxiosErrors thrown when running the postCreateAppLicenseAsync method', async () => {
+    // Arrange
+    LicensePort.createLicense = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 400: License was not created.',
+            payload: [],
+          },
+          status: 400,
+          statusText: 'BAD REQUEST',
+        },
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'failed-app',
+      ownerId: 1,
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 400: License was not created.');
+  });
+  it('should catch any errors thrown when running the postCreateAppLicenseAsync method', async () => {
+    // Arrange
+    LicensePort.createLicense = vi.fn().mockImplementation(async () => {
+      return new Error('NETWORK ERR');
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'error-app',
+      ownerId: 1,
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('NETWORK ERR');
+  });
+  it('should return false if an erroneous 200 is returned with an isSuccess of false when running the postCreateAppLicenseAsync method', async () => {
+    // Arrange
+    LicensePort.createLicense = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 201: Erroneous result returned.',
+          payload: [],
+        },
+        status: 201,
+        statusText: 'CREATED',
+        headers: {},
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+      } as AxiosResponse;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'erroneous-app',
+      ownerId: 1,
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 201: Erroneous result returned.');
+  });
+  it('should handle postCreateAppLicenseAsync with minimal required fields', async () => {
+    // Arrange
+    LicensePort.createLicense = vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 201: License was created.',
+          payload: [
+            {
+              id: 10,
+              name: 'minimal-app',
+              license: 'minimal-license-guid',
+              ownerId: 2,
+              localUrl: '',
+              testUrl: '',
+              stagingUrl: '',
+              prodUrl: '',
+              sourceCodeUrl: '',
+              isActive: true,
+              environment: ReleaseEnvironment.LOCAL,
+              permitSuperUserAccess: false,
+              permitCollectiveLogins: false,
+              disableCustomUrls: true,
+              customEmailConfirmationAction: null,
+              customPasswordResetAction: null,
+              useCustomSMTPServer: false,
+              smtpServerSettings: null,
+              timeFrame: TimeFrame.DAYS,
+              accessDuration: 1,
+              displayInGallery: false,
+              dateCreated: new Date().toISOString(),
+              dateUpdated: new Date().toISOString(),
+            },
+          ],
+        },
+        status: 201,
+        statusText: 'CREATED',
+        headers: {},
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+      } as AxiosResponse;
+    });
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'minimal-app',
+      ownerId: 2,
+    };
+
+    // Act
+    const result = await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(result.isSuccess).toBe(true);
+    expect(result.app).toBeDefined();
+    expect(result.app?.name).equals('minimal-app');
+    expect(result.app?.ownerId).equals(2);
+  });
+  it('should log errors to console in development mode when running postCreateAppLicenseAsync', async () => {
+    // Arrange
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    LicensePort.createLicense = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 500: Internal server error.',
+            payload: [],
+          },
+          status: 500,
+          statusText: 'INTERNAL SERVER ERROR',
+        },
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'console-test-app',
+      ownerId: 1,
+    };
+
+    // Act
+    await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(consoleErrorSpy.mock.calls[0][0]).equals('error: ');
+
+    consoleErrorSpy.mockRestore();
+  });
+  it('should call StaticServiceMethods.processFailedResponse when AxiosError occurs in postCreateAppLicenseAsync', async () => {
+    // Arrange
+    const processFailedResponseSpy = vi.spyOn(StaticServiceMethods, 'processFailedResponse');
+
+    LicensePort.createLicense = vi.fn().mockImplementation(async () => {
+      return {
+        config: {
+          url: 'licenses',
+          method: 'post',
+          baseURL: 'https://localhost:5001/api/v1/',
+        },
+        request: {},
+        response: {
+          data: {
+            isSuccess: false,
+            isFromCache: false,
+            message: 'Status Code 404: Not found.',
+            payload: [],
+          },
+          status: 404,
+          statusText: 'NOT FOUND',
+        },
+      } as AxiosError;
+    });
+
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const sut = AppsService;
+
+    const data: ICreateAppLicenseRequestData = {
+      name: 'not-found-app',
+      ownerId: 1,
+    };
+
+    // Act
+    await sut.postCreateAppLicenseAsync(data);
+
+    // Assert
+    expect(processFailedResponseSpy).toHaveBeenCalled();
   });
   it('should update apps by running the putUpdateAppAsync method', async () => {
     // Arrange

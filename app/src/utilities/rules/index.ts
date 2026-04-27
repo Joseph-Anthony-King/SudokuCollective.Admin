@@ -43,9 +43,11 @@ export default function () {
   const urlRules: ComputedRef<((v: string) => string | true)[]> = computed(() => {
     return [
       (v: string) =>
-        /^(ht|f)tp(s?):\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-.?,'/\\+&%$#_]*)?$/.test(
+        !v ||
+        /^(ht|f)tp(s?):\/\/[0-9a-zA-Z]([0-9a-zA-Z.-]*[0-9a-zA-Z])?(:\d+)?(\/[a-zA-Z0-9\-_.]*)?([?#][a-zA-Z0-9\-.?,'\\+&%$#_=]*)?$/.test(
           v,
-        ) || RulesMessages.urlRegexMessage,
+        ) ||
+        RulesMessages.urlRegexMessage,
     ];
   });
   const userNameRules = (

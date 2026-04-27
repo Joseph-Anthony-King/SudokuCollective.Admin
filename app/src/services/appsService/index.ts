@@ -1,14 +1,53 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AxiosError, type AxiosResponse } from 'axios';
 import { AppsPort } from '@/ports/appsPort';
+import { LicensePort } from '@/ports/licensesPort';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
 import type { IApp } from '@/interfaces/domain/iApp';
 import { StaticServiceMethods } from '@/services/common';
 import { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
+import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
 
 export class AppsService {
+  static postCreateAppLicenseAsync = async (
+    data: ICreateAppLicenseRequestData,
+  ): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await LicensePort.createLicense(data)) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (response.data.isSuccess) {
+        result.app = response.data.payload[0] as IApp;
+      } else {
+        throw new Error(response.data.message);
+      }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  };
+
   static putUpdateAppAsync = async (data: IUpdateAppRequestData): Promise<IServicePayload> => {
     const result: IServicePayload = {};
 
@@ -222,11 +261,17 @@ export class AppsService {
     return result;
   };
 
-  static postAppUsersAsync = async (appId: number, retrieveRegisteredUsers: boolean): Promise<IServicePayload> => {
+  static postAppUsersAsync = async (
+    appId: number,
+    retrieveRegisteredUsers: boolean,
+  ): Promise<IServicePayload> => {
     const result: IServicePayload = {};
 
     try {
-      const response = (await AppsPort.postAppUsersAsync(appId, retrieveRegisteredUsers)) as AxiosResponse;
+      const response = (await AppsPort.postAppUsersAsync(
+        appId,
+        retrieveRegisteredUsers,
+      )) as AxiosResponse;
 
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
         throw response;
@@ -259,9 +304,8 @@ export class AppsService {
 
   static putAddUserAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
     const result: IServicePayload = {};
-    
-    try {
 
+    try {
       const response = (await AppsPort.putAddUserAsync(appId, userId)) as AxiosResponse;
 
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
@@ -270,7 +314,7 @@ export class AppsService {
 
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message;
-      result.users = response.data.payload;      
+      result.users = response.data.payload;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -290,9 +334,8 @@ export class AppsService {
 
   static putRemoveUserAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
     const result: IServicePayload = {};
-    
-    try {
 
+    try {
       const response = (await AppsPort.putRemoveUserAsync(appId, userId)) as AxiosResponse;
 
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
@@ -301,7 +344,7 @@ export class AppsService {
 
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message;
-      result.users = response.data.payload;      
+      result.users = response.data.payload;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -319,20 +362,25 @@ export class AppsService {
     return result;
   };
 
-  static putActivateAdminPrivilegesAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
+  static putActivateAdminPrivilegesAsync = async (
+    appId: number,
+    userId: number,
+  ): Promise<IServicePayload> => {
     const result: IServicePayload = {};
-    
-    try {
 
-      const response = (await AppsPort.putActivateAdminPrivilegesAsync(appId, userId)) as AxiosResponse;
+    try {
+      const response = (await AppsPort.putActivateAdminPrivilegesAsync(
+        appId,
+        userId,
+      )) as AxiosResponse;
 
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
         throw response;
       }
-      
+
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message;
-      result.user = response.data.payload[0];      
+      result.user = response.data.payload[0];
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
@@ -350,20 +398,25 @@ export class AppsService {
     return result;
   };
 
-  static putDeactivateAdminPrivilegesAsync = async (appId: number, userId: number): Promise<IServicePayload> => {
+  static putDeactivateAdminPrivilegesAsync = async (
+    appId: number,
+    userId: number,
+  ): Promise<IServicePayload> => {
     const result: IServicePayload = {};
-    
-    try {
 
-      const response = (await AppsPort.putDeactivateAdminPrivilegesAsync(appId, userId)) as AxiosResponse;
+    try {
+      const response = (await AppsPort.putDeactivateAdminPrivilegesAsync(
+        appId,
+        userId,
+      )) as AxiosResponse;
 
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
         throw response;
       }
-      
+
       result.isSuccess = response.data.isSuccess;
       result.message = response.data.message;
-      result.user = response.data.payload[0];      
+      result.user = response.data.payload[0];
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);
