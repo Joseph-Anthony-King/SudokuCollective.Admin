@@ -7,6 +7,7 @@ import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequ
 import type { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
 import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
+import { get } from 'node_modules/axios/index.cjs';
 
 export const useAppStore = defineStore('appStore', () => {
   //#region State
@@ -26,6 +27,9 @@ export const useAppStore = defineStore('appStore', () => {
   );
   const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(
     () => nonRegisteredAppUsers.value,
+  );
+  const getServiceMessage: ComputedRef<string> = computed(() =>
+    serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   //#endregion
 
@@ -256,6 +260,7 @@ export const useAppStore = defineStore('appStore', () => {
     getSelectedApp,
     getRegisteredAppUsers,
     getNonRegisteredAppUsers,
+    getServiceMessage,
     addApp,
     updateApp,
     setSelectedAppAsync,
