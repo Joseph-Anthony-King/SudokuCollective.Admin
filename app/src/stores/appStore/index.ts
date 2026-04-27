@@ -131,6 +131,20 @@ export const useAppStore = defineStore('appStore', () => {
     updateServiceMessage(response.message);
     return response.isSuccess;
   };
+  const deleteAppAsync = async (appId: number, license: string): Promise<boolean> => {
+    const response = await AppsService.deleteAppAsync(appId, license);
+    if (response.isSuccess) {
+      const index = myApps.value.findIndex((a) => a.id === appId);
+      if (selectedApp.value!.id === appId) {
+        selectedApp.value = null;
+      }
+      if (index !== -1) {
+        myApps.value.splice(index, 1);
+      }
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
   const putUpdateAppAsync = async (data: IUpdateAppRequestData): Promise<boolean> => {
     const response: IServicePayload = await AppsService.putUpdateAppAsync(data);
     if (response.isSuccess) {
@@ -269,6 +283,7 @@ export const useAppStore = defineStore('appStore', () => {
     updateNonRegisteredAppUsersAsync,
     initializeStore,
     postCreateAppLicenseAsync,
+    deleteAppAsync,
     putUpdateAppAsync,
     getMyAppsAsync,
     getMyRegisteredAppsAsync,
