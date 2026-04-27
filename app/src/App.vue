@@ -92,7 +92,7 @@
         transition="dialog-top-transition">
         <ConfirmDialog />
       </v-dialog>
-    </v-main>
+    </v-main>   
     <FooterNav />
   </v-app>
 </template>
@@ -113,6 +113,7 @@
   import router from '@/router/index';
   import vuetify from '@/plugins/vuetify';
   import { toast } from 'vue3-toastify';
+  // @ts-ignore - CSS import without type declarations
   import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
   import { useConfirmEmailStore } from '@/stores/confirmEmailStore';

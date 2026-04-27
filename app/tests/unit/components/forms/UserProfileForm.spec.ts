@@ -1568,7 +1568,7 @@ describe('UserProfileForm.vue', () => {
       await nextTick();
 
       const form = wrapper.find('form');
-      expect(form.attributes('onsubmit')).toBe('event.preventDefault();');
+      expect(form.attributes('onsubmit')).toBe('event.preventDefault()');
     });
 
     it('should handle event prevention in all confirm handlers', async () => {

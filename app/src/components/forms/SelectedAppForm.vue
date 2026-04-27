@@ -867,15 +867,17 @@
       'Are you sure you want to delete this app?',
       DialogType.CONFIRM,
       async () => {
-        const result = await appStore.deleteAppAsync(
-          selectedApp.value.id!!,
-          selectedApp.value.license!!,
-        );
-        if (result) {
-          displaySuccessfulToast(StoreType.APPSTORE);
-        } else {
-          await displayFailedToastAsync(undefined, undefined);
-        }
+        updateAppProcessingAsync(async () => {
+          const result = await appStore.deleteAppAsync(
+            selectedApp.value.id!!,
+            selectedApp.value.license!!,
+          );
+          if (result) {
+            displaySuccessfulToast(StoreType.APPSTORE);
+          } else {
+            await displayFailedToastAsync(undefined, undefined);
+          }
+        });
       },
     );
   };
