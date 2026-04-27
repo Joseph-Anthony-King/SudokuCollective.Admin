@@ -29,6 +29,8 @@ export default function () {
       message = useUserStore().getServiceMessage;
     } else if (store === StoreType.SUDOKUSTORE) {
       message = useSudokuStore().getServiceMessage;
+    } else if (store === StoreType.APPSTORE) {
+      message = useAppStore().getServiceMessage;
     }
     if (message !== null && message !== '') {
       toast(message, {

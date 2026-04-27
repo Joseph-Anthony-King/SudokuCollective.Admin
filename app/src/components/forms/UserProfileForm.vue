@@ -423,7 +423,6 @@
     toRaw,
   } from 'vue';
   import { VForm } from 'vuetify/components';
-  import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
   import router from '@/router/index';
   import { useDialogStore } from '@/stores/dialogStore';
