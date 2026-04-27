@@ -7,6 +7,7 @@ import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequ
 import type { App } from '@/models/domain/app';
 import { User } from '@/models/domain/user';
 import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
+import { get } from 'node_modules/axios/index.cjs';
 
 export const useAppStore = defineStore('appStore', () => {
   //#region State
@@ -26,6 +27,9 @@ export const useAppStore = defineStore('appStore', () => {
   );
   const getNonRegisteredAppUsers: ComputedRef<Array<User>> = computed(
     () => nonRegisteredAppUsers.value,
+  );
+  const getServiceMessage: ComputedRef<string> = computed(() =>
+    serviceMessage.value ? toRaw(serviceMessage.value) : '',
   );
   //#endregion
 
@@ -122,6 +126,20 @@ export const useAppStore = defineStore('appStore', () => {
       if (createdApp) {
         addApp(createdApp);
         setSelectedAppAsync(createdApp.id!);
+      }
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
+  const deleteAppAsync = async (appId: number, license: string): Promise<boolean> => {
+    const response = await AppsService.deleteAppAsync(appId, license);
+    if (response.isSuccess) {
+      const index = myApps.value.findIndex((a) => a.id === appId);
+      if (selectedApp.value!.id === appId) {
+        selectedApp.value = null;
+      }
+      if (index !== -1) {
+        myApps.value.splice(index, 1);
       }
     }
     updateServiceMessage(response.message);
@@ -256,6 +274,7 @@ export const useAppStore = defineStore('appStore', () => {
     getSelectedApp,
     getRegisteredAppUsers,
     getNonRegisteredAppUsers,
+    getServiceMessage,
     addApp,
     updateApp,
     setSelectedAppAsync,
@@ -264,6 +283,7 @@ export const useAppStore = defineStore('appStore', () => {
     updateNonRegisteredAppUsersAsync,
     initializeStore,
     postCreateAppLicenseAsync,
+    deleteAppAsync,
     putUpdateAppAsync,
     getMyAppsAsync,
     getMyRegisteredAppsAsync,

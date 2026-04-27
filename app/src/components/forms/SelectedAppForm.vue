@@ -6,7 +6,7 @@
     <v-form
       v-model="formValid"
       ref="form"
-      onsubmit="event.preventDefault();">
+      onsubmit="event.preventDefault()">
       <v-row>
         <v-col
           cols="12"
@@ -594,10 +594,17 @@
   import { TimeFrame } from '@/enums/timeFrame';
   import commonUtilities from '@/utilities/common';
   import rules from '@/utilities/rules/index';
+  import { StoreType } from '@/enums/storeTypes';
 
   const { requiredRules, urlRules } = rules();
-  const { isChrome, updateAppProcessingAsync, repairAutoComplete, resetViewPort } =
-    commonUtilities();
+  const {
+    displaySuccessfulToast,
+    displayFailedToastAsync,
+    isChrome,
+    updateAppProcessingAsync,
+    repairAutoComplete,
+    resetViewPort,
+  } = commonUtilities();
 
   const props = defineProps({
     formStatus: {
@@ -859,8 +866,16 @@
       'Confirm Delete',
       'Are you sure you want to delete this app?',
       DialogType.CONFIRM,
-      () => {
-        console.debug('Delete logic will go here...');
+      async () => {
+        const result = await appStore.deleteAppAsync(
+          selectedApp.value.id!!,
+          selectedApp.value.license!!,
+        );
+        if (result) {
+          displaySuccessfulToast(StoreType.APPSTORE);
+        } else {
+          await displayFailedToastAsync(undefined, undefined);
+        }
       },
     );
   };

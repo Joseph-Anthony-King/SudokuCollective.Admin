@@ -19,7 +19,7 @@
         </div>
         <div
           id="app-details"
-          v-if="!showCreateApp && selectedApp !== null">
+          v-else-if="hasSelectedApp">
           <v-container class="d-flex justify-center pa-0">
             <v-tabs
               v-model="activeTab"
@@ -47,9 +47,6 @@
             <v-window-item value="app-users">
               <SelectedAppUsersForm :displayRegistered="true" />
             </v-window-item>
-            <v-window-item value="app-users">
-              <SelectedAppUsersForm :displayRegistered="true" />
-            </v-window-item>
             <v-window-item value="app-non-registered-users">
               <SelectedAppUsersForm :displayRegistered="false" />
             </v-window-item>
@@ -63,7 +60,7 @@
 <script setup lang="ts">
   /* eslint-disable no-undef */
   /* eslint-disable no-unused-vars */
-  import { type Ref, ref, onBeforeMount, watch } from 'vue';
+  import { type Ref, ref, computed, onBeforeMount, watch } from 'vue';
   import { storeToRefs } from 'pinia';
   import AppRolodex from '@/components/apps/AppRolodex.vue';
   import CreateAppForm from '@/components/forms/CreateAppForm.vue';
@@ -74,6 +71,8 @@
   import { User } from '@/models/domain/user';
   import { App } from '@/models/domain/app';
   import { ICreateAppLicenseRequestData } from '@/interfaces/requests/iCreateAppLicenseRequestData';
+  import commonUtilities from '@/utilities/common';
+  import { StoreType } from '@/enums/storeTypes';
 
   const props = defineProps({
     action: {
@@ -81,6 +80,8 @@
       default: '',
     },
   });
+
+  const { displaySuccessfulToast, displayFailedToastAsync } = commonUtilities();
 
   //#region Destructure Stores
   //#region UserStore
@@ -98,6 +99,7 @@
   const selectedApp: Ref<App | null | undefined> = ref(getSelectedApp.value);
   const activeTab: Ref<string> = ref('app-details');
   const showCreateApp = ref(false);
+  const hasSelectedApp = computed(() => selectedApp.value !== null);
 
   const showCreateAppForm = () => {
     showCreateApp.value = true;
@@ -109,6 +111,9 @@
     const result = await appStore.postCreateAppLicenseAsync(data);
     if (result) {
       activeTab.value = 'app-details';
+      displaySuccessfulToast(StoreType.APPSTORE);
+    } else {
+      await displayFailedToastAsync(undefined, undefined);
     }
     showCreateApp.value = false;
   };

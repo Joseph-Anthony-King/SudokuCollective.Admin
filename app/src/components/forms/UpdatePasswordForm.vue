@@ -6,7 +6,7 @@
     <v-form
       v-model="formValid"
       ref="form"
-      onsubmit="event.preventDefault();">
+      onsubmit="event.preventDefault()">
       <v-card-text>
         <v-container>
           <v-row>
