@@ -475,7 +475,7 @@
                   color="blue darken-1"
                   variant="text"
                   v-bind="props"
-                  :disabled="formValid"
+                  :disabled="!formValid"
                   @click.prevent="
                     selectedApp.isEditing === false
                       ? (selectedApp.isEditing = true)
