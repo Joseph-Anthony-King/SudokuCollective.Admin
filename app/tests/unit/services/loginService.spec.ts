@@ -6,7 +6,7 @@ import { LoginRequestData } from '@/models/requests/loginRequestData';
 import { StaticServiceMethods } from '@/services/common';
 
 describe('the loginService service', () => {
-  let isStringNotEmptyOrNullSpy: MockInstance<[email: string], boolean>;
+  let isStringNotEmptyOrNullSpy: MockInstance<(email: string) => boolean>;
   beforeEach(() => {
     StaticServiceMethods.processFailedResponse = vi.fn();
   });
