@@ -34,8 +34,9 @@ export const useValueStore = defineStore('valueStore', () => {
   const getTimeFrames: ComputedRef<Array<DropdownItem>> = computed(() =>
     timeFrames.value !== null ? toRaw(timeFrames.value) : new Array<DropdownItem>(),
   );
-  const getGameStates: ComputedRef<Array<DropdownItem>> = computed(() => toRaw(gameStates.value));
-
+  const getGameStates: ComputedRef<Array<DropdownItem>> = computed(() =>
+    gameStates.value !== null ? toRaw(gameStates.value) : new Array<DropdownItem>(),
+  );
   const getGallery: ComputedRef<Array<GalleryApp>> = computed(() =>
     gallery.value !== null ? toRaw(gallery.value) : new Array<GalleryApp>(),
   );
