@@ -61,6 +61,92 @@ describe('the appsPort port', () => {
     expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activateadminprivileges');
     expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivateadminprivileges');
   });
+  it('should get an app by id using the getAppByIdAsync method', async () => {
+    testServer = setupServer(
+      http.put('https://localhost:5001/api/v1/apps/42', () => {
+        return HttpResponse.json({
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: App was found.',
+          payload: [{ id: 42, name: 'test-app' }]
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const result = await AppsPort.getAppByIdAsync(42) as AxiosResponse;
+
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.message).equals('Status Code 200: App was found.');
+    expect(result.data.payload[0].id).toBe(42);
+  });
+  it('should return AxiosErrors from the getAppByIdAsync method without development logging', async () => {
+    testServer = setupServer(
+      http.put('https://localhost:5001/api/v1/apps/42', () => {
+        return HttpResponse.json({
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 404: App was not found.',
+          payload: []
+        }, {
+          status: 404,
+          statusText: 'NOT FOUND',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+
+    try {
+      const result = await AppsPort.getAppByIdAsync(42);
+
+      expect(result).toBeInstanceOf(AxiosError);
+      expect((result as AxiosError).response?.status).toBe(404);
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
+  it('should log and return errors from the getAppByIdAsync method in development', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const result = await AppsPort.getAppByIdAsync(42, true);
+
+      expect(result).toBeInstanceOf(Error);
+      expect((result as Error).message).equals(
+        'testErrorHandling is true, testing error handling...'
+      );
+      expect(consoleError).toHaveBeenCalledWith(
+        'error: ',
+        expect.objectContaining({ message: 'testErrorHandling is true, testing error handling...' })
+      );
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
   it('should update a users app by running the putUpdateAppAsync method', async () => {
     //Arrange
     testServer = setupServer(

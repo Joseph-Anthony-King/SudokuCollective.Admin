@@ -5,6 +5,36 @@ import { useUserStore } from '@/stores/userStore';
 import type { IUpdateAppRequestData } from '@/interfaces/requests/iUpdateAppRequestData';
 
 export class AppsPort {
+  static async getAppByIdAsync(
+    appId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
+      const globalStore = useGlobalStore();
+
+      const config = {
+        method: 'put',
+        url: `${Endpoints.appsEndpoint}/${appId}`,
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
+        },
+      };
+      return await axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
+
   static async putUpdateAppAsync(
     data: IUpdateAppRequestData,
     testErrorHandling: boolean | null = null,

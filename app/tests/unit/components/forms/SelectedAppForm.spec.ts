@@ -23,6 +23,8 @@ import rules from '@/utilities/rules/index';
 vi.mock('@/utilities/common', () => ({
   default: () => ({
     isChrome: { value: false },
+    displaySuccessfulToast: vi.fn(),
+    displayFailedToastAsync: vi.fn().mockResolvedValue(undefined),
     updateAppProcessingAsync: vi.fn((callback) => callback()),
     repairAutoComplete: vi.fn(),
     resetViewPort: vi.fn()
@@ -101,7 +103,7 @@ describe('SelectedAppForm.vue', () => {
   const createWrapper = (props = {}, initialAppData = {}) => {
     mockApp = new App();
     Object.assign(mockApp, {
-      id: 1,
+      id: 2,
       name: 'Test App',
       license: 'test-license-123',
       ownerId: 1,
@@ -732,7 +734,6 @@ describe('SelectedAppForm.vue', () => {
       await wrapper.vm.editHandlerAync(mockEvent);
       
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(console.debug).toHaveBeenCalledWith('Edit logic will go here...');
       expect(wrapper.vm.selectedApp.isEditing).toBe(false);
     });
 
@@ -741,7 +742,6 @@ describe('SelectedAppForm.vue', () => {
       
       await wrapper.vm.editHandlerAync();
       
-      expect(console.debug).toHaveBeenCalledWith('Edit logic will go here...');
       expect(wrapper.vm.selectedApp.isEditing).toBe(false);
     });
 
@@ -863,7 +863,7 @@ describe('SelectedAppForm.vue', () => {
       
       // Test v-model getter/setter for selectedApp.id (line 16)
       const initialId = wrapper.vm.selectedApp.id;
-      expect(initialId).toBe(1); // Should have the initial mock ID
+      expect(initialId).toBe(2); // Should have the initial mock ID
       
       // Test setter - directly modify the bound property
       wrapper.vm.selectedApp.id = 999;
@@ -2999,8 +2999,6 @@ describe('SelectedAppForm.vue', () => {
       
       wrapper = createWrapper({}, { isEditing: true });
       
-      const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-      
       // Execute editHandlerAync which contains a Promise with arrow function resolver
       const promise = (wrapper.vm as any).editHandlerAync();
       
@@ -3009,10 +3007,8 @@ describe('SelectedAppForm.vue', () => {
       
       await promise;
       
-      expect(consoleSpy).toHaveBeenCalledWith('Edit logic will go here...');
       expect((wrapper.vm as any).selectedApp.isEditing).toBe(false);
       
-      consoleSpy.mockRestore();
       vi.useRealTimers();
     });
 

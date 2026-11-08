@@ -332,6 +332,91 @@ describe('the appsService service', () => {
     // Assert
     expect(processFailedResponseSpy).toHaveBeenCalled();
   });
+  it('should get an app by id using the getAppByIdAsync method', async () => {
+    const app = {
+      id: 42,
+      name: 'test-app',
+    };
+    AppsPort.getAppByIdAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: App was found.',
+        payload: [app],
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.getAppByIdAsync(42);
+
+    expect(AppsPort.getAppByIdAsync).toHaveBeenCalledWith(42);
+    expect(result.isSuccess).toBe(true);
+    expect(result.message).equals('Status Code 200: App was found.');
+    expect(result.app).toEqual(app);
+  });
+  it('should handle AxiosErrors from the getAppByIdAsync method', async () => {
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: App was not found.',
+        payload: [],
+      },
+      status: 404,
+      statusText: 'NOT FOUND',
+    };
+    const error = { response } as AxiosError;
+    const processFailedResponseSpy = vi.spyOn(StaticServiceMethods, 'processFailedResponse');
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    AppsPort.getAppByIdAsync = vi.fn().mockResolvedValue(error);
+
+    try {
+      const result = await AppsService.getAppByIdAsync(42);
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).equals('Status Code 404: App was not found.');
+      expect(processFailedResponseSpy).toHaveBeenCalledWith(response);
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
+  it('should handle Errors from the getAppByIdAsync method', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+    AppsPort.getAppByIdAsync = vi.fn().mockResolvedValue(new Error('NETWORK ERR'));
+
+    try {
+      const result = await AppsService.getAppByIdAsync(42);
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).equals('NETWORK ERR');
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
+  it('should reject unsuccessful responses from the getAppByIdAsync method', async () => {
+    AppsPort.getAppByIdAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: false,
+        message: 'Status Code 200: App was not found.',
+        payload: [],
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.getAppByIdAsync(42);
+
+    expect(result.isSuccess).toBe(false);
+    expect(result.message).equals('Status Code 200: App was not found.');
+    expect(result.app).toBeUndefined();
+  });
   it('should update apps by running the putUpdateAppAsync method', async () => {
     // Arrange
     AppsPort.putUpdateAppAsync = vi.fn().mockImplementation(() => {
