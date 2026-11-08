@@ -81,11 +81,8 @@
     },
   });
 
-  const { 
-    displaySuccessfulToast, 
-    displayFailedToastAsync, 
-    updateAppProcessingAsync 
-  } = commonUtilities();
+  const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
+    commonUtilities();
 
   //#region Destructure Stores
   //#region UserStore

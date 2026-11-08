@@ -92,7 +92,7 @@
         transition="dialog-top-transition">
         <ConfirmDialog />
       </v-dialog>
-    </v-main>   
+    </v-main>
     <FooterNav />
   </v-app>
 </template>
