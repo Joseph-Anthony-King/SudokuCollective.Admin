@@ -116,6 +116,15 @@ export const useAppStore = defineStore('appStore', () => {
     selectedApp.value = null;
     serviceMessage.value = null;
   };
+  const getAppByIdAsync = async (id: number): Promise<boolean> => {
+    const response: IServicePayload = await AppsService.getAppByIdAsync(id);
+    if (response.isSuccess) {
+      updateApp(response.app);
+      selectedApp.value = response.app;
+    }
+    updateServiceMessage(response.message);
+    return response.isSuccess;
+  };
   const postCreateAppLicenseAsync = async (
     data: ICreateAppLicenseRequestData,
   ): Promise<boolean> => {
@@ -282,6 +291,7 @@ export const useAppStore = defineStore('appStore', () => {
     updateRegisteredAppUsersAsync,
     updateNonRegisteredAppUsersAsync,
     initializeStore,
+    getAppByIdAsync,
     postCreateAppLicenseAsync,
     deleteAppAsync,
     putUpdateAppAsync,

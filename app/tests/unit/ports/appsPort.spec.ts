@@ -63,7 +63,7 @@ describe('the appsPort port', () => {
   });
   it('should get an app by id using the getAppByIdAsync method', async () => {
     testServer = setupServer(
-      http.put('https://localhost:5001/api/v1/apps/42', () => {
+      http.post('https://localhost:5001/api/v1/apps/42', () => {
         return HttpResponse.json({
           isSuccess: true,
           isFromCache: false,
@@ -89,7 +89,7 @@ describe('the appsPort port', () => {
   });
   it('should return AxiosErrors from the getAppByIdAsync method without development logging', async () => {
     testServer = setupServer(
-      http.put('https://localhost:5001/api/v1/apps/42', () => {
+      http.post('https://localhost:5001/api/v1/apps/42', () => {
         return HttpResponse.json({
           isSuccess: false,
           isFromCache: false,

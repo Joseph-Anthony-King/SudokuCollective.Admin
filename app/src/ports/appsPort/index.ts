@@ -15,15 +15,23 @@ export class AppsPort {
       }
 
       const globalStore = useGlobalStore();
+      const userStore = useUserStore();
 
       const config = {
-        method: 'put',
+        method: 'post',
         url: `${Endpoints.appsEndpoint}/${appId}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${globalStore.getToken}`,
+        },
+        data: {
+          license: process.env.VITE_APP_LICENSE,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
+          paginator: {},
+          payload: {},
         },
       };
       return await axios(config);
