@@ -731,18 +731,24 @@
   const refreshHandlerAsync = async (event: Event | null = null): Promise<boolean> => {
     event?.preventDefault();
     return (await updateAppProcessingAsync(async () => {
-      const result = await getUserAsync();
-      displaySuccessfulToast(StoreType.USERSTORE);
-      const failedToast = await displayFailedToastAsync(updateInvalidValues, {
-        invalidUserNames: toRaw(invalidUserNames.value),
-        invalidEmails: toRaw(invalidUserNames.value),
-        userName: toRaw(userName.value),
-        email: toRaw(email.value),
-      });
-      if (failedToast.failed) {
-        invalidUserNames.value = failedToast.methodResult.invalidUserNames;
-        invalidEmails.value = failedToast.methodResult.invalidEmails;
-        form.value?.validate();
+      let result = false;
+      if (getFormStatus.value) {
+        result = await getUserAsync();
+      }
+      if (result) {
+        displaySuccessfulToast(StoreType.USERSTORE);
+      } else {
+        const failedToast = await displayFailedToastAsync(updateInvalidValues, {
+          invalidUserNames: toRaw(invalidUserNames.value),
+          invalidEmails: toRaw(invalidUserNames.value),
+          userName: toRaw(userName.value),
+          email: toRaw(email.value),
+        });
+        if (failedToast.failed) {
+          invalidUserNames.value = failedToast.methodResult.invalidUserNames;
+          invalidEmails.value = failedToast.methodResult.invalidEmails;
+          form.value?.validate();
+        }
       }
       return result;
     })) as Promise<boolean>;
