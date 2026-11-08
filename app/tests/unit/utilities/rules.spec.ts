@@ -242,6 +242,7 @@ describe('The validation rules', () => {
 
       // Act & Assert
       expect(urlValidator('')).toBe(true); // Empty string is allowed
+      expect(urlValidator(null)).toBe(true);
       expect(urlValidator('not-a-url')).toBe(RulesMessages.urlRegexMessage);
       expect(urlValidator('www.example.com')).toBe(RulesMessages.urlRegexMessage);
       expect(urlValidator('http://localhost')).toBe(true);
