@@ -595,6 +595,7 @@
   import commonUtilities from '@/utilities/common';
   import rules from '@/utilities/rules/index';
   import { StoreType } from '@/enums/storeTypes';
+  import { UpdateAppRequestData } from '@/models/requests/updateAppRequestData';
 
   const { requiredRules, urlRules } = rules();
   const {
@@ -841,8 +842,51 @@
   const editHandlerAync = async (event: Event | null = null): Promise<void> => {
     event?.preventDefault();
     const promise = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.debug('Edit logic will go here...');
+      setTimeout(async () => {
+        let result = false;
+        if (selectedApp.value.useCustomSMTPServer) {
+          selectedApp.value.smtpServerSettings = {
+            id: selectedApp.value.smtpServerSettings?.id ?? 0,
+            appId: selectedApp.value.id!!,
+            smtpServer: SMTPServerName.value,
+            port: SMTPServerPort.value,
+            userName: SMTPServerUserName.value,
+            password: SMTPServerPassword.value,
+            fromEmail: SMTPServerEmail.value,
+          };
+        } else {
+          selectedApp.value.smtpServerSettings = null;
+        }
+        const data = new UpdateAppRequestData(
+          selectedApp.value.id!!,
+          name.value!!,
+          selectedApp.value.license!!,
+          selectedApp.value.ownerId!!,
+          localUrl.value!!,
+          testUrl.value!!,
+          stagingUrl.value!!,
+          prodUrl.value!!,
+          sourceCodeUrl.value!!,
+          selectedApp.value.isActive!!,
+          selectedReleaseEnvironment.value!!,
+          selectedApp.value.permitCollectiveLogins!!,
+          selectedApp.value.permitSuperUserAccess!!,
+          selectedApp.value.disableCustomUrls!!,
+          confirmEmailAction.value!!,
+          resetPasswordAction.value!!,
+          selectedApp.value.useCustomSMTPServer!!,
+          selectedApp.value.smtpServerSettings!!,
+          selectedTimeFrame.value!!,
+          accessDurationMagnitude.value!!,
+        );
+
+        result = await appStore.putUpdateAppAsync(data);
+
+        if (result) {
+          displaySuccessfulToast(StoreType.APPSTORE);
+        } else {
+          await displayFailedToastAsync(undefined, undefined);
+        }
         selectedApp.value.isEditing = false;
         resolve();
       }, 250);
