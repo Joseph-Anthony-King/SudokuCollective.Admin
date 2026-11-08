@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { DifficultiesPort } from '@/ports/difficultiesPort';
 import { Endpoints } from '@/ports/difficultiesPort/endpoints';
-import type { IDifficulty } from '@/interfaces/domain/iDifficulty';
+import { IDifficultyRequestData } from '@/interfaces/requests/iDifficultyRequestData';
 import { useGlobalStore } from '@/stores/globalStore';
 import { useUserStore } from '@/stores/userStore';
 
@@ -19,7 +19,7 @@ vi.mock('@/stores/userStore', () => ({
   useUserStore: vi.fn(() => ({ getUser: { id: 17 } })),
 }));
 
-const difficulty: IDifficulty = {
+const difficulty: IDifficultyRequestData = {
   id: 12,
   name: 'test-difficulty',
   displayName: 'Test Difficulty',
