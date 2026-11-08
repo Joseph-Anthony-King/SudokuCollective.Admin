@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import { nextTick } from 'vue';
 import { mount, type VueWrapper } from '@vue/test-utils';
-import { createTestingPinia } from '@pinia/testing';
+import { createTestingPinia, type TestingPinia } from '@pinia/testing';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -23,6 +23,8 @@ import rules from '@/utilities/rules/index';
 vi.mock('@/utilities/common', () => ({
   default: () => ({
     isChrome: { value: false },
+    displaySuccessfulToast: vi.fn(),
+    displayFailedToastAsync: vi.fn().mockResolvedValue(undefined),
     updateAppProcessingAsync: vi.fn((callback) => callback()),
     repairAutoComplete: vi.fn(),
     resetViewPort: vi.fn()
@@ -90,6 +92,7 @@ global.clearTimeout = vi.fn() as any;
 
 describe('SelectedAppForm.vue', () => {
   let wrapper: VueWrapper<any>;
+  let testingPinia: TestingPinia;
   let mockApp: App;
   let mockReleaseEnvironments: DropdownItem[];
   let mockTimeFrames: DropdownItem[];
@@ -98,10 +101,10 @@ describe('SelectedAppForm.vue', () => {
   let vuetify: any;
   let mockUpdateDialog: Mock;
 
-  const createWrapper = (props = {}, initialAppData = {}) => {
+  const createWrapper = (props = {}, initialAppData = {}, mockDialogUpdates = false) => {
     mockApp = new App();
     Object.assign(mockApp, {
-      id: 1,
+      id: 2,
       name: 'Test App',
       license: 'test-license-123',
       ownerId: 1,
@@ -129,6 +132,26 @@ describe('SelectedAppForm.vue', () => {
       ...initialAppData
     });
 
+    testingPinia = createTestingPinia({
+      createSpy: vi.fn,
+      initialState: {
+        appStore: {
+          selectedApp: mockApp
+        },
+        dialogStore: {
+          dialogs: [],
+        },
+        valueStore: {
+          releaseEnvironments: mockReleaseEnvironments,
+          timeFrames: mockTimeFrames
+        }
+      }
+    });
+    const dialogStore = useDialogStore(testingPinia);
+    if (mockDialogUpdates) {
+      dialogStore.updateDialog = mockUpdateDialog;
+    }
+
     const wrapper = mount(SelectedAppForm, {
       props: {
         formStatus: true,
@@ -137,28 +160,12 @@ describe('SelectedAppForm.vue', () => {
       global: {
         plugins: [
           vuetify,
-          createTestingPinia({
-            createSpy: vi.fn,
-            initialState: {
-              appStore: {
-                selectedApp: mockApp
-              },
-              dialogStore: {
-                dialogs: [],
-              },
-              valueStore: {
-                releaseEnvironments: mockReleaseEnvironments,
-                timeFrames: mockTimeFrames
-              }
-            }
-          })
+          testingPinia
         ]
       }
     });
-    
-    // Mock the dialogStore updateDialog method after mounting
-    const dialogStore = useDialogStore();
-    if (dialogStore) {
+
+    if (!mockDialogUpdates) {
       dialogStore.updateDialog = mockUpdateDialog;
     }
     
@@ -732,7 +739,6 @@ describe('SelectedAppForm.vue', () => {
       await wrapper.vm.editHandlerAync(mockEvent);
       
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(console.debug).toHaveBeenCalledWith('Edit logic will go here...');
       expect(wrapper.vm.selectedApp.isEditing).toBe(false);
     });
 
@@ -741,7 +747,6 @@ describe('SelectedAppForm.vue', () => {
       
       await wrapper.vm.editHandlerAync();
       
-      expect(console.debug).toHaveBeenCalledWith('Edit logic will go here...');
       expect(wrapper.vm.selectedApp.isEditing).toBe(false);
     });
 
@@ -863,7 +868,7 @@ describe('SelectedAppForm.vue', () => {
       
       // Test v-model getter/setter for selectedApp.id (line 16)
       const initialId = wrapper.vm.selectedApp.id;
-      expect(initialId).toBe(1); // Should have the initial mock ID
+      expect(initialId).toBe(2); // Should have the initial mock ID
       
       // Test setter - directly modify the bound property
       wrapper.vm.selectedApp.id = 999;
@@ -2219,32 +2224,36 @@ describe('SelectedAppForm.vue', () => {
   });
 
   describe('100% Coverage Tests', () => {
-    it('should trigger console.debug in refresh dialog callback', () => {
-      const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-      
-      wrapper = createWrapper();
-      
-      // Mock the dialog store properly
-      const dialogStore = wrapper.vm.$dialogStore || wrapper.vm.dialogStore;
-      if (dialogStore) {
-        dialogStore.updateDialog = mockUpdateDialog;
-      }
+    it('should refresh the selected app when the Refresh button is confirmed', async () => {
+      wrapper = createWrapper({}, {}, true);
+      const appStore = useAppStore(testingPinia);
+      const refreshedApp = new App();
+      Object.assign(refreshedApp, mockApp, { name: 'Refreshed App' });
+      const getAppByIdSpy = vi.spyOn(appStore, 'getAppByIdAsync').mockImplementation(async (id) => {
+        appStore.selectedApp = refreshedApp;
+        return id === mockApp.id;
+      });
+      let refreshCallback: (() => Promise<void>) | undefined;
+      mockUpdateDialog.mockImplementation((_title, _message, _type, callback) => {
+        refreshCallback = callback;
+      });
 
-      // Call confirmRefreshHandler to register the callback
-      wrapper.vm.confirmRefreshHandler();
+      const refreshButton = wrapper.findAll('button').find((button) => button.text().includes('Refresh'));
+      expect(refreshButton).toBeDefined();
+      await refreshButton!.trigger('click');
 
-      // Only proceed if updateDialog was called
-      if (mockUpdateDialog.mock.calls.length > 0) {
-        const lastCall = mockUpdateDialog.mock.calls[mockUpdateDialog.mock.calls.length - 1];
-        if (lastCall && lastCall.length > 3) {
-          const callback = lastCall[3];
-          if (callback && typeof callback === 'function') {
-            callback();
-            expect(consoleSpy).toHaveBeenCalledWith('Refresh logic will go here...');
-          }
-        }
-      }
-      consoleSpy.mockRestore();
+      expect(mockUpdateDialog).toHaveBeenCalledWith(
+        'Confirm Refresh',
+        'Are you sure you want to refresh this app?',
+        DialogType.CONFIRM,
+        expect.any(Function)
+      );
+      expect(refreshCallback).toBeDefined();
+      await refreshCallback!();
+      await nextTick();
+
+      expect(getAppByIdSpy).toHaveBeenCalledWith(mockApp.id);
+      expect(wrapper.vm.selectedApp.name).toBe('Refreshed App');
     });
 
     it('should trigger console.debug in delete dialog callback', () => {
@@ -2999,8 +3008,6 @@ describe('SelectedAppForm.vue', () => {
       
       wrapper = createWrapper({}, { isEditing: true });
       
-      const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-      
       // Execute editHandlerAync which contains a Promise with arrow function resolver
       const promise = (wrapper.vm as any).editHandlerAync();
       
@@ -3009,35 +3016,9 @@ describe('SelectedAppForm.vue', () => {
       
       await promise;
       
-      expect(consoleSpy).toHaveBeenCalledWith('Edit logic will go here...');
       expect((wrapper.vm as any).selectedApp.isEditing).toBe(false);
       
-      consoleSpy.mockRestore();
       vi.useRealTimers();
-    });
-
-    it('should execute confirmRefreshHandler arrow function and its dialog callback', () => {
-      wrapper = createWrapper();
-      
-      let dialogCallback: any = null;
-      mockUpdateDialog.mockImplementation((title, message, type, callback) => {
-        if (title === 'Confirm Refresh') {
-          dialogCallback = callback;
-        }
-      });
-      
-      const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-      
-      // Execute confirmRefreshHandler arrow function
-      (wrapper.vm as any).confirmRefreshHandler();
-      
-      // Execute the callback arrow function
-      if (dialogCallback) {
-        dialogCallback();
-        expect(consoleSpy).toHaveBeenCalledWith('Refresh logic will go here...');
-      }
-      
-      consoleSpy.mockRestore();
     });
 
     it('should execute confirmDeleteHandler arrow function and its dialog callback', () => {

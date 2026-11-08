@@ -903,8 +903,14 @@
       'Confirm Refresh',
       'Are you sure you want to refresh this app?',
       DialogType.CONFIRM,
-      () => {
-        console.debug('Refresh logic will go here...');
+      async () => {
+        const result = await appStore.getAppByIdAsync(selectedApp.value.id!!);
+
+        if (result) {
+          displaySuccessfulToast(StoreType.APPSTORE);
+        } else {
+          await displayFailedToastAsync(undefined, undefined);
+        }
       },
     );
   };
