@@ -475,7 +475,7 @@
                   color="blue darken-1"
                   variant="text"
                   v-bind="props"
-                  :disabled="!formValid"
+                  :disabled="selectedApp.id === 1 ? !isSuperUser || formValid : !formValid"
                   @click.prevent="
                     selectedApp.isEditing === false
                       ? (selectedApp.isEditing = true)
@@ -585,6 +585,7 @@
   import { storeToRefs } from 'pinia';
   import { useAppStore } from '@/stores/appStore';
   import { useDialogStore } from '@/stores/dialogStore';
+  import { useUserStore } from '@/stores/userStore';
   import { useValueStore } from '@/stores/valueStore';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import { DropdownItem } from '@/models/infrastructure/dropdownItem';
@@ -742,6 +743,9 @@
   const SMTPServerEmail: ComputedRef<string | null> = computed(() =>
     selectedApp.value.smtpServerSettings ? selectedApp.value.smtpServerSettings.fromEmail : null,
   );
+  const isSuperUser: ComputedRef<boolean> = computed(() => {
+    return useUserStore().getUserIsSuperUser;
+  });
 
   watch(
     () => getSelectedApp.value,
