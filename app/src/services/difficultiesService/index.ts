@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
 import { DifficultiesPort } from '@/ports/difficultiesPort';
-import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { IDifficulty } from '@/interfaces/domain/iDifficulty';
-import { StaticServiceMethods } from '../common';
 import { IDifficultyRequestData } from '@/interfaces/requests/iDifficultyRequestData';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
+import { StaticServiceMethods } from '../common';
 
 export class DifficultiesService {
   static getDifficultyAsync = async (difficultyId: number): Promise<IServicePayload> => {
