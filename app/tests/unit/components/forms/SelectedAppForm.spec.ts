@@ -220,6 +220,21 @@ describe('SelectedAppForm.vue', () => {
       expect(title.text()).toBe('Test App');
     });
 
+    it('should enable the edit button only when the form is valid', async () => {
+      wrapper = createWrapper();
+      const editButton = wrapper.findAll('button').find((button) => button.text().includes('Edit'));
+
+      expect(editButton).toBeDefined();
+
+      wrapper.vm.formValid = true;
+      await nextTick();
+      expect(editButton?.element.disabled).toBe(false);
+
+      wrapper.vm.formValid = false;
+      await nextTick();
+      expect(editButton?.element.disabled).toBe(true);
+    });
+
     it('should handle formStatus prop correctly', () => {
       wrapper = createWrapper({ formStatus: false });
       expect(wrapper.vm.getFormStatus).toBe(false);

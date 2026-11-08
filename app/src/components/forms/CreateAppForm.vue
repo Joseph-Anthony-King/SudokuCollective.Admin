@@ -98,7 +98,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { Ref, ref } from 'vue';
+  import { VForm } from 'vuetify/components';
   import { storeToRefs } from 'pinia';
   import AvailableActions from '@/components/buttons/AvailableActions.vue';
   import rules from '@/utilities/rules/index';
@@ -112,8 +113,8 @@
   const stagingUrl = ref('');
   const prodUrl = ref('');
   const sourceCodeUrl = ref('');
+  const form: Ref<VForm | null> = ref(null);
   const formValid = ref(false);
-  const form = ref();
   const { requiredRules, urlRules } = rules();
 
   const userStore = useUserStore();

@@ -40,9 +40,9 @@ export default function () {
   const requiredRules = (value: string): ((v: string) => string | true)[] => {
     return [(v: string) => !!v || RulesMessages.requiredMessage.replace('{{value}}', value)];
   };
-  const urlRules: ComputedRef<((v: string) => string | true)[]> = computed(() => {
+  const urlRules: ComputedRef<((v: string | null) => string | true)[]> = computed(() => {
     return [
-      (v: string) =>
+      (v: string | null) =>
         !v ||
         /^(ht|f)tp(s?):\/\/[0-9a-zA-Z]([0-9a-zA-Z.-]*[0-9a-zA-Z])?(:\d+)?(\/[a-zA-Z0-9\-_.]*)?([?#][a-zA-Z0-9\-.?,'\\+&%$#_=]*)?$/.test(
           v,
