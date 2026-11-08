@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
-import { setupServer, SetupServerApi } from 'msw/node';
+import { setupServer } from 'msw/node';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia, type TestingPinia } from '@pinia/testing';
 import { AxiosError, type AxiosResponse } from 'axios';
@@ -15,7 +15,7 @@ import { TimeFrame } from '@/enums/timeFrame';
 
 describe('the appsPort port', () => {
   let testingPinia: TestingPinia;
-  let testServer: SetupServerApi | null;
+  let testServer: ReturnType<typeof setupServer> | null;
   beforeEach(() => {
     testingPinia = createTestingPinia({
       createSpy: vi.fn(),
