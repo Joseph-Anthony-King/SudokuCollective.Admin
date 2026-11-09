@@ -115,13 +115,13 @@
   let windowWidth: Ref<number> = ref(window.innerWidth);
   const progressSize: ComputedRef<number> = computed(() => {
     if (windowWidth.value > 1920) {
-      return 600;
-    } else if (windowWidth.value >= 960) {
-      return 500;
-    } else if (windowWidth.value >= 600) {
-      return 400;
-    } else {
       return 300;
+    } else if (windowWidth.value >= 960) {
+      return 250;
+    } else if (windowWidth.value >= 600) {
+      return 200;
+    } else {
+      return 150;
     }
   });
   const isMobile: ComputedRef<boolean> = computed(() => {
