@@ -132,15 +132,24 @@
   });
 
   const headers = computed(() => {
-    const baseHeaders: Array<{ title: string; key: string; sortable?: boolean }> = [
-      { title: 'Full Name', key: 'fullName', sortable: true },
-      { title: 'Email', key: 'email', sortable: true },
-      { title: 'Active', key: 'isActive', sortable: false },
-      { title: 'Admin', key: 'isAdmin', sortable: false },
-    ];
+    let baseHeaders: Array<{ title: string; key: string; sortable?: boolean }> = [];
 
     if (getUserIsSuperUser.value) {
-      baseHeaders.push({ title: 'Super User', key: 'isSuperUser', sortable: false });
+      baseHeaders = [
+        { title: 'Full Name', key: 'fullName', sortable: true },
+        { title: 'Nickname', key: 'nickName', sortable: true },
+        { title: 'Email', key: 'email', sortable: true },
+        { title: 'Active', key: 'isActive', sortable: false },
+        { title: 'Admin', key: 'isAdmin', sortable: false },
+        { title: 'Super User', key: 'isSuperUser', sortable: false },
+      ];
+    } else {
+      baseHeaders = [
+        { title: 'Full Name', key: 'fullName', sortable: true },
+        { title: 'Nickname', key: 'nickName', sortable: true },
+        { title: 'Active', key: 'isActive', sortable: false },
+        { title: 'Admin', key: 'isAdmin', sortable: false },
+      ];
     }
 
     baseHeaders.push({ title: 'Actions', key: 'actions', sortable: false });
