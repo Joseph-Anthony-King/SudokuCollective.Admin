@@ -7,6 +7,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import AppRolodex from '@/components/apps/AppRolodex.vue';
 import AppButton from '@/components/buttons/AppButton.vue';
+import TimeToCodeButton from '@/components/buttons/TimeToCodeButton.vue';
 import { useAppStore } from '@/stores/appStore';
 import { App } from '@/models/domain/app';
 
@@ -93,6 +94,7 @@ describe('The AppRolodex.vue component', () => {
     expect(wrapper.vm.selectedApps).toBe('Your Apps');
     // Should show all apps from getMyApps
     expect(wrapper.findAllComponents(AppButton).length).toBe(2);
+    expect(wrapper.findComponent(TimeToCodeButton).exists()).toBe(false);
     // Should show CreateAppButton
     expect(wrapper.findComponent({ name: 'CreateAppButton' }).exists()).toBe(true);
   });
@@ -115,11 +117,12 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
-    wrapper.vm.selectedApps = 'Your Registered Apps';
+    wrapper.findComponent({ name: 'VSelect' }).vm.$emit('update:modelValue', 'Your Registered Apps');
     await nextTick();
     await flushPromises();
     // Should show only registered apps
     expect(wrapper.findAllComponents(AppButton).length).toBe(1);
+    expect(wrapper.findComponent(TimeToCodeButton).exists()).toBe(false);
     // Should not show CreateAppButton
     expect(wrapper.findComponent({ name: 'CreateAppButton' }).exists()).toBe(false);
   });
@@ -142,14 +145,12 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
-    // For "Your Apps"
-    expect(wrapper.find('.no-apps-message').exists()).toBe(true);
-    expect(wrapper.find('.no-apps-message').text()).toBe('Time to Get Coding!');
-    // For "Your Registered Apps"
-    wrapper.vm.selectedApps = 'Your Registered Apps';
+    expect(wrapper.findComponent(TimeToCodeButton).exists()).toBe(true);
+
+    wrapper.findComponent({ name: 'VSelect' }).vm.$emit('update:modelValue', 'Your Registered Apps');
     await nextTick();
     await flushPromises();
-    expect(wrapper.find('.no-apps-message').exists()).toBe(true);
+    expect(wrapper.findComponent(TimeToCodeButton).exists()).toBe(true);
   });
   it('emits show-create-app when CreateAppButton is clicked', async () => {
     const wrapper = mount(AppRolodex, {

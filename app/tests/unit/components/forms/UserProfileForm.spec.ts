@@ -874,7 +874,7 @@ describe('UserProfileForm.vue', () => {
       });
 
       it('should handle refresh with failed toast', async () => {
-        userStore.getUserAsync.mockResolvedValue(true);
+        userStore.getUserAsync.mockResolvedValue(false);
         mockCommonUtilities.displayFailedToastAsync.mockResolvedValue({
           failed: true,
           methodResult: {
