@@ -13,13 +13,12 @@
     <v-card-text>
       <v-container fluid>
         <div class="app-buttons-scroll">
-          <span
-            class="no-apps-message"
+          <div
             v-if="
               (selectedApps === 'Your Apps' ? getMyApps.length : getMyRegisteredApps.length) === 0
-            "
-            >Time to Get Coding!</span
-          >
+            ">
+            <TimeToCodeButton />
+          </div>
           <AppButton
             v-for="(app, index) in selectedApps === 'Your Apps' ? getMyApps : getMyRegisteredApps"
             :app="app"
@@ -43,6 +42,7 @@
   import { storeToRefs } from 'pinia';
   import AppButton from '@/components/buttons/AppButton.vue';
   import CreateAppButton from '@/components/buttons/CreateAppButton.vue';
+  import TimeToCodeButton from '@/components/buttons/TimeToCodeButton.vue';
   import { useAppStore } from '@/stores/appStore';
   import commonUtilities from '@/utilities/common';
 
