@@ -8,6 +8,7 @@
           <v-card-title class="justify-center text-center">
             <span class="headline">Site Administration</span>
           </v-card-title>
+          <summary-dashboard-widget />
         </v-container>
       </v-card-text>
     </v-card>
@@ -19,6 +20,7 @@
   import { onBeforeMount } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useUserStore } from '@/stores/userStore';
+  import SummaryDashboardWidget from '@/components/widgets/admin/SummaryDashboardWidget.vue';
   import { User } from '@/models/domain/user';
 
   const props = defineProps({

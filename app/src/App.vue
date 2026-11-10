@@ -116,7 +116,7 @@
   // @ts-ignore - CSS import without type declarations
   import 'vue3-toastify/dist/index.css';
   import { storeToRefs } from 'pinia';
-  import { useAdminStore } from '@/stores/adminStore'
+  import { useAdminStore } from '@/stores/adminStore';
   import { useConfirmEmailStore } from '@/stores/confirmEmailStore';
   import { useGlobalStore } from '@/stores/globalStore';
   import { useDialogStore } from '@/stores/dialogStore';
@@ -484,7 +484,7 @@
           // Initialize the stores
           if (getUserIsSuperUser) {
             adminStore.initializeStore();
-            await adminStore.getStatsAsync()
+            await adminStore.getStatsAsync();
           }
           await valueStore.initializeStoreAsync();
           sudokuStore.initializeStore();

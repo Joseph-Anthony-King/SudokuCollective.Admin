@@ -1,7 +1,7 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { Endpoints } from "./endpoints";
-import { useGlobalStore } from "@/stores/globalStore";
-import { useUserStore } from "@/stores/userStore";
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { Endpoints } from './endpoints';
+import { useGlobalStore } from '@/stores/globalStore';
+import { useUserStore } from '@/stores/userStore';
 
 export class AdminPort {
   static async getStatsAsync(
@@ -14,7 +14,7 @@ export class AdminPort {
 
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
-      
+
       const config = {
         method: 'post',
         url: `${Endpoints.adminEndpoint}`,

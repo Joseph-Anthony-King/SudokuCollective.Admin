@@ -1,12 +1,12 @@
-import { computed, ComputedRef, Ref, ref } from "vue";
-import { defineStore } from "pinia";
-import { AdminSummary } from "@/models/infrastructure/adminSummary";
-import { IAdminSummary } from "@/interfaces/infrastructure/iAdminSummary";
-import { IApp } from "@/interfaces/domain/iApp";
-import { IUser } from "@/interfaces/domain/iUser";
-import { AdminService } from "@/services/adminService";
-import { UsersService } from "@/services/usersService";
-import { AppsService } from "@/services/appsService";
+import { computed, ComputedRef, Ref, ref } from 'vue';
+import { defineStore } from 'pinia';
+import { AdminSummary } from '@/models/infrastructure/adminSummary';
+import { IAdminSummary } from '@/interfaces/infrastructure/iAdminSummary';
+import { IApp } from '@/interfaces/domain/iApp';
+import { IUser } from '@/interfaces/domain/iUser';
+import { AdminService } from '@/services/adminService';
+import { UsersService } from '@/services/usersService';
+import { AppsService } from '@/services/appsService';
 
 export const useAdminStore = defineStore('adminStore', () => {
   //#region State
@@ -16,21 +16,21 @@ export const useAdminStore = defineStore('adminStore', () => {
   //#endregion
 
   //#region Getters
-  const getAdminSummary: ComputedRef<IAdminSummary> = computed(() => adminSummary.value)
+  const getAdminSummary: ComputedRef<IAdminSummary> = computed(() => adminSummary.value);
   const getUsers: ComputedRef<IUser[]> = computed(() => users.value);
   const getApps: ComputedRef<IApp[]> = computed(() => apps.value);
   //#endregion
 
   //#region Mutations
   const updateAdminSummary = (data: IAdminSummary): void => {
-    adminSummary.value = data
+    adminSummary.value = data;
   };
   const updateUsers = (data: IUser[]): void => {
-    users.value = data
-  }
+    users.value = data;
+  };
   const updateApps = (data: IApp[]): void => {
     apps.value = data;
-  }
+  };
   //#endregion
 
   //#region Actions
@@ -59,14 +59,14 @@ export const useAdminStore = defineStore('adminStore', () => {
     }
     const appsResponse = await AppsService.getAppsAsync();
     if (appsResponse.isSuccess) {
-      apps.value = appsResponse.apps
+      apps.value = appsResponse.apps;
       result = true;
     } else {
       result = false;
       return result;
     }
     return result;
-  }
+  };
   //#endregion
 
   return {
@@ -81,5 +81,5 @@ export const useAdminStore = defineStore('adminStore', () => {
     updateApps,
     initializeStore,
     getStatsAsync,
-  }
+  };
 });

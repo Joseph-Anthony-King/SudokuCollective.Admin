@@ -1,16 +1,16 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { IServicePayload } from "@/interfaces/infrastructure/iServicePayload";
+import { AxiosError, AxiosResponse } from 'axios';
+import { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
 import { StaticServiceMethods } from '@/services/common';
-import { AdminPort } from "@/ports/adminPort";
-import { IAdminSummary } from "@/interfaces/infrastructure/iAdminSummary";
+import { AdminPort } from '@/ports/adminPort';
+import { IAdminSummary } from '@/interfaces/infrastructure/iAdminSummary';
 
 export class AdminService {
-  static getStatsAsync = async(): Promise<IServicePayload> => {
+  static getStatsAsync = async (): Promise<IServicePayload> => {
     const result: IServicePayload = {};
 
     try {
       const response = (await AdminPort.getStatsAsync()) as AxiosResponse;
-      
+
       if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
         throw response;
       }
@@ -38,5 +38,5 @@ export class AdminService {
     }
 
     return result;
-  }
+  };
 }

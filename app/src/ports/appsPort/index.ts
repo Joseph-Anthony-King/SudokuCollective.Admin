@@ -169,7 +169,6 @@ export class AppsPort {
         },
       };
       return await axios(config);
-
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('error: ', error);

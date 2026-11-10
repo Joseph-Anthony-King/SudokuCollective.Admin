@@ -217,7 +217,7 @@ export class UsersService {
       }
     }
 
-    return result
+    return result;
   }
 
   static async getConfirmEmailAsync(token: string): Promise<IServicePayload> {

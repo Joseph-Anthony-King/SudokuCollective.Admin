@@ -1,6 +1,6 @@
-import { Difficulty } from "@/models/domain/difficulty";
-import { Role } from "@/models/domain/role";
-import { DropdownItem } from "@/models/infrastructure/dropdownItem";
+import { Difficulty } from '@/models/domain/difficulty';
+import { Role } from '@/models/domain/role';
+import { DropdownItem } from '@/models/infrastructure/dropdownItem';
 
 export interface IAdminSummary {
   applicationsCount: number;
