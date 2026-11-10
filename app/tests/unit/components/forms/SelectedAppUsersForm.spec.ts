@@ -282,7 +282,7 @@ describe('SelectedAppUsersForm.vue', () => {
 
         expect(wrapper.vm.headers).toHaveLength(5);
         expect(wrapper.vm.headers[0]).toEqual({ title: 'Full Name', key: 'fullName', sortable: true });
-        expect(wrapper.vm.headers[1]).toEqual({ title: 'Email', key: 'email', sortable: true });
+        expect(wrapper.vm.headers[1]).toEqual({ title: 'Nickname', key: 'nickName', sortable: true });
         expect(wrapper.vm.headers[2]).toEqual({ title: 'Active', key: 'isActive', sortable: false });
         expect(wrapper.vm.headers[3]).toEqual({ title: 'Admin', key: 'isAdmin', sortable: false });
         expect(wrapper.vm.headers[4]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
@@ -294,9 +294,9 @@ describe('SelectedAppUsersForm.vue', () => {
         wrapper = createWrapper();
         await nextTick();
 
-        expect(wrapper.vm.headers).toHaveLength(6);
-        expect(wrapper.vm.headers[4]).toEqual({ title: 'Super User', key: 'isSuperUser', sortable: false });
-        expect(wrapper.vm.headers[5]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
+        expect(wrapper.vm.headers).toHaveLength(7);
+        expect(wrapper.vm.headers[5]).toEqual({ title: 'Super User', key: 'isSuperUser', sortable: false });
+        expect(wrapper.vm.headers[6]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
       });
     });
   });
@@ -576,7 +576,7 @@ describe('SelectedAppUsersForm.vue', () => {
       userStore.user.isSuperUser = true;
       await nextTick();
 
-      expect(wrapper.vm.headers).toHaveLength(6);
+      expect(wrapper.vm.headers).toHaveLength(7);
     });
   });
 
