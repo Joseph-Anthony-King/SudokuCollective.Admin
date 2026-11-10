@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
-import { setupServer, SetupServerApi } from 'msw/node';
+import { setupServer } from 'msw/node';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia, type TestingPinia } from '@pinia/testing';
-import type { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, type AxiosError as AxiosErrorType, type AxiosResponse } from 'axios';
 import { UsersPort } from '@/ports/usersPort/index';
 import { Endpoints } from '@/ports/usersPort/endpoints';
 import { useGlobalStore } from '@/stores/globalStore';
@@ -14,7 +14,7 @@ import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequest
 
 describe('the usersPort port', () => {
   let testingPinia: TestingPinia;
-  let testServer: SetupServerApi | null;
+  let testServer: ReturnType<typeof setupServer> | null;
   beforeEach(() => {
     testingPinia = createTestingPinia({
       createSpy: vi.fn(),
@@ -59,6 +59,100 @@ describe('the usersPort port', () => {
     expect(Endpoints.resendPasswordResetEndpoint).equals('https://localhost:5001/api/v1/users/resendpasswordreset');
     expect(Endpoints.cancelPasswordResetEndpoint).equals('https://localhost:5001/api/v1/users/cancelpasswordreset');
     expect(Endpoints.cancelAllEmailRequestsEndpoint).equals('https://localhost:5001/api/v1/users/cancelallemailrequests');
+  });
+  it('should get users by running the getUsersAsync method', async () => {
+    let requestBody: Record<string, unknown> | undefined;
+    testServer = setupServer(
+      http.post(Endpoints.usersEndpoint, async ({ request }) => {
+        requestBody = await request.json() as Record<string, unknown>;
+        return HttpResponse.json({
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Users were found.',
+          payload: [{ id: 1, userName: 'userName' }]
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const result = await UsersPort.getUsersAsync() as AxiosResponse;
+
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.isFromCache).toBe(false);
+    expect(result.data.message).equals('Status Code 200: Users were found.');
+    expect(result.data.payload).toEqual([{ id: 1, userName: 'userName' }]);
+    expect(requestBody).toEqual({
+      license: process.env.VITE_APP_LICENSE,
+      requestorId: 1,
+      appId: process.env.VITE_APP_ID,
+      paginator: {},
+      payload: {},
+    });
+  });
+  it('should log and return forced getUsersAsync errors in development', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const result = await UsersPort.getUsersAsync(true);
+
+      expect(result).toMatchObject({
+        message: 'testErrorHandling is true, testing error handling...'
+      });
+      expect(consoleError).toHaveBeenCalledOnce();
+      expect(consoleError).toHaveBeenCalledWith('error: ', result);
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
+  it('should return getUsersAsync AxiosErrors without development logging', async () => {
+    testServer = setupServer(
+      http.post(Endpoints.usersEndpoint, () => {
+        return HttpResponse.json({
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 400: Users could not be retrieved.',
+          payload: []
+        }, {
+          status: 400,
+          statusText: 'BAD REQUEST',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const result = await UsersPort.getUsersAsync();
+
+      expect(result).toBeInstanceOf(AxiosError);
+      expect((result as AxiosErrorType).response?.status).toBe(400);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
   });
   it('should get users by running the getUserAsync method', async () => {
     //Arrange
