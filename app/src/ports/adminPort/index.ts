@@ -7,7 +7,7 @@ export class AdminPort {
   static async getStatsAsync(
     testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {
-    try{
+    try {
       if (testErrorHandling) {
         throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
       }
