@@ -2,6 +2,7 @@
   <div class="gauge-rows">
     <v-row justify="center">
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -9,6 +10,7 @@
           :valueProp="adminSummary.applicationsCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -16,6 +18,7 @@
           :valueProp="adminSummary.usersCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -23,6 +26,7 @@
           :valueProp="adminSummary.gamesCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -32,6 +36,7 @@
     </v-row>
     <v-row justify="center">
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -39,6 +44,7 @@
           :valueProp="adminSummary.difficultiesCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -46,6 +52,7 @@
           :valueProp="adminSummary.rolesCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -53,6 +60,7 @@
           :valueProp="adminSummary.emailConfirmationsCount" />
       </v-col>
       <v-col
+        class="gauge-column"
         cols="6"
         lg="3">
         <gauge-widget
@@ -89,5 +97,12 @@
 
   .gauge-rows :deep(.gauge-widget) {
     margin-inline: auto;
+  }
+
+  @media (max-width: 579.98px) {
+    .gauge-rows :deep(.gauge-column) {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
   }
 </style>
