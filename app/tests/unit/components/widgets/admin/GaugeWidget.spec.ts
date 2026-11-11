@@ -1,9 +1,12 @@
+/// <reference types="vite/client" />
 import { mount } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { describe, expect, it, vi } from 'vitest';
 import GaugeWidget from '@/components/widgets/admin/GaugeWidget.vue';
+import gaugeSource from '@/components/widgets/admin/GaugeWidget.vue?raw';
+import { parse } from 'vue/compiler-sfc';
 
 const vuetify = createVuetify({
   components,
@@ -132,6 +135,51 @@ describe('GaugeWidget.vue', () => {
 
     expect(dot.attributes('aria-valuenow')).toBe('4');
     expect(wrapper.get('.v-card-title').text()).toBe('4 Users');
+  });
+
+  it('declares slider and card styles for screens at 440px and below', () => {
+    const wrapper = mountWidget();
+    const style = document.createElement('style');
+    style.textContent = parse(gaugeSource).descriptor.styles[0].content;
+    document.head.appendChild(style);
+
+    try {
+      const rules = Array.from(style.sheet!.cssRules);
+      const sliderRule = rules.find(
+        (rule): rule is CSSStyleRule =>
+          rule instanceof CSSStyleRule && rule.selectorText === '.gauge-slider',
+      );
+      const mobileRule = rules.find(
+        (rule): rule is CSSMediaRule =>
+          rule instanceof CSSMediaRule && rule.conditionText === 'only screen and (max-width: 440px)',
+      );
+      expect(sliderRule?.style.display).toBe('none');
+      expect(mobileRule).toBeDefined();
+
+      const mobileRules = Array.from(mobileRule!.cssRules);
+      const chartRule = mobileRules.find(
+        (rule): rule is CSSStyleRule =>
+          rule instanceof CSSStyleRule && rule.selectorText === '.gauge-chart',
+      );
+      const mobileSliderRule = mobileRules.find(
+        (rule): rule is CSSStyleRule =>
+          rule instanceof CSSStyleRule && rule.selectorText === '.gauge-slider',
+      );
+      const cardRule = mobileRules.find(
+        (rule): rule is CSSStyleRule =>
+          rule instanceof CSSStyleRule && rule.selectorText === '.gauge-widget',
+      );
+      expect(wrapper.find('.gauge-chart').exists()).toBe(true);
+      expect(wrapper.find('.gauge-slider').exists()).toBe(true);
+      expect(chartRule?.style.display).toBe('none');
+      expect(mobileSliderRule?.style.display).toBe('flex');
+      expect(cardRule?.style.getPropertyValue('aspect-ratio')).toBe('2 / 1');
+      expect(cardRule?.style.getPropertyValue('min-height')).toBe('0');
+      expect(cardRule?.style.getPropertyValue('max-height')).toBe('none');
+    } finally {
+      style.remove();
+      wrapper.unmount();
+    }
   });
 
   it('shows and hides the tooltip on hover and keyboard focus', async () => {
