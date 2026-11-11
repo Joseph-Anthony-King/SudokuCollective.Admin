@@ -116,7 +116,7 @@ export class AppsPort {
 
       const config = {
         method: 'delete',
-        url: `${Endpoints.deleteAppEndpoint.replace('{id}', appId.toString()).replace('{license}', license)}`,
+        url: `${Endpoints.deleteAppEndpoint.replace('{{id}}', appId.toString()).replace('{license}', license)}`,
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.getAppUsersEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.getAppUsersEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'post',
@@ -305,7 +305,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putAddUserEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putAddUserEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'put',
@@ -346,7 +346,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putRemoveUserEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putRemoveUserEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'put',
@@ -387,7 +387,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putActivateAdminPrivilegesEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putActivateAdminPrivilegesEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'put',
@@ -428,7 +428,10 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putDeactivateAdminPrivilegesEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putDeactivateAdminPrivilegesEndpoint.replace(
+        '{{id}}',
+        appId.toString(),
+      );
 
       const config = {
         method: 'put',
@@ -468,7 +471,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putActivateAppEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putActivateAppEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'put',
@@ -508,7 +511,7 @@ export class AppsPort {
       const globalStore = useGlobalStore();
       const userStore = useUserStore();
 
-      const url = Endpoints.putDeactivateAppEndpoint.replace('{id}', appId.toString());
+      const url = Endpoints.putDeactivateAppEndpoint.replace('{{id}}', appId.toString());
 
       const config = {
         method: 'put',

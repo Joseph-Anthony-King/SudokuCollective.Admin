@@ -74,7 +74,7 @@ export const useAdminStore = defineStore('adminStore', () => {
       if (response.isSuccess) {
         const app = response.app;
         if (app) {
-          const index = apps.value.findIndex(a => a.id === app.id);
+          const index = apps.value.findIndex((a) => a.id === app.id);
           if (index !== -1) {
             apps.value[index] = app;
           }
@@ -96,7 +96,7 @@ export const useAdminStore = defineStore('adminStore', () => {
       if (response.isSuccess) {
         const app = response.app;
         if (app) {
-          const index = apps.value.findIndex(a => a.id === app.id);
+          const index = apps.value.findIndex((a) => a.id === app.id);
           if (index !== -1) {
             apps.value[index] = app;
           }

@@ -55,13 +55,13 @@ describe('the appsPort port', () => {
     expect(Endpoints.appsEndpoint).equals('https://localhost:5001/api/v1/apps');
     expect(Endpoints.getMyAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyapps');
     expect(Endpoints.getMyRegisteredAppsEndpoint).equals('https://localhost:5001/api/v1/apps/getmyregisteredapps');
-    expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/getappusers/');
-    expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/adduser');
-    expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/removeuser');
-    expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activateadminprivileges');
-    expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivateadminprivileges');
-    expect(Endpoints.putActivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activate');
-    expect(Endpoints.putDeactivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivate');
+    expect(Endpoints.getAppUsersEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/getappusers/');
+    expect(Endpoints.putAddUserEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/adduser');
+    expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/removeuser');
+    expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/activateadminprivileges');
+    expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/deactivateadminprivileges');
+    expect(Endpoints.putActivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/activate');
+    expect(Endpoints.putDeactivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{{id}}/deactivate');
   });
   it('should get apps by running the getAppsAsync method', async () => {
     let requestBody: Record<string, unknown> | undefined;
@@ -1432,10 +1432,10 @@ describe('the appsPort port', () => {
     const appId = 1;
     const license = '7700a640-6816-477c-9085-95d2df94284b';
     const deleteUrl = Endpoints.deleteAppEndpoint
-      .replace('{id}', appId.toString())
+      .replace('{{id}}', appId.toString())
       .replace('{license}', license);
-    const activateUrl = Endpoints.putActivateAppEndpoint.replace('{id}', appId.toString());
-    const deactivateUrl = Endpoints.putDeactivateAppEndpoint.replace('{id}', appId.toString());
+    const activateUrl = Endpoints.putActivateAppEndpoint.replace('{{id}}', appId.toString());
+    const deactivateUrl = Endpoints.putDeactivateAppEndpoint.replace('{{id}}', appId.toString());
 
     testServer = setupServer(
       http.delete(deleteUrl, () => HttpResponse.json({ isSuccess: true, message: 'App deleted.' })),

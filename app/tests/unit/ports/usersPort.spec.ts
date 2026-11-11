@@ -45,6 +45,7 @@ describe('the usersPort port', () => {
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
     testServer?.close();
     testServer = null;
   });
@@ -554,44 +555,18 @@ describe('the usersPort port', () => {
       expect(result.message).equals('Status Code 404: User was not deleted.');
     }
   });
-  it('should catch any errors thrown when running the deleteUserAsync method', async () => {
-    try {
-      //Arrange
-      testServer = setupServer(
-        http.delete('https://localhost:5001/api/v1/users/1', () => {
-          return HttpResponse.json({
-            isSuccess: true,
-            isFromCache: false,
-            message: 'Status Code 200: User was deleted.',
-            payload: []
-          }, {
-            status: 200,
-            statusText: 'OK',
-            headers: {
-              'content-type': 'application/json'
-            }
-          })
-        })
-      );
-  
-      testServer.listen();
-  
-      const sut = UsersPort;
-  
-      const updateUserRequestData = new UpdateUserRequestData(
-        'userName',
-        'firstName',
-        'lastName',
-        'nickName',
-        'email@example.com'
-      );
-  
-      // Act
-      await sut.deleteUserAsync(1, true) as AxiosResponse;
-    } catch (error) {
-      // Assert
-      expect(error).not.toBeNull;
-    }
+  it('should log and return forced deleteUserAsync errors in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await UsersPort.deleteUserAsync(1, true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(result).toMatchObject({
+      message: 'testErrorHandling is true, testing error handling...'
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', result);
   });
   it('should confirm the validity of emails by email confirmation tokens to the API by running the getConfirmEmailAsync method', async () => {
     //Arrange
@@ -683,38 +658,18 @@ describe('the usersPort port', () => {
       expect(result.data.payload[0].confirmationEmailSuccessfullySent).toBe(false);
     }
   });
-  it('should catch any errors thrown when running the getConfirmEmailAsync method', async () => {
-    try {
-      //Arrange
-      testServer = setupServer(
-        http.get('https://localhost:5001/api/v1/users/confirmemail/14bbe47c-89ce-44a4-894a-6e12bcef7e9f', () => {
-          return HttpResponse.json({
-            isSuccess: true,
-            isFromCache: false,
-            message: 'Status Code 200: Email was confirmed.',
-            payload: []
-          }, {
-            status: 200,
-            statusText: 'OK',
-            headers: {
-              'content-type': 'application/json'
-            }
-          })
-        })
-      );
-  
-      testServer.listen();
+  it('should log and return forced getConfirmEmailAsync errors in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-      vi.stubEnv('NODE_ENV', 'development');
-  
-      const sut = UsersPort;
-  
-      // Act
-      const result = await sut.getConfirmEmailAsync('14bbe47c-89ce-44a4-894a-6e12bcef7e9f') as AxiosResponse;
-    } catch (error) {
-      // Assert
-      expect(error).not.toBeNull;
-    }
+    const result = await UsersPort.getConfirmEmailAsync('token', true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(result).toMatchObject({
+      message: 'testErrorHandling is true, testing error handling...'
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', result);
   });
   it('should cancel email confirmation requests for the signed in user by running the putCancelEmailConfirmationRequestAsync method', async () => {
     //Arrange
@@ -1459,5 +1414,117 @@ describe('the usersPort port', () => {
       // Assert
       expect(error).not.toBeNull;
     }
+  });
+  it('should activate a user by running the putActiveUserAsync method', async () => {
+    let requestBody: Record<string, unknown> | undefined;
+    testServer = setupServer(
+      http.put(Endpoints.putActiveUserEndpoint.replace('{{id}}', '2'), async ({ request }) => {
+        requestBody = await request.json() as Record<string, unknown>;
+        return HttpResponse.json({
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: User was activated.',
+          payload: []
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const result = await UsersPort.putActiveUserAsync(2) as AxiosResponse;
+
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.message).equals('Status Code 200: User was activated.');
+    expect(requestBody).toEqual({
+      license: process.env.VITE_APP_LICENSE,
+      requestorId: 1,
+      appId: process.env.VITE_APP_ID,
+      paginator: {},
+      payload: {},
+    });
+  });
+  it('should log and return forced putActiveUserAsync errors in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await UsersPort.putActiveUserAsync(2, true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(result).toMatchObject({
+      message: 'testErrorHandling is true, testing error handling...'
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', result);
+  });
+  it('should return forced putActiveUserAsync errors without development logging', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await UsersPort.putActiveUserAsync(2, true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(consoleError).not.toHaveBeenCalled();
+  });
+  it('should deactivate a user by running the putDeactivateUserAsync method', async () => {
+    let requestBody: Record<string, unknown> | undefined;
+    testServer = setupServer(
+      http.put(Endpoints.putDeactivateUserEndpoint.replace('{{id}}', '2'), async ({ request }) => {
+        requestBody = await request.json() as Record<string, unknown>;
+        return HttpResponse.json({
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: User was deactivated.',
+          payload: []
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const result = await UsersPort.putDeactivateUserAsync(2) as AxiosResponse;
+
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.message).equals('Status Code 200: User was deactivated.');
+    expect(requestBody).toEqual({
+      license: process.env.VITE_APP_LICENSE,
+      requestorId: 1,
+      appId: process.env.VITE_APP_ID,
+      paginator: {},
+      payload: {},
+    });
+  });
+  it('should log and return forced putDeactivateUserAsync errors in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await UsersPort.putDeactivateUserAsync(2, true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(result).toMatchObject({
+      message: 'testErrorHandling is true, testing error handling...'
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', result);
+  });
+  it('should return forced putDeactivateUserAsync errors without development logging', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await UsersPort.putDeactivateUserAsync(2, true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

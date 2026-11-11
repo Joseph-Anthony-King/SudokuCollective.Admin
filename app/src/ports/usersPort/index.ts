@@ -392,4 +392,80 @@ export class UsersPort {
       return error as AxiosError;
     }
   }
+
+  static async putActiveUserAsync(
+    id: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
+      const globalStore = useGlobalStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: 'put',
+        url: `${Endpoints.putActiveUserEndpoint.replace('{{id}}', id.toString())}`,
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
+        },
+        data: {
+          license: process.env.VITE_APP_LICENSE,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
+          paginator: {},
+          payload: {},
+        },
+      };
+      return await axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
+
+  static async putDeactivateUserAsync(
+    id: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<AxiosResponse | AxiosError> {
+    try {
+      if (testErrorHandling) {
+        throw new Error(`testErrorHandling is ${testErrorHandling}, testing error handling...`);
+      }
+
+      const globalStore = useGlobalStore();
+      const userStore = useUserStore();
+
+      const config = {
+        method: 'put',
+        url: `${Endpoints.putDeactivateUserEndpoint.replace('{{id}}', id.toString())}`,
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${globalStore.getToken}`,
+        },
+        data: {
+          license: process.env.VITE_APP_LICENSE,
+          requestorId: userStore.getUser.id as number,
+          appId: process.env.VITE_APP_ID as unknown as number,
+          paginator: {},
+          payload: {},
+        },
+      };
+      return await axios(config);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return error as AxiosError;
+    }
+  }
 }
