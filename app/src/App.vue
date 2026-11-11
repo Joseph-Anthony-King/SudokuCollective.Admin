@@ -485,7 +485,7 @@
           await valueStore.initializeStoreAsync();
           sudokuStore.initializeStore();
           serviceFailStore.initializeStore();
-          
+
           if (getUserIsSuperUser) {
             adminStore.initializeStore();
             await adminStore.getStatsAsync();

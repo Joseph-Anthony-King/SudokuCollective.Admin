@@ -106,4 +106,19 @@ describe('SiteAdministrationSummaryWidget.vue', () => {
       cell.text(),
     )).toEqual(['1', '8', '4', '7', '2', '6', '3', '5']);
   });
+
+  it('updates the table when the admin summary is replaced after mounting', async () => {
+    const adminStore = useAdminStore();
+    adminStore.updateAdminSummary(new AdminSummary());
+
+    const wrapper = mountWidget();
+    expect(wrapper.get('[data-testid="summary-table"] tbody tr').text()).toBe('00000000');
+
+    adminStore.updateAdminSummary(new AdminSummary(10, 20, 30, 40, 50, 60, 70, 80));
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-testid="summary-table"] tbody tr').findAll('td').map((cell) =>
+      cell.text(),
+    )).toEqual(['10', '80', '40', '70', '20', '60', '30', '50']);
+  });
 });

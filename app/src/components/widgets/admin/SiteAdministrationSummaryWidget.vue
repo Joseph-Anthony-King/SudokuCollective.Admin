@@ -18,12 +18,13 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useAdminStore } from '@/stores/adminStore';
 
   const adminStore = useAdminStore();
   const { getAdminSummary } = storeToRefs(adminStore);
-  const summaries = [getAdminSummary.value];
+  const summaries = computed(() => [getAdminSummary.value]);
   const headers: Array<{ title: string; key: string; sortable?: boolean }> = [
     { title: 'Apps', key: 'applicationsCount', sortable: false },
     { title: 'Users', key: 'usersCount', sortable: false },
