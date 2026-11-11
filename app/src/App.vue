@@ -491,7 +491,7 @@
 
       //#region Lifecycle Hooks
       onMounted(async () => {
-        updateAppProcessingAsync(async () => {
+        await updateAppProcessingAsync(async () => {
           // Initialize the stores
           await valueStore.initializeStoreAsync();
           sudokuStore.initializeStore();
