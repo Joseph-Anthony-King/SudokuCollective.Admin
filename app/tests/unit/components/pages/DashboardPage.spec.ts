@@ -22,7 +22,7 @@ vi.mock('@/utilities/common', () => ({
 
 const AppRolodexStub = defineComponent({
   name: 'AppRolodex',
-  emits: ['show-create-app'],
+  emits: ['show-create-app', 'close-app-view'],
   setup(_, { emit }) {
     return () =>
       h(
@@ -173,6 +173,21 @@ describe('DashboardPage.vue', () => {
     expect(wrapper.findAllComponents(SelectedAppUsersFormStub)[1].props('displayRegistered')).toBe(
       false,
     );
+  });
+
+  it('clears the selection and closes app details when the rolodex emits close-app-view', async () => {
+    appStore.selectedApp = new App();
+    const setSelectedApp = vi.spyOn(appStore, 'setSelectedAppAsync');
+    const wrapper = mountPage();
+
+    expect(wrapper.find('#app-details').exists()).toBe(true);
+    wrapper.getComponent(AppRolodexStub).vm.$emit('close-app-view');
+    await flushPromises();
+
+    expect(setSelectedApp).toHaveBeenCalledOnce();
+    expect(setSelectedApp).toHaveBeenCalledWith();
+    expect(appStore.selectedApp).toBeNull();
+    expect(wrapper.find('#app-details').exists()).toBe(false);
   });
 
   it('processes successful app creation and shows the success toast', async () => {

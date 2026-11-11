@@ -7,7 +7,8 @@
           color="primary"
           label="Select"
           :items="items"
-          v-model="selectedApps"></v-select>
+          v-model="selectedApps"
+          @update:model-value="onAppSelected"></v-select>
       </v-col>
     </v-card-title>
     <v-card-text>
@@ -48,9 +49,13 @@
   import commonUtilities from '@/utilities/common';
 
   // Handler for create app button click
-  const emit = defineEmits(['show-create-app']);
+  const emit = defineEmits(['show-create-app', 'close-app-view']);
   const onCreateAppClicked = () => {
     emit('show-create-app');
+  };
+
+  const onAppSelected = () => {
+    emit('close-app-view');
   };
 
   const items: Ref<string[]> = ref(['Your Apps', 'Your Registered Apps']);

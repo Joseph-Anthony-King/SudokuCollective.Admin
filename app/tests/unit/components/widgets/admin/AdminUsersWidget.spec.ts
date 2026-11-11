@@ -38,6 +38,7 @@ const DataTableStub = defineComponent({
         { 'data-testid': 'data-table' },
         props.items.flatMap((item, index) => [
           h('div', { key: `row-${index}`, 'data-testid': `row-${index}` }, [
+            slots['item.isActive']?.({ item }),
             slots['item.dateCreated']?.({ item }),
             slots['item.actions']?.({ item }),
           ]),
@@ -122,6 +123,8 @@ describe('AdminUsersWidget.vue', () => {
 
     expect(wrapper.find('.headline').text()).toBe('Site Users');
     expect(wrapper.findAll('[data-testid^="row-"]')).toHaveLength(2);
+    expect(wrapper.get('[data-testid="row-0"]').get('.v-chip').text()).toBe('Active');
+    expect(wrapper.get('[data-testid="row-1"]').get('.v-chip').text()).toBe('Inactive');
     expect(wrapper.text()).toContain('formatted date');
     expect(wrapper.find('[title="Deactivate User"]').exists()).toBe(true);
     expect(wrapper.find('[title="Activate User"]').exists()).toBe(true);
