@@ -7,7 +7,7 @@
       :items="siteApps"
       :headers="headers"
       class="elevation-1"
-      striped="even"
+      striped="odd"
       :items-per-page="10"
       show-expand>
       <template v-slot:[isActiveSlot]="{ item }">
