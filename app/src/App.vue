@@ -482,13 +482,14 @@
       onMounted(async () => {
         updateAppProcessingAsync(async () => {
           // Initialize the stores
+          await valueStore.initializeStoreAsync();
+          sudokuStore.initializeStore();
+          serviceFailStore.initializeStore();
+          
           if (getUserIsSuperUser) {
             adminStore.initializeStore();
             await adminStore.getStatsAsync();
           }
-          await valueStore.initializeStoreAsync();
-          sudokuStore.initializeStore();
-          serviceFailStore.initializeStore();
 
           // Especially for mobile, if the user rejected a 30 day sign in clear the stores
           clearStoresIfUserIsNotLoggedIn();
