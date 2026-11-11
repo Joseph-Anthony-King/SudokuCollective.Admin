@@ -181,12 +181,16 @@ describe('DashboardPage.vue', () => {
     const wrapper = mountPage();
 
     expect(wrapper.find('#app-details').exists()).toBe(true);
+    await wrapper.get('[data-testid="show-create-app"]').trigger('click');
+    expect(wrapper.find('#app-create').exists()).toBe(true);
+
     wrapper.getComponent(AppRolodexStub).vm.$emit('close-app-view');
     await flushPromises();
 
     expect(setSelectedApp).toHaveBeenCalledOnce();
     expect(setSelectedApp).toHaveBeenCalledWith();
     expect(appStore.selectedApp).toBeNull();
+    expect(wrapper.find('#app-create').exists()).toBe(false);
     expect(wrapper.find('#app-details').exists()).toBe(false);
   });
 
