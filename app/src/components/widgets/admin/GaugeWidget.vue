@@ -142,7 +142,7 @@
       cursor: pointer;
     }
   }
-  @media only screen and (max-width: 375px) {
+  @media only screen and (max-width: 440px) {
     .gauge-chart {
       display: none;
     }
