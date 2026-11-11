@@ -10,14 +10,6 @@
       striped="odd"
       :items-per-page="10"
       show-expand>
-      <template v-slot:[isActiveSlot]="{ item }">
-        <v-chip
-          :color="item.isActive ? 'green' : 'red'"
-          text-color="white"
-          small>
-          {{ item.isActive ? 'Active' : 'Inactive' }}
-        </v-chip>
-      </template>
       <template v-slot:[environmentSlot]="{ item }">
         <span>{{ getEnvironmentUrl(item) || 'N/A' }}</span>
         <v-btn
@@ -30,6 +22,14 @@
           variant="text"
           :aria-label="`Open ${item.name ?? 'app'} URL in a new tab`"
           title="Open URL in a new tab" />
+      </template>
+      <template v-slot:[isActiveSlot]="{ item }">
+        <v-chip
+          :color="item.isActive ? 'green' : 'red'"
+          text-color="white"
+          small>
+          {{ item.isActive ? 'Active' : 'Inactive' }}
+        </v-chip>
       </template>
       <template v-slot:[dateCreatedSlot]="{ item }">
         {{ formatDateCreated(item.dateCreated) }}
@@ -160,8 +160,8 @@
 
     baseHeaders = [
       { title: 'Name', key: 'name', sortable: true },
-      { title: 'Is Active', key: 'isActive', sortable: false },
       { title: 'Url', key: 'environment', sortable: true },
+      { title: 'Is Active', key: 'isActive', sortable: false },
       { title: 'Owner', key: 'ownerId', sortable: true },
       { title: 'Users', key: 'userCount', sortable: true },
       { title: 'Date Created', key: 'dateCreated', sortable: true },
