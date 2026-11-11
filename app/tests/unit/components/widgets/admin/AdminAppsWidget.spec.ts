@@ -178,4 +178,29 @@ describe('AdminAppsWidget.vue', () => {
     expect(wrapper.findAll('[data-testid^="row-"]')).toHaveLength(0);
     expect(wrapper.findAll('tr')).toHaveLength(0);
   });
+
+  it('calls the correct store action when each app button is clicked', async () => {
+    const wrapper = mountWidget([
+      makeApp({ id: 12, isActive: true }),
+      makeApp({ id: 34, isActive: false }),
+    ]);
+    const adminStore = useAdminStore();
+    const activate = vi.spyOn(adminStore, 'putActivateAppAsync').mockResolvedValue(true);
+    const deactivate = vi.spyOn(adminStore, 'putDeactivateAppAsync').mockResolvedValue(true);
+    const activeRow = wrapper.get('[data-testid="row-0"]');
+    const inactiveRow = wrapper.get('[data-testid="row-1"]');
+
+    expect(activeRow.find('[title="Activate App"]').exists()).toBe(false);
+    expect(inactiveRow.find('[title="Deactivate App"]').exists()).toBe(false);
+
+    await activeRow.get('[title="Deactivate App"]').trigger('click');
+    expect(deactivate).toHaveBeenCalledOnce();
+    expect(deactivate).toHaveBeenCalledWith(12);
+    expect(activate).not.toHaveBeenCalled();
+
+    await inactiveRow.get('[title="Activate App"]').trigger('click');
+    expect(activate).toHaveBeenCalledOnce();
+    expect(activate).toHaveBeenCalledWith(34);
+    expect(deactivate).toHaveBeenCalledOnce();
+  });
 });

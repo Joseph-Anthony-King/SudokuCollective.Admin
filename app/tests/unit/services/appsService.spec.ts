@@ -204,7 +204,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -632,7 +632,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -917,7 +917,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1097,7 +1097,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1248,7 +1248,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1438,7 +1438,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1521,7 +1521,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1621,7 +1621,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1754,7 +1754,7 @@ describe('the appsService service', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = AppsService;
 
@@ -1797,5 +1797,161 @@ describe('the appsService service', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
+  });
+  it('should activate an app', async () => {
+    const app = { id: 1, name: 'test-app', isActive: true };
+    AppsPort.putActivateAppAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: App was activated.',
+        payload: [app],
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.putActivateAppAsync(1);
+
+    expect(AppsPort.putActivateAppAsync).toHaveBeenCalledWith(1);
+    expect(result).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: App was activated.',
+      app,
+    });
+  });
+  it('should process AxiosErrors when activating an app', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: App was not activated.',
+      },
+    };
+    const error = { response } as AxiosError;
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    AppsPort.putActivateAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.putActivateAppAsync(1);
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Status Code 404: App was not activated.',
+    });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should return plain errors when activating an app', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const error = new Error('Network error.');
+    AppsPort.putActivateAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.putActivateAppAsync(1);
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+  it('should deactivate an app', async () => {
+    const app = { id: 1, name: 'test-app', isActive: false };
+    AppsPort.putDeactivateAppAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: App was deactivated.',
+        payload: [app],
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.putDeactivateAppAsync(1);
+
+    expect(AppsPort.putDeactivateAppAsync).toHaveBeenCalledWith(1);
+    expect(result).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: App was deactivated.',
+      app,
+    });
+  });
+  it('should process AxiosErrors when deactivating an app', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: App was not deactivated.',
+      },
+    };
+    const error = { response } as AxiosError;
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    AppsPort.putDeactivateAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.putDeactivateAppAsync(1);
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Status Code 404: App was not deactivated.',
+    });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should return plain errors when deactivating an app', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const error = new Error('Network error.');
+    AppsPort.putDeactivateAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.putDeactivateAppAsync(1);
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+  it('should delete an app', async () => {
+    AppsPort.deleteAppAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: App was deleted.',
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.deleteAppAsync(1, 'license');
+
+    expect(AppsPort.deleteAppAsync).toHaveBeenCalledWith(1, 'license');
+    expect(result).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: App was deleted.',
+    });
+  });
+  it('should process AxiosErrors when deleting an app', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: App was not deleted.',
+      },
+    };
+    const error = { response } as AxiosError;
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    AppsPort.deleteAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.deleteAppAsync(1, 'license');
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Status Code 404: App was not deleted.',
+    });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should return plain errors when deleting an app', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const error = new Error('Network error.');
+    AppsPort.deleteAppAsync = vi.fn().mockResolvedValue(error);
+
+    const result = await AppsService.deleteAppAsync(1, 'license');
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
   });
 });

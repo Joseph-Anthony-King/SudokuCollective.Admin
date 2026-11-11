@@ -1,5 +1,8 @@
 <template>
   <v-card>
+    <v-card-title class="justify-center text-center">
+      <span class="headline">Site Dropdowns</span>
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col

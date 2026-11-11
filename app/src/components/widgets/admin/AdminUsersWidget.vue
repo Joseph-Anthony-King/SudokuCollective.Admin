@@ -18,7 +18,8 @@
           icon
           small
           color="error"
-          title="Deactivate User">
+          title="Deactivate User"
+          @click="deactivateUserAsync(item.id!)">
           <v-icon>mdi-account-remove</v-icon>
         </v-btn>
         <v-btn
@@ -26,7 +27,8 @@
           icon
           small
           color="success"
-          title="Activate User">
+          title="Activate User"
+          @click="activateUserAsync(item.id!)">
           <v-icon>mdi-account-plus</v-icon>
         </v-btn>
       </template>
@@ -113,4 +115,12 @@
 
     return baseHeaders;
   });
+
+  const activateUserAsync = async (userId: number) => {
+    await adminStore.putActivateUserAsync(userId);
+  };
+
+  const deactivateUserAsync = async (userId: number) => {
+    await adminStore.putDeactivateUserAsync(userId);
+  };
 </script>
