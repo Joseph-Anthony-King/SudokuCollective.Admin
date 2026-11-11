@@ -280,12 +280,14 @@ describe('SelectedAppUsersForm.vue', () => {
         wrapper = createWrapper();
         await nextTick();
 
-        expect(wrapper.vm.headers).toHaveLength(5);
-        expect(wrapper.vm.headers[0]).toEqual({ title: 'Full Name', key: 'fullName', sortable: true });
-        expect(wrapper.vm.headers[1]).toEqual({ title: 'Nickname', key: 'nickName', sortable: true });
-        expect(wrapper.vm.headers[2]).toEqual({ title: 'Active', key: 'isActive', sortable: false });
-        expect(wrapper.vm.headers[3]).toEqual({ title: 'Admin', key: 'isAdmin', sortable: false });
-        expect(wrapper.vm.headers[4]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
+        expect(wrapper.vm.headers).toEqual([
+          { title: 'Full Name', key: 'fullName', sortable: true },
+          { title: 'Nickname', key: 'nickName', sortable: true },
+          { title: 'Active', key: 'isActive', sortable: false },
+          { title: 'Admin', key: 'isAdmin', sortable: false },
+          { title: 'Date Created', key: 'dateCreated', sortable: false },
+          { title: 'Actions', key: 'actions', sortable: false },
+        ]);
       });
 
       it('should include super user header when user is super user', async () => {
@@ -294,9 +296,17 @@ describe('SelectedAppUsersForm.vue', () => {
         wrapper = createWrapper();
         await nextTick();
 
-        expect(wrapper.vm.headers).toHaveLength(7);
-        expect(wrapper.vm.headers[5]).toEqual({ title: 'Super User', key: 'isSuperUser', sortable: false });
-        expect(wrapper.vm.headers[6]).toEqual({ title: 'Actions', key: 'actions', sortable: false });
+        expect(wrapper.vm.headers).toEqual([
+          { title: 'Full Name', key: 'fullName', sortable: true },
+          { title: 'Nickname', key: 'nickName', sortable: true },
+          { title: 'Email', key: 'email', sortable: true },
+          { title: 'Email Confirmed', key: 'isEmailConfirmed', sortable: false },
+          { title: 'Active', key: 'isActive', sortable: false },
+          { title: 'Admin', key: 'isAdmin', sortable: false },
+          { title: 'Super User', key: 'isSuperUser', sortable: false },
+          { title: 'Date Created', key: 'dateCreated', sortable: false },
+          { title: 'Actions', key: 'actions', sortable: false },
+        ]);
       });
     });
   });
@@ -571,12 +581,12 @@ describe('SelectedAppUsersForm.vue', () => {
       wrapper = createWrapper();
       await nextTick();
 
-      expect(wrapper.vm.headers).toHaveLength(5);
+      expect(wrapper.vm.headers).toHaveLength(6);
 
       userStore.user.isSuperUser = true;
       await nextTick();
 
-      expect(wrapper.vm.headers).toHaveLength(7);
+      expect(wrapper.vm.headers).toHaveLength(9);
     });
   });
 
@@ -872,6 +882,7 @@ describe('SelectedAppUsersForm.vue', () => {
         userName: 'expandeduser',
         firstName: 'Expanded',
         lastName: 'User',
+        fullName: 'Expanded User',
         nickName: 'Expander',
         isEmailConfirmed: true,
         dateCreated: new Date('2023-06-15')
@@ -894,17 +905,13 @@ describe('SelectedAppUsersForm.vue', () => {
         return icon.exists();
       });
 
-      if (expandBtn) {
-        await expandBtn.trigger('click');
-        await nextTick();
-        await nextTick();
-        
-        // After expanding, the expanded content should be rendered
-        const expandedContent = wrapper.find('.v-card-text');
-        if (expandedContent.exists()) {
-          expect(expandedContent.text()).toContain('expandeduser');
-        }
-      }
+      expect(expandBtn).toBeDefined();
+      await expandBtn.trigger('click');
+      await nextTick();
+
+      const expandedContent = wrapper.get('.v-card-text');
+      expect(expandedContent.text()).toContain('Full Name: Expanded User');
+      expect(expandedContent.text()).toContain('Nickname: Expander');
       
       // Verify the data is correct regardless of DOM rendering
       expect(wrapper.vm.users[0].userName).toBe('expandeduser');

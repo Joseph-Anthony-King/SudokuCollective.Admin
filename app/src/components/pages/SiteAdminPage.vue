@@ -20,8 +20,9 @@
 
 <script setup lang="ts">
   /* eslint-disable no-undef */
-  import { onBeforeMount } from 'vue';
+  import { onBeforeMount, onMounted } from 'vue';
   import { storeToRefs } from 'pinia';
+  import { useAdminStore } from '@/stores/adminStore';
   import { useUserStore } from '@/stores/userStore';
   import AdminSummaryWidget from '@/components/widgets/admin/AdminSummaryWidget.vue';
   import AdminUsersWidget from '@/components/widgets/admin/AdminUsersWidget.vue';
@@ -39,7 +40,8 @@
   );
 
   const userStore = useUserStore();
-  const { getUser } = storeToRefs(userStore);
+  const adminStore = useAdminStore();
+  const { getUser, getUserIsSuperUser } = storeToRefs(userStore);
   const { updateUser } = userStore;
 
   onBeforeMount(() => {
@@ -47,6 +49,15 @@
     if (props.action.toLowerCase() === 'login') {
       user.isLoggingIn = true;
       updateUser(user);
+    }
+  });
+
+  onMounted(() => {
+    if (getUserIsSuperUser.value) {
+      // Set interval to periodically fetch admin stats every 30 seconds
+      setInterval(async () => {
+        await adminStore.getStatsAsync();
+      }, 30000);
     }
   });
 </script>

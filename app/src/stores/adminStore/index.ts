@@ -67,6 +67,88 @@ export const useAdminStore = defineStore('adminStore', () => {
     }
     return result;
   };
+  const putActivateAppAsync = async (appId: number): Promise<boolean> => {
+    try {
+      const response = await AppsService.putActivateAppAsync(appId);
+
+      if (response.isSuccess) {
+        const app = response.app;
+        if (app) {
+          const index = apps.value.findIndex((a) => a.id === app.id);
+          if (index !== -1) {
+            apps.value[index] = app;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateAppAsync = async (appId: number): Promise<boolean> => {
+    try {
+      const response = await AppsService.putDeactivateAppAsync(appId);
+
+      if (response.isSuccess) {
+        const app = response.app;
+        if (app) {
+          const index = apps.value.findIndex((a) => a.id === app.id);
+          if (index !== -1) {
+            apps.value[index] = app;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putActivateUserAsync = async (userId: number): Promise<boolean> => {
+    try {
+      const response = await UsersService.putActivateUserAsync(userId);
+
+      if (response.isSuccess) {
+        const user = users.value.find((u) => u.id === userId);
+        if (user) {
+          user.isActive = true;
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateUserAsync = async (userId: number): Promise<boolean> => {
+    try {
+      const response = await UsersService.putDeactivateUserAsync(userId);
+
+      if (response.isSuccess) {
+        const user = users.value.find((u) => u.id === userId);
+        if (user) {
+          user.isActive = false;
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -81,5 +163,9 @@ export const useAdminStore = defineStore('adminStore', () => {
     updateApps,
     initializeStore,
     getStatsAsync,
+    putActivateAppAsync,
+    putDeactivateAppAsync,
+    putActivateUserAsync,
+    putDeactivateUserAsync,
   };
 });

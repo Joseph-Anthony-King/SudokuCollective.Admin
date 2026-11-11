@@ -629,4 +629,104 @@ export class UsersService {
 
     return result;
   }
+
+  static async putActivateUserAsync(
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await UsersPort.putActivateUserAsync(
+        userId,
+        testErrorHandling,
+      )) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+        result.user = new User(
+          response.data.payload[0].id,
+          response.data.payload[0].userName,
+          response.data.payload[0].firstName,
+          response.data.payload[0].lastName,
+          response.data.payload[0].nickName,
+          response.data.payload[0].fullName,
+          response.data.payload[0].email,
+          response.data.payload[0].isEmailConfirmed,
+          response.data.payload[0].receivedRequestToUpdateEmail,
+          response.data.payload[0].receivedRequestToUpdatePassword,
+          response.data.payload[0].isActive,
+          response.data.payload[0].isSuperUser,
+          response.data.payload[0].isAdmin,
+          response.data.payload[0].dateCreated,
+          response.data.payload[0].dateUpdated,
+          true,
+        );
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  }
+
+  static async putDeactivateUserAsync(
+    userId: number,
+    testErrorHandling: boolean | null = null,
+  ): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await UsersPort.putDeactivateUserAsync(
+        userId,
+        testErrorHandling,
+      )) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (response.data.isSuccess) {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+      } else {
+        result.isSuccess = response.data.isSuccess;
+        result.message = response.data.message;
+        StaticServiceMethods.processFailedResponse(response);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  }
 }

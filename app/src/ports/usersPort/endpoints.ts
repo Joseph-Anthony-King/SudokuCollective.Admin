@@ -7,4 +7,6 @@ export class Endpoints {
   static resendPasswordResetEndpoint = `${process.env.VITE_APP_API_URL}api/v1/users/resendpasswordreset`;
   static cancelPasswordResetEndpoint = `${process.env.VITE_APP_API_URL}api/v1/users/cancelpasswordreset`;
   static cancelAllEmailRequestsEndpoint = `${process.env.VITE_APP_API_URL}api/v1/users/cancelallemailrequests`;
+  static putActiveUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/users/{{id}}/activate`;
+  static putDeactivateUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/users/{{id}}/deactivate`;
 }

@@ -1,12 +1,14 @@
 import { defineComponent, h, type PropType } from 'vue';
-import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { AxiosResponse } from 'axios';
 import { createPinia, setActivePinia } from 'pinia';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import AdminUsersWidget from '@/components/widgets/admin/AdminUsersWidget.vue';
 import type { IUser } from '@/interfaces/domain/iUser';
+import { UsersPort } from '@/ports/usersPort';
 import { useAdminStore } from '@/stores/adminStore';
 
 const { formatDateCreated } = vi.hoisted(() => ({
@@ -84,6 +86,10 @@ describe('AdminUsersWidget.vue', () => {
     formatDateCreated.mockClear();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   const mountWidget = (users: IUser[]) => {
     useAdminStore().updateUsers(users);
 
@@ -143,5 +149,75 @@ describe('AdminUsersWidget.vue', () => {
     expect(wrapper.find('[data-testid="data-table"]').exists()).toBe(true);
     expect(wrapper.findAll('[data-testid^="row-"]')).toHaveLength(0);
     expect(wrapper.findAll('tr')).toHaveLength(0);
+  });
+
+  it('calls the correct store action when each user button is clicked', async () => {
+    const wrapper = mountWidget([
+      makeUser({ id: 12, isActive: true }),
+      makeUser({ id: 34, isActive: false }),
+    ]);
+    const adminStore = useAdminStore();
+    const activate = vi.spyOn(adminStore, 'putActivateUserAsync').mockResolvedValue(true);
+    const deactivate = vi.spyOn(adminStore, 'putDeactivateUserAsync').mockResolvedValue(true);
+    const activeRow = wrapper.get('[data-testid="row-0"]');
+    const inactiveRow = wrapper.get('[data-testid="row-1"]');
+
+    expect(activeRow.find('[title="Activate User"]').exists()).toBe(false);
+    expect(inactiveRow.find('[title="Deactivate User"]').exists()).toBe(false);
+
+    await activeRow.get('[title="Deactivate User"]').trigger('click');
+    expect(deactivate).toHaveBeenCalledOnce();
+    expect(deactivate).toHaveBeenCalledWith(12);
+    expect(activate).not.toHaveBeenCalled();
+
+    await inactiveRow.get('[title="Activate User"]').trigger('click');
+    expect(activate).toHaveBeenCalledOnce();
+    expect(activate).toHaveBeenCalledWith(34);
+    expect(deactivate).toHaveBeenCalledOnce();
+  });
+
+  it('updates the real table after successful actions and leaves it unchanged on failure', async () => {
+    const activeUser = makeUser({ id: 12, isActive: true });
+    const otherUser = makeUser({ id: 34, isActive: true });
+    const store = useAdminStore();
+    store.updateUsers([activeUser, otherUser]);
+    const deactivate = vi.spyOn(UsersPort, 'putDeactivateUserAsync').mockResolvedValue({
+      data: { isSuccess: true, message: 'User deactivated.', payload: [] },
+    } as AxiosResponse);
+    const activate = vi.spyOn(UsersPort, 'putActivateUserAsync')
+      .mockResolvedValueOnce({
+        status: 400,
+        data: { isSuccess: false, message: 'Activation failed.', payload: [] },
+      } as AxiosResponse)
+      .mockResolvedValueOnce({
+        data: {
+          isSuccess: true,
+          message: 'User activated.',
+          payload: [{ ...activeUser, isActive: false }],
+        },
+      } as AxiosResponse);
+    const wrapper = mount(AdminUsersWidget, {
+      global: { plugins: [pinia, vuetify], stubs: { VDataTableFooter: true } },
+    });
+
+    expect(wrapper.findAll('[title="Deactivate User"]')).toHaveLength(2);
+    await wrapper.findAll('[title="Deactivate User"]')[0].trigger('click');
+    await flushPromises();
+    expect(deactivate).toHaveBeenCalledWith(12, null);
+    expect(store.users.map((user) => user.isActive)).toEqual([false, true]);
+    expect(wrapper.findAll('[title="Activate User"]')).toHaveLength(1);
+    expect(wrapper.findAll('[title="Deactivate User"]')).toHaveLength(1);
+
+    await wrapper.get('[title="Activate User"]').trigger('click');
+    await flushPromises();
+    expect(store.users[0].isActive).toBe(false);
+    expect(wrapper.findAll('[title="Activate User"]')).toHaveLength(1);
+
+    await wrapper.get('[title="Activate User"]').trigger('click');
+    await flushPromises();
+    expect(activate).toHaveBeenCalledWith(12, null);
+    expect(store.users.map((user) => user.isActive)).toEqual([true, true]);
+    expect(wrapper.findAll('[title="Activate User"]')).toHaveLength(0);
+    expect(wrapper.findAll('[title="Deactivate User"]')).toHaveLength(2);
   });
 });

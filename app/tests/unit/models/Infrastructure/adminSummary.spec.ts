@@ -16,7 +16,7 @@ describe('the AdminSummary model', () => {
     expect(summary.rolesCount).toBe(0);
     expect(summary.solutionsCount).toBe(0);
     expect(summary.usersCount).toBe(0);
-    expect(summary.difficultes).toEqual([]);
+    expect(summary.difficulties).toEqual([]);
     expect(summary.roles).toEqual([]);
     expect(summary.releaseEnvironments).toEqual([]);
     expect(summary.sortValues).toEqual([]);
@@ -54,7 +54,7 @@ describe('the AdminSummary model', () => {
     expect(summary.rolesCount).toBe(6);
     expect(summary.solutionsCount).toBe(7);
     expect(summary.usersCount).toBe(8);
-    expect(summary.difficultes).toBe(difficulties);
+    expect(summary.difficulties).toBe(difficulties);
     expect(summary.roles).toBe(roles);
     expect(summary.releaseEnvironments).toBe(releaseEnvironments);
     expect(summary.sortValues).toBe(sortValues);
@@ -92,7 +92,7 @@ describe('the AdminSummary model', () => {
     expect(summary.rolesCount).toBe(0);
     expect(summary.solutionsCount).toBe(0);
     expect(summary.usersCount).toBe(0);
-    expect(summary.difficultes).toBe(difficulties);
+    expect(summary.difficulties).toBe(difficulties);
     expect(summary.roles).toBe(roles);
     expect(summary.releaseEnvironments).toBe(releaseEnvironments);
     expect(summary.sortValues).toBe(sortValues);

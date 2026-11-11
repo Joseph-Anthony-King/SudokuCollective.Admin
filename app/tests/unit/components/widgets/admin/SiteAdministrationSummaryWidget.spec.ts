@@ -18,7 +18,14 @@ const DataTableStub = defineComponent({
       required: true,
     },
     headers: {
-      type: Array as PropType<Array<{ title: string; key: keyof IAdminSummary; sortable?: boolean }>>,
+      type: Array as PropType<
+        Array<{
+          title: string;
+          key: keyof IAdminSummary;
+          sortable?: boolean;
+          align?: 'start' | 'center' | 'end';
+        }>
+      >,
       required: true,
     },
     itemsPerPage: {
@@ -91,6 +98,7 @@ describe('SiteAdministrationSummaryWidget.vue', () => {
       'Email Confirmations',
       'Password Resets',
     ]);
+    expect(table.props('headers').every((header) => header.align === 'center')).toBe(true);
     expect(wrapper.get('[data-testid="summary-table"] tbody tr').text()).toBe('00000000');
   });
 

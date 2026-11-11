@@ -7,6 +7,36 @@ import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequestData';
 import { StaticServiceMethods } from '@/services/common';
 
+const createUserResponse = (
+  isSuccess: boolean,
+  message: string,
+  isActive: boolean,
+): AxiosResponse => ({
+  data: {
+    isSuccess,
+    message,
+    payload: [
+      {
+        id: 1,
+        userName: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        nickName: 'nickName',
+        fullName: 'firstName lastName',
+        email: 'email@example.com',
+        isEmailConfirmed: true,
+        receivedRequestToUpdateEmail: false,
+        receivedRequestToUpdatePassword: false,
+        isActive,
+        isSuperUser: false,
+        isAdmin: false,
+        dateCreated: '2024-05-24T18:11:39.996131Z',
+        dateUpdated: '0001-01-01T00:00:00',
+      },
+    ],
+  },
+} as AxiosResponse);
+
 describe('the usersService serivce', () => {
   let isNumberGreaterThanZeroSpy: MockInstance<typeof StaticServiceMethods.isNumberGreaterThanZero>;
   let isStringNotEmptyOrNullSpy: MockInstance<typeof StaticServiceMethods.isStringNotEmptyOrNull>;
@@ -248,7 +278,7 @@ describe('the usersService serivce', () => {
 
     isNumberGreaterThanZeroSpy.mockImplementation(() => true);
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -408,7 +438,7 @@ describe('the usersService serivce', () => {
       return new Error('NETWORK ERR');
     });
     
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -588,7 +618,7 @@ describe('the usersService serivce', () => {
 
     isNumberGreaterThanZeroSpy.mockImplementation(() => true);
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -718,7 +748,7 @@ describe('the usersService serivce', () => {
       return new Error('NETWORK ERR');
     });
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -925,7 +955,7 @@ describe('the usersService serivce', () => {
 
     isNumberGreaterThanZeroSpy.mockImplementation(() => true);
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -961,6 +991,8 @@ describe('the usersService serivce', () => {
     isNumberGreaterThanZeroSpy = vi.spyOn(StaticServiceMethods, 'isNumberGreaterThanZero');
 
     isNumberGreaterThanZeroSpy.mockImplementation(() => true);
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const sut = UsersService;
 
@@ -1061,6 +1093,8 @@ describe('the usersService serivce', () => {
     UsersPort.putCancelEmailConfirmationRequestAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const sut = UsersService;
 
@@ -1070,6 +1104,7 @@ describe('the usersService serivce', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
+    expect(consoleError).toHaveBeenCalled();
   });
   it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putResendEmailConfirmationAsync method', async () => {
     // Arrange
@@ -1423,7 +1458,7 @@ describe('the usersService serivce', () => {
 
     isStringNotEmptyOrNullSpy.mockImplementation(() => true);
 
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'test');
 
     const sut = UsersService;
 
@@ -1588,6 +1623,8 @@ describe('the usersService serivce', () => {
     isNumberGreaterThanZeroSpy = vi.spyOn(StaticServiceMethods, 'isNumberGreaterThanZero');
 
     isNumberGreaterThanZeroSpy.mockImplementation(() => true);
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const sut = UsersService;
 
@@ -1597,6 +1634,7 @@ describe('the usersService serivce', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
+    expect(consoleError).toHaveBeenCalled();
   });
   it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putResendPasswordResetAsync method', async () => {
     // Arrange
@@ -1723,6 +1761,8 @@ describe('the usersService serivce', () => {
     UsersPort.putCancelPasswordResetAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const sut = UsersService;
 
@@ -1732,6 +1772,7 @@ describe('the usersService serivce', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
+    expect(consoleError).toHaveBeenCalled();
   });
   it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putCancelPasswordResetAsync method', async () => {
     // Arrange
@@ -1855,6 +1896,8 @@ describe('the usersService serivce', () => {
     UsersPort.putCancelAllEmailRequestsAsync = vi.fn().mockImplementation(() => {
       return new Error('NETWORK ERR');
     });
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const sut = UsersService;
 
@@ -1864,6 +1907,7 @@ describe('the usersService serivce', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('NETWORK ERR');
+    expect(consoleError).toHaveBeenCalled();
   });
   it('should return false if an erroneous 200 is returned with an isSuccess of false when running the putCancelAllEmailRequestsAsync method', async () => {    
     // Arrange
@@ -1895,5 +1939,136 @@ describe('the usersService serivce', () => {
     // Assert
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
+  });
+  it('should activate users and process unsuccessful responses', async () => {
+    const successResponse = createUserResponse(
+      true,
+      'Status Code 200: User was activated.',
+      true,
+    );
+    const unsuccessfulResponse = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 400: User was not activated.',
+        payload: [],
+      },
+    } as AxiosResponse;
+    UsersPort.putActivateUserAsync = vi.fn()
+      .mockResolvedValueOnce(successResponse)
+      .mockResolvedValueOnce(unsuccessfulResponse);
+
+    const successResult = await UsersService.putActivateUserAsync(1);
+    const unsuccessfulResult = await UsersService.putActivateUserAsync(1);
+
+    expect(UsersPort.putActivateUserAsync).toHaveBeenNthCalledWith(1, 1, null);
+    expect(successResult.isSuccess).toBe(true);
+    expect(successResult.message).toBe('Status Code 200: User was activated.');
+    expect(successResult.user).toMatchObject({
+      id: 1,
+      userName: 'userName',
+      isActive: true,
+    });
+    expect(unsuccessfulResult).toEqual({
+      isSuccess: false,
+      message: 'Status Code 400: User was not activated.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(unsuccessfulResponse);
+  });
+  it('should handle AxiosErrors and plain errors when activating users', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: User was not found.',
+      },
+    };
+    const axiosError = { response } as AxiosError;
+    const plainError = new Error('Network error.');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    UsersPort.putActivateUserAsync = vi.fn()
+      .mockResolvedValueOnce(axiosError)
+      .mockResolvedValueOnce(plainError);
+
+    const axiosResult = await UsersService.putActivateUserAsync(1);
+    vi.stubEnv('NODE_ENV', 'test');
+    const plainResult = await UsersService.putActivateUserAsync(1);
+
+    expect(axiosResult).toEqual({
+      isSuccess: false,
+      message: 'Status Code 404: User was not found.',
+    });
+    expect(plainResult).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', axiosError);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should deactivate users and process unsuccessful responses', async () => {
+    const successResponse = {
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: User was deactivated.',
+        payload: [],
+      },
+    } as AxiosResponse;
+    const unsuccessfulResponse = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 400: User was not deactivated.',
+        payload: [],
+      },
+    } as AxiosResponse;
+    UsersPort.putDeactivateUserAsync = vi.fn()
+      .mockResolvedValueOnce(successResponse)
+      .mockResolvedValueOnce(unsuccessfulResponse);
+
+    const successResult = await UsersService.putDeactivateUserAsync(1);
+    const unsuccessfulResult = await UsersService.putDeactivateUserAsync(1);
+
+    expect(UsersPort.putDeactivateUserAsync).toHaveBeenNthCalledWith(1, 1, null);
+    expect(successResult.isSuccess).toBe(true);
+    expect(successResult.message).toBe('Status Code 200: User was deactivated.');
+    expect(successResult).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: User was deactivated.',
+    });
+    expect(unsuccessfulResult).toEqual({
+      isSuccess: false,
+      message: 'Status Code 400: User was not deactivated.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(unsuccessfulResponse);
+  });
+  it('should handle AxiosErrors and plain errors when deactivating users', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      data: {
+        isSuccess: false,
+        message: 'Status Code 404: User was not found.',
+      },
+    };
+    const axiosError = { response } as AxiosError;
+    const plainError = new Error('Network error.');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    UsersPort.putDeactivateUserAsync = vi.fn()
+      .mockResolvedValueOnce(axiosError)
+      .mockResolvedValueOnce(plainError);
+
+    const axiosResult = await UsersService.putDeactivateUserAsync(1);
+    vi.stubEnv('NODE_ENV', 'test');
+    const plainResult = await UsersService.putDeactivateUserAsync(1);
+
+    expect(axiosResult).toEqual({
+      isSuccess: false,
+      message: 'Status Code 404: User was not found.',
+    });
+    expect(plainResult).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', axiosError);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
   });
 });
