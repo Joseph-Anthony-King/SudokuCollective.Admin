@@ -8,6 +8,7 @@
       :items="users"
       :headers="headers"
       class="elevation-1"
+      striped="even"
       :items-per-page="10"
       show-expand>
       <template v-slot:item.isActive="{ item }">
