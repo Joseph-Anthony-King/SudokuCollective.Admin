@@ -436,12 +436,14 @@
   import rules from '@/utilities/rules/index';
   import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
-  const props = defineProps({
-    formStatus: {
-      type: Boolean,
-      default: true,
+  const props = withDefaults(
+    defineProps<{
+      formStatus?: boolean;
+    }>(),
+    {
+      formStatus: false,
     },
-  });
+  );
   const emit = defineEmits(['user-updated']);
 
   const { emailRules, requiredRules, userNameRules } = rules();

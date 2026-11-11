@@ -12,7 +12,7 @@ export class AdminSummary implements IAdminSummary {
   rolesCount: number;
   solutionsCount: number;
   usersCount: number;
-  difficultes: Difficulty[];
+  difficulties: Difficulty[];
   roles: Role[];
   releaseEnvironments: DropdownItem[];
   sortValues: DropdownItem[];
@@ -51,7 +51,7 @@ export class AdminSummary implements IAdminSummary {
       ? (this.solutionsCount = solutionsCount)
       : (this.solutionsCount = 0);
     usersCount !== undefined ? (this.usersCount = usersCount) : (this.usersCount = 0);
-    difficulties !== undefined ? (this.difficultes = difficulties) : (this.difficultes = []);
+    difficulties !== undefined ? (this.difficulties = difficulties) : (this.difficulties = []);
     roles !== undefined ? (this.roles = roles) : (this.roles = []);
     releaseEnvironments !== undefined
       ? (this.releaseEnvironments = releaseEnvironments)

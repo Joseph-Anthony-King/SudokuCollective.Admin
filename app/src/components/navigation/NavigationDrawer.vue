@@ -46,16 +46,16 @@
   import { MenuItem } from '@/models/infrastructure/menuItem';
   import { NavDrawerLinks } from '@/utilities/links/navDrawerLinks';
 
-  const props = defineProps({
-    navDrawerStatus: {
-      type: Boolean,
-      default: false,
+  const props = withDefaults(
+    defineProps<{
+      navDrawerStatus?: boolean;
+      userLoggedIn?: boolean;
+    }>(),
+    {
+      navDrawerStatus: false,
+      userLoggedIn: false,
     },
-    userLoggedIn: {
-      type: Boolean,
-      default: false,
-    },
-  });
+  );
 
   //#region Destructure Stores
   const userStore = useUserStore();

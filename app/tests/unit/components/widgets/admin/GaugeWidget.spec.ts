@@ -1,0 +1,100 @@
+import { mount } from '@vue/test-utils';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import { describe, expect, it } from 'vitest';
+import GaugeWidget from '@/components/widgets/admin/GaugeWidget.vue';
+
+const vuetify = createVuetify({
+  components,
+  directives,
+});
+
+describe('GaugeWidget.vue', () => {
+  const mountWidget = (props: { labelProp?: string; valueProp?: number } = {}) =>
+    mount(GaugeWidget, {
+      props,
+      global: {
+        plugins: [vuetify],
+      },
+    });
+
+  it('uses default props and renders the gauge paths', () => {
+    const wrapper = mountWidget();
+
+    expect(wrapper.find('svg').attributes('aria-label')).toBe('0 ');
+    expect(wrapper.find('.v-card-title').text()).toBe('0');
+    expect(wrapper.find('.gauge-track').attributes('d')).toMatch(
+      /^M .* A 75 75 0 1 1 .*$/,
+    );
+    expect(wrapper.find('.gauge-value').attributes('d')).toMatch(
+      /^M .* A 75 75 0 0 1 .*$/,
+    );
+  });
+
+  it.each([
+    [0, 10],
+    [10, 10],
+    [11, 50],
+    [50, 50],
+    [51, 100],
+    [100, 100],
+    [101, 500],
+    [500, 500],
+    [501, 1_000],
+    [1_000, 1_000],
+    [1_001, 5_000],
+    [5_000, 5_000],
+    [5_001, 10_000],
+    [10_000, 10_000],
+    [10_001, 50_000],
+    [50_000, 50_000],
+    [50_001, 100_000],
+    [100_000, 100_000],
+    [100_001, 500_000],
+    [500_000, 500_000],
+    [500_001, 1_000_000],
+    [1_000_000, 1_000_000],
+    [1_000_001, 2_000_000],
+  ])('scales value %i against maximum %i', (value, maximum) => {
+    const wrapper = mountWidget({ labelProp: 'Users', valueProp: value });
+
+    expect(wrapper.find('svg').attributes('aria-label')).toBe(`${value} Users`);
+    expect(wrapper.find('.v-card-title').text()).toBe(`${value} Users`);
+
+    const valuePath = wrapper.find('.gauge-value').attributes('d');
+    const fullPath = wrapper.find('.gauge-track').attributes('d');
+    if (value === maximum) {
+      expect(valuePath).toBe(fullPath);
+    } else {
+      expect(valuePath).not.toBe(fullPath);
+    }
+  });
+
+  it('clamps negative values to zero progress', () => {
+    const wrapper = mountWidget({ labelProp: 'Games', valueProp: -5 });
+
+    expect(wrapper.find('svg').attributes('aria-label')).toBe('-5 Games');
+    expect(wrapper.find('.gauge-value').attributes('d')).toMatch(
+      /^M .* A 75 75 0 0 1 .*$/,
+    );
+  });
+
+  it('sets the large-arc flag when progress exceeds the halfway point of the gauge', () => {
+    const wrapper = mountWidget({ labelProp: 'Apps', valueProp: 9 });
+
+    expect(wrapper.find('.gauge-value').attributes('d')).toMatch(
+      /^M .* A 75 75 0 1 1 .*$/,
+    );
+  });
+
+  it('reacts to prop updates', async () => {
+    const wrapper = mountWidget({ labelProp: 'Users', valueProp: 4 });
+    const initialPath = wrapper.find('.gauge-value').attributes('d');
+
+    await wrapper.setProps({ labelProp: 'Games', valueProp: 9 });
+
+    expect(wrapper.find('svg').attributes('aria-label')).toBe('9 Games');
+    expect(wrapper.find('.gauge-value').attributes('d')).not.toBe(initialPath);
+  });
+});

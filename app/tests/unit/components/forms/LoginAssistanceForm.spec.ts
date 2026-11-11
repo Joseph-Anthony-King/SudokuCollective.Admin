@@ -351,6 +351,16 @@ describe('LoginAssistanceForm.vue', () => {
 
       expect(globalStore.confirmUserNameAsync).not.toHaveBeenCalled();
     });
+
+    it('should not reset password when formStatus is false', async () => {
+      await wrapper.setProps({ formStatus: false });
+      wrapper.vm.email = mockEmail;
+
+      await wrapper.vm.resetPasswordHandlerAsync();
+      await flushPromises();
+
+      expect(userStore.requestPasswordResetAsync).not.toHaveBeenCalled();
+    });
   });
 
   describe('Form Reset Functionality', () => {
@@ -369,6 +379,20 @@ describe('LoginAssistanceForm.vue', () => {
       expect(wrapper.vm.invalidEmails).toEqual([]);
       expect(serviceFailStore.initializeStore).toHaveBeenCalled();
       expect(loginFormStore.initializeAssistance).toHaveBeenCalled();
+    });
+
+    it('should not reset form when formStatus is false', async () => {
+      await wrapper.setProps({ formStatus: false });
+      wrapper.vm.email = mockEmail;
+      wrapper.vm.invalidEmails = mockInvalidEmails;
+
+      await wrapper.vm.resetHandlerAsync();
+      await flushPromises();
+
+      expect(wrapper.vm.email).toBe(mockEmail);
+      expect(wrapper.vm.invalidEmails).toEqual(mockInvalidEmails);
+      expect(serviceFailStore.initializeStore).not.toHaveBeenCalled();
+      expect(loginFormStore.initializeAssistance).not.toHaveBeenCalled();
     });
 
     it('should handle confirm form reset correctly', async () => {
@@ -541,6 +565,17 @@ describe('LoginAssistanceForm.vue', () => {
       expect(mockCommonUtilities.repairAutoComplete).toHaveBeenCalled();
     });
 
+    it('should not repair autocomplete on update for non-Chrome browsers', async () => {
+      mockCommonUtilities.isChrome.value = false;
+
+      wrapper = createWrapper();
+      mockCommonUtilities.repairAutoComplete.mockClear();
+      wrapper.vm.email = mockEmail;
+      await nextTick();
+
+      expect(mockCommonUtilities.repairAutoComplete).not.toHaveBeenCalled();
+    });
+
     it('should handle form validation on mount when email is dirty', async () => {
       testingPinia = createTestingPinia({
         createSpy: vi.fn,
@@ -632,7 +667,7 @@ describe('LoginAssistanceForm.vue', () => {
       // Find our resize event listener among all addEventListener calls
       const resizeCall = mockAddEventListener.mock.calls.find(call => call[0] === 'resize');
       expect(resizeCall).toBeDefined();
-      const actualResizeHandler = resizeCall[1];
+      const actualResizeHandler = resizeCall![1];
       
       // Destroy the component to trigger onUnmounted
       wrapper.unmount();

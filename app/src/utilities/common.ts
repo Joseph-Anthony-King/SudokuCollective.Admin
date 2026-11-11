@@ -127,6 +127,26 @@ export default function () {
     }
   };
 
+  const formatDateCreated = (dateCreated: Date | string | null | undefined) => {
+    if (!dateCreated) {
+      return 'N/A';
+    }
+
+    const date = dateCreated instanceof Date ? dateCreated : new Date(dateCreated);
+    if (Number.isNaN(date.getTime())) {
+      return 'N/A';
+    }
+
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Convert '0' hour to '12'
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${ampm}`;
+  };
+
   return {
     isChrome,
     clearStores,
@@ -138,5 +158,6 @@ export default function () {
     sleepAsync,
     updateAppProcessingAsync,
     updateUrlWithAction,
+    formatDateCreated,
   };
 }

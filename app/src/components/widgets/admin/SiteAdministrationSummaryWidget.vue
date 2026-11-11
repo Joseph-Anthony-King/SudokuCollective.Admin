@@ -2,7 +2,7 @@
   <v-container>
     <v-card>
       <v-card-title class="justify-center text-center">
-        <span class="headline">Collective Stats Summary</span>
+        <span class="headline">Site Administration Summary </span>
       </v-card-title>
       <v-card-item>
         <v-data-table
@@ -10,7 +10,7 @@
           :headers="headers"
           class="elevation-1"
           :items-per-page="10"
-          show-expand>
+          hide-default-footer>
         </v-data-table>
       </v-card-item>
     </v-card>
@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-  import { useAdminStore } from '@/stores/adminStore';
   import { storeToRefs } from 'pinia';
+  import { useAdminStore } from '@/stores/adminStore';
 
   const adminStore = useAdminStore();
   const { getAdminSummary } = storeToRefs(adminStore);

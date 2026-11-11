@@ -11,7 +11,7 @@ export interface IAdminSummary {
   rolesCount: number;
   solutionsCount: number;
   usersCount: number;
-  difficultes: Difficulty[];
+  difficulties: Difficulty[];
   roles: Role[];
   releaseEnvironments: DropdownItem[];
   sortValues: DropdownItem[];

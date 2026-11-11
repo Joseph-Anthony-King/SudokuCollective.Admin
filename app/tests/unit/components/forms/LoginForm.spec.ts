@@ -1,6 +1,6 @@
+import { nextTick } from 'vue';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
@@ -13,7 +13,6 @@ import { useLoginFormStore } from '@/stores/formStores/loginFormStore';
 import { useServiceFailStore } from '@/stores/serviceFailStore';
 import { useSignUpFormStore } from '@/stores/formStores/signUpFormStore';
 import { useUserStore } from '@/stores/userStore';
-import { LoginRequestData } from '@/models/requests/loginRequestData';
 import { DialogType } from '@/enums/dialogType';
 
 // Mock the AvailableActions component
