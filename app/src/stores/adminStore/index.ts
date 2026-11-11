@@ -67,6 +67,50 @@ export const useAdminStore = defineStore('adminStore', () => {
     }
     return result;
   };
+  const putActivateAppAsync = async (appId: number): Promise<boolean> => {
+    try {
+      const response = await AppsService.putActivateAppAsync(appId);
+
+      if (response.isSuccess) {
+        const app = response.app;
+        if (app) {
+          const index = apps.value.findIndex(a => a.id === app.id);
+          if (index !== -1) {
+            apps.value[index] = app;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateAppAsync = async (appId: number): Promise<boolean> => {
+    try {
+      const response = await AppsService.putDeactivateAppAsync(appId);
+
+      if (response.isSuccess) {
+        const app = response.app;
+        if (app) {
+          const index = apps.value.findIndex(a => a.id === app.id);
+          if (index !== -1) {
+            apps.value[index] = app;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -81,5 +125,7 @@ export const useAdminStore = defineStore('adminStore', () => {
     updateApps,
     initializeStore,
     getStatsAsync,
+    putActivateAppAsync,
+    putDeactivateAppAsync,
   };
 });
