@@ -533,4 +533,64 @@ export class AppsService {
 
     return result;
   };
+
+  static putActivateAppAsync = async (appId: number): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await AppsPort.putActivateAppAsync(appId)) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+      result.app = response.data.payload[0];
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  };
+
+  static putDeactivateAppAsync = async (appId: number): Promise<IServicePayload> => {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await AppsPort.putDeactivateAppAsync(appId)) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+      result.app = response.data.payload[0];
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  };
 }

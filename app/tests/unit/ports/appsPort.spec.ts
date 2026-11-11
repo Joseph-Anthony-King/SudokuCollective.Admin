@@ -60,6 +60,8 @@ describe('the appsPort port', () => {
     expect(Endpoints.putRemoveUserEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/removeuser');
     expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activateadminprivileges');
     expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivateadminprivileges');
+    expect(Endpoints.putActivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activate');
+    expect(Endpoints.putDeactivateAppEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivate');
   });
   it('should get apps by running the getAppsAsync method', async () => {
     let requestBody: Record<string, unknown> | undefined;
@@ -1424,6 +1426,98 @@ describe('the appsPort port', () => {
     } catch (error) {
       // Assert
       expect(error).not.toBeNull;
+    }
+  });
+  it('should delete, activate, and deactivate apps using their respective endpoints', async () => {
+    const appId = 1;
+    const license = '7700a640-6816-477c-9085-95d2df94284b';
+    const deleteUrl = Endpoints.deleteAppEndpoint
+      .replace('{id}', appId.toString())
+      .replace('{license}', license);
+    const activateUrl = Endpoints.putActivateAppEndpoint.replace('{id}', appId.toString());
+    const deactivateUrl = Endpoints.putDeactivateAppEndpoint.replace('{id}', appId.toString());
+
+    testServer = setupServer(
+      http.delete(deleteUrl, () => HttpResponse.json({ isSuccess: true, message: 'App deleted.' })),
+      http.put(activateUrl, () => HttpResponse.json({ isSuccess: true, message: 'App activated.' })),
+      http.put(deactivateUrl, () => HttpResponse.json({ isSuccess: true, message: 'App deactivated.' }))
+    );
+    testServer.listen();
+
+    const deleted = await AppsPort.deleteAppAsync(appId, license) as AxiosResponse;
+    const activated = await AppsPort.putActivateAppAsync(appId) as AxiosResponse;
+    const deactivated = await AppsPort.putDeactivateAppAsync(appId) as AxiosResponse;
+
+    expect(deleted.config.url).toBe(deleteUrl);
+    expect(deleted.data).toMatchObject({ isSuccess: true, message: 'App deleted.' });
+    expect(activated.config.url).toBe(activateUrl);
+    expect(activated.data).toMatchObject({ isSuccess: true, message: 'App activated.' });
+    expect(deactivated.config.url).toBe(deactivateUrl);
+    expect(deactivated.data).toMatchObject({ isSuccess: true, message: 'App deactivated.' });
+  });
+  it('should return errors from every app port method and log only in development', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const updateAppRequest = new UpdateAppRequestData(
+      1,
+      'test-app',
+      '7700a640-6816-477c-9085-95d2df94284b',
+      1,
+      'https://localhost:8080',
+      null,
+      null,
+      null,
+      'https://github.com/test-user/test-repo',
+      true,
+      ReleaseEnvironment.LOCAL,
+      true,
+      false,
+      true,
+      null,
+      null,
+      false,
+      null,
+      TimeFrame.DAYS,
+      1
+    );
+    const errorHandlingCalls = [
+      () => AppsPort.getAppByIdAsync(1, true),
+      () => AppsPort.putUpdateAppAsync(updateAppRequest, true),
+      () => AppsPort.deleteAppAsync(1, 'license', true),
+      () => AppsPort.getAppsAsync(true),
+      () => AppsPort.getMyAppsAsync(true),
+      () => AppsPort.getMyRegisteredAppsAsync(true),
+      () => AppsPort.postAppUsersAsync(1, true, true),
+      () => AppsPort.putAddUserAsync(1, 2, true),
+      () => AppsPort.putRemoveUserAsync(1, 2, true),
+      () => AppsPort.putActivateAdminPrivilegesAsync(1, 2, true),
+      () => AppsPort.putDeactivateAdminPrivilegesAsync(1, 2, true),
+      () => AppsPort.putActivateAppAsync(1, true),
+      () => AppsPort.putDeactivateAppAsync(1, true),
+    ];
+
+    try {
+      for (const nodeEnv of ['test', 'development']) {
+        process.env.NODE_ENV = nodeEnv;
+
+        for (const call of errorHandlingCalls) {
+          const result = await call();
+          expect(result).toMatchObject({
+            message: 'testErrorHandling is true, testing error handling...',
+          });
+        }
+
+        expect(consoleError).toHaveBeenCalledTimes(
+          nodeEnv === 'development' ? errorHandlingCalls.length : 0
+        );
+        consoleError.mockClear();
+      }
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
     }
   });
 });

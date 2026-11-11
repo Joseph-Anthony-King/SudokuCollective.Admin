@@ -9,4 +9,6 @@ export class Endpoints {
   static putRemoveUserEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/removeuser`;
   static putActivateAdminPrivilegesEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/activateadminprivileges`;
   static putDeactivateAdminPrivilegesEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/deactivateadminprivileges`;
+  static putActivateAppEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/activate`;
+  static putDeactivateAppEndpoint = `${process.env.VITE_APP_API_URL}api/v1/apps/{id}/deactivate`;
 }
