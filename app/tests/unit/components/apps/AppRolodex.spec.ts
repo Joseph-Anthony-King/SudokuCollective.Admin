@@ -117,14 +117,22 @@ describe('The AppRolodex.vue component', () => {
         ],
       },
     });
+    expect(wrapper.emitted('close-app-view')).toBeUndefined();
     wrapper.findComponent({ name: 'VSelect' }).vm.$emit('update:modelValue', 'Your Registered Apps');
     await nextTick();
     await flushPromises();
+    expect(wrapper.emitted('close-app-view')).toEqual([[]]);
     // Should show only registered apps
     expect(wrapper.findAllComponents(AppButton).length).toBe(1);
     expect(wrapper.findComponent(TimeToCodeButton).exists()).toBe(false);
     // Should not show CreateAppButton
     expect(wrapper.findComponent({ name: 'CreateAppButton' }).exists()).toBe(false);
+
+    wrapper.findComponent({ name: 'VSelect' }).vm.$emit('update:modelValue', 'Your Apps');
+    await nextTick();
+    expect(wrapper.vm.selectedApps).toBe('Your Apps');
+    expect(wrapper.findAllComponents(AppButton)).toHaveLength(2);
+    expect(wrapper.emitted('close-app-view')).toEqual([[], []]);
   });
 
   it('shows "Time to Get Coding!" when there are no apps for selected type', async () => {
