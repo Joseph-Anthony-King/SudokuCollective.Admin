@@ -9,6 +9,7 @@
           class="gauge-widget"
           tabindex="0">
           <svg
+            class="gauge-chart"
             viewBox="0 0 200 140"
             role="img"
             :aria-label="`${value} ${label}`">
@@ -19,6 +20,21 @@
               class="gauge-value"
               :d="valuePath" />
           </svg>
+          <div
+            class="gauge-slider"
+            aria-hidden="true">
+            <!-- Recreate the slider when its scale changes to avoid validating against the old maximum. -->
+            <vue-slider
+              :key="maxValue"
+              :model-value="Math.max(0, value)"
+              :min="0"
+              :max="maxValue"
+              :dot-attrs="{ tabindex: -1 }"
+              :use-keyboard="false"
+              width="100%"
+              disabled
+              tooltip="none" />
+          </div>
           <v-card-title class="justify-center text-center">{{ value }} {{ label }}</v-card-title>
         </v-card>
       </template>
@@ -29,6 +45,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue';
+  import VueSlider from 'vue-slider-component';
 
   const props = withDefaults(
     defineProps<{
@@ -95,6 +112,18 @@
     stroke: #1976d2;
   }
 
+  .gauge-slider {
+    display: none;
+    height: 70%;
+    padding: 0 24px;
+    align-items: center;
+  }
+
+  .gauge-slider :deep(.vue-slider-disabled) {
+    opacity: 1;
+    cursor: default;
+  }
+
   @media only screen and (max-width: 320px) {
     .gauge-widget {
       min-height: 150px;
@@ -111,6 +140,26 @@
       min-width: 170px;
       max-width: 170px;
       cursor: pointer;
+    }
+  }
+  @media only screen and (max-width: 375px) {
+    .gauge-chart {
+      display: none;
+    }
+
+    .gauge-widget {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-height: none;
+      aspect-ratio: 2 / 1;
+    }
+
+    .gauge-slider {
+      display: flex;
+      flex: 1 1 0;
+      min-height: 0;
+      height: auto;
     }
   }
   @media only screen and (min-width: 431px) and (max-width: 600px) {
