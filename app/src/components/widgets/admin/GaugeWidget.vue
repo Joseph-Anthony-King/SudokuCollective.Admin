@@ -1,19 +1,29 @@
 <template>
   <v-container>
-    <v-card class="gauge-widget">
-      <svg
-        viewBox="0 0 200 140"
-        role="img"
-        :aria-label="`${value} ${label}`">
-        <path
-          class="gauge-track"
-          :d="trackPath" />
-        <path
-          class="gauge-value"
-          :d="valuePath" />
-      </svg>
-      <v-card-title class="justify-center text-center">{{ value }} {{ label }}</v-card-title>
-    </v-card>
+    <v-tooltip
+      open-delay="2000"
+      location="bottom">
+      <template #activator="{ props }">
+        <v-card
+          v-bind="props"
+          class="gauge-widget"
+          tabindex="0">
+          <svg
+            viewBox="0 0 200 140"
+            role="img"
+            :aria-label="`${value} ${label}`">
+            <path
+              class="gauge-track"
+              :d="trackPath" />
+            <path
+              class="gauge-value"
+              :d="valuePath" />
+          </svg>
+          <v-card-title class="justify-center text-center">{{ value }} {{ label }}</v-card-title>
+        </v-card>
+      </template>
+      <span>Site wide there are {{ value }} {{ label }}</span>
+    </v-tooltip>
   </v-container>
 </template>
 

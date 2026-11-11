@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import GaugeWidget from '@/components/widgets/admin/GaugeWidget.vue';
 
 const vuetify = createVuetify({
@@ -96,5 +96,49 @@ describe('GaugeWidget.vue', () => {
 
     expect(wrapper.find('svg').attributes('aria-label')).toBe('9 Games');
     expect(wrapper.find('.gauge-value').attributes('d')).not.toBe(initialPath);
+  });
+
+  it('shows and hides the tooltip on hover and keyboard focus', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('visualViewport', null);
+    vi.stubGlobal('ResizeObserver', class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    });
+    const wrapper = mount(GaugeWidget, {
+      attachTo: document.body,
+      props: { labelProp: 'Users', valueProp: 4 },
+      global: { plugins: [vuetify] },
+    });
+
+    try {
+      await wrapper.get('.gauge-widget').trigger('mouseenter');
+      await vi.advanceTimersByTimeAsync(1999);
+      expect(document.querySelector('.v-tooltip.v-overlay--active')).toBeNull();
+
+      await vi.advanceTimersByTimeAsync(1);
+      const tooltip = document.querySelector('.v-tooltip.v-overlay--active');
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.textContent).toContain('Site wide there are 4 Users');
+
+      await wrapper.get('.gauge-widget').trigger('mouseleave');
+      await vi.runAllTimersAsync();
+      expect(document.querySelector('.v-tooltip.v-overlay--active')).toBeNull();
+
+      const card = wrapper.get<HTMLElement>('.gauge-widget').element;
+      card.focus();
+      await vi.advanceTimersByTimeAsync(2000);
+      expect(document.querySelector('.v-tooltip.v-overlay--active')?.textContent)
+        .toContain('Site wide there are 4 Users');
+
+      card.blur();
+      await vi.runAllTimersAsync();
+      expect(document.querySelector('.v-tooltip.v-overlay--active')).toBeNull();
+    } finally {
+      wrapper.unmount();
+      vi.unstubAllGlobals();
+      vi.useRealTimers();
+    }
   });
 });

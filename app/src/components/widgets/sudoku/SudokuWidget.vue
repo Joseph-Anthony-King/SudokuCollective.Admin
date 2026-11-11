@@ -364,25 +364,22 @@
   //#endregion
 
   //#region Lifecycle Hooks
+  const keyupHandler = async (event: KeyboardEvent): Promise<void> => {
+    if (event.key === 'Enter' && selectedGameState.value?.value !== undefined) {
+      if (selectedGameState.value?.value === 0) {
+        await checkGameHandlerAsync(event);
+      } else if (selectedGameState.value?.value === 1) {
+        await executeHandlerAsync(event);
+      } else {
+        await executeHandlerAsync(event);
+      }
+    }
+  };
   onMounted(() => {
-    document.addEventListener(
-      'keyup',
-      async (event) => {
-        if (event.key === 'Enter' && selectedGameState.value?.value !== undefined) {
-          if (selectedGameState.value?.value === 0) {
-            await checkGameHandlerAsync(event);
-          } else if (selectedGameState.value?.value === 1) {
-            await executeHandlerAsync(event);
-          } else {
-            await executeHandlerAsync(event);
-          }
-        }
-      },
-      { once: true },
-    );
+    document.addEventListener('keyup', keyupHandler, { once: true });
   });
   onUnmounted(() => {
-    document.removeEventListener('keyup', () => {});
+    document.removeEventListener('keyup', keyupHandler);
   });
   //#endregion
 </script>
