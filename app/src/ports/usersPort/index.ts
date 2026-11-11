@@ -393,7 +393,7 @@ export class UsersPort {
     }
   }
 
-  static async putActiveUserAsync(
+  static async putActivateUserAsync(
     id: number,
     testErrorHandling: boolean | null = null,
   ): Promise<AxiosResponse | AxiosError> {

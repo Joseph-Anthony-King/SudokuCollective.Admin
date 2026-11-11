@@ -111,6 +111,50 @@ export const useAdminStore = defineStore('adminStore', () => {
       return false;
     }
   };
+  const putActivateUserAsync = async (userId: number): Promise<boolean> => {
+    try {
+      const response = await UsersService.putActivateUserAsync(userId);
+
+      if (response.isSuccess) {
+        const user = response.user;
+        if (user) {
+          const index = users.value.findIndex((u) => u.id === user.id);
+          if (index !== -1) {
+            users.value[index] = user;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const putDeactivateUserAsync = async (userId: number): Promise<boolean> => {
+    try {
+      const response = await UsersService.putDeactivateUserAsync(userId);
+
+      if (response.isSuccess) {
+        const user = response.user;
+        if (user) {
+          const index = users.value.findIndex((u) => u.id === user.id);
+          if (index !== -1) {
+            users.value[index] = user;
+          }
+        }
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -127,5 +171,7 @@ export const useAdminStore = defineStore('adminStore', () => {
     getStatsAsync,
     putActivateAppAsync,
     putDeactivateAppAsync,
+    putActivateUserAsync,
+    putDeactivateUserAsync,
   };
 });

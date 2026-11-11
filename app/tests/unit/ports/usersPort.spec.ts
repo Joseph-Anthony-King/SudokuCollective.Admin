@@ -1415,7 +1415,7 @@ describe('the usersPort port', () => {
       expect(error).not.toBeNull;
     }
   });
-  it('should activate a user by running the putActiveUserAsync method', async () => {
+  it('should activate a user by running the putActivateUserAsync method', async () => {
     let requestBody: Record<string, unknown> | undefined;
     testServer = setupServer(
       http.put(Endpoints.putActiveUserEndpoint.replace('{{id}}', '2'), async ({ request }) => {
@@ -1437,7 +1437,7 @@ describe('the usersPort port', () => {
 
     testServer.listen();
 
-    const result = await UsersPort.putActiveUserAsync(2) as AxiosResponse;
+    const result = await UsersPort.putActivateUserAsync(2) as AxiosResponse;
 
     expect(result.data.isSuccess).toBe(true);
     expect(result.data.message).equals('Status Code 200: User was activated.');
@@ -1449,11 +1449,11 @@ describe('the usersPort port', () => {
       payload: {},
     });
   });
-  it('should log and return forced putActiveUserAsync errors in development', async () => {
+  it('should log and return forced putActivateUserAsync errors in development', async () => {
     vi.stubEnv('NODE_ENV', 'development');
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    const result = await UsersPort.putActiveUserAsync(2, true);
+    const result = await UsersPort.putActivateUserAsync(2, true);
 
     expect(result).toBeInstanceOf(Error);
     expect(result).toMatchObject({
@@ -1462,11 +1462,11 @@ describe('the usersPort port', () => {
     expect(consoleError).toHaveBeenCalledOnce();
     expect(consoleError).toHaveBeenCalledWith('error: ', result);
   });
-  it('should return forced putActiveUserAsync errors without development logging', async () => {
+  it('should return forced putActivateUserAsync errors without development logging', async () => {
     vi.stubEnv('NODE_ENV', 'test');
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    const result = await UsersPort.putActiveUserAsync(2, true);
+    const result = await UsersPort.putActivateUserAsync(2, true);
 
     expect(result).toBeInstanceOf(Error);
     expect(consoleError).not.toHaveBeenCalled();
