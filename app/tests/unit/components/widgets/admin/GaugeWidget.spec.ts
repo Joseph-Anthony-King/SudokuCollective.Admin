@@ -61,6 +61,8 @@ describe('GaugeWidget.vue', () => {
 
     expect(wrapper.find('svg').attributes('aria-label')).toBe(`${value} Users`);
     expect(wrapper.find('.v-card-title').text()).toBe(`${value} Users`);
+    expect(wrapper.get('[role="slider"]').attributes('aria-valuenow')).toBe(String(value));
+    expect(wrapper.get('[role="slider"]').attributes('aria-valuemax')).toBe(String(maximum));
 
     const valuePath = wrapper.find('.gauge-value').attributes('d');
     const fullPath = wrapper.find('.gauge-track').attributes('d');
@@ -78,6 +80,7 @@ describe('GaugeWidget.vue', () => {
     expect(wrapper.find('.gauge-value').attributes('d')).toMatch(
       /^M .* A 75 75 0 0 1 .*$/,
     );
+    expect(wrapper.get('[role="slider"]').attributes('aria-valuenow')).toBe('0');
   });
 
   it('sets the large-arc flag when progress exceeds the halfway point of the gauge', () => {
@@ -89,13 +92,46 @@ describe('GaugeWidget.vue', () => {
   });
 
   it('reacts to prop updates', async () => {
+    const consoleError = vi.spyOn(console, 'error');
     const wrapper = mountWidget({ labelProp: 'Users', valueProp: 4 });
     const initialPath = wrapper.find('.gauge-value').attributes('d');
 
-    await wrapper.setProps({ labelProp: 'Games', valueProp: 9 });
+    try {
+      await wrapper.setProps({ labelProp: 'Games', valueProp: 11 });
 
-    expect(wrapper.find('svg').attributes('aria-label')).toBe('9 Games');
-    expect(wrapper.find('.gauge-value').attributes('d')).not.toBe(initialPath);
+      expect(wrapper.find('svg').attributes('aria-label')).toBe('11 Games');
+      expect(wrapper.find('.gauge-value').attributes('d')).not.toBe(initialPath);
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuenow')).toBe('11');
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuemax')).toBe('50');
+
+      await wrapper.setProps({ valueProp: 4 });
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuenow')).toBe('4');
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuemax')).toBe('10');
+
+      await wrapper.setProps({ valueProp: 9 });
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuenow')).toBe('9');
+      expect(wrapper.get('[role="slider"]').attributes('aria-valuemax')).toBe('10');
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it('keeps the slider read-only and out of the tab order', async () => {
+    const wrapper = mountWidget({ labelProp: 'Users', valueProp: 4 });
+    const slider = wrapper.get('.vue-slider');
+    const dot = wrapper.get('[role="slider"]');
+
+    expect(slider.classes()).toContain('vue-slider-disabled');
+    expect(wrapper.get('.gauge-slider').attributes('aria-hidden')).toBe('true');
+    expect(dot.attributes('tabindex')).toBe('-1');
+
+    await slider.trigger('click');
+    await dot.trigger('focus');
+    await dot.trigger('keydown', { key: 'ArrowRight' });
+
+    expect(dot.attributes('aria-valuenow')).toBe('4');
+    expect(wrapper.get('.v-card-title').text()).toBe('4 Users');
   });
 
   it('shows and hides the tooltip on hover and keyboard focus', async () => {
