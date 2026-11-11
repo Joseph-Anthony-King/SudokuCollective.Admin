@@ -608,12 +608,14 @@
     resetViewPort,
   } = commonUtilities();
 
-  const props = defineProps({
-    formStatus: {
-      type: Boolean,
-      default: true,
+  const props = withDefaults(
+    defineProps<{
+      formStatus?: boolean;
+    }>(),
+    {
+      formStatus: false,
     },
-  });
+  );
 
   //#region Destructure Stores
   //#region AppStore

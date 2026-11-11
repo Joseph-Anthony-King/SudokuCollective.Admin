@@ -28,6 +28,9 @@
           {{ item.isSuperUser ? 'mdi-check' : 'mdi-close' }}
         </v-icon>
       </template>
+      <template v-slot:item.dateCreated="{ item }">
+        {{ formatDateCreated(item.dateCreated) }}
+      </template>
       <template v-slot:item.actions="{ item }">
         <v-btn
           v-if="displayRegistered"
@@ -57,22 +60,17 @@
                   <v-col
                     cols="12"
                     md="6">
-                    <strong>Username:</strong> {{ item.userName || 'N/A' }}
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="6">
-                    <strong>First Name:</strong> {{ item.firstName || 'N/A' }}
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="6">
-                    <strong>Last Name:</strong> {{ item.lastName || 'N/A' }}
+                    <strong>Full Name:</strong> {{ item.fullName || 'N/A' }}
                   </v-col>
                   <v-col
                     cols="12"
                     md="6">
                     <strong>Nickname:</strong> {{ item.nickName || 'N/A' }}
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6">
+                    <strong>Email:</strong> {{ item.email || 'N/A' }}
                   </v-col>
                   <v-col
                     cols="12"
@@ -83,7 +81,13 @@
                     cols="12"
                     md="6">
                     <strong>Date Created:</strong>
-                    {{ item.dateCreated ? new Date(item.dateCreated).toLocaleDateString() : 'N/A' }}
+                    {{ item.dateCreated ? formatDateCreated(item.dateCreated) : 'N/A' }}
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6">
+                    <strong>Date Updated:</strong>
+                    {{ item.dateUpdated ? formatDateCreated(item.dateUpdated) : 'N/A' }}
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -100,13 +104,18 @@
   import { storeToRefs } from 'pinia';
   import { useAppStore } from '@/stores/appStore';
   import { useUserStore } from '@/stores/userStore';
+  import commonUtilities from '@/utilities/common';
 
-  const props = defineProps({
-    displayRegistered: {
-      type: Boolean,
-      default: true,
+  const props = withDefaults(
+    defineProps<{
+      displayRegistered?: boolean;
+    }>(),
+    {
+      displayRegistered: true,
     },
-  });
+  );
+
+  const { formatDateCreated } = commonUtilities();
 
   // Get selected app from app store
   const appStore = useAppStore();
@@ -139,9 +148,11 @@
         { title: 'Full Name', key: 'fullName', sortable: true },
         { title: 'Nickname', key: 'nickName', sortable: true },
         { title: 'Email', key: 'email', sortable: true },
+        { title: 'Email Confirmed', key: 'isEmailConfirmed', sortable: false },
         { title: 'Active', key: 'isActive', sortable: false },
         { title: 'Admin', key: 'isAdmin', sortable: false },
         { title: 'Super User', key: 'isSuperUser', sortable: false },
+        { title: 'Date Created', key: 'dateCreated', sortable: false },
       ];
     } else {
       baseHeaders = [
@@ -149,6 +160,7 @@
         { title: 'Nickname', key: 'nickName', sortable: true },
         { title: 'Active', key: 'isActive', sortable: false },
         { title: 'Admin', key: 'isAdmin', sortable: false },
+        { title: 'Date Created', key: 'dateCreated', sortable: false },
       ];
     }
 

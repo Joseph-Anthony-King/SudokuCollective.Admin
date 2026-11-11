@@ -74,12 +74,14 @@
   import commonUtilities from '@/utilities/common';
   import { StoreType } from '@/enums/storeTypes';
 
-  const props = defineProps({
-    action: {
-      type: String,
-      default: '',
+  const props = withDefaults(
+    defineProps<{
+      action?: string;
+    }>(),
+    {
+      action: '',
     },
-  });
+  );
 
   const { displaySuccessfulToast, displayFailedToastAsync, updateAppProcessingAsync } =
     commonUtilities();

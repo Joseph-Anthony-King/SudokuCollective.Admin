@@ -6,6 +6,8 @@ import createPersistedState from 'pinia-persistedstate';
 import { EncryptStorage } from 'encrypt-storage';
 import { loadFonts } from '@/plugins/webfontloader';
 import vuetify from '@/plugins/vuetify';
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/default.css';
 
 const encryptStorage = new EncryptStorage(<string>process.env.VITE_APP_CACHE_SECRET, {
   storageType: 'localStorage',
@@ -14,7 +16,10 @@ const encryptStorage = new EncryptStorage(<string>process.env.VITE_APP_CACHE_SEC
 
 loadFonts();
 
-createApp(App)
+const app = createApp(App);
+
+app.component('VueSlider', VueSlider);
+app
   .use(router)
   .use(vuetify)
   .use(
@@ -22,6 +27,8 @@ createApp(App)
       createPersistedState({
         key: process.env.VITE_APP_CACHE_KEY,
         paths: [
+          'adminStore',
+          'appStore',
           'confirmEmailStore',
           'loginFormStore',
           'signUpFormStore',

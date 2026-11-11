@@ -20,12 +20,14 @@
   import UserProfileForm from '@/components/forms/UserProfileForm.vue';
   import { User } from '@/models/domain/user';
 
-  const props = defineProps({
-    action: {
-      type: String,
-      default: '',
+  const props = withDefaults(
+    defineProps<{
+      action?: string;
+    }>(),
+    {
+      action: '',
     },
-  });
+  );
 
   const userStore = useUserStore();
   const { getUser } = storeToRefs(userStore);
