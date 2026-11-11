@@ -69,6 +69,7 @@ describe('AdminSummaryWidget.vue', () => {
     const wrapper = mountWidget();
 
     expect(wrapper.find('.gauge-rows').exists()).toBe(true);
+    expect(wrapper.findAll('.gauge-column')).toHaveLength(8);
     expect(wrapper.findAll('[data-testid="gauge"]').map((gauge) => gauge.text())).toEqual([
       'Apps: 1',
       'Users: 8',
