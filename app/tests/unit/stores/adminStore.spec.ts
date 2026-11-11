@@ -18,6 +18,8 @@ vi.mock('@/services/adminService', () => ({
 vi.mock('@/services/usersService', () => ({
   UsersService: {
     getUsersAsync: vi.fn(),
+    putActivateUserAsync: vi.fn(),
+    putDeactivateUserAsync: vi.fn(),
   },
 }));
 
@@ -294,6 +296,146 @@ describe('the adminStore store', () => {
     expect(await store.putDeactivateAppAsync(1)).toBe(false);
     vi.stubEnv('NODE_ENV', 'test');
     expect(await store.putDeactivateAppAsync(1)).toBe(false);
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', developmentError);
+  });
+
+  it('activates a user and updates it in the store', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    existingUser.isActive = false;
+    const updatedUser = new User();
+    updatedUser.id = 1;
+    updatedUser.isActive = true;
+    store.updateUsers([existingUser]);
+    vi.mocked(UsersService.putActivateUserAsync).mockResolvedValue({
+      isSuccess: true,
+      user: updatedUser,
+    });
+
+    const result = await store.putActivateUserAsync(1);
+
+    expect(result).toBe(true);
+    expect(UsersService.putActivateUserAsync).toHaveBeenCalledWith(1);
+    expect(toRaw(store.users[0])).toBe(updatedUser);
+  });
+
+  it('does not update stored users when activation returns no user or a different user', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    store.updateUsers([existingUser]);
+    const differentUser = new User();
+    differentUser.id = 2;
+    vi.mocked(UsersService.putActivateUserAsync)
+      .mockResolvedValueOnce({ isSuccess: true })
+      .mockResolvedValueOnce({ isSuccess: true, user: differentUser });
+
+    expect(await store.putActivateUserAsync(1)).toBe(true);
+    expect(await store.putActivateUserAsync(1)).toBe(true);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+  });
+
+  it('returns false when user activation fails', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    store.updateUsers([existingUser]);
+    vi.mocked(UsersService.putActivateUserAsync).mockResolvedValue({
+      isSuccess: false,
+      user: new User(),
+    });
+
+    const result = await store.putActivateUserAsync(1);
+
+    expect(result).toBe(false);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+  });
+
+  it('catches user activation errors with and without development logging', async () => {
+    const store = useAdminStore(createPinia());
+    const developmentError = new Error('Development error');
+    const testError = new Error('Test error');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.mocked(UsersService.putActivateUserAsync)
+      .mockRejectedValueOnce(developmentError)
+      .mockRejectedValueOnce(testError);
+
+    expect(await store.putActivateUserAsync(1)).toBe(false);
+    vi.stubEnv('NODE_ENV', 'test');
+    expect(await store.putActivateUserAsync(1)).toBe(false);
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', developmentError);
+  });
+
+  it('deactivates a user and updates it in the store', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    existingUser.isActive = true;
+    const updatedUser = new User();
+    updatedUser.id = 1;
+    updatedUser.isActive = false;
+    store.updateUsers([existingUser]);
+    vi.mocked(UsersService.putDeactivateUserAsync).mockResolvedValue({
+      isSuccess: true,
+      user: updatedUser,
+    });
+
+    const result = await store.putDeactivateUserAsync(1);
+
+    expect(result).toBe(true);
+    expect(UsersService.putDeactivateUserAsync).toHaveBeenCalledWith(1);
+    expect(toRaw(store.users[0])).toBe(updatedUser);
+  });
+
+  it('does not update stored users when deactivation returns no user or a different user', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    store.updateUsers([existingUser]);
+    const differentUser = new User();
+    differentUser.id = 2;
+    vi.mocked(UsersService.putDeactivateUserAsync)
+      .mockResolvedValueOnce({ isSuccess: true })
+      .mockResolvedValueOnce({ isSuccess: true, user: differentUser });
+
+    expect(await store.putDeactivateUserAsync(1)).toBe(true);
+    expect(await store.putDeactivateUserAsync(1)).toBe(true);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+  });
+
+  it('returns false when user deactivation fails', async () => {
+    const store = useAdminStore(createPinia());
+    const existingUser = new User();
+    existingUser.id = 1;
+    store.updateUsers([existingUser]);
+    vi.mocked(UsersService.putDeactivateUserAsync).mockResolvedValue({
+      isSuccess: false,
+      user: new User(),
+    });
+
+    const result = await store.putDeactivateUserAsync(1);
+
+    expect(result).toBe(false);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+  });
+
+  it('catches user deactivation errors with and without development logging', async () => {
+    const store = useAdminStore(createPinia());
+    const developmentError = new Error('Development error');
+    const testError = new Error('Test error');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.mocked(UsersService.putDeactivateUserAsync)
+      .mockRejectedValueOnce(developmentError)
+      .mockRejectedValueOnce(testError);
+
+    expect(await store.putDeactivateUserAsync(1)).toBe(false);
+    vi.stubEnv('NODE_ENV', 'test');
+    expect(await store.putDeactivateUserAsync(1)).toBe(false);
     expect(consoleError).toHaveBeenCalledOnce();
     expect(consoleError).toHaveBeenCalledWith('error: ', developmentError);
   });

@@ -476,6 +476,17 @@
           updateNavDrawerStatus(navDrawerStatus.value);
         }
       };
+      let resizeTimeout: number | undefined;
+      const handleResize = (): void => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(
+          () => {
+            resetAppDialogViewPort();
+          },
+          250,
+          'Resized',
+        );
+      };
       //#endregion
 
       //#region Lifecycle Hooks
@@ -486,7 +497,7 @@
           sudokuStore.initializeStore();
           serviceFailStore.initializeStore();
 
-          if (getUserIsSuperUser) {
+          if (getUserIsSuperUser.value) {
             adminStore.initializeStore();
             await adminStore.getStatsAsync();
           }
@@ -496,27 +507,14 @@
 
           // Set the app dialog viewport for mobil or desktop
           resetAppDialogViewPort();
-          let resizeTimeout: number | undefined;
 
           // Add event listeners
-          window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(
-              () => {
-                resetAppDialogViewPort();
-              },
-              250,
-              'Resized',
-            );
-            resizeTimeout;
-          });
+          window.addEventListener('resize', handleResize);
         });
       });
       onUnmounted(() => {
         // Remove event listeners
-        window.removeEventListener('resize', () => {
-          resetAppDialogViewPort();
-        });
+        window.removeEventListener('resize', handleResize);
         clearStoresIfUserIsNotLoggedIn();
       });
       //#endregion
