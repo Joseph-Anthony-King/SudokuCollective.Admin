@@ -9,7 +9,7 @@
           :items="summaries"
           :headers="headers"
           class="elevation-1"
-          striped="even"
+          striped="odd"
           :items-per-page="10"
           hide-default-footer>
           <template v-slot:[slotNames.applicationsCount]="{ item }">
