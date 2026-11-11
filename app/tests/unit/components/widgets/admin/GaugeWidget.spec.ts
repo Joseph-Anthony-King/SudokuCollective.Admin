@@ -155,6 +155,13 @@ describe('GaugeWidget.vue', () => {
       );
       expect(sliderRule?.style.display).toBe('none');
       expect(mobileRule).toBeDefined();
+      const widerRuleIndex = rules.findIndex(
+        (rule) =>
+          rule instanceof CSSMediaRule &&
+          rule.conditionText === 'only screen and (min-width: 431px) and (max-width: 600px)',
+      );
+      expect(widerRuleIndex).toBeGreaterThanOrEqual(0);
+      expect(rules.indexOf(mobileRule!)).toBeGreaterThan(widerRuleIndex);
 
       const mobileRules = Array.from(mobileRule!.cssRules);
       const chartRule = mobileRules.find(
@@ -174,6 +181,9 @@ describe('GaugeWidget.vue', () => {
       expect(chartRule?.style.display).toBe('none');
       expect(mobileSliderRule?.style.display).toBe('flex');
       expect(cardRule?.style.getPropertyValue('aspect-ratio')).toBe('2 / 1');
+      expect(cardRule?.style.getPropertyValue('width')).toBe('100%');
+      expect(cardRule?.style.getPropertyValue('min-width')).toBe('0');
+      expect(cardRule?.style.getPropertyValue('max-width')).toBe('none');
       expect(cardRule?.style.getPropertyValue('min-height')).toBe('0');
       expect(cardRule?.style.getPropertyValue('max-height')).toBe('none');
     } finally {

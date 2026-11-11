@@ -142,6 +142,15 @@
       cursor: pointer;
     }
   }
+  @media only screen and (min-width: 431px) and (max-width: 600px) {
+    .gauge-widget {
+      min-height: 190px;
+      max-height: 190px;
+      min-width: 190px;
+      max-width: 190px;
+      cursor: pointer;
+    }
+  }
   @media only screen and (max-width: 440px) {
     .gauge-chart {
       display: none;
@@ -150,6 +159,9 @@
     .gauge-widget {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      min-width: 0;
+      max-width: none;
       min-height: 0;
       max-height: none;
       aspect-ratio: 2 / 1;
@@ -160,15 +172,6 @@
       flex: 1 1 0;
       min-height: 0;
       height: auto;
-    }
-  }
-  @media only screen and (min-width: 431px) and (max-width: 600px) {
-    .gauge-widget {
-      min-height: 190px;
-      max-height: 190px;
-      min-width: 190px;
-      max-width: 190px;
-      cursor: pointer;
     }
   }
   @media only screen and (min-width: 601px) and (max-width: 1919px) {
