@@ -2,7 +2,7 @@
   <v-card
     :color="evaluateColor(index)"
     class="app-button"
-    @click="selectApp">
+    @click="type === 'Your Apps' ? selectApp() : null">
     <v-card-title>
       <span class="select-app-title">{{ formattedAppName }}</span>
     </v-card-title>
@@ -18,17 +18,23 @@
   import { type ComputedRef, computed } from 'vue';
   import type { IApp } from '@/interfaces/domain/iApp';
   import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+  import { App } from '@/models/domain/app';
 
   const props = withDefaults(
     defineProps<{
       app: IApp;
       index?: number;
+      type?: string;
     }>(),
     {
+      app: () => new App(),
       index: 0,
+      type: 'Your Apps',
     },
   );
   const emit = defineEmits(['app-selected']);
+
+  const type: ComputedRef<string> = computed(() => props.type);
 
   const formattedAppName: ComputedRef<string> = computed(() => {
     if (props.app.name === null) {
