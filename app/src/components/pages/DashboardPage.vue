@@ -9,7 +9,9 @@
             <span class="headline">Dashboard</span>
           </v-card-title>
         </v-container>
-        <AppRolodex @show-create-app="showCreateAppForm" />
+        <AppRolodex
+          @show-create-app="showCreateAppForm"
+          @close-app-view="setSelectedAppAsync()" />
         <div
           id="app-create"
           v-if="showCreateApp">
@@ -95,6 +97,7 @@
   //#region AppStore
   const appStore = useAppStore();
   const { getSelectedApp } = storeToRefs(appStore);
+  const { setSelectedAppAsync } = appStore;
   //#endregion
   //#endregion
 

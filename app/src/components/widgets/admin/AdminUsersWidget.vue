@@ -9,6 +9,14 @@
       class="elevation-1"
       :items-per-page="10"
       show-expand>
+      <template v-slot:[isActiveSlot]="{ item }">
+        <v-chip
+          :color="item.isActive ? 'green' : 'red'"
+          text-color="white"
+          small>
+          {{ item.isActive ? 'Active' : 'Inactive' }}
+        </v-chip>
+      </template>
       <template v-slot:[dateCreatedSlot]="{ item }">
         {{ formatDateCreated(item.dateCreated) }}
       </template>
@@ -92,6 +100,7 @@
   const adminStore = useAdminStore();
   const { users } = storeToRefs(adminStore);
 
+  const isActiveSlot = 'item.isActive';
   const dateCreatedSlot = 'item.dateCreated';
   const actionsSlot = 'item.actions';
 
