@@ -15,8 +15,8 @@ const createUserResponse = (
   data: {
     isSuccess,
     message,
-    payload: [{
-      user: {
+    payload: [
+      {
         id: 1,
         userName: 'userName',
         firstName: 'firstName',
@@ -33,7 +33,7 @@ const createUserResponse = (
         dateCreated: '2024-05-24T18:11:39.996131Z',
         dateUpdated: '0001-01-01T00:00:00',
       },
-    }],
+    ],
   },
 } as AxiosResponse);
 
@@ -2006,11 +2006,13 @@ describe('the usersService serivce', () => {
     expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
   });
   it('should deactivate users and process unsuccessful responses', async () => {
-    const successResponse = createUserResponse(
-      true,
-      'Status Code 200: User was deactivated.',
-      false,
-    );
+    const successResponse = {
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: User was deactivated.',
+        payload: [],
+      },
+    } as AxiosResponse;
     const unsuccessfulResponse = {
       data: {
         isSuccess: false,
@@ -2028,10 +2030,9 @@ describe('the usersService serivce', () => {
     expect(UsersPort.putDeactivateUserAsync).toHaveBeenNthCalledWith(1, 1, null);
     expect(successResult.isSuccess).toBe(true);
     expect(successResult.message).toBe('Status Code 200: User was deactivated.');
-    expect(successResult.user).toMatchObject({
-      id: 1,
-      userName: 'userName',
-      isActive: false,
+    expect(successResult).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: User was deactivated.',
     });
     expect(unsuccessfulResult).toEqual({
       isSuccess: false,

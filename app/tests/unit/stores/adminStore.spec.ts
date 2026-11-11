@@ -318,23 +318,26 @@ describe('the adminStore store', () => {
 
     expect(result).toBe(true);
     expect(UsersService.putActivateUserAsync).toHaveBeenCalledWith(1);
-    expect(toRaw(store.users[0])).toBe(updatedUser);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+    expect(store.users[0].isActive).toBe(true);
   });
 
-  it('does not update stored users when activation returns no user or a different user', async () => {
+  it('updates only the requested user on activation even without a returned user', async () => {
     const store = useAdminStore(createPinia());
     const existingUser = new User();
     existingUser.id = 1;
-    store.updateUsers([existingUser]);
     const differentUser = new User();
     differentUser.id = 2;
+    store.updateUsers([existingUser, differentUser]);
     vi.mocked(UsersService.putActivateUserAsync)
       .mockResolvedValueOnce({ isSuccess: true })
       .mockResolvedValueOnce({ isSuccess: true, user: differentUser });
 
     expect(await store.putActivateUserAsync(1)).toBe(true);
-    expect(await store.putActivateUserAsync(1)).toBe(true);
+    expect(await store.putActivateUserAsync(3)).toBe(true);
     expect(toRaw(store.users[0])).toBe(existingUser);
+    expect(store.users[0].isActive).toBe(true);
+    expect(store.users[1].isActive).toBe(false);
   });
 
   it('returns false when user activation fails', async () => {
@@ -388,23 +391,28 @@ describe('the adminStore store', () => {
 
     expect(result).toBe(true);
     expect(UsersService.putDeactivateUserAsync).toHaveBeenCalledWith(1);
-    expect(toRaw(store.users[0])).toBe(updatedUser);
+    expect(toRaw(store.users[0])).toBe(existingUser);
+    expect(store.users[0].isActive).toBe(false);
   });
 
-  it('does not update stored users when deactivation returns no user or a different user', async () => {
+  it('updates only the requested user on deactivation even without a returned user', async () => {
     const store = useAdminStore(createPinia());
     const existingUser = new User();
     existingUser.id = 1;
-    store.updateUsers([existingUser]);
+    existingUser.isActive = true;
     const differentUser = new User();
     differentUser.id = 2;
+    differentUser.isActive = true;
+    store.updateUsers([existingUser, differentUser]);
     vi.mocked(UsersService.putDeactivateUserAsync)
       .mockResolvedValueOnce({ isSuccess: true })
       .mockResolvedValueOnce({ isSuccess: true, user: differentUser });
 
     expect(await store.putDeactivateUserAsync(1)).toBe(true);
-    expect(await store.putDeactivateUserAsync(1)).toBe(true);
+    expect(await store.putDeactivateUserAsync(3)).toBe(true);
     expect(toRaw(store.users[0])).toBe(existingUser);
+    expect(store.users[0].isActive).toBe(false);
+    expect(store.users[1].isActive).toBe(true);
   });
 
   it('returns false when user deactivation fails', async () => {

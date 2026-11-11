@@ -39,7 +39,8 @@
           icon
           small
           color="error"
-          title="Deactivate App">
+          title="Deactivate App"
+          @click="deactivateAppAsync(item.id!)">
           <v-icon>mdi-close-box</v-icon>
         </v-btn>
         <v-btn
@@ -47,7 +48,8 @@
           icon
           small
           color="success"
-          title="Activate App">
+          title="Activate App"
+          @click="activateAppAsync(item.id!)">
           <v-icon>mdi-plus-box</v-icon>
         </v-btn>
       </template>
@@ -168,4 +170,12 @@
 
     return baseHeaders;
   });
+
+  const activateAppAsync = async (appId: number) => {
+    await adminStore.putActivateAppAsync(appId);
+  };
+
+  const deactivateAppAsync = async (appId: number) => {
+    await adminStore.putDeactivateAppAsync(appId);
+  };
 </script>

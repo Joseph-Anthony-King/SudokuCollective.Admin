@@ -116,12 +116,9 @@ export const useAdminStore = defineStore('adminStore', () => {
       const response = await UsersService.putActivateUserAsync(userId);
 
       if (response.isSuccess) {
-        const user = response.user;
+        const user = users.value.find((u) => u.id === userId);
         if (user) {
-          const index = users.value.findIndex((u) => u.id === user.id);
-          if (index !== -1) {
-            users.value[index] = user;
-          }
+          user.isActive = true;
         }
       }
 
@@ -138,12 +135,9 @@ export const useAdminStore = defineStore('adminStore', () => {
       const response = await UsersService.putDeactivateUserAsync(userId);
 
       if (response.isSuccess) {
-        const user = response.user;
+        const user = users.value.find((u) => u.id === userId);
         if (user) {
-          const index = users.value.findIndex((u) => u.id === user.id);
-          if (index !== -1) {
-            users.value[index] = user;
-          }
+          user.isActive = false;
         }
       }
 
