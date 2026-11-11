@@ -11,7 +11,14 @@
         </v-container>
         <AppRolodex
           @show-create-app="showCreateAppForm"
-          @close-app-view="setSelectedAppAsync()" />
+          @close-app-view="
+            {
+              {
+                setSelectedAppAsync();
+                showCreateApp = false;
+              }
+            }
+          " />
         <div
           id="app-create"
           v-if="showCreateApp">
