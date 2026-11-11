@@ -6,7 +6,7 @@
           class="headline"
           color="primary"
           label="Select"
-          :items="['Your Apps', 'Your Registered Apps']"
+          :items="items"
           v-model="selectedApps"></v-select>
       </v-col>
     </v-card-title>
@@ -24,6 +24,7 @@
             :app="app"
             :key="index"
             :index="index"
+            :type="selectedApps"
             v-on:app-selected="appSelected" />
           <CreateAppButton
             v-if="selectedApps === 'Your Apps'"
@@ -51,6 +52,8 @@
   const onCreateAppClicked = () => {
     emit('show-create-app');
   };
+
+  const items: Ref<string[]> = ref(['Your Apps', 'Your Registered Apps']);
 
   const { updateAppProcessingAsync } = commonUtilities();
 
