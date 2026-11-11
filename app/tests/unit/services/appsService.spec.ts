@@ -15,6 +15,79 @@ describe('the appsService service', () => {
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+  it('should get apps by running the getAppsAsync method', async () => {
+    const apps = [{ id: 1, name: 'test-app' }];
+    AppsPort.getAppsAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: Apps were found.',
+        payload: apps,
+      },
+    } as AxiosResponse);
+
+    const result = await AppsService.getAppsAsync();
+
+    expect(result).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: Apps were found.',
+      apps,
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+  it('should process an unsuccessful response from getAppsAsync', async () => {
+    const response = {
+      status: 400,
+      data: {
+        isSuccess: false,
+        message: 'Apps could not be retrieved.',
+      },
+    } as AxiosResponse;
+    AppsPort.getAppsAsync = vi.fn().mockResolvedValue(response);
+
+    const result = await AppsService.getAppsAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Apps could not be retrieved.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should log and process AxiosErrors from getAppsAsync in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      status: 500,
+      data: {
+        isSuccess: false,
+        message: 'Server error.',
+      },
+    };
+    const error = { response };
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    AppsPort.getAppsAsync = vi.fn().mockResolvedValue(error as AxiosError);
+
+    const result = await AppsService.getAppsAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Server error.',
+    });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should return plain errors from getAppsAsync', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const error = new Error('Network error.');
+    AppsPort.getAppsAsync = vi.fn().mockResolvedValue(error as never);
+
+    const result = await AppsService.getAppsAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Network error.',
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
   });
   it('should create app license by running the postCreateAppLicenseAsync method', async () => {
     // Arrange

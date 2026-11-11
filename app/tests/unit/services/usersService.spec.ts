@@ -8,13 +8,86 @@ import { ResetPasswordRequestData } from '@/models/requests/resetPasswordRequest
 import { StaticServiceMethods } from '@/services/common';
 
 describe('the usersService serivce', () => {
-  let isNumberGreaterThanZeroSpy: MockInstance<[id: number], boolean>;
-  let isStringNotEmptyOrNullSpy: MockInstance<[email: string], boolean>;
+  let isNumberGreaterThanZeroSpy: MockInstance<typeof StaticServiceMethods.isNumberGreaterThanZero>;
+  let isStringNotEmptyOrNullSpy: MockInstance<typeof StaticServiceMethods.isStringNotEmptyOrNull>;
   beforeEach(() => {
     StaticServiceMethods.processFailedResponse = vi.fn();
   });
   afterEach(() => {
     vi.resetAllMocks();
+    vi.unstubAllEnvs();
+  });
+  it('should get users by running the getUsersAsync method', async () => {
+    const users = [{ id: 1, userName: 'userName' }];
+    UsersPort.getUsersAsync = vi.fn().mockResolvedValue({
+      data: {
+        isSuccess: true,
+        message: 'Status Code 200: Users were found.',
+        payload: users
+      }
+    } as AxiosResponse);
+
+    const result = await UsersService.getUsersAsync();
+
+    expect(result).toEqual({
+      isSuccess: true,
+      message: 'Status Code 200: Users were found.',
+      users
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+  it('should process an unsuccessful response from getUsersAsync', async () => {
+    const response = {
+      status: 400,
+      data: {
+        isSuccess: false,
+        message: 'Users could not be retrieved.'
+      }
+    } as AxiosResponse;
+    UsersPort.getUsersAsync = vi.fn().mockResolvedValue(response);
+
+    const result = await UsersService.getUsersAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Users could not be retrieved.'
+    });
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should log and process AxiosErrors from getUsersAsync in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = {
+      status: 500,
+      data: {
+        isSuccess: false,
+        message: 'Server error.'
+      }
+    };
+    const error = { response };
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    UsersPort.getUsersAsync = vi.fn().mockResolvedValue(error as AxiosError);
+
+    const result = await UsersService.getUsersAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Server error.'
+    });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+  it('should return plain errors from getUsersAsync', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    const error = new Error('Network error.');
+    UsersPort.getUsersAsync = vi.fn().mockRejectedValue(error);
+
+    const result = await UsersService.getUsersAsync();
+
+    expect(result).toEqual({
+      isSuccess: false,
+      message: 'Network error.'
+    });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
   });
   it('should get users by their user id by running the getUserAsync method', async () => {
     // Arrange

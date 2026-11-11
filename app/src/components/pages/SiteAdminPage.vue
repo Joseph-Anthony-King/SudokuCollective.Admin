@@ -8,6 +8,10 @@
           <v-card-title class="justify-center text-center">
             <span class="headline">Site Administration</span>
           </v-card-title>
+          <admin-summary-widget />
+          <admin-users-widget />
+          <admin-apps-widget />
+          <admin-dropdown-widget />
         </v-container>
       </v-card-text>
     </v-card>
@@ -19,14 +23,20 @@
   import { onBeforeMount } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useUserStore } from '@/stores/userStore';
+  import AdminSummaryWidget from '@/components/widgets/admin/AdminSummaryWidget.vue';
+  import AdminUsersWidget from '@/components/widgets/admin/AdminUsersWidget.vue';
+  import AdminAppsWidget from '@/components/widgets/admin/AdminAppsWidget.vue';
+  import AdminDropdownWidget from '@/components/widgets/admin/AdminDropdownWidget.vue';
   import { User } from '@/models/domain/user';
 
-  const props = defineProps({
-    action: {
-      type: String,
-      default: '',
+  const props = withDefaults(
+    defineProps<{
+      action?: string;
+    }>(),
+    {
+      action: '',
     },
-  });
+  );
 
   const userStore = useUserStore();
   const { getUser } = storeToRefs(userStore);

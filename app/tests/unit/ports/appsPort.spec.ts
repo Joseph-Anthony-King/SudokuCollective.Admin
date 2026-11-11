@@ -61,6 +61,99 @@ describe('the appsPort port', () => {
     expect(Endpoints.putActivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/activateadminprivileges');
     expect(Endpoints.putDeactivateAdminPrivilegesEndpoint).equals('https://localhost:5001/api/v1/apps/{id}/deactivateadminprivileges');
   });
+  it('should get apps by running the getAppsAsync method', async () => {
+    let requestBody: Record<string, unknown> | undefined;
+    testServer = setupServer(
+      http.post(Endpoints.appsEndpoint, async ({ request }) => {
+        requestBody = await request.json() as Record<string, unknown>;
+        return HttpResponse.json({
+          isSuccess: true,
+          isFromCache: false,
+          message: 'Status Code 200: Apps were found.',
+          payload: [{ id: 1, name: 'test-app' }]
+        }, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+
+    const result = await AppsPort.getAppsAsync() as AxiosResponse;
+
+    expect(result.data.isSuccess).toBe(true);
+    expect(result.data.message).equals('Status Code 200: Apps were found.');
+    expect(result.data.payload).toEqual([{ id: 1, name: 'test-app' }]);
+    expect(requestBody).toEqual({
+      license: process.env.VITE_APP_LICENSE,
+      requestorId: 1,
+      appId: process.env.VITE_APP_ID,
+      paginator: {},
+      payload: {},
+    });
+  });
+  it('should return and log a forced error from getAppsAsync in development', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const result = await AppsPort.getAppsAsync(true);
+
+      expect(result).toMatchObject({
+        message: 'testErrorHandling is true, testing error handling...'
+      });
+      expect(consoleError).toHaveBeenCalledOnce();
+      expect(consoleError).toHaveBeenCalledWith('error: ', result);
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
+  it('should return AxiosErrors from getAppsAsync without development logging', async () => {
+    testServer = setupServer(
+      http.post(Endpoints.appsEndpoint, () => {
+        return HttpResponse.json({
+          isSuccess: false,
+          isFromCache: false,
+          message: 'Status Code 400: Apps could not be retrieved.',
+          payload: []
+        }, {
+          status: 400,
+          statusText: 'BAD REQUEST',
+          headers: {
+            'content-type': 'application/json'
+          }
+        });
+      })
+    );
+
+    testServer.listen();
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const result = await AppsPort.getAppsAsync();
+
+      expect(result).toBeInstanceOf(AxiosError);
+      expect((result as AxiosError).response?.status).toBe(400);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV;
+      } else {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    }
+  });
   it('should get an app by id using the getAppByIdAsync method', async () => {
     testServer = setupServer(
       http.post('https://localhost:5001/api/v1/apps/42', () => {

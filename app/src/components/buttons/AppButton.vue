@@ -16,19 +16,18 @@
   /* eslint-disable no-undef */
   /* eslint-disable @typescript-eslint/no-unused-vars */
   import { type ComputedRef, computed } from 'vue';
-  import { App } from '@/models/domain/app';
+  import type { IApp } from '@/interfaces/domain/iApp';
   import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
 
-  const props = defineProps({
-    app: {
-      type: App,
-      default: null,
+  const props = withDefaults(
+    defineProps<{
+      app: IApp;
+      index?: number;
+    }>(),
+    {
+      index: 0,
     },
-    index: {
-      type: Number,
-      default: 0,
-    },
-  });
+  );
   const emit = defineEmits(['app-selected']);
 
   const formattedAppName: ComputedRef<string> = computed(() => {

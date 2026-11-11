@@ -26,12 +26,15 @@
   /* eslint-disable no-undef */
   /* eslint-disable no-unused-vars */
   /* eslint-disable @typescript-eslint/no-unused-vars*/
-  const props = defineProps({
-    headline: {
-      type: String,
-      default: '',
+
+  const props = withDefaults(
+    defineProps<{
+      headline?: string;
+    }>(),
+    {
+      headline: '',
     },
-  });
+  );
 </script>
 
 <style scoped>

@@ -245,16 +245,16 @@
   import { RulesMessages } from '@/utilities/rules/rulesMessages';
   import { storeToRefs } from 'pinia';
 
-  const props = defineProps({
-    formStatus: {
-      type: Boolean,
-      default: false,
+  const props = withDefaults(
+    defineProps<{
+      formStatus?: boolean;
+      isRedirect?: boolean;
+    }>(),
+    {
+      formStatus: false,
+      isRedirect: false,
     },
-    isRedirect: {
-      type: Boolean,
-      default: false,
-    },
-  });
+  );
   const emit = defineEmits(['cancel-signup', 'reset-redirect']);
 
   const {

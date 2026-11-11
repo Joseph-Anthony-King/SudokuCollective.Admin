@@ -197,12 +197,14 @@
   import rules from '@/utilities/rules/index';
   import { RulesMessages } from '@/utilities/rules/rulesMessages';
 
-  const props = defineProps({
-    formStatus: {
-      type: Boolean,
-      default: false,
+  const props = withDefaults(
+    defineProps<{
+      formStatus?: boolean;
+    }>(),
+    {
+      formStatus: false,
     },
-  });
+  );
   const emit = defineEmits(['obtain-login-assistance', 'cancel-login', 'redirect-to-signup']);
 
   const { passwordRules, userNameRules } = rules();
