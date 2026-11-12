@@ -405,6 +405,39 @@ export class GamesService {
     return result;
   }
 
+  static async postAddSolutionsAsync(): Promise<IServicePayload> {
+    const result: IServicePayload = {};
+
+    try {
+      const response = (await SolutionsPort.postAddSolutionsAsync()) as AxiosResponse;
+
+      if ((<AxiosError>(<unknown>response)).response !== undefined || response instanceof Error) {
+        throw response;
+      }
+
+      if (!response.data.isSuccess) {
+        throw new Error(response.data.message);
+      }
+
+      result.isSuccess = response.data.isSuccess;
+      result.message = response.data.message;
+    } catch (error: any) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      if ((<AxiosError>(<unknown>error)).response !== undefined) {
+        result.isSuccess = (<any>(<AxiosError>(<unknown>error)).response!.data).isSuccess;
+        result.message = (<any>(<AxiosError>(<unknown>error)).response!.data).message;
+        StaticServiceMethods.processFailedResponse((<AxiosError>(<unknown>error)).response);
+      } else {
+        result.isSuccess = false;
+        result.message = (<Error>error).message;
+      }
+    }
+
+    return result;
+  }
+
   static downloadTheGame(response: AxiosResponse): Array<Array<string>> {
     try {
       if (

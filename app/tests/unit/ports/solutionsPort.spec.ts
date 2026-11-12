@@ -1,16 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
-import { setupServer, type SetupServerApi } from 'msw/node';
+import { setupServer } from 'msw/node';
 import { createPinia, type Pinia } from 'pinia';
-import type { AxiosError, AxiosResponse } from 'axios';
+import { isAxiosError, type AxiosError, type AxiosResponse } from 'axios';
 import { SolutionsPort } from '@/ports/solutionsPort/index';
 import { Endpoints } from '@/ports/solutionsPort/endpoints';
 import { SudokuRequestData } from '@/models/requests/sudokuRequestData';
+import { User } from '@/models/domain/user';
 import { useGlobalStore } from '@/stores/globalStore';
+import { useUserStore } from '@/stores/userStore';
 
 describe('the solutionsPort port', () => {
   let pinia: Pinia;
-  let testServer: SetupServerApi | null;
+  let testServer: ReturnType<typeof setupServer> | null;
   beforeEach(() => {
     pinia = createPinia();
     const globalStore = useGlobalStore(pinia);
@@ -19,6 +21,7 @@ describe('the solutionsPort port', () => {
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
     testServer?.close();
     testServer = null;
   });
@@ -27,6 +30,7 @@ describe('the solutionsPort port', () => {
     expect(process.env.VITE_APP_API_URL).equals('https://localhost:5001/');
     expect(Endpoints.solveEndpoint).equals('https://localhost:5001/api/v1/solutions/solve');
     expect(Endpoints.generateEndpoint).equals('https://localhost:5001/api/v1/solutions/generate');
+    expect(Endpoints.addSolutionsEndpoint).equals('https://localhost:5001/api/v1/solutions/addsolutions');
   });
   it('should solve unfinished sudoku matrices by running the postSolveAsync method', async () => {
     // Arrange
@@ -320,5 +324,73 @@ describe('the solutionsPort port', () => {
       // Assert
       expect(error).not.toBeNull;
     }
+  });
+
+  it('should post an authenticated add-solutions request and return the response', async () => {
+    useGlobalStore(pinia).updateToken('test-token');
+    useUserStore(pinia).updateUser(new User(42));
+    const receivedRequest = vi.fn();
+    const response = { isSuccess: true, message: 'Solutions added.' };
+    testServer = setupServer(
+      http.post('https://localhost:5001/api/v1/solutions/addsolutions', async ({ request }) => {
+        receivedRequest({
+          authorization: request.headers.get('authorization'),
+          accept: request.headers.get('accept'),
+          contentType: request.headers.get('content-type'),
+          body: await request.json(),
+        });
+        return HttpResponse.json(response, { status: 201 });
+      }),
+    );
+    testServer.listen({ onUnhandledRequest: 'error' });
+
+    const result = await SolutionsPort.postAddSolutionsAsync();
+
+    expect(isAxiosError(result)).toBe(false);
+    expect(result).toMatchObject({ status: 201, data: response });
+    expect(receivedRequest).toHaveBeenCalledOnce();
+    expect(receivedRequest).toHaveBeenCalledWith({
+      authorization: 'Bearer test-token',
+      accept: 'application/json',
+      contentType: 'application/json',
+      body: {
+        license: process.env.VITE_APP_LICENSE,
+        requestorId: 42,
+        appId: process.env.VITE_APP_ID,
+        paginator: {},
+        payload: { limit: 100 },
+      },
+    });
+  });
+
+  it('should return an add-solutions HTTP error without logging outside development', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    testServer = setupServer(
+      http.post('https://localhost:5001/api/v1/solutions/addsolutions', () =>
+        HttpResponse.json({ message: 'Request failed' }, { status: 400 }),
+      ),
+    );
+    testServer.listen({ onUnhandledRequest: 'error' });
+
+    const result = await SolutionsPort.postAddSolutionsAsync(false);
+
+    expect(isAxiosError(result)).toBe(true);
+    expect(result).toMatchObject({ response: { status: 400, data: { message: 'Request failed' } } });
+    expect(consoleError).not.toHaveBeenCalled();
+  });
+
+  it('should return and log a forced add-solutions error in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await SolutionsPort.postAddSolutionsAsync(true);
+
+    expect(result).toBeInstanceOf(Error);
+    expect(result).toMatchObject({
+      message: 'testErrorHandling is true, testing error handling...',
+    });
+    expect(consoleError).toHaveBeenCalledOnce();
+    expect(consoleError).toHaveBeenCalledWith('error: ', result);
   });
 });

@@ -3,9 +3,6 @@ import { ExteriorLinks } from '@/utilities/links/exteriorLinks';
 import { MenuItem } from '@/models/infrastructure/menuItem';
 
 describe('The ExteriorLinks utility', () => {
-  // Store original env values
-  const originalEnv = { ...process.env };
-  
   beforeEach(() => {
     // Mock environment variables
     vi.stubEnv('VITE_APP_API_URL', 'https://test-api.example.com/');
@@ -19,7 +16,7 @@ describe('The ExteriorLinks utility', () => {
   it('should export an array of MenuItem objects', () => {
     // Assert
     expect(Array.isArray(ExteriorLinks)).toBe(true);
-    expect(ExteriorLinks.length).toBe(4);
+    expect(ExteriorLinks.length).toBe(5);
     ExteriorLinks.forEach(item => {
       expect(item instanceof MenuItem).toBe(true);
     });
@@ -38,7 +35,7 @@ describe('The ExteriorLinks utility', () => {
 
   it('should have correct API Documentation link', () => {
     // Assert
-    const apiDocLink = ExteriorLinks[1];
+    const apiDocLink = ExteriorLinks[2];
     expect(apiDocLink.url).toBe('https://localhost:5001/swagger/index.html');
     expect(apiDocLink.title).toBe('API Documentation');
     expect(apiDocLink.tooltip).toBe('Review the api swagger documentation');
@@ -47,9 +44,20 @@ describe('The ExteriorLinks utility', () => {
     expect(apiDocLink.condition).toBe(true);
   });
 
+  it('should have correct Vue Sudoku link', () => {
+    // Assert
+    const vueSudokuLink = ExteriorLinks[1];
+    expect(vueSudokuLink.url).toBe('https://vuesudoku.com/');
+    expect(vueSudokuLink.title).toBe('Vue Sudoku');
+    expect(vueSudokuLink.tooltip).toBe('Visit the Vue Sudoku website');
+    expect(vueSudokuLink.mdiIcon).toBe('mdi-abacus');
+    expect(vueSudokuLink.target).toBe('_blank');
+    expect(vueSudokuLink.condition).toBe(true);
+  });
+
   it('should have correct API GitHub Page link', () => {
     // Assert
-    const apiGithubLink = ExteriorLinks[2];
+    const apiGithubLink = ExteriorLinks[3];
     expect(apiGithubLink.url).toBe('https://github.com/Joseph-Anthony-King/SudokuCollective');
     expect(apiGithubLink.title).toBe('API GitHub Page');
     expect(apiGithubLink.tooltip).toBe('Review the api code on Github.com');
@@ -60,7 +68,7 @@ describe('The ExteriorLinks utility', () => {
 
   it('should have correct Admin App GitHub Page link', () => {
     // Assert
-    const adminGithubLink = ExteriorLinks[3];
+    const adminGithubLink = ExteriorLinks[4];
     expect(adminGithubLink.url).toBe('https://github.com/Joseph-Anthony-King/SudokuCollective.Admin');
     expect(adminGithubLink.title).toBe('Admin App GitHub Page');
     expect(adminGithubLink.tooltip).toBe('Review the admin app code on Github.com');
@@ -78,8 +86,8 @@ describe('The ExteriorLinks utility', () => {
     const { ExteriorLinks: updatedLinks } = await import('@/utilities/links/exteriorLinks');
     // Assert
     expect(url).toBe('https://test-api.example.com/');
-    expect(ExteriorLinks[0].url).toBe('https://localhost:5001/');
-    expect(ExteriorLinks[1].url).toBe('https://localhost:5001/swagger/index.html');
+    expect(updatedLinks[0].url).toBe('https://test-api.example.com/');
+    expect(updatedLinks[2].url).toBe('https://test-api.example.com/swagger/index.html');
   });
 
   it('should have all links open in a new tab', () => {
@@ -99,8 +107,9 @@ describe('The ExteriorLinks utility', () => {
   it('should maintain correct order of links', () => {
     // Assert
     expect(ExteriorLinks[0].title).toBe('API Status');
-    expect(ExteriorLinks[1].title).toBe('API Documentation');
-    expect(ExteriorLinks[2].title).toBe('API GitHub Page');
-    expect(ExteriorLinks[3].title).toBe('Admin App GitHub Page');
+    expect(ExteriorLinks[1].title).toBe('Vue Sudoku');
+    expect(ExteriorLinks[2].title).toBe('API Documentation');
+    expect(ExteriorLinks[3].title).toBe('API GitHub Page');
+    expect(ExteriorLinks[4].title).toBe('Admin App GitHub Page');
   });
 });

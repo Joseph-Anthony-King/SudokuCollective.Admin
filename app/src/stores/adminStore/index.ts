@@ -4,9 +4,13 @@ import { AdminSummary } from '@/models/infrastructure/adminSummary';
 import { IAdminSummary } from '@/interfaces/infrastructure/iAdminSummary';
 import { IApp } from '@/interfaces/domain/iApp';
 import { IUser } from '@/interfaces/domain/iUser';
+import { useAppStore } from '@/stores/appStore';
 import { AdminService } from '@/services/adminService';
 import { UsersService } from '@/services/usersService';
 import { AppsService } from '@/services/appsService';
+import { GamesService } from '@/services/gamesService';
+import commonUtilities from '@/utilities/common';
+import { StoreType } from '@/enums/storeTypes';
 
 export const useAdminStore = defineStore('adminStore', () => {
   //#region State
@@ -149,6 +153,46 @@ export const useAdminStore = defineStore('adminStore', () => {
       return false;
     }
   };
+  const postAddSolutionsAsync = async () => {
+    try {
+      const response = await GamesService.postAddSolutionsAsync();
+
+      useAppStore().updateServiceMessage(response.message);
+
+      if (response.isSuccess) {
+        commonUtilities().displaySuccessfulToast(StoreType.APPSTORE);
+      } else {
+        await commonUtilities().displayFailedToastAsync(undefined, undefined);
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
+  const postFlushCacheAsync = async () => {
+    try {
+      const response = await AdminService.postFlushCacheAsync();
+
+      useAppStore().updateServiceMessage(response.message);
+
+      if (response.isSuccess) {
+        commonUtilities().displaySuccessfulToast(StoreType.APPSTORE);
+      } else {
+        await commonUtilities().displayFailedToastAsync(undefined, undefined);
+      }
+
+      return response.isSuccess;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return false;
+    }
+  };
   //#endregion
 
   return {
@@ -167,5 +211,7 @@ export const useAdminStore = defineStore('adminStore', () => {
     putDeactivateAppAsync,
     putActivateUserAsync,
     putDeactivateUserAsync,
+    postAddSolutionsAsync,
+    postFlushCacheAsync,
   };
 });
