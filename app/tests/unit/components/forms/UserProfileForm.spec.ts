@@ -195,10 +195,7 @@ describe('UserProfileForm.vue', () => {
 
   const createWrapper = (props = {}) => {
     return mount(UserProfileForm, {
-      props: {
-        formStatus: true,
-        ...props,
-      },
+      props,
       global: {
         plugins: [testingPinia, vuetify],
       },
@@ -1319,69 +1316,13 @@ describe('UserProfileForm.vue', () => {
         );
       });
 
-      it('should add keyup event listener when formStatus is true', async () => {
-        wrapper = createWrapper({ formStatus: true });
-        await nextTick();
-
-        expect(document.addEventListener).toHaveBeenCalledWith(
-          'keyup',
-          expect.any(Function),
-          { once: true }
-        );
-      });
-
-      it('should not add keyup event listener when formStatus is false', async () => {
-        vi.clearAllMocks();
-        wrapper = createWrapper({ formStatus: false });
+      it('does not register a global Enter shortcut that bypasses confirmation', async () => {
+        wrapper = createWrapper();
         await nextTick();
 
         const keyupCalls = (document.addEventListener as Mock).mock.calls
           .filter(call => call[0] === 'keyup');
-        expect(keyupCalls.length).toBe(0);
-      });
-
-      it('should execute editHandlerAsync when Enter key is pressed', async () => {
-        vi.clearAllMocks();
-        wrapper = createWrapper({ formStatus: true });
-        await nextTick();
-
-        const keyupCall = (document.addEventListener as Mock).mock.calls
-          .find(call => call[0] === 'keyup');
-
-        expect(keyupCall).toBeDefined();
-
-        if (keyupCall) {
-          const keyupHandler = keyupCall[1];
-
-          // Call the handler with Enter key
-          await keyupHandler({ key: 'Enter' });
-          await nextTick();
-
-          expect(mockCommonUtilities.updateAppProcessingAsync).toHaveBeenCalled();
-        }
-      });
-
-      it('should not execute editHandlerAsync when non-Enter key is pressed', async () => {
-        vi.clearAllMocks();
-        wrapper = createWrapper({ formStatus: true });
-        await nextTick();
-
-        const keyupCall = (document.addEventListener as Mock).mock.calls
-          .find(call => call[0] === 'keyup');
-
-        expect(keyupCall).toBeDefined();
-
-        if (keyupCall) {
-          const keyupHandler = keyupCall[1];
-          vi.clearAllMocks();
-
-          // Call the handler with a different key
-          await keyupHandler({ key: 'Escape' });
-          await nextTick();
-
-          // updateAppProcessingAsync should not be called for non-Enter keys
-          expect(mockCommonUtilities.updateAppProcessingAsync).not.toHaveBeenCalled();
-        }
+        expect(keyupCalls).toHaveLength(0);
       });
 
       it('should execute resize callback and trigger resetViewPort after timeout', async () => {
@@ -1458,15 +1399,91 @@ describe('UserProfileForm.vue', () => {
           'resize',
           expect.any(Function)
         );
-        expect(document.removeEventListener).toHaveBeenCalledWith(
-          'keyup',
-          expect.any(Function)
-        );
       });
     });
   });
 
   describe('Form Interactions', () => {
+    it('submits edited profile data only after confirmation with default props', async () => {
+      wrapper = createWrapper();
+      await flushPromises();
+
+      const editButton = wrapper.findAll('button').find((button) => button.text() === 'Edit');
+      expect(editButton).toBeDefined();
+      expect(editButton!.attributes('disabled')).toBeUndefined();
+      await editButton!.trigger('click');
+
+      const firstNameField = wrapper.findAllComponents({ name: 'VTextField' })
+        .find((field) => field.props('label') === 'First Name');
+      expect(firstNameField).toBeDefined();
+      await firstNameField!.find('input').setValue('Jane');
+      await flushPromises();
+
+      const submitButton = wrapper.findAll('button').find((button) => button.text() === 'Submit');
+      expect(submitButton).toBeDefined();
+      expect(submitButton!.attributes('disabled')).toBeUndefined();
+      await submitButton!.trigger('click');
+
+      expect(dialogStore.updateDialog).toHaveBeenCalledWith(
+        'Confirm Edit',
+        expect.any(String),
+        DialogType.CONFIRM,
+        expect.any(Function),
+      );
+      expect(userStore.updateUserAsync).not.toHaveBeenCalled();
+
+      await dialogStore.updateDialog.mock.calls[0][3]();
+      expect(userStore.updateUserAsync).toHaveBeenCalledWith(
+        expect.objectContaining({ firstName: 'Jane', userName: 'testuser' }),
+      );
+    });
+
+    it('does not submit an invalid profile', async () => {
+      mockRules.requiredRules.mockReturnValue([(value: string) => !!value || 'Required']);
+      wrapper = createWrapper();
+      await flushPromises();
+
+      const editButton = wrapper.findAll('button').find((button) => button.text() === 'Edit');
+      expect(editButton).toBeDefined();
+      await editButton!.trigger('click');
+
+      const lastNameField = wrapper.findAllComponents({ name: 'VTextField' })
+        .find((field) => field.props('label') === 'Last Name');
+      expect(lastNameField).toBeDefined();
+      await lastNameField!.find('input').setValue('');
+      await flushPromises();
+
+      const submitButton = wrapper.findAll('button').find((button) => button.text() === 'Submit');
+      expect(submitButton).toBeDefined();
+      expect(submitButton!.attributes('disabled')).toBeDefined();
+      expect(dialogStore.updateDialog).not.toHaveBeenCalled();
+      expect(userStore.updateUserAsync).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ['Refresh', 'getUserAsync', []],
+      ['Delete', 'deleteUserAsync', []],
+      ['Password Reset', 'requestPasswordResetAsync', ['john.doe@example.com']],
+    ])('runs %s after confirmation with default props', async (label, action, args) => {
+      wrapper = createWrapper();
+      await flushPromises();
+
+      const button = wrapper.findAll('button').find((item) => item.text() === label);
+      expect(button).toBeDefined();
+      expect(button!.attributes('disabled')).toBeUndefined();
+      await button!.trigger('click');
+
+      expect(dialogStore.updateDialog).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        DialogType.CONFIRM,
+        expect.any(Function),
+      );
+      expect(userStore[action]).not.toHaveBeenCalled();
+      await dialogStore.updateDialog.mock.calls[0][3]();
+      expect(userStore[action]).toHaveBeenCalledWith(...args);
+    });
+
     it('should handle v-model binding for all form fields', async () => {
       wrapper = createWrapper();
       await nextTick();
