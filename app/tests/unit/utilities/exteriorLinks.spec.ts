@@ -16,7 +16,7 @@ describe('The ExteriorLinks utility', () => {
   it('should export an array of MenuItem objects', () => {
     // Assert
     expect(Array.isArray(ExteriorLinks)).toBe(true);
-    expect(ExteriorLinks.length).toBe(5);
+    expect(ExteriorLinks.length).toBe(6);
     ExteriorLinks.forEach(item => {
       expect(item instanceof MenuItem).toBe(true);
     });
@@ -77,6 +77,16 @@ describe('The ExteriorLinks utility', () => {
     expect(adminGithubLink.condition).toBe(true);
   });
 
+  it('should have correct Vue Sudoku GitHub Page link', () => {
+    const vueSudokuGithubLink = ExteriorLinks[5];
+    expect(vueSudokuGithubLink.url).toBe('https://github.com/Joseph-Anthony-King/SudokuCollective.App');
+    expect(vueSudokuGithubLink.title).toBe('Vue Sudoku GitHub Page');
+    expect(vueSudokuGithubLink.tooltip).toBe('Review the Vue Sudoku app code on Github.com');
+    expect(vueSudokuGithubLink.mdiIcon).toBe('mdi-github');
+    expect(vueSudokuGithubLink.target).toBe('_blank');
+    expect(vueSudokuGithubLink.condition).toBe(true);
+  });
+
   it('should include environment variables in API URLs', async () => {
     // Arrange
     const url = process.env.VITE_APP_API_URL;
@@ -111,5 +121,6 @@ describe('The ExteriorLinks utility', () => {
     expect(ExteriorLinks[2].title).toBe('API Documentation');
     expect(ExteriorLinks[3].title).toBe('API GitHub Page');
     expect(ExteriorLinks[4].title).toBe('Admin App GitHub Page');
+    expect(ExteriorLinks[5].title).toBe('Vue Sudoku GitHub Page');
   });
 });
