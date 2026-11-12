@@ -441,7 +441,7 @@
       formStatus?: boolean;
     }>(),
     {
-      formStatus: false,
+      formStatus: true,
     },
   );
   const emit = defineEmits(['user-updated']);
@@ -916,23 +916,11 @@
       },
       { once: true },
     );
-    if (getFormStatus.value) {
-      document.addEventListener(
-        'keyup',
-        async (event) => {
-          if (event.key === 'Enter' && getFormStatus.value) {
-            await editHandlerAsync();
-          }
-        },
-        { once: true },
-      );
-    }
   });
   onUnmounted(() => {
     window.removeEventListener('resize', () => {
       resetViewPort(isSmallViewPort);
     });
-    document.removeEventListener('keyup', () => {});
   });
   //#endregion
 </script>
