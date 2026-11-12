@@ -6,6 +6,7 @@ import { AdminService } from '@/services/adminService';
 vi.mock('@/ports/adminPort', () => ({
   AdminPort: {
     getStatsAsync: vi.fn(),
+    postFlushCacheAsync: vi.fn(),
   },
 }));
 
@@ -97,6 +98,59 @@ describe('the adminService service', () => {
       isSuccess: false,
       message: 'Network error.',
     });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+
+  it('returns the result of a successful cache flush', async () => {
+    vi.mocked(AdminPort.postFlushCacheAsync).mockResolvedValue({
+      data: { isSuccess: true, message: 'Cache flushed.' },
+    } as never);
+
+    const result = await AdminService.postFlushCacheAsync();
+
+    expect(result).toEqual({ isSuccess: true, message: 'Cache flushed.' });
+    expect(AdminPort.postFlushCacheAsync).toHaveBeenCalledOnce();
+    expect(AdminPort.postFlushCacheAsync).toHaveBeenCalledWith();
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+
+  it('returns the message from an unsuccessful cache flush response', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.mocked(AdminPort.postFlushCacheAsync).mockResolvedValue({
+      data: { isSuccess: false, message: 'Cache could not be flushed.' },
+    } as never);
+
+    const result = await AdminService.postFlushCacheAsync();
+
+    expect(result).toEqual({ isSuccess: false, message: 'Cache could not be flushed.' });
+    expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+  });
+
+  it('logs and processes a cache flush HTTP error response', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const response = { status: 500, data: { isSuccess: false, message: 'Server error.' } };
+    const error = { response };
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.mocked(AdminPort.postFlushCacheAsync).mockResolvedValue(error as never);
+
+    const result = await AdminService.postFlushCacheAsync();
+
+    expect(result).toEqual({ isSuccess: false, message: 'Server error.' });
+    expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledOnce();
+    expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+  });
+
+  it('returns a plain cache flush error without processing a failed response', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const error = new Error('Network error.');
+    vi.mocked(AdminPort.postFlushCacheAsync).mockResolvedValue(error as never);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const result = await AdminService.postFlushCacheAsync();
+
+    expect(result).toEqual({ isSuccess: false, message: 'Network error.' });
+    expect(consoleError).not.toHaveBeenCalled();
     expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
   });
 });

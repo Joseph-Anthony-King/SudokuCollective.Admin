@@ -6,12 +6,21 @@ import { User } from '@/models/domain/user';
 import { AdminSummary } from '@/models/infrastructure/adminSummary';
 import { AdminService } from '@/services/adminService';
 import { AppsService } from '@/services/appsService';
+import { GamesService } from '@/services/gamesService';
 import { UsersService } from '@/services/usersService';
 import { useAdminStore } from '@/stores/adminStore';
+import { useAppStore } from '@/stores/appStore';
 
 vi.mock('@/services/adminService', () => ({
   AdminService: {
     getStatsAsync: vi.fn(),
+    postFlushCacheAsync: vi.fn(),
+  },
+}));
+
+vi.mock('@/services/gamesService', () => ({
+  GamesService: {
+    postAddSolutionsAsync: vi.fn(),
   },
 }));
 
@@ -446,5 +455,48 @@ describe('the adminStore store', () => {
     expect(await store.putDeactivateUserAsync(1)).toBe(false);
     expect(consoleError).toHaveBeenCalledOnce();
     expect(consoleError).toHaveBeenCalledWith('error: ', developmentError);
+  });
+
+  describe.each([
+    { action: 'postAddSolutionsAsync', service: GamesService.postAddSolutionsAsync },
+    { action: 'postFlushCacheAsync', service: AdminService.postFlushCacheAsync },
+  ] as const)('$action', ({ action, service }) => {
+    it('returns the service status and updates the app message for success and failure', async () => {
+      const pinia = createPinia();
+      const store = useAdminStore(pinia);
+      const appStore = useAppStore(pinia);
+      vi.mocked(service)
+        .mockResolvedValueOnce({ isSuccess: true, message: 'Operation succeeded.' })
+        .mockResolvedValueOnce({ isSuccess: false, message: 'Operation failed.' });
+
+      expect(await store[action]()).toBe(true);
+      expect(appStore.getServiceMessage).toBe('Operation succeeded.');
+      expect(await store[action]()).toBe(false);
+      expect(appStore.getServiceMessage).toBe('Operation failed.');
+      expect(service).toHaveBeenCalledTimes(2);
+      expect(service).toHaveBeenCalledWith();
+    });
+
+    it('returns false for rejected requests and logs only in development', async () => {
+      const pinia = createPinia();
+      const store = useAdminStore(pinia);
+      const appStore = useAppStore(pinia);
+      appStore.updateServiceMessage('Previous message');
+      const developmentError = new Error('Development error');
+      const productionError = new Error('Production error');
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      vi.mocked(service)
+        .mockRejectedValueOnce(developmentError)
+        .mockRejectedValueOnce(productionError);
+
+      vi.stubEnv('NODE_ENV', 'development');
+      expect(await store[action]()).toBe(false);
+      vi.stubEnv('NODE_ENV', 'production');
+      expect(await store[action]()).toBe(false);
+
+      expect(consoleError).toHaveBeenCalledOnce();
+      expect(consoleError).toHaveBeenCalledWith('error: ', developmentError);
+      expect(appStore.getServiceMessage).toBe('Previous message');
+    });
   });
 });

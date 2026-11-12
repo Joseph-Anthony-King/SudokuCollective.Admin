@@ -10,6 +10,14 @@ export const ExteriorLinks: Array<MenuItem> = [
     true,
   ),
   new MenuItem(
+    `https://vuesudoku.com/`,
+    'Vue Sudoku',
+    'Visit the Vue Sudoku website',
+    'mdi-abacus',
+    '_blank',
+    true,
+  ),
+  new MenuItem(
     `${process.env.VITE_APP_API_URL}swagger/index.html`,
     'API Documentation',
     'Review the api swagger documentation',
