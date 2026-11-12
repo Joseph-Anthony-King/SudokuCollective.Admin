@@ -1,15 +1,23 @@
-  import { describe, it, expect } from 'vitest';
+  import { beforeEach, describe, it, expect, vi } from 'vitest';
   import { mount } from '@vue/test-utils';
+  import { createPinia, setActivePinia } from 'pinia';
   import { createVuetify } from 'vuetify';
   import * as components from 'vuetify/components';
   import * as directives from 'vuetify/directives';
   import AppButton from '@/components/buttons/AppButton.vue';
   import { App } from '@/models/domain/app';
+  import { DialogType } from '@/enums/dialogType';
   import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+  import { useDialogStore } from '@/stores/dialogStore';
 
   const vuetify = createVuetify({
     components,
     directives,
+  });
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.restoreAllMocks();
   });
 
   describe('The AppButton.vue component', () => {
@@ -360,5 +368,135 @@
         global: { plugins: [vuetify] },
       });
       expect(wrapper.find('.select-app-title').text()).toBe('LongSingleWordName');
+    });
+
+    it.each([
+      {
+        environment: ReleaseEnvironment.LOCAL,
+        url: 'http://localhost',
+        environmentName: 'local',
+      },
+      {
+        environment: ReleaseEnvironment.TEST,
+        url: 'https://test.example.com',
+        environmentName: 'test',
+      },
+      {
+        environment: ReleaseEnvironment.STAGING,
+        url: 'https://staging.example.com',
+        environmentName: 'staging',
+      },
+      {
+        environment: ReleaseEnvironment.PROD,
+        url: 'https://example.com',
+        environmentName: 'production',
+      },
+    ])(
+      'should navigate to the $environmentName app URL',
+      async ({ environment, url }) => {
+        const openWindow = vi.spyOn(window, 'open').mockImplementation(() => null);
+        const app = Object.assign(new App(), {
+          id: 1,
+          name: 'Test App',
+          environment,
+          isActive: true,
+          localUrl: 'http://localhost',
+          testUrl: 'https://test.example.com',
+          stagingUrl: 'https://staging.example.com',
+          prodUrl: 'https://example.com',
+        });
+
+        const wrapper = mount(AppButton, {
+          props: { app, type: 'Manage Apps' },
+          global: { plugins: [vuetify] },
+        });
+
+        await wrapper.find('.app-button').trigger('click');
+
+        expect(openWindow).toHaveBeenCalledWith(url, '_blank');
+        expect(useDialogStore().isActive).toBe(false);
+      },
+    );
+
+    it.each(([
+      { environment: ReleaseEnvironment.LOCAL, urlProperty: 'localUrl', label: 'Local', message: 'local' },
+      { environment: ReleaseEnvironment.TEST, urlProperty: 'testUrl', label: 'Test', message: 'test' },
+      { environment: ReleaseEnvironment.STAGING, urlProperty: 'stagingUrl', label: 'Staging', message: 'staging' },
+      { environment: ReleaseEnvironment.PROD, urlProperty: 'prodUrl', label: 'Production', message: 'production' },
+    ] as const).flatMap((testCase) =>
+      [null, ''].map((missingUrl) => ({ ...testCase, missingUrl })),
+    ))(
+      'should show a dialog when the $label URL is $missingUrl',
+      async ({ environment, urlProperty, label, message, missingUrl }) => {
+        const openWindow = vi.spyOn(window, 'open').mockImplementation(() => null);
+        const app: App = Object.assign(new App(), {
+          id: 1,
+          name: 'Test App',
+          environment,
+          isActive: true,
+          localUrl: 'http://localhost',
+          testUrl: 'https://test.example.com',
+          stagingUrl: 'https://staging.example.com',
+          prodUrl: 'https://example.com',
+        });
+        app[urlProperty] = missingUrl;
+
+        const wrapper = mount(AppButton, {
+          props: { app, type: 'Manage Apps' },
+          global: { plugins: [vuetify] },
+        });
+
+        await wrapper.find('.app-button').trigger('click');
+
+        const dialogStore = useDialogStore();
+        expect(dialogStore.title).toBe(`${label} URL not set`);
+        expect(dialogStore.message).toBe(`The ${message} URL for this app is not configured.`);
+        expect(dialogStore.dialogType).toBe(DialogType.OK);
+        expect(dialogStore.isActive).toBe(true);
+        expect(openWindow).not.toHaveBeenCalled();
+      },
+    );
+
+    it('should show a dialog instead of navigating to a deactivated app', async () => {
+      const openWindow = vi.spyOn(window, 'open').mockImplementation(() => null);
+      const app = {
+        id: 1,
+        name: 'Test App',
+        environment: ReleaseEnvironment.LOCAL,
+        isActive: false,
+      } as App;
+
+      const wrapper = mount(AppButton, {
+        props: { app, type: 'Manage Apps' },
+        global: { plugins: [vuetify] },
+      });
+
+      await wrapper.find('.app-button').trigger('click');
+
+      const dialogStore = useDialogStore();
+      expect(dialogStore.title).toBe('App has been deactivated');
+      expect(dialogStore.message).toBe('This app is deactivated.');
+      expect(dialogStore.dialogType).toBe(DialogType.OK);
+      expect(dialogStore.isActive).toBe(true);
+      expect(openWindow).not.toHaveBeenCalled();
+    });
+
+    it('should open an empty URL for an active app with an unknown environment', async () => {
+      const openWindow = vi.spyOn(window, 'open').mockImplementation(() => null);
+      const app = {
+        id: 1,
+        name: 'Test App',
+        environment: 999,
+        isActive: true,
+      } as any;
+
+      const wrapper = mount(AppButton, {
+        props: { app, type: 'Manage Apps' },
+        global: { plugins: [vuetify] },
+      });
+
+      await wrapper.find('.app-button').trigger('click');
+
+      expect(openWindow).toHaveBeenCalledWith('', '_blank');
     });
   });

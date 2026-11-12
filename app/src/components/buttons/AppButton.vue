@@ -2,7 +2,7 @@
   <v-card
     :color="evaluateColor(index)"
     class="app-button"
-    @click="type === 'Your Apps' ? selectApp() : null">
+    @click="type === 'Your Apps' ? selectApp() : navigateToApp()">
     <v-card-title>
       <span class="select-app-title">{{ formattedAppName }}</span>
     </v-card-title>
@@ -18,6 +18,8 @@
   import { type ComputedRef, computed } from 'vue';
   import type { IApp } from '@/interfaces/domain/iApp';
   import { ReleaseEnvironment } from '@/enums/releaseEnvironment';
+  import { useDialogStore } from '@/stores/dialogStore';
+  import { DialogType } from '@/enums/dialogType';
   import { App } from '@/models/domain/app';
 
   const props = withDefaults(
@@ -33,6 +35,9 @@
     },
   );
   const emit = defineEmits(['app-selected']);
+  
+  const dialogStore = useDialogStore();
+  const { updateDialog } = dialogStore;
 
   const type: ComputedRef<string> = computed(() => props.type);
 
@@ -78,6 +83,61 @@
   };
   const evaluateColor = (value: number): string => {
     return value % 2 === 0 ? 'secondary' : 'error';
+  };
+  const navigateToApp = (): void => {
+    if (!props.app.isActive) {
+      updateDialog(
+        'App has been deactivated',
+        'This app is deactivated.',
+        DialogType.OK
+      );
+    } else {
+      let url: string = '';
+
+      if (props.app.environment === ReleaseEnvironment.LOCAL) {
+        if (!props.app.localUrl) {
+          updateDialog(
+            'Local URL not set',
+            'The local URL for this app is not configured.',
+            DialogType.OK
+          );
+          return;
+        }
+        url = props.app.localUrl!;
+      } else if (props.app.environment === ReleaseEnvironment.TEST) {
+        if (!props.app.testUrl) {
+          updateDialog(
+            'Test URL not set',
+            'The test URL for this app is not configured.',
+            DialogType.OK
+          );
+          return;
+        }
+        url = props.app.testUrl!;
+      } else if (props.app.environment === ReleaseEnvironment.STAGING) {
+        if (!props.app.stagingUrl) {
+          updateDialog(
+            'Staging URL not set',
+            'The staging URL for this app is not configured.',
+            DialogType.OK
+          );
+          return;
+        }
+        url = props.app.stagingUrl!;
+      } else if (props.app.environment === ReleaseEnvironment.PROD) {
+        if (!props.app.prodUrl) {
+          updateDialog(
+            'Production URL not set',
+            'The production URL for this app is not configured.',
+            DialogType.OK
+          );
+          return;
+        }
+        url = props.app.prodUrl!;
+      }
+
+      window.open(url, '_blank');
+    }
   };
 </script>
 

@@ -41,4 +41,12 @@ export const ExteriorLinks: Array<MenuItem> = [
     '_blank',
     true,
   ),
+  new MenuItem(
+    'https://github.com/Joseph-Anthony-King/SudokuCollective.App',
+    'Vue Sudoku GitHub Page',
+    'Review the Vue Sudoku app code on Github.com',
+    'mdi-github',
+    '_blank',
+    true,
+  ),
 ];
