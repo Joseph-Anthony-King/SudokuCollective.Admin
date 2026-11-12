@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosHeaders, type AxiosResponse } from 'axios';
 import { GamesService } from '@/services/gamesService/index';
 import { GamesPort } from '@/ports/gamesPort';
 import { JobsPort } from '@/ports/jobsPort';
@@ -1755,6 +1755,75 @@ describe('the gamesService service', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.message).equals('Status Code 200: Erroneous result returned.');
   });
+  describe('postAddSolutionsAsync', () => {
+    const makeResponse = (isSuccess: boolean, message: string): AxiosResponse => ({
+      data: { isSuccess, message },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: { headers: new AxiosHeaders() },
+    });
+
+    beforeEach(() => {
+      vi.stubEnv('NODE_ENV', 'production');
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('returns the success status and message from the solutions port', async () => {
+      const port = vi.spyOn(SolutionsPort, 'postAddSolutionsAsync')
+        .mockResolvedValue(makeResponse(true, 'Solutions added.'));
+
+      const result = await GamesService.postAddSolutionsAsync();
+
+      expect(result).toEqual({ isSuccess: true, message: 'Solutions added.' });
+      expect(port).toHaveBeenCalledOnce();
+      expect(port).toHaveBeenCalledWith();
+      expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+    });
+
+    it('returns the message from an unsuccessful response', async () => {
+      vi.spyOn(SolutionsPort, 'postAddSolutionsAsync')
+        .mockResolvedValue(makeResponse(false, 'Solutions were not added.'));
+
+      const result = await GamesService.postAddSolutionsAsync();
+
+      expect(result).toEqual({ isSuccess: false, message: 'Solutions were not added.' });
+      expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+    });
+
+    it('logs and processes a returned HTTP error response', async () => {
+      vi.stubEnv('NODE_ENV', 'development');
+      const response = makeResponse(false, 'Server error.');
+      response.status = 500;
+      const error = new AxiosError('Request failed', undefined, undefined, undefined, response);
+      vi.spyOn(SolutionsPort, 'postAddSolutionsAsync').mockResolvedValue(error);
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      const result = await GamesService.postAddSolutionsAsync();
+
+      expect(result).toEqual({ isSuccess: false, message: 'Server error.' });
+      expect(consoleError).toHaveBeenCalledOnce();
+      expect(consoleError).toHaveBeenCalledWith('error: ', error);
+      expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledOnce();
+      expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
+    });
+
+    it('returns a network error without processing or logging a response', async () => {
+      const error = new AxiosError('Network error.');
+      vi.spyOn(SolutionsPort, 'postAddSolutionsAsync').mockResolvedValue(error);
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      const result = await GamesService.postAddSolutionsAsync();
+
+      expect(result).toEqual({ isSuccess: false, message: 'Network error.' });
+      expect(consoleError).not.toHaveBeenCalled();
+      expect(StaticServiceMethods.processFailedResponse).not.toHaveBeenCalled();
+    });
+  });
+
   it('should download the game from an AxiosResponse by running the downloadTheGame method', () => {
     // Arrange
     const response = {
