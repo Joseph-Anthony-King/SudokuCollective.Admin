@@ -50,12 +50,12 @@
                   <v-col
                     cols="12"
                     md="6">
-                    <strong>Full Name:</strong> {{ item.fullName || 'N/A' }}
+                    <strong>Username:</strong> {{ item.userName || 'N/A' }}
                   </v-col>
                   <v-col
                     cols="12"
                     md="6">
-                    <strong>Nickname:</strong> {{ item.nickName || 'N/A' }}
+                    <strong>Full Name:</strong> {{ item.fullName || 'N/A' }}
                   </v-col>
                   <v-col
                     cols="12"
@@ -111,8 +111,8 @@
     let baseHeaders: Array<{ title: string; key: string; sortable?: boolean }> = [];
 
     baseHeaders = [
+      { title: 'Username', key: 'userName', sortable: true },
       { title: 'Full Name', key: 'fullName', sortable: true },
-      { title: 'Nickname', key: 'nickName', sortable: true },
       { title: 'Email', key: 'email', sortable: true },
       { title: 'Email Confirmed', key: 'isEmailConfirmed', sortable: false },
       { title: 'Active', key: 'isActive', sortable: false },
