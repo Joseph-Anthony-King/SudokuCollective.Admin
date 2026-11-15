@@ -4,6 +4,7 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { createVuetify } from 'vuetify';
+import { toast } from 'vue3-toastify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import UserProfileForm from '@/components/forms/UserProfileForm.vue';
@@ -49,6 +50,13 @@ vi.mock('@/router/index', () => ({
   default: {
     push: (path: string) => mockRouterPush(path),
   },
+}));
+
+vi.mock('vue3-toastify', () => ({
+  toast: Object.assign(vi.fn(), {
+    POSITION: { TOP_CENTER: 'top-center' },
+    TYPE: { SUCCESS: 'success', ERROR: 'error', WARNING: 'warning' },
+  }),
 }));
 
 // Mock the utilities
@@ -220,17 +228,36 @@ describe('UserProfileForm.vue', () => {
       expect(mockCommonUtilities.displayFailedToastAsync).not.toHaveBeenCalled();
     });
 
-    it('displays a failure toast when emailing the administrator fails', async () => {
+    it('displays the service error when the administrator email button fails', async () => {
       const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
         .mockReturnValue({ isSuccess: false, message: 'Admin email is not defined' });
+      wrapper = createWrapper();
+
+      const button = wrapper.findAll('button')
+        .find(button => button.text().includes('Email Site Administrator'));
+      expect(button).toBeDefined();
+      await button.trigger('click');
+      await flushPromises();
+
+      expect(emailAdmin).toHaveBeenCalledOnce();
+      expect(toast).toHaveBeenCalledWith('Admin email is not defined', {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
+      expect(mockCommonUtilities.displaySuccessfulToast).not.toHaveBeenCalled();
+    });
+
+    it('displays a fallback error when the service provides no message', async () => {
+      vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin').mockReturnValue({ isSuccess: false });
       wrapper = createWrapper();
 
       wrapper.vm.emailAdminHandler();
       await flushPromises();
 
-      expect(emailAdmin).toHaveBeenCalledOnce();
-      expect(mockCommonUtilities.displayFailedToastAsync).toHaveBeenCalledWith(undefined, undefined);
-      expect(mockCommonUtilities.displaySuccessfulToast).not.toHaveBeenCalled();
+      expect(toast).toHaveBeenCalledWith('Unable to open the administrator email.', {
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR,
+      });
     });
 
     it('calls the handler from the administrator email button', async () => {
