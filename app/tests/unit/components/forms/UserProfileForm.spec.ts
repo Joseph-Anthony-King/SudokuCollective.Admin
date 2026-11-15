@@ -8,6 +8,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import UserProfileForm from '@/components/forms/UserProfileForm.vue';
 import { useDialogStore } from '@/stores/dialogStore';
+import { useGlobalStore } from '@/stores/globalStore';
 import { useUserStore } from '@/stores/userStore';
 import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
 import { User } from '@/models/domain/user';
@@ -201,6 +202,65 @@ describe('UserProfileForm.vue', () => {
       },
     });
   };
+
+  describe('emailAdminHandler', () => {
+    it('prevents the event and displays a success toast when emailing the administrator succeeds', async () => {
+      const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
+        .mockReturnValue({ isSuccess: true, message: 'Email opened' });
+      const event = { preventDefault: vi.fn() };
+      wrapper = createWrapper();
+
+      wrapper.vm.emailAdminHandler(event);
+      await flushPromises();
+
+      expect(event.preventDefault).toHaveBeenCalledOnce();
+      expect(mockCommonUtilities.updateAppProcessingAsync).toHaveBeenCalledOnce();
+      expect(emailAdmin).toHaveBeenCalledOnce();
+      expect(mockCommonUtilities.displaySuccessfulToast).toHaveBeenCalledWith(StoreType.GLOBALSTORE);
+      expect(mockCommonUtilities.displayFailedToastAsync).not.toHaveBeenCalled();
+    });
+
+    it('displays a failure toast when emailing the administrator fails', async () => {
+      const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
+        .mockReturnValue({ isSuccess: false, message: 'Admin email is not defined' });
+      wrapper = createWrapper();
+
+      wrapper.vm.emailAdminHandler();
+      await flushPromises();
+
+      expect(emailAdmin).toHaveBeenCalledOnce();
+      expect(mockCommonUtilities.displayFailedToastAsync).toHaveBeenCalledWith(undefined, undefined);
+      expect(mockCommonUtilities.displaySuccessfulToast).not.toHaveBeenCalled();
+    });
+
+    it('calls the handler from the administrator email button', async () => {
+      const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
+        .mockReturnValue({ isSuccess: true });
+      wrapper = createWrapper();
+      const button = wrapper.findAll('button')
+        .find(button => button.text().includes('Email Site Administrator'));
+
+      expect(button).toBeDefined();
+      await button.trigger('click');
+      await flushPromises();
+
+      expect(emailAdmin).toHaveBeenCalledOnce();
+      expect(mockCommonUtilities.displaySuccessfulToast).toHaveBeenCalledWith(StoreType.GLOBALSTORE);
+    });
+
+    it('disables the administrator email button for super users', async () => {
+      userStore.user = createMockUser({ isSuperUser: true });
+      const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin');
+      wrapper = createWrapper();
+      const button = wrapper.findAll('button')
+        .find(button => button.text().includes('Email Site Administrator'));
+
+      expect(button).toBeDefined();
+      expect(button.attributes('disabled')).toBeDefined();
+      await button.trigger('click');
+      expect(emailAdmin).not.toHaveBeenCalled();
+    });
+  });
 
   describe('Component Rendering', () => {
     it('should render the form with all elements', async () => {

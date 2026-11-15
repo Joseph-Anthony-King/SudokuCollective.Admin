@@ -12,6 +12,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     define: {
       "process.env.VITE_APP_TITLE": JSON.stringify(env.VITE_APP_TITLE),
+      "process.env.VITE_APP_ADMIN_EMAIL": JSON.stringify(env.VITE_APP_ADMIN_EMAIL),
       "process.env.NODE_ENV": JSON.stringify(env.VITE_APP_ENV),
       "process.env.VITE_APP_ID": JSON.stringify(env.VITE_APP_ID),
       "process.env.VITE_APP_LICENSE": JSON.stringify(env.VITE_APP_LICENSE),
@@ -25,13 +26,6 @@ export default defineConfig(({ command, mode }) => {
       vue(),
       vuetify(),
     ],
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler'
-        }
-      }
-    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))

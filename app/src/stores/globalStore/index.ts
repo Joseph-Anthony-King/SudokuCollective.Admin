@@ -6,6 +6,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { useUserStore } from '@/stores/userStore';
 import { LoginService } from '@/services/loginService';
+import { UsersService } from '@/services/usersService';
 import router from '@/router';
 import type { ILoginRequestData } from '@/interfaces/requests/iLoginRequestData';
 import type { IServicePayload } from '@/interfaces/infrastructure/iServicePayload';
@@ -167,6 +168,16 @@ export const useGlobalStore = defineStore('globalStore', () => {
       cancelApiRequestDelegate.value();
     }
   };
+  const emailAdmin = (): IServicePayload => {
+    try {
+      return UsersService.emailAdmin();
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      throw error;
+    }
+  };
   //#endregion
 
   return {
@@ -208,5 +219,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
     isTokenExpired,
     tokenHasExpired,
     cancelApiRequest,
+    emailAdmin,
   };
 });

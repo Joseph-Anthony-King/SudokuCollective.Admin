@@ -7,6 +7,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { useUserStore } from '@/stores/userStore';
 import { LoginService } from '@/services/loginService';
+import { UsersService } from '@/services/usersService';
 import { User } from '@/models/domain/user';
 import { LoginRequestData } from '@/models/requests/loginRequestData';
 import type { IUser } from '@/interfaces/domain/iUser';
@@ -694,6 +695,7 @@ describe('the globalStore store', () => {
   });
   it('should redirect the user to login if the axios response is status code unauthorized 401 by using the tokenHasExpired action', () => {
     // Arrange
+    const routerPush = vi.spyOn(router, 'push').mockResolvedValue(undefined);
     const token = 'a0e9fbe1-0646-4d76-9771-24091ead30b9';
     const expirationDate = new Date();
     const testRoute = 'http://localhost/fakeRoute';
@@ -748,9 +750,12 @@ describe('the globalStore store', () => {
     expect(finalToken).not.equals(initialToken);
     expect(initialTokenExpirationDate?.toDateString()).equals(expirationDate.toDateString());
     expect(finalTokenExpirationDate).toBeNull();
+    expect(sut.getRedirectUrl).toBe(testRoute);
+    expect(routerPush).toHaveBeenCalledExactlyOnceWith('/login');
   });
   it('should redirect the user to login if the axios response is status code forbidden 403 by using the tokenHasExpired action', () => {
     // Arrange
+    const routerPush = vi.spyOn(router, 'push').mockResolvedValue(undefined);
     const token = 'a0e9fbe1-0646-4d76-9771-24091ead30b9';
     const expirationDate = new Date();
     const testRoute = 'http://localhost/fakeRoute';
@@ -805,6 +810,8 @@ describe('the globalStore store', () => {
     expect(finalToken).not.equals(initialToken);
     expect(initialTokenExpirationDate?.toDateString()).equals(expirationDate.toDateString());
     expect(finalTokenExpirationDate).toBeNull();
+    expect(sut.getRedirectUrl).toBe(testRoute);
+    expect(routerPush).toHaveBeenCalledExactlyOnceWith('/login');
   });
   it('should invoke the cancelApiRequestDelegate by using the cancelApiRequest action if the delegate is not null', () => {
     // Arrange
@@ -823,5 +830,42 @@ describe('the globalStore store', () => {
     // Assert
     expect(delegateIsNotNull).toBeTruthy();
     expect(console.debug).toHaveBeenLastCalledWith(debugMessage);
+  });
+  describe('emailAdmin', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it.each([
+      { isSuccess: true, message: 'Admin email is admin@example.com' },
+      { isSuccess: false, message: 'Admin email is not defined' },
+    ])('returns the service response unchanged: $isSuccess', (response) => {
+      const emailAdmin = vi.spyOn(UsersService, 'emailAdmin').mockReturnValue(response);
+      const sut = useGlobalStore(pinia);
+
+      expect(sut.emailAdmin()).toBe(response);
+      expect(emailAdmin).toHaveBeenCalledExactlyOnceWith();
+    });
+
+    it.each([
+      { environment: 'development', shouldLog: true },
+      { environment: 'production', shouldLog: false },
+    ])('rethrows service errors in $environment', ({ environment, shouldLog }) => {
+      vi.stubEnv('NODE_ENV', environment);
+      const error = new Error('Email service failed');
+      const emailAdmin = vi.spyOn(UsersService, 'emailAdmin').mockImplementation(() => {
+        throw error;
+      });
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const sut = useGlobalStore(pinia);
+
+      expect(() => sut.emailAdmin()).toThrow(error);
+      expect(emailAdmin).toHaveBeenCalledExactlyOnceWith();
+      if (shouldLog) {
+        expect(consoleError).toHaveBeenCalledExactlyOnceWith('error: ', error);
+      } else {
+        expect(consoleError).not.toHaveBeenCalled();
+      }
+    });
   });
 });

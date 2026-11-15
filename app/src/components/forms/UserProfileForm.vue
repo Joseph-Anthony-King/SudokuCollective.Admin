@@ -402,6 +402,33 @@
             <span>Cancel your outstanding email confirmation and password reset requests</span>
           </v-tooltip>
         </v-col>
+        <v-col
+          cols="12"
+          sm="6"
+          md="6"
+          lg="3"
+          xl="6"
+          xxl="6">
+          <v-tooltip
+            open-delay="2000"
+            location="bottom"
+            :disabled="
+              user.isSuperUser ||
+              isSmallViewPort
+            ">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                color="blue darken-1"
+                variant="text"
+                v-bind="props"
+                :disabled="user.isSuperUser"
+                @click="emailAdminHandler($event)">
+                Email Site Administrator
+              </v-btn>
+            </template>
+            <span>Email the site administrator for assistance</span>
+          </v-tooltip>
+        </v-col>
       </v-row>
     </AvailableActions>
   </v-form>
@@ -426,6 +453,7 @@
   import { storeToRefs } from 'pinia';
   import router from '@/router/index';
   import { useDialogStore } from '@/stores/dialogStore';
+  import { useGlobalStore } from '@/stores/globalStore';
   import { useUserStore } from '@/stores/userStore';
   import { UpdateUserRequestData } from '@/models/requests/updateUserRequestData';
   import { User } from '@/models/domain/user';
@@ -455,10 +483,10 @@
   } = commonUtilities();
 
   //#region Destructure Stores
-  //#region DialogStore
   const dialogStore = useDialogStore();
   const { updateDialog } = dialogStore;
-  //#endregion
+  const globalStore = useGlobalStore();
+  const { emailAdmin } = globalStore;
   const userStore = useUserStore();
   const { getUser } = storeToRefs(userStore);
   const {
@@ -877,6 +905,20 @@
       }
       return result;
     })) as Promise<boolean>;
+  };
+  const emailAdminHandler = (event: Event | null = null): boolean => {
+    event?.preventDefault();
+    let result = false;
+    updateAppProcessingAsync(async () => {
+      const response = emailAdmin();
+      if (response.isSuccess) {
+        displaySuccessfulToast(StoreType.GLOBALSTORE);
+        result = true;
+      } else {
+        await displayFailedToastAsync(undefined, undefined);
+      }
+    });
+    return result;
   };
   //#endregion
 
