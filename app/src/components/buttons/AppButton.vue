@@ -35,7 +35,7 @@
     },
   );
   const emit = defineEmits(['app-selected']);
-  
+
   const dialogStore = useDialogStore();
   const { updateDialog } = dialogStore;
 
@@ -86,11 +86,7 @@
   };
   const navigateToApp = (): void => {
     if (!props.app.isActive) {
-      updateDialog(
-        'App has been deactivated',
-        'This app is deactivated.',
-        DialogType.OK
-      );
+      updateDialog('App has been deactivated', 'This app is deactivated.', DialogType.OK);
     } else {
       let url: string = '';
 
@@ -99,7 +95,7 @@
           updateDialog(
             'Local URL not set',
             'The local URL for this app is not configured.',
-            DialogType.OK
+            DialogType.OK,
           );
           return;
         }
@@ -109,7 +105,7 @@
           updateDialog(
             'Test URL not set',
             'The test URL for this app is not configured.',
-            DialogType.OK
+            DialogType.OK,
           );
           return;
         }
@@ -119,7 +115,7 @@
           updateDialog(
             'Staging URL not set',
             'The staging URL for this app is not configured.',
-            DialogType.OK
+            DialogType.OK,
           );
           return;
         }
@@ -129,7 +125,7 @@
           updateDialog(
             'Production URL not set',
             'The production URL for this app is not configured.',
-            DialogType.OK
+            DialogType.OK,
           );
           return;
         }

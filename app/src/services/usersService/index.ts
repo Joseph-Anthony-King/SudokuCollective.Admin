@@ -77,7 +77,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putUpdateUserAsync(data: IUpdateUserRequestData): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -130,7 +130,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async deleteUserAsync(id: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -182,7 +182,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async getUsersAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -218,7 +218,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async getConfirmEmailAsync(token: string): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -258,7 +258,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putResendEmailConfirmationAsync(requestorId: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -312,7 +312,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putCancelResendEmailConfirmationAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -365,7 +365,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putResetPasswordAsync(data: IResetPasswordRequestData): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -400,7 +400,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async postRequestPasswordResetAsync(email: string): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -470,7 +470,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putResendPasswordResetAsync(userId: number): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -522,7 +522,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putCancelPasswordResetAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -575,7 +575,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putCancelAllEmailRequestsAsync(): Promise<IServicePayload> {
     const result: IServicePayload = {};
@@ -628,7 +628,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putActivateUserAsync(
     userId: number,
@@ -687,7 +687,7 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
 
   static async putDeactivateUserAsync(
     userId: number,
@@ -728,5 +728,27 @@ export class UsersService {
     }
 
     return result;
-  }
+  };
+
+  static emailAdmin = (): IServicePayload => {
+    const result: IServicePayload = {};
+    try {
+      const adminEmail = process.env.VITE_APP_ADMIN_EMAIL;
+      if (!adminEmail) {
+        throw new Error('Admin email is not defined');
+      }
+      window.location.href = `mailto:${adminEmail}`;
+      result.isSuccess = true;
+      result.message = `Admin email is ${adminEmail}`;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('error: ', error);
+      }
+      return {
+        isSuccess: false,
+        message: (<Error>error).message,
+      };
+    }
+    return result;
+  };
 }
