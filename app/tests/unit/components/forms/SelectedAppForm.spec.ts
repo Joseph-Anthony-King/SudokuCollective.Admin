@@ -134,6 +134,8 @@ describe('SelectedAppForm.vue', () => {
 
     testingPinia = createTestingPinia({
       createSpy: vi.fn,
+      stubPatch: true,
+      stubReset: true,
       initialState: {
         appStore: {
           selectedApp: mockApp

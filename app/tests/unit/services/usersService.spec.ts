@@ -2071,4 +2071,56 @@ describe('the usersService serivce', () => {
     expect(consoleError).toHaveBeenCalledWith('error: ', axiosError);
     expect(StaticServiceMethods.processFailedResponse).toHaveBeenCalledWith(response);
   });
+  describe('emailAdmin', () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    });
+
+    it('opens a mailto link for the configured admin email', () => {
+      const location = { href: '' };
+      vi.stubGlobal('window', { location });
+      vi.stubEnv('VITE_APP_ADMIN_EMAIL', 'admin@example.com');
+
+      expect(UsersService.emailAdmin()).toEqual({
+        isSuccess: true,
+        message: 'Admin email is admin@example.com',
+      });
+      expect(location.href).toBe('mailto:admin@example.com');
+    });
+
+    it.each([undefined, ''])('reports a missing admin email: %s', (adminEmail) => {
+      const location = { href: 'https://example.com/' };
+      vi.stubGlobal('window', { location });
+      vi.stubEnv('VITE_APP_ADMIN_EMAIL', adminEmail);
+      vi.stubEnv('NODE_ENV', 'test');
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      expect(UsersService.emailAdmin()).toEqual({
+        isSuccess: false,
+        message: 'Admin email is not defined',
+      });
+      expect(location.href).toBe('https://example.com/');
+      expect(consoleError).not.toHaveBeenCalled();
+    });
+
+    it('reports and logs navigation errors in development', () => {
+      const error = new Error('Navigation failed');
+      const location = {
+        set href(_value: string) {
+          throw error;
+        },
+      };
+      vi.stubGlobal('window', { location });
+      vi.stubEnv('VITE_APP_ADMIN_EMAIL', 'admin@example.com');
+      vi.stubEnv('NODE_ENV', 'development');
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      expect(UsersService.emailAdmin()).toEqual({
+        isSuccess: false,
+        message: 'Navigation failed',
+      });
+      expect(consoleError).toHaveBeenCalledWith('error: ', error);
+    });
+  });
 });
