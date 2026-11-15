@@ -450,6 +450,7 @@
     toRaw,
   } from 'vue';
   import { VForm } from 'vuetify/components';
+  import { toast } from 'vue3-toastify';
   import { storeToRefs } from 'pinia';
   import router from '@/router/index';
   import { useDialogStore } from '@/stores/dialogStore';
@@ -915,7 +916,15 @@
         displaySuccessfulToast(StoreType.GLOBALSTORE);
         result = true;
       } else {
-        await displayFailedToastAsync(undefined, undefined);
+        toast(
+          typeof response.message === 'string' && response.message
+            ? response.message
+            : 'Unable to open the administrator email.',
+          {
+            position: toast.POSITION.TOP_CENTER,
+            type: toast.TYPE.ERROR,
+          },
+        );
       }
     });
     return result;
