@@ -157,8 +157,8 @@
       ];
     } else {
       baseHeaders = [
+        { title: 'Username', key: 'userName', sortable: true },
         { title: 'Full Name', key: 'fullName', sortable: true },
-        { title: 'Nickname', key: 'nickName', sortable: true },
         { title: 'Active', key: 'isActive', sortable: false },
         { title: 'Admin', key: 'isAdmin', sortable: false },
         { title: 'Date Created', key: 'dateCreated', sortable: false },
