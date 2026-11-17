@@ -412,17 +412,14 @@
           <v-tooltip
             open-delay="2000"
             location="bottom"
-            :disabled="
-              user.isSuperUser ||
-              isSmallViewPort
-            ">
+            :disabled="user.isSuperUser || isSmallViewPort">
             <template v-slot:activator="{ props }">
               <v-btn
                 color="blue darken-1"
                 variant="text"
                 v-bind="props"
                 :disabled="user.isSuperUser"
-                @click="emailAdminHandler($event)">
+                @click="confirmEmailAdminHandler($event)">
                 Email Site Administrator
               </v-btn>
             </template>
@@ -706,6 +703,32 @@
       },
     );
   };
+  const confirmEmailAdminHandler = (event: Event | null = null): void => {
+    event?.preventDefault();
+    updateDialog(
+      'Confirm Email Admin',
+      `Are you sure you want to email the site administrator?`,
+      DialogType.CONFIRM,
+      () => {
+        updateAppProcessingAsync(async () => {
+          const response = emailAdmin();
+          if (response.isSuccess) {
+            displaySuccessfulToast(StoreType.GLOBALSTORE);
+          } else {
+            toast(
+              typeof response.message === 'string' && response.message
+                ? response.message
+                : 'Unable to open the administrator email.',
+              {
+                position: toast.POSITION.TOP_CENTER,
+                type: toast.TYPE.ERROR,
+              },
+            );
+          }
+        });
+      },
+    );
+  };
   const updateInvalidValues = (message: string, options: any): any => {
     if (
       message === 'Status Code 404: User name not unique' &&
@@ -906,28 +929,6 @@
       }
       return result;
     })) as Promise<boolean>;
-  };
-  const emailAdminHandler = (event: Event | null = null): boolean => {
-    event?.preventDefault();
-    let result = false;
-    updateAppProcessingAsync(async () => {
-      const response = emailAdmin();
-      if (response.isSuccess) {
-        displaySuccessfulToast(StoreType.GLOBALSTORE);
-        result = true;
-      } else {
-        toast(
-          typeof response.message === 'string' && response.message
-            ? response.message
-            : 'Unable to open the administrator email.',
-          {
-            position: toast.POSITION.TOP_CENTER,
-            type: toast.TYPE.ERROR,
-          },
-        );
-      }
-    });
-    return result;
   };
   //#endregion
 
