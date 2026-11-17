@@ -211,32 +211,43 @@ describe('UserProfileForm.vue', () => {
     });
   };
 
-  describe('emailAdminHandler', () => {
-    it('prevents the event and displays a success toast when emailing the administrator succeeds', async () => {
+  describe('confirmEmailAdminHandler', () => {
+    it('prevents the event and emails the administrator only after confirmation', async () => {
       const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
         .mockReturnValue({ isSuccess: true, message: 'Email opened' });
       const event = { preventDefault: vi.fn() };
       wrapper = createWrapper();
 
-      wrapper.vm.emailAdminHandler(event);
+      wrapper.vm.confirmEmailAdminHandler(event);
       await flushPromises();
 
       expect(event.preventDefault).toHaveBeenCalledOnce();
+      expect(dialogStore.updateDialog).toHaveBeenCalledWith(
+        'Confirm Email Admin',
+        'Are you sure you want to email the site administrator?',
+        DialogType.CONFIRM,
+        expect.any(Function),
+      );
+      expect(emailAdmin).not.toHaveBeenCalled();
+
+      const confirmedAction = dialogStore.updateDialog.mock.calls[0][3];
+      confirmedAction();
+      await flushPromises();
+
       expect(mockCommonUtilities.updateAppProcessingAsync).toHaveBeenCalledOnce();
       expect(emailAdmin).toHaveBeenCalledOnce();
       expect(mockCommonUtilities.displaySuccessfulToast).toHaveBeenCalledWith(StoreType.GLOBALSTORE);
       expect(mockCommonUtilities.displayFailedToastAsync).not.toHaveBeenCalled();
     });
 
-    it('displays the service error when the administrator email button fails', async () => {
+    it('displays the service error after confirming the administrator email', async () => {
       const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
         .mockReturnValue({ isSuccess: false, message: 'Admin email is not defined' });
       wrapper = createWrapper();
 
-      const button = wrapper.findAll('button')
-        .find(button => button.text().includes('Email Site Administrator'));
-      expect(button).toBeDefined();
-      await button.trigger('click');
+      wrapper.vm.confirmEmailAdminHandler();
+      const confirmedAction = dialogStore.updateDialog.mock.calls[0][3];
+      confirmedAction();
       await flushPromises();
 
       expect(emailAdmin).toHaveBeenCalledOnce();
@@ -251,7 +262,9 @@ describe('UserProfileForm.vue', () => {
       vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin').mockReturnValue({ isSuccess: false });
       wrapper = createWrapper();
 
-      wrapper.vm.emailAdminHandler();
+      wrapper.vm.confirmEmailAdminHandler();
+      const confirmedAction = dialogStore.updateDialog.mock.calls[0][3];
+      confirmedAction();
       await flushPromises();
 
       expect(toast).toHaveBeenCalledWith('Unable to open the administrator email.', {
@@ -260,7 +273,7 @@ describe('UserProfileForm.vue', () => {
       });
     });
 
-    it('calls the handler from the administrator email button', async () => {
+    it('opens the confirmation dialog from the administrator email button without emailing immediately', async () => {
       const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin')
         .mockReturnValue({ isSuccess: true });
       wrapper = createWrapper();
@@ -271,13 +284,17 @@ describe('UserProfileForm.vue', () => {
       await button.trigger('click');
       await flushPromises();
 
-      expect(emailAdmin).toHaveBeenCalledOnce();
-      expect(mockCommonUtilities.displaySuccessfulToast).toHaveBeenCalledWith(StoreType.GLOBALSTORE);
+      expect(dialogStore.updateDialog).toHaveBeenCalledWith(
+        'Confirm Email Admin',
+        'Are you sure you want to email the site administrator?',
+        DialogType.CONFIRM,
+        expect.any(Function),
+      );
+      expect(emailAdmin).not.toHaveBeenCalled();
     });
 
     it('disables the administrator email button for super users', async () => {
       userStore.user = createMockUser({ isSuperUser: true });
-      const emailAdmin = vi.spyOn(useGlobalStore(testingPinia), 'emailAdmin');
       wrapper = createWrapper();
       const button = wrapper.findAll('button')
         .find(button => button.text().includes('Email Site Administrator'));
@@ -285,7 +302,7 @@ describe('UserProfileForm.vue', () => {
       expect(button).toBeDefined();
       expect(button.attributes('disabled')).toBeDefined();
       await button.trigger('click');
-      expect(emailAdmin).not.toHaveBeenCalled();
+      expect(dialogStore.updateDialog).not.toHaveBeenCalled();
     });
   });
 
